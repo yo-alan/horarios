@@ -1,0 +1,9 @@
+{% if cs %}
+    <ul>
+    {% for c in cs %}
+        <li><a href="/calendario/{{ c.id }}/">{{ c.id }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No hay calendarios disponibles.</p>
+{% endif %}
