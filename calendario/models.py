@@ -5,7 +5,7 @@ class Profesional(models.Model):
 	
 	nombre = models.CharField(max_length=100, blank=True)
 	apellido = models.CharField(max_length=100, blank=True)
-	documento = models.IntegerField(default=0, blank=True)
+	cuil = models.IntegerField(default=0, blank=True)
 	especialidad = models.CharField(max_length=100, blank=True)
 	
 	def __str__(self, ):
@@ -14,7 +14,7 @@ class Profesional(models.Model):
 class Calendario(models.Model):
 	
 	curso = models.CharField(max_length=100, blank=True)
-	horarios = []#ACA ESTA EL PROBLEMA
+	horarios = [[], [], [], [], [], [], [], [], []]
 	puntaje = models.IntegerField(default=0)
 	ranking_distribucion = models.FloatField(default=100)
 	
@@ -42,3 +42,10 @@ class Espacio(models.Model):
 	pass
 	
 
+class Materia(models.Model):
+	
+	nombre = models.CharField(max_length=100, blank=True)
+	carga_horaria_semanal = models.IntegerField(default=0, blank=True)
+	restriccion_diaria = models.IntegerField(default=0, blank=True)
+	
+	
