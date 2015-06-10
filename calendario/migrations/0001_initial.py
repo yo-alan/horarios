@@ -26,13 +26,22 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
+            name='Especialidad',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('nombre', models.CharField(max_length=100, blank=True)),
+                ('carga_horaria_semanal', models.IntegerField(default=0, blank=True)),
+                ('restriccion_diaria', models.IntegerField(default=0, blank=True)),
+            ],
+        ),
+        migrations.CreateModel(
             name='Horario',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('hora_desde', models.TimeField(verbose_name=b'desde', blank=True)),
                 ('hora_hasta', models.TimeField(verbose_name=b'hasta', blank=True)),
                 ('dia_semana', models.IntegerField(default=0, blank=True)),
-                ('id_calendario', models.ForeignKey(to='calendario.Calendario')),
+                ('calendario', models.ForeignKey(to='calendario.Calendario')),
             ],
         ),
         migrations.CreateModel(
@@ -41,8 +50,8 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('nombre', models.CharField(max_length=100, blank=True)),
                 ('apellido', models.CharField(max_length=100, blank=True)),
-                ('documento', models.IntegerField(default=0, blank=True)),
-                ('especialidad', models.CharField(max_length=100, blank=True)),
+                ('cuil', models.IntegerField(default=0, blank=True)),
+                ('especialidad', models.ForeignKey(to='calendario.Especialidad')),
             ],
         ),
         migrations.CreateModel(
@@ -56,7 +65,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='horario',
-            name='id_profesional',
+            name='profesional',
             field=models.ForeignKey(to='calendario.Profesional', blank=True),
         ),
     ]

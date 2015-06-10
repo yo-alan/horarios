@@ -1,103 +1,76 @@
 import random, time
 
-from django.shortcuts import render
-from django.http import HttpResponse
+from django.shortcuts import render, get_object_or_404
 
-from .models import Calendario, Profesional, Horario, Restriccion
+from .models import Calendario, Profesional, Horario, Restriccion, Especialidad
+
 
 dias = {0 : "Domingo", 1 : "Lunes", 2 : "Martes", 3 : "Miercoles", 4 : "Jueves", 5 : "Viernes", 6 : "Sabado"}
-horarios = {1 : "7:30", 2 : "8:10", 3 : "8:50", 4 : "9:00", 5 : "9:40", 6 : "10:30", 7 : "11:10", 8 : "11:50"}
+#HARDCODED
+horarios = {1 : "7:30", 2 : "8:10", 3 : "9:00", 4 : "9:40", 5 : "10:30", 6 : "11:10", 7 : "11:50"}
 
 #RESQUESTS
 
 def index(request):
-	ps = []
 	
-	#~ p = Profesional()
-	#~ p.nombre = "Pedro"
-	#~ p.apellido = "Perez"
-	#~ p.especialidad = "Prof. Matematica"
-	#~ p.documento = 30000000
-	#~ 
-	#~ ps.append(p)
-	#~ 
-	#~ p = Profesional()
-	#~ p.nombre = "Rodrigo"
-	#~ p.apellido = "Rodriguez"
-	#~ p.especialidad = "Prof. Lengua"
-	#~ p.documento = 31000000
-	#~ 
-	#~ ps.append(p)
-	#~ 
-	#~ p = Profesional()
-	#~ p.nombre = "Gonzalo"
-	#~ p.apellido = "Gonzalez"
-	#~ p.especialidad = "Prof. Historia"
-	#~ p.documento = 32000000
-	#~ 
-	#~ ps.append(p)
-	#~ 
 	start_time = time.time()
 	
 	ps = Profesional.objects.all()
 	
-	hs = generar_poblacion(ps)
+	hs = generar_horarios(ps)
 	
 	cs = [] #La poblacion de calendarios
 	
-	i = 1
 	for h in hs:
 		
-		c = Calendario(curso="1ro 1ra")
+		c = Calendario()
 		c.save()
 		c.horarios.append(h)
-		h.id_calendario = c
+		h.calendario = c
 		h.save()
 		cs.append(c)
-		
-		i = i + 1
-		
 	
-	total_horarios = len(dias) * (len(horarios) - 1)
-	objetos_i = 0
-	objetos_n = 0
 	for c in cs:
 		
-		while len(c.horarios) < total_horarios:
+		#HARDCODED
+		for dia in range(1, 6):
 			
-			desde = random.randrange(1, 8)
-			
-			h = Horario(id_profesional=random.randrange(1, 4), hora_desde=horarios[desde], hora_hasta=horarios[desde + 1], dia_semana=random.randrange(1, 6), id_calendario=c.id)
-			
-			if h not in c.horarios:
-				c.horarios.append(h)
-				objetos_n = objetos_n + 1
+			for horario in range(1, len(horarios)):
+				
+				h = Horario(profesional=ps[random.randrange(1, len(ps))], hora_desde=horarios[horario], hora_hasta=horarios[horario+1], dia_semana=dia, calendario=c)
+				
+				#if h not in c.horarios[h.dia_semana]:
+					
 				h.save()
-			else:
-				objetos_i = objetos_i + 1
+				
+				c.horarios[h.dia_semana].append(h)
+	
 	
 	tiempo = (time.time() - start_time)
-	context = {'cs': cs, 'tiempo' : tiempo}
+	context = {'cs': cs, 'tiempo' : tiempo, 'dias' : range(5), 'horas' : range(6)}
 	
 	return render(request, 'calendario/index.html', context)
 
 
 def detail(request, calendario_id):
-	return HttpResponse("Estas viendo el calendario %s." % calendario_id)
+	
+	calendario = get_object_or_404(Calendario, pk=calendario_id)
+	
+	return render(request, 'calendario/detail.html', {'calendario': calendario})
 
 
 #FIN RESQUESTS
 
-def generar_poblacion(ps):
+def generar_horarios(ps):
 
 	hs = []
 
 	l = 1
 	for i in range(1, 6):
-		for j in range(1, 8):
+		for j in range(1, len(horarios)):
 			for k in ps:
 				h = Horario()
-				h.id_profesional = Profesional.objects.get(pk=k.id)
+				h.profesional = Profesional.objects.get(pk=k.id)
 				h.hora_desde = horarios[j]
 				h.hora_hasta = horarios[j+1]
 				h.dia_semana = i
@@ -108,3 +81,40 @@ def generar_poblacion(ps):
 				l = l + 1
 
 	return hs
+
+def aptitud(cs):
+	
+	rs = Restriccion.objects.all()
+	
+	for c in cs:
+		
+		for h in c:
+			
+			for r in rs:
+				
+				if (h.desde >= r.desde and h.desde <= r.hasta) or \
+					(h.hasta >= r.desde and h.hasta <= r.hasta) or \
+					(h.desde <= r.desde and h.hasta >= r.hasta):#OJOOOOOOO h.desde <= r.desde???
+					c.puntaje = c.puntaje + 1
+					
+	
+	es = Especialidad.objects.all()
+	
+	for c in cs:
+		
+		porc_total = 0 #El porcentaje total es inicializado en 0
+		for e in es:
+			
+			horas_semanales = 0
+			for i in range(0, 6):
+				
+				for h in c.horarios[i]:
+					
+					if h.profesional.especialidad == e:
+						horas_semanales = horas_semanales + 1
+				
+			if horas_semanales != e.carga_horaria_semanal:
+				#MUY MAL CHE
+				pass
+			
+			
