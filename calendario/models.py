@@ -10,16 +10,22 @@ class Especialidad(models.Model):
 	def __str__(self, ):
 		return self.nombre
 	
+	def __eq__(self, o):
+		return self.nombre == o.nombre
+	
 
 class Profesional(models.Model):
 	
 	nombre = models.CharField(max_length=100, blank=True)
 	apellido = models.CharField(max_length=100, blank=True)
-	cuil = models.CharField(max_length=11, blank=True)
+	cuil = models.CharField(max_length=11, blank=True, unique=True, null=False)
 	especialidad = models.ForeignKey(Especialidad)
 	
 	def __str__(self, ):
 		return self.apellido + ", " + self.nombre
+	
+	def __eq__(self, o):
+		return self.cuil == o.cuil
 
 class Calendario(models.Model):
 	
@@ -38,6 +44,10 @@ class Calendario(models.Model):
 			self.horarios[h.dia_semana].append(h)
 		
 		return self.horarios
+	
+	def cruce(self, madre):
+		pass
+	
 
 class Horario(models.Model):
 	
@@ -59,8 +69,33 @@ class Restriccion(models.Model):
 	hora_desde = models.TimeField('desde', blank=True)
 	hora_hasta = models.TimeField('hasta', blank=True)
 	dia_semana = models.IntegerField(default=0, blank=True)
+	#FALTA TERMINAR DE DEFINIRLO
+	
+	def __eq__(self, o):
+		pass
+		#return self.hora_desde == o.hora_desde and self.hora_hasta == o.hora_hasta and self.
 	
 
 class Espacio(models.Model):
 	pass
+	
+
+class Ecosistema(object):
+	
+	poblacion = []
+	restricciones = []
+	
+	def __init__(self, rs):
+		self.restricciones = rs
+	
+	def evolucionar(self, ):
+		pass
+	
+	def evaluar(self, ):
+		pass
+	
+	def seleccionar(self, ):
+		pass
+	
+	
 	

@@ -102,8 +102,7 @@ def aptitud(cs):
 	
 	for c in cs:
 		
-		porc_total = 0 #El porcentaje total es inicializado en 0
-		for e in es:
+		for e in es: #e = especialización , es = especializaciones
 			
 			horas_semanales = 0
 			for i in range(0, 6):
@@ -113,8 +112,10 @@ def aptitud(cs):
 					if h.profesional.especialidad == e:
 						horas_semanales = horas_semanales + 1
 				
-			if horas_semanales != e.carga_horaria_semanal:
-				#MUY MAL CHE
-				pass
-			
-			
+				if horas_semanales != e.carga_horaria_semanal:
+					#-20% (del ranking)
+					x = abs(e.carga_semanal - contador)
+					#HARDCODED
+					y = (35 - e.carga_semanal) / (x * 100)
+					#HARDCODED
+					p_total = p_total + (100 / len(especialidad) / (20 + y) * 100)
