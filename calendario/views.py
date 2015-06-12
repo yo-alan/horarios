@@ -102,7 +102,7 @@ def aptitud(cs):
 	
 	for c in cs:
 		
-		for e in es: #e = especialización , es = especializaciones
+		for e in es: #e = especializacion , es = especializaciones
 			
 			horas_semanales = 0
 			for i in range(0, 6):
