@@ -84,15 +84,28 @@ class Ecosistema(object):
 	
 	poblacion = []
 	restricciones = []
+	generaciones = 0
 	
-	def __init__(self, rs):
+	def __init__(self, rs, generaciones=50):
 		self.restricciones = rs
+		self.generaciones = generaciones
+	
+	def generar_poblacion_inicial(self, ):
+		pass
 	
 	def evolucionar(self, ):
 		pass
 	
-	def evaluar(self, ):
-		pass
+	def evaluar(self, c):
+		
+		if not isinstance(c, Calendario):
+			raise Exception("No puedo evaluar algo que no sea un Calendario.")
+		
+		aptitud_val = 0
+		
+		#TO DO
+		
+		return aptitud_val
 	
 	def seleccionar(self, ):
 		pass
