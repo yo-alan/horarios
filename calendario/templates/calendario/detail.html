@@ -1,8 +1,8 @@
 <table border="1">
-	{% for i in horas %}
+	{% for hs in calendario.getHorarios %}
 		<tr>
-		{% for j in dias %}
-			<td>{{ calendario.getHorarios[1]}}</td>td>
+		{% for h in hs %}
+			<td>{{ h.profesional.especialidad }}</td>
 		{% endfor %}
 		</tr>
 	{% endfor %}
