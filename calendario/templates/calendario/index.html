@@ -1,10 +1,22 @@
-<h1>Tiempo: {{ tiempo }} segundos.</h1>
-{% if cs %}
-    <ul>
-    {% for c in cs %}
-        <li><a href="/calendario/{{ c.id }}/">{{ c.id }}</a></li>
-    {% endfor %}
-    </ul>
-{% else %}
-    <p>No hay calendarios disponibles.</p>
-{% endif %}
+{% load staticfiles %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'calendario/css/bootstrap.css' %}" />
+
+<br>
+<div class="container">
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+			<div class="jumbotron well">
+				<h1>
+					Bienvenido a Horarios.
+				</h1>
+				<p>
+					This is a template for a simple marketing or informational website. It includes a large callout called the hero unit and three supporting pieces of content. Use it as a starting point to create something more unique.
+				</p>
+				<p>
+					<a class="btn btn-primary btn-large" href="/calendario/all/">Comenzar</a>
+				</p>
+			</div>
+		</div>
+	</div>
+</div>

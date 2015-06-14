@@ -7,6 +7,12 @@ from .models import Ecosistema, Calendario, Profesional, Horario, Restriccion, E
 
 def index(request):
 	
+	context = {}
+	
+	return render(request, 'calendario/index.html', context)
+
+def all(request):
+	
 	start_time = time.time()
 	
 	e = Ecosistema()
@@ -18,8 +24,7 @@ def index(request):
 	
 	context = {'cs': e.poblacion, 'tiempo' : tiempo}
 	
-	return render(request, 'calendario/index.html', context)
-
+	return render(request, 'calendario/all.html', context)
 
 def detail(request, calendario_id):
 	

@@ -1,3 +1,8 @@
+{% load staticfiles %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'calendario/css/bootstrap.css' %}" />
+
+
 <table border="1">
 	{% for hs in calendario.getHorarios %}
 		<tr>

@@ -148,9 +148,6 @@ class Ecosistema(object):
 					for dh in c.horarios:
 						for hh in dh:
 							if h == hh:
-								print str(h.hora_desde) + " == " + str(hh.hora_desde)
-								print str(h.hora_hasta) + " == " + str(hh.hora_hasta)
-								print str(h.dia_semana) + " == " + str(hh.dia_semana)
 								existe = True
 					
 					if existe:
@@ -183,7 +180,7 @@ class Ecosistema(object):
 					if (h.desde >= r.desde and h.desde <= r.hasta) or \
 						(h.hasta >= r.desde and h.hasta <= r.hasta) or \
 						(h.desde <= r.desde and h.hasta >= r.hasta):#OJOOOOOOO h.desde <= r.desde???
-						c.puntaje = c.puntaje + 1
+						c.puntaje += 1
 						
 		
 		es = Especialidad.objects.all()
@@ -198,7 +195,7 @@ class Ecosistema(object):
 					for h in c.horarios[i]:
 						
 						if h.profesional.especialidad == e:
-							horas_semanales = horas_semanales + 1
+							horas_semanales += 1
 					
 					if horas_semanales != e.carga_horaria_semanal:
 						#-20% (del ranking)
@@ -206,7 +203,7 @@ class Ecosistema(object):
 						#HARDCODED
 						y = (35 - e.carga_semanal) / (x * 100)
 						#HARDCODED
-						p_total = p_total + (100 / len(especialidad) / (20 + y) * 100)
+						p_total += (100 / len(especialidad) / (20 + y) * 100)
 		
 		return aptitud_val
 	
