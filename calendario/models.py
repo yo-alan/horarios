@@ -11,7 +11,7 @@ class Especialidad(models.Model):
 	
 	nombre = models.CharField(max_length=100, blank=True)
 	carga_horaria_semanal = models.IntegerField(default=0, blank=True)
-	restriccion_diaria = models.IntegerField(default=0, blank=True)
+	max_horas_diaria = models.IntegerField(default=0, blank=True)
 	
 	def __str__(self, ):
 		return self.nombre
@@ -35,10 +35,12 @@ class Profesional(models.Model):
 
 class Calendario(models.Model):
 	
-	nombre = models.CharField(max_length=100, blank=True)
+	espacio = models.ForeignKey(Espacio)
 	horarios = []
 	puntaje = models.IntegerField(default=0)
-	ranking_distribucion = models.FloatField(default=100)
+	
+	def __init__(self, ):
+		self.mutar()
 	
 	def getHorarios(self, ):
 		
@@ -64,7 +66,11 @@ class Calendario(models.Model):
 		
 		self.horarios.append([horario])
 	
+	#Que el padre y la madre no sean el mismo
 	def cruce(self, madre):
+		pass
+	
+	def mutar(self, ):
 		pass
 	
 
@@ -89,6 +95,7 @@ class Restriccion(models.Model):
 	hora_desde = models.TimeField('desde', blank=True)
 	hora_hasta = models.TimeField('hasta', blank=True)
 	dia_semana = models.IntegerField(default=0, blank=True)
+	
 	#FALTA TERMINAR DE DEFINIRLO UNA RESTRICCION GENERICAS, PARA ESPACIO Y PROF
 	
 	def __eq__(self, o):
@@ -97,10 +104,11 @@ class Restriccion(models.Model):
 	
 
 class Espacio(models.Model):
-	pass
+	
+	nombre = models.CharField(max_length=100, null=False)
 	
 
-class Ecosistema(object):
+class Entorno(object):
 	
 	poblacion = []
 	restricciones = []
@@ -109,6 +117,8 @@ class Ecosistema(object):
 	def __init__(self, generaciones=50):
 		self.restricciones = Restriccion.objects.all()
 		self.generaciones = generaciones
+		
+		self.generar_poblacion_inicial()
 	
 	def generar_poblacion_inicial(self, ):
 		
@@ -161,22 +171,15 @@ class Ecosistema(object):
 	def evolucionar(self, ):
 		pass
 	
-	def evaluar(self, c):
+	def fitness(self, ):
 		
-		if not isinstance(c, Calendario):
-			raise Exception("No puedo evaluar algo que no sea un Calendario.")
-		
-		aptitud_val = 0
-		
-		#PREGUNTAR SI SE EVALUAN INDIVIDUALMENTE O TODA LA POBLACION
-		rs = Restriccion.objects.all()
-		
-		for c in cs:
+		for c in self.poblacion:
+			
+			if c.puntaje != 0:
+				continue
 			
 			for h in c:
-				
 				for r in rs:
-					
 					if (h.desde >= r.desde and h.desde <= r.hasta) or \
 						(h.hasta >= r.desde and h.hasta <= r.hasta) or \
 						(h.desde <= r.desde and h.hasta >= r.hasta):#OJOOOOOOO h.desde <= r.desde???

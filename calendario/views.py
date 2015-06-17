@@ -2,7 +2,7 @@ import time
 
 from django.shortcuts import render, get_object_or_404
 
-from .models import Ecosistema, Calendario, Profesional, Horario, Restriccion, Especialidad
+from .models import Entorno, Calendario, Profesional, Horario, Restriccion, Especialidad
 
 
 def index(request):
@@ -15,9 +15,7 @@ def all(request):
 	
 	start_time = time.time()
 	
-	e = Ecosistema()
-	
-	e.generar_poblacion_inicial()
+	e = Entorno()
 	
 	
 	tiempo = (time.time() - start_time)
