@@ -1,0 +1,17 @@
+{% load staticfiles %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'calendario/css/bootstrap.css' %}" />
+
+
+<h1>Tiempo: {{ tiempo }} segundos.</h1>
+{% if cs %}
+	<table>
+		<tr>
+		{% for c in cs %}
+			<td><a href="/calendario/{{ c.id }}/">{{ c.id }}</a></td>
+		{% endfor %}
+		</tr>
+	</table>
+{% else %}
+    <p>No hay calendarios disponibles.</p>
+{% endif %}

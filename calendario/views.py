@@ -29,3 +29,11 @@ def detail(request, calendario_id):
 	calendario = get_object_or_404(Calendario, pk=calendario_id)
 	
 	return render(request, 'calendario/detail.html', {'calendario': calendario, 'dias' : range(5), 'horas' : range(6)})
+
+def profesional_all(request):
+	
+	ps = Profesional.objects.all()
+	
+	context = {'ps': ps, }
+	
+	return render(request, 'calendario/profesional/all.html', context)

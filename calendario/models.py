@@ -3,7 +3,7 @@ import random
 from django.db import models
 
 
-dias = {0 : "Domingo", 1 : "Lunes", 2 : "Martes", 3 : "Miercoles", 4 : "Jueves", 5 : "Viernes", 6 : "Sabado"}
+DIAS = {0 : "Domingo", 1 : "Lunes", 2 : "Martes", 3 : "Miercoles", 4 : "Jueves", 5 : "Viernes", 6 : "Sabado"}
 #HARDCODED
 horarios = {1 : "7:30", 2 : "8:10", 3 : "9:00", 4 : "9:40", 5 : "10:30", 6 : "11:10", 7 : "11:50"}
 
@@ -18,6 +18,11 @@ class Especialidad(models.Model):
 	
 	def __eq__(self, o):
 		return self.nombre == o.nombre
+	
+
+class Espacio(models.Model):
+	
+	nombre = models.CharField(max_length=100, null=False)
 	
 
 class Profesional(models.Model):
@@ -101,11 +106,6 @@ class Restriccion(models.Model):
 	def __eq__(self, o):
 		pass
 		#return self.hora_desde == o.hora_desde and self.hora_hasta == o.hora_hasta and self.
-	
-
-class Espacio(models.Model):
-	
-	nombre = models.CharField(max_length=100, null=False)
 	
 
 class Entorno(object):
