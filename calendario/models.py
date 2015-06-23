@@ -9,9 +9,9 @@ horarios = {1 : "7:30", 2 : "8:10", 3 : "9:00", 4 : "9:40", 5 : "10:30", 6 : "11
 
 class Especialidad(models.Model):
 	
-	nombre = models.CharField(max_length=100, blank=True)
-	carga_horaria_semanal = models.IntegerField(default=0, blank=True)
-	max_horas_diaria = models.IntegerField(default=0, blank=True)
+	nombre = models.CharField(max_length=100, null=False)
+	carga_horaria_semanal = models.IntegerField(default=0, null=False)
+	max_horas_diaria = models.IntegerField(default=0, null=False)
 	
 	def __str__(self, ):
 		return self.nombre
@@ -27,9 +27,10 @@ class Espacio(models.Model):
 
 class Profesional(models.Model):
 	
-	nombre = models.CharField(max_length=100, blank=True)
-	apellido = models.CharField(max_length=100, blank=True)
-	cuil = models.CharField(max_length=11, blank=True, unique=True, null=False)
+	nombre = models.CharField(max_length=100, null=False)
+	apellido = models.CharField(max_length=100, null=False)
+	cuil = models.CharField(max_length=11, unique=True, null=False)
+	restricciones = []
 	especialidad = models.ForeignKey(Especialidad)
 	
 	def __str__(self, ):
@@ -71,7 +72,7 @@ class Calendario(models.Model):
 		
 		self.horarios.append([horario])
 	
-	#Que el padre y la madre no sean el mismo
+	#Que el padre y la madre no sean el mismo - A QUIEN LE CORRESPONDE ESTA VALIDACION?
 	def cruce(self, madre):
 		pass
 	
@@ -81,11 +82,11 @@ class Calendario(models.Model):
 
 class Horario(models.Model):
 	
-	profesional = models.ForeignKey(Profesional, blank=True)
-	hora_desde = models.TimeField('desde', blank=True)
-	hora_hasta = models.TimeField('hasta', blank=True)
-	dia_semana = models.IntegerField(default=0, blank=True)
-	calendario = models.ForeignKey(Calendario, null=False)
+	hora_desde = models.TimeField('desde', null=False)
+	hora_hasta = models.TimeField('hasta', null=False)
+	dia_semana = models.IntegerField(default=0, null=False)
+	calendario = models.ForeignKey(Calendario)
+	profesional = models.ForeignKey(Profesional)
 	
 	def __str__(self, ):
 		#~ return str(self.profesional.especialidad)
@@ -97,9 +98,10 @@ class Horario(models.Model):
 
 class Restriccion(models.Model):
 	
-	hora_desde = models.TimeField('desde', blank=True)
-	hora_hasta = models.TimeField('hasta', blank=True)
-	dia_semana = models.IntegerField(default=0, blank=True)
+	hora_desde = models.TimeField('desde', null=False)
+	hora_hasta = models.TimeField('hasta', null=False)
+	dia_semana = models.IntegerField(default=0, null=False)
+	profesional = models.ForeignKey(Profesional)
 	
 	#FALTA TERMINAR DE DEFINIRLO UNA RESTRICCION GENERICAS, PARA ESPACIO Y PROF
 	
@@ -190,7 +192,7 @@ class Entorno(object):
 		
 		for c in cs:
 			
-			for e in es: #e = especializacion , es = especializaciones
+			for e in es:
 				
 				horas_semanales = 0
 				for i in range(0, 6):

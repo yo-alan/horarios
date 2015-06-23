@@ -1,6 +1,8 @@
 import time
 
 from django.shortcuts import render, get_object_or_404
+from django.http import HttpResponseRedirect
+from django.core.urlresolvers import reverse
 
 from .models import Entorno, Calendario, Profesional, Horario, Restriccion, Especialidad
 
@@ -28,7 +30,9 @@ def detail(request, calendario_id):
 	
 	calendario = get_object_or_404(Calendario, pk=calendario_id)
 	
-	return render(request, 'calendario/detail.html', {'calendario': calendario, 'dias' : range(5), 'horas' : range(6)})
+	context = {'calendario': calendario, 'dias' : range(5), 'horas' : range(6)}
+	
+	return render(request, 'calendario/detail.html', context)
 
 def profesional_all(request):
 	
@@ -37,3 +41,38 @@ def profesional_all(request):
 	context = {'ps': ps, }
 	
 	return render(request, 'calendario/profesional/all.html', context)
+
+def profesional_add(request):
+	
+	context = {}
+	
+	if request.method == 'POST':
+		
+		try:
+			p = Profesional()
+			
+			p.nombre = request.POST["nombre"]
+			p.apellido = request.POST["apellido"]
+			p.cuil = request.POST["cuil"]
+			p.especialidad = Especialidad.objects.get(pk=request.POST["especialidad"])
+			
+			p.save()
+			
+			return HttpResponseRedirect(reverse('calendario:profesional_all'))
+			
+		except Exception as ex:
+			context['error_message'] = "Ocurrio un error al guardar el profesional: " + str(ex)
+	
+	es = Especialidad.objects.all()
+	
+	context['es'] = es
+	
+	return render(request, 'calendario/profesional/add.html', context)
+
+def profesional_edit(request):
+	
+	ps = Profesional.objects.all()
+	
+	context = {'ps': ps, }
+	
+	return render(request, 'calendario/profesional/add.html', context)

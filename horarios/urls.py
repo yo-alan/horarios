@@ -21,6 +21,6 @@ from calendario import views
 urlpatterns = [
     url(r'^$', views.index, name='index'),
     url(r'^index/$', views.index, name='index'),
-    url(r'^calendario/', include('calendario.urls')),
+    url(r'^calendario/', include('calendario.urls', namespace="calendario")),
     url(r'^admin/', include(admin.site.urls)),
 ]

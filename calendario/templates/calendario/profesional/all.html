@@ -1,66 +1,66 @@
-{% load staticfiles %}
+{% extends "admin/base.html" %}
 
-<link rel="stylesheet" type="text/css" href="{% static 'calendario/css/bootstrap.css' %}" />
-
-<div class="container">
-	<div class="row clearfix">
-		<div class="col-md-12 column">
-			<div class="page-header">
-				<h1>
-					Profesionales<small>.</small>
-				</h1>
-			</div>
-			<table class="table table-hover">
-				<thead>
-					<tr>
-						<th>
-							ID
-						</th>
-						<th>
-							Apellido, Nombre
-						</th>
-						<th>
-							Cuil
-						</th>
-						<th>
-							Especialidad
-						</th>
-						</th>
-						<th>
-							Acciones
-						</th>
-					</tr>
-				</thead>
-				{% if ps %}
-					<tbody>
-						{% for p in ps %}
-							<tr>
-								<td>
-									{{ p.id }}
-								</td>
-								<td>
-									{{ p.Apellido }}, {{ p.nombre }}
-								</td>
-								<td>
-									{{ p.cuil }}
-								</td>
-								<td>
-									{{ p.especialidad }}
-								</td>
-								<td>
-									Accion
-								</td>
-							</tr>
-						{% endfor %}
-					</tbody>
-				{% else %}
-					<tfoot align="center">
+{% block article %}
+	<div class="container">
+		<div class="row clearfix">
+			<div class="col-md-12 column">
+				<div class="page-header">
+					<h1>
+						Profesionales<small>.</small>
+					</h1>
+				</div>
+				<table class="table table-hover">
+					<thead>
 						<tr>
-							<td colspan="5">No hay profesionales cargados.</td>
+							<th>
+								ID
+							</th>
+							<th>
+								Apellido, Nombre
+							</th>
+							<th>
+								Cuil
+							</th>
+							<th>
+								Especialidad
+							</th>
+							</th>
+							<th>
+								Acciones
+							</th>
 						</tr>
-					</tfoot>
-				{% endif %}
-			</table>
+					</thead>
+					{% if ps %}
+						<tbody>
+							{% for p in ps %}
+								<tr>
+									<td>
+										{{ p.id }}
+									</td>
+									<td>
+										{{ p.apellido }}, {{ p.nombre }}
+									</td>
+									<td>
+										{{ p.cuil }}
+									</td>
+									<td>
+										{{ p.especialidad }}
+									</td>
+									<td>
+										Accion
+									</td>
+								</tr>
+							{% endfor %}
+						</tbody>
+					{% else %}
+						<tfoot align="center">
+							<tr>
+								<td colspan="5">No hay profesionales cargados.</td>
+							</tr>
+						</tfoot>
+					{% endif %}
+				</table>
+			</div>
 		</div>
 	</div>
-</div>
+{% endblock %}

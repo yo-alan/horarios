@@ -1,17 +1,57 @@
-{% load staticfiles %}
+{% extends "admin/base.html" %}
 
-<link rel="stylesheet" type="text/css" href="{% static 'calendario/css/bootstrap.css' %}" />
+{% block title %}Agregar un profesional{% endblock %}
 
-
-<h1>Tiempo: {{ tiempo }} segundos.</h1>
-{% if cs %}
-	<table>
-		<tr>
-		{% for c in cs %}
-			<td><a href="/calendario/{{ c.id }}/">{{ c.id }}</a></td>
-		{% endfor %}
-		</tr>
-	</table>
-{% else %}
-    <p>No hay calendarios disponibles.</p>
-{% endif %}
+{% block article %}
+	<div class="container">
+		<div class="row clearfix">
+			<div class="col-md-6 col-md-offset-3">
+				{% if error_message %}
+				<h1>ERROR: {{ error_message }}</h1>
+				{% endif %}
+				<h3 class="text-center">
+					Agregar un profesional
+				</h3>
+				<br>
+				<form class="form-horizontal" method="POST" action="{% url 'calendario:profesional_add' %}">
+					{% csrf_token %}
+					<div class="form-group">
+						<label class="col-xs-3 control-label" for="nombre">Nombre:</label>
+						<div class="col-xs-9">
+							<input type="text" id="nombre" name="nombre" class="form-control" placeholder="Nombre del profesional">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-xs-3 control-label" for="apellido">Apellido:</label>
+						<div class="col-xs-9">
+							<input type="text" id="apellido" name="apellido" class="form-control" placeholder="Apellido del profesional">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-xs-3 control-label" for="cuil">Cuil:</label>
+						<div class="col-xs-9">
+							<input type="text" id="cuil" name="cuil" class="form-control" placeholder="Número de cuil del profesional">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-xs-3 control-label" for="especialidad">Especialidad:</label>
+						<div class="col-xs-9">
+							<select class="form-control" id="especialidad" name="especialidad">
+								{% for e in es %}
+									<option value="{{ e.id }}">{{ e }}</option>
+								{% endfor %}
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-md-offset-10">
+							<button type="submit" class="btn btn-default">
+								Agregar
+							</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+{% endblock %}

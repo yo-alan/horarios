@@ -1,14 +1,15 @@
-{% load staticfiles %}
+{% extends "admin/base.html" %}
 
-<link rel="stylesheet" type="text/css" href="{% static 'calendario/css/bootstrap.css' %}" />
+{% block title %}Detalle del calendario {{ calendario.id }} {% endblock %}
 
-
-<table border="1">
-	{% for hs in calendario.getHorarios %}
-		<tr>
-		{% for h in hs %}
-			<td>{{ h.profesional.especialidad }}</td>
+{% block article %}
+	<table border="1">
+		{% for hs in calendario.getHorarios %}
+			<tr>
+			{% for h in hs %}
+				<td>{{ h.profesional.especialidad }}</td>
+			{% endfor %}
+			</tr>
 		{% endfor %}
-		</tr>
-	{% endfor %}
-</table>
+	</table>
+{% endblock %}
