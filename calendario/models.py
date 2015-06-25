@@ -22,14 +22,17 @@ class Especialidad(models.Model):
 
 class Espacio(models.Model):
 	
-	nombre = models.CharField(max_length=100, null=False)
+	nombre = models.CharField(max_length=100, null=False, blank=False)
+	
+	def __str__(self, ):
+		return self.nombre
 	
 
 class Profesional(models.Model):
 	
-	nombre = models.CharField(max_length=100, null=False)
-	apellido = models.CharField(max_length=100, null=False)
-	cuil = models.CharField(max_length=11, unique=True, null=False)
+	nombre = models.CharField(max_length=100, null=False, blank=False)
+	apellido = models.CharField(max_length=100, null=False, blank=False)
+	cuil = models.CharField(max_length=11, unique=True, null=False, blank=False)
 	restricciones = []
 	especialidad = models.ForeignKey(Especialidad)
 	
@@ -44,9 +47,6 @@ class Calendario(models.Model):
 	espacio = models.ForeignKey(Espacio)
 	horarios = []
 	puntaje = models.IntegerField(default=0)
-	
-	def __init__(self, ):
-		self.mutar()
 	
 	def getHorarios(self, ):
 		
@@ -98,9 +98,9 @@ class Horario(models.Model):
 
 class Restriccion(models.Model):
 	
-	hora_desde = models.TimeField('desde', null=False)
-	hora_hasta = models.TimeField('hasta', null=False)
-	dia_semana = models.IntegerField(default=0, null=False)
+	hora_desde = models.TimeField('desde', null=False, blank=False)
+	hora_hasta = models.TimeField('hasta', null=False, blank=False)
+	dia_semana = models.IntegerField(default=0, null=False, blank=False)
 	profesional = models.ForeignKey(Profesional)
 	
 	#FALTA TERMINAR DE DEFINIRLO UNA RESTRICCION GENERICAS, PARA ESPACIO Y PROF
@@ -115,10 +115,12 @@ class Entorno(object):
 	poblacion = []
 	restricciones = []
 	generaciones = 0
+	espacio = None
 	
-	def __init__(self, generaciones=50):
+	def __init__(self, generaciones=50, espacio=None):
 		self.restricciones = Restriccion.objects.all()
 		self.generaciones = generaciones
+		self.espacio = espacio
 		
 		self.generar_poblacion_inicial()
 	
@@ -132,6 +134,7 @@ class Entorno(object):
 			for j in range(1, len(horarios)):
 				for k in ps:
 					c = Calendario()
+					c.espacio = self.espacio
 					c.save()
 					h = Horario()
 					h.profesional = Profesional.objects.get(pk=k.id)

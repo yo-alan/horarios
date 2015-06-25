@@ -4,7 +4,7 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 
-from .models import Entorno, Calendario, Profesional, Horario, Restriccion, Especialidad
+from .models import Entorno, Calendario, Profesional, Horario, Restriccion, Especialidad, Espacio
 
 
 def index(request):
@@ -17,7 +17,9 @@ def all(request):
 	
 	start_time = time.time()
 	
-	e = Entorno()
+	espacio = Espacio.objects.get(pk=1)
+	
+	e = Entorno(espacio=espacio)
 	
 	
 	tiempo = (time.time() - start_time)

@@ -1,15 +1,44 @@
 {% extends "admin/base.html" %}
 
-{% block title %}Detalle del calendario {{ calendario.id }} {% endblock %}
+{% block title %}Detalles del calendario {{ calendario.id }} {% endblock %}
 
 {% block article %}
-	<table border="1">
-		{% for hs in calendario.getHorarios %}
-			<tr>
-			{% for h in hs %}
-				<td>{{ h.profesional.especialidad }}</td>
-			{% endfor %}
-			</tr>
-		{% endfor %}
-	</table>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<h3 class="text-center">
+					Detalles del calendario #{{ calendario.id }}
+				</h3>
+				
+				<dl>
+					<dt>
+						Espacio: <span>{{ calendario.espacio }}</span>
+					</dt>
+					<dt>
+						Puntaje: <span>{{ calendario.puntaje }}</span>
+					</dt>
+				</dl>
+				<table class="table table-bordered">
+					<thead>
+						<tr class="info">
+							<th class="text-center">Lunes</th>
+							<th class="text-center">Martes</th>
+							<th class="text-center">Miercoles</th>
+							<th class="text-center">Jueves</th>
+							<th class="text-center">Viernes</th>
+						</tr>
+					</thead>
+					<tbody>
+					{% for hs in calendario.getHorarios %}
+						<tr>
+						{% for h in hs %}
+							<td class="text-center">{{ h.profesional.especialidad }}</td>
+						{% endfor %}
+						</tr>
+					{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
 {% endblock %}
