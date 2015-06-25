@@ -12,7 +12,7 @@ urlpatterns = [
     # ex: /calendario/profesional/add/
     url(r'^profesional/add/$', views.profesional_add, name='profesional_add'),
     # ex: /calendario/profesional/edit/
-    url(r'^profesional/edit/$', views.profesional_edit, name='profesional_edit'),
+    url(r'^profesional/edit/(?P<profesional_id>[0-9]+)/$', views.profesional_edit, name='profesional_edit'),
     # ex: /calendario/5/
     url(r'^(?P<calendario_id>[0-9]+)/$', views.detail, name='detail'),
 ]

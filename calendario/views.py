@@ -38,7 +38,7 @@ def detail(request, calendario_id):
 
 def profesional_all(request):
 	
-	ps = Profesional.objects.all()
+	ps = Profesional.objects.all().order_by('apellido', 'nombre')
 	
 	context = {'ps': ps, }
 	
@@ -71,10 +71,12 @@ def profesional_add(request):
 	
 	return render(request, 'calendario/profesional/add.html', context)
 
-def profesional_edit(request):
+def profesional_edit(request, profesional_id):
 	
-	ps = Profesional.objects.all()
+	p = Profesional.objects.get(pk=profesional_id)
 	
-	context = {'ps': ps, }
+	es = Especialidad.objects.all()
 	
-	return render(request, 'calendario/profesional/add.html', context)
+	context = {'p': p, 'es' : es}
+	
+	return render(request, 'calendario/profesional/edit.html', context)
