@@ -7,6 +7,8 @@ urlpatterns = [
     url(r'^$', views.all, name='all'),
     # ex: /calendario/all/
     url(r'^all/$', views.all, name='all'),
+    # ex: /calendario/generar/
+    url(r'^generar/$', views.generar, name='generar'),
     # ex: /calendario/profesional/all/
     url(r'^profesional/all/$', views.profesional_all, name='profesional_all'),
     # ex: /calendario/profesional/add/

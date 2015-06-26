@@ -15,6 +15,14 @@ def index(request):
 
 def all(request):
 	
+	cs = Calendario.objects.all()
+	
+	context = {'cs': cs, }
+	
+	return render(request, 'calendario/all.html', context)
+
+def generar(request):
+	
 	start_time = time.time()
 	
 	espacio = Espacio.objects.get(pk=1)
@@ -73,7 +81,24 @@ def profesional_add(request):
 
 def profesional_edit(request, profesional_id):
 	
+	context = {}
+	
 	p = Profesional.objects.get(pk=profesional_id)
+	
+	if request.method == 'POST':
+		
+		try:
+			p.nombre = request.POST["nombre"]
+			p.apellido = request.POST["apellido"]
+			p.cuil = request.POST["cuil"]
+			p.especialidad = Especialidad.objects.get(pk=request.POST["especialidad"])
+			
+			p.save()
+			
+			return HttpResponseRedirect(reverse('calendario:profesional_all'))
+			
+		except Exception as ex:
+			context['error_message'] = "Ocurrio un error editando el profesional: " + str(ex)
 	
 	es = Especialidad.objects.all()
 	

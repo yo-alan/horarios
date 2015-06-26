@@ -13,7 +13,7 @@
 					Editar a {{ p.apellido }}, {{ p.nombre }}.
 				</h3>
 				<br>
-				<form class="form-horizontal" method="POST" action="{% url 'calendario:profesional_add' %}">
+				<form class="form-horizontal" method="POST" action="{% url 'calendario:profesional_edit' p.id %}">
 					{% csrf_token %}
 					<div class="form-group">
 						<label class="col-xs-3 control-label" for="nombre">Nombre:</label>

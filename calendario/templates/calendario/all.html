@@ -3,7 +3,9 @@
 {% block title %}Listado de calendarios{% endblock %}
 
 {% block article %}
-	<h1>Tiempo: {{ tiempo }} segundos.</h1>
+	{% if tiempo %}
+		<h1>Tiempo: {{ tiempo }} segundos.</h1>
+	{% endif %}
 	{% if cs %}
 		<table>
 			<tr>
