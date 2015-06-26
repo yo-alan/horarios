@@ -1,5 +1,4 @@
 import random
-
 from django.db import models
 
 
@@ -26,13 +25,15 @@ class Espacio(models.Model):
 	
 	def __str__(self, ):
 		return self.nombre
-	
 
-class Profesional(models.Model):
+class Persona(models.Model):
 	
 	nombre = models.CharField(max_length=100, null=False, blank=False)
 	apellido = models.CharField(max_length=100, null=False, blank=False)
 	cuil = models.CharField(max_length=11, unique=True, null=False, blank=False)
+
+class Profesional(Persona):
+	
 	restricciones = []
 	especialidad = models.ForeignKey(Especialidad)
 	
@@ -72,9 +73,16 @@ class Calendario(models.Model):
 		
 		self.horarios.append([horario])
 	
-	#Que el padre y la madre no sean el mismo - A QUIEN LE CORRESPONDE ESTA VALIDACION?
-	def cruce(self, madre):
-		pass
+	def cruce(self, madre, prob_mutacion):
+		
+		if not isinstance(madre, Calendario):
+			raise Exception("El objeto no es de tipo Calendario.")
+		
+		if self == madre:
+			raise Exception("Un Calendario no puede cruzarse consigo mismo.")
+		
+		
+		
 	
 	def mutar(self, ):
 		pass
@@ -101,14 +109,18 @@ class Restriccion(models.Model):
 	hora_desde = models.TimeField('desde', null=False, blank=False)
 	hora_hasta = models.TimeField('hasta', null=False, blank=False)
 	dia_semana = models.IntegerField(default=0, null=False, blank=False)
-	profesional = models.ForeignKey(Profesional)
-	
-	#FALTA TERMINAR DE DEFINIRLO UNA RESTRICCION GENERICAS, PARA ESPACIO Y PROF
 	
 	def __eq__(self, o):
 		pass
 		#return self.hora_desde == o.hora_desde and self.hora_hasta == o.hora_hasta and self.
+
+class Espacio_restriccion(Restriccion):
 	
+	espacio = models.ForeignKey(Espacio)
+
+class Profesional_restriccion(Restriccion):
+	
+	profesional = models.ForeignKey(Profesional)
 
 class Entorno(object):
 	

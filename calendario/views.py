@@ -73,7 +73,7 @@ def profesional_add(request):
 		except Exception as ex:
 			context['error_message'] = "Ocurrio un error al guardar el profesional: " + str(ex)
 	
-	es = Especialidad.objects.all()
+	es = Especialidad.objects.all().order_by('nombre')
 	
 	context['es'] = es
 	
@@ -100,8 +100,28 @@ def profesional_edit(request, profesional_id):
 		except Exception as ex:
 			context['error_message'] = "Ocurrio un error editando el profesional: " + str(ex)
 	
-	es = Especialidad.objects.all()
+	es = Especialidad.objects.all().order_by('nombre')
 	
 	context = {'p': p, 'es' : es}
 	
 	return render(request, 'calendario/profesional/edit.html', context)
+
+def especialidad_all(request):
+	
+	es = Especialidad.objects.all().order_by('nombre')
+	
+	context = {'es' : es}
+	
+	return render(request, 'calendario/especialidad/all.html', context)
+
+def especialidad_add(request):
+	
+	context = {}
+	
+	return render(request, 'calendario/especialidad/add.html', context)
+
+def especialidad_edit(request, especialidad_id):
+	
+	context = {}
+	
+	return render(request, 'calendario/especialidad/edit.html', context)
