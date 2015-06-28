@@ -5,18 +5,16 @@
 {% block article %}
 	<div class="container">
 		<div class="row clearfix">
-			<div class="col-md-12 column">
+			<div class="col-md-10 col-md-offset-1 column">
 				<div class="page-header">
 					<h1>
 						Especialidades<small>.</small>
 					</h1>
 				</div>
-				
 				<div class="modal fade" id="modal-container-789271" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 					<div class="modal-dialog">
 						<div class="modal-content">
-							<div class="modal-header">
-								 
+							<div class="modal-header text-center">
 								<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
 									×
 								</button>
@@ -25,7 +23,7 @@
 								</h4>
 							</div>
 							<div class="modal-body">
-								¿Esta seguro de eliminar el especialidad -tanto-?
+								¿Está seguro que desea eliminar a -tanto-?
 							</div>
 							<div class="modal-footer">
 								 
@@ -43,13 +41,13 @@
 					<thead>
 						<tr>
 							<th>
-								Apellido, Nombre
+								Nombre
 							</th>
 							<th>
-								Cuil
+								Carga horaria semanal
 							</th>
 							<th>
-								Especialidad
+								Carga máxima diaria
 							</th>
 							</th>
 							<th>
@@ -57,22 +55,22 @@
 							</th>
 						</tr>
 					</thead>
-					{% if ps %}
+					{% if es %}
 						<tbody>
-							{% for p in ps %}
+							{% for e in es %}
 								<tr>
 									<td>
-										{{ p.apellido }}, {{ p.nombre }}
+										{{ e.nombre }}
 									</td>
 									<td>
-										{{ p.cuil }}
+										{{ e.carga_horaria_semanal }}
 									</td>
 									<td>
-										{{ p.especialidad }}
+										{{ e.max_horas_diaria }}
 									</td>
 									<td>
 										<div class="btn btn-group btn-block">
-											<a class="btn btn-default" title="Editar especialidad" href="{% url 'calendario:especialidad_edit' p.id %}"><i class="glyphicon glyphicon-pencil"></i></a>
+											<a class="btn btn-default" title="Editar especialidad" href="{% url 'calendario:especialidad_edit' e.id %}"><i class="glyphicon glyphicon-pencil"></i></a>
 											<a id="modal-789271" href="#modal-container-789271" role="button" class="btn btn-danger" data-toggle="modal"><i class="glyphicon glyphicon-trash"></i></a>
 										</div>
 									</td>
@@ -82,7 +80,7 @@
 					{% else %}
 						<tfoot align="center">
 							<tr>
-								<td colspan="5">No hay especialidades cargados.</td>
+								<td colspan="5">No hay especialidades cargadas.</td>
 							</tr>
 						</tfoot>
 					{% endif %}

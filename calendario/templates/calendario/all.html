@@ -3,18 +3,31 @@
 {% block title %}Listado de calendarios{% endblock %}
 
 {% block article %}
-	{% if tiempo %}
-		<h1>Tiempo: {{ tiempo }} segundos.</h1>
-	{% endif %}
-	{% if cs %}
-		<table>
-			<tr>
-			{% for c in cs %}
-				<td><a href="/calendario/{{ c.id }}/">{{ c.id }}</a></td>
-			{% endfor %}
-			</tr>
-		</table>
-	{% else %}
-		<p>No hay calendarios disponibles.</p>
-	{% endif %}
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-md-10 col-md-offset-1">
+				<h3 class="text-center">
+					{% if tiempo %}
+						Listado de calendarios generados en {{ tiempo }} segundos.
+					{% endif %}
+				</h3>
+				<div>
+					{% if cs %}
+						<ul class="list-group">
+							{% for c in cs %}
+								<li class="list-group-item"><a href="{% url 'calendario:detail' c.id %}">{{ c.id }}</a></li>
+							{% endfor %}
+						</ul>
+					{% else %}
+						<div class="panel panel-primary">
+							<div class="panel-heading">
+								<h3 class="panel-title"><b>Listado de calendarios generados.</b></h3>
+							</div>
+							<div class="panel-body">No hay calendarios disponibles. <a href="{% url 'calendario:generar' %}">Generar!</a></div>
+						</div>
+					{% endif %}
+				</div>
+			</div>
+		</div>
+	</div>
 {% endblock %}

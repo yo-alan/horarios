@@ -71,7 +71,7 @@ def profesional_add(request):
 			return HttpResponseRedirect(reverse('calendario:profesional_all'))
 			
 		except Exception as ex:
-			context['error_message'] = "Ocurrio un error al guardar el profesional: " + str(ex)
+			context['error_message'] = "Error al guardar el profesional: " + str(ex)
 	
 	es = Especialidad.objects.all().order_by('nombre')
 	
@@ -98,11 +98,12 @@ def profesional_edit(request, profesional_id):
 			return HttpResponseRedirect(reverse('calendario:profesional_all'))
 			
 		except Exception as ex:
-			context['error_message'] = "Ocurrio un error editando el profesional: " + str(ex)
+			context['error_message'] = "Error editando el profesional: " + str(ex)
 	
 	es = Especialidad.objects.all().order_by('nombre')
 	
-	context = {'p': p, 'es' : es}
+	context['p'] = p
+	context['es'] = es
 	
 	return render(request, 'calendario/profesional/edit.html', context)
 
@@ -123,5 +124,23 @@ def especialidad_add(request):
 def especialidad_edit(request, especialidad_id):
 	
 	context = {}
+	
+	e = Especialidad.objects.get(pk=especialidad_id)
+	
+	if request.method == 'POST':
+		
+		try:
+			e.nombre = request.POST["nombre"]
+			e.carga_horaria_semanal = request.POST["carga_horaria_semanal"]
+			e.max_horas_diaria = request.POST["max_horas_diaria"]
+			
+			e.save()
+			
+			return HttpResponseRedirect(reverse('calendario:profesional_all'))
+			
+		except Exception as ex:
+			context['error_message'] = "Error editando la especialidad: " + str(ex)
+	
+	context['e'] = e
 	
 	return render(request, 'calendario/especialidad/edit.html', context)

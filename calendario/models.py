@@ -1,4 +1,4 @@
-import random
+from random import random, randrange
 from django.db import models
 
 
@@ -73,7 +73,7 @@ class Calendario(models.Model):
 		
 		self.horarios.append([horario])
 	
-	def cruce(self, madre, prob_mutacion):
+	def cruce(self, madre, prob_mutacion=0.01):
 		
 		if not isinstance(madre, Calendario):
 			raise Exception("El objeto no es de tipo Calendario.")
@@ -169,7 +169,7 @@ class Entorno(object):
 				
 				for horario in range(1, len(horarios)):
 					
-					h = Horario(profesional=ps[random.randrange(1, len(ps))], hora_desde=horarios[horario], hora_hasta=horarios[horario+1], dia_semana=dia, calendario=c)
+					h = Horario(profesional=ps[randrange(1, len(ps))], hora_desde=horarios[horario], hora_hasta=horarios[horario+1], dia_semana=dia, calendario=c)
 					
 					existe = False
 					for dh in c.horarios:
