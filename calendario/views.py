@@ -1,5 +1,4 @@
 import time
-
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
@@ -17,7 +16,7 @@ def all(request):
 	
 	cs = Calendario.objects.all()
 	
-	context = {'cs': cs, }
+	context = {'cs': cs, 'cantidad': len(cs)}
 	
 	return render(request, 'calendario/all.html', context)
 
