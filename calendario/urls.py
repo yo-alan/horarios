@@ -4,19 +4,23 @@ from . import views
 
 urlpatterns = [
 	# ex: /calendario/
-    url(r'^$', views.all, name='all'),
-    # ex: /calendario/5/
-    url(r'^(?P<calendario_id>[0-9]+)/$', views.detail, name='detail'),
+    #url(r'^$', views.all, name='all'),
     # ex: /calendario/all/
     url(r'^all/$', views.all, name='all'),
+    # ex: /calendario/5/
+    url(r'^(?P<calendario_id>[0-9]+)/$', views.detail, name='detail'),
     # ex: /calendario/generar/
     url(r'^generar/$', views.generar, name='generar'),
+    # ex: /calendario/profesional/
+    #url(r'^profesional/$', views.profesional_all, name='profesional_all'),
     # ex: /calendario/profesional/all/
     url(r'^profesional/all/$', views.profesional_all, name='profesional_all'),
     # ex: /calendario/profesional/add/
     url(r'^profesional/add/$', views.profesional_add, name='profesional_add'),
     # ex: /calendario/profesional/edit/
     url(r'^profesional/edit/(?P<profesional_id>[0-9]+)/$', views.profesional_edit, name='profesional_edit'),
+    # ex: /calendario/especialidad/
+    url(r'^especialidad/$', views.especialidad_all, name='especialidad_all'),
     # ex: /calendario/especialidad/all/
     url(r'^especialidad/all/$', views.especialidad_all, name='especialidad_all'),
     # ex: /calendario/especialidad/add/

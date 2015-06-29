@@ -7,47 +7,50 @@
 		<div class="row clearfix">
 			<div class="col-md-6 col-md-offset-3">
 				{% if error_message %}
-					<div>
-						<h1>ERROR: {{ error_message }}</h1>
+					<div class="alert alert-danger">
+						<a href="#" class="close" data-dismiss="alert">&times;</a>
+						<h3 class="text-center text-danger"><b>Ocurrió el siguiente error:</b></h3>
+						<p class="text-danger">
+							<b>{{ error_message }}</b>
+						</p>
 					</div>
 				{% endif %}
-				<h3 class="text-center">
-					Editar a {{ e.nombre }}.
-				</h3>
-				<br>
 				<form class="form-horizontal" method="POST" action="{% url 'calendario:especialidad_edit' e.id %}">
-					{% csrf_token %}
-					<div class="form-group">
-						<label class="col-xs-5 control-label" for="nombre">Nombre:</label>
-						<div class="col-xs-7">
-							<input type="number" id="nombre" name="nombre" class="form-control" value="{{ e.nombre }}">
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="col-xs-5 control-label" for="carga_horaria_semanal">Carga horaria semanal:</label>
-						<div class="col-xs-7">
-							<input type="number" id="carga_horaria_semanal" name="carga_horaria_semanal" class="form-control" value="{{ e.carga_horaria_semanal }}">
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="col-xs-5 control-label" for="max_horas_diaria">Carga máxima diaria:</label>
-						<div class="col-xs-7">
-							<input type="text" id="max_horas_diaria" name="max_horas_diaria" class="form-control" value="{{ e.max_horas_diaria }}">
-						</div>
-					</div>
-					<div class="form-group">
-						<div class="col-md-offset-8">
-							<div class="btn btn-block">
-								<a href="{% url 'calendario:especialidad_all' %}" class="btn btn-default">
-									<< Volver
-								</a>
-								<button type="submit" class="btn btn-primary">
-									Editar
-								</button>
+					<fieldset>
+						<legend class="text-center"><b>Editar a {{ e.nombre }}.</b></legend>
+						{% csrf_token %}
+						<div class="form-group">
+							<label class="col-xs-5 control-label" for="nombre">Nombre:</label>
+							<div class="col-xs-7">
+								<input type="number" id="nombre" name="nombre" class="form-control" value="{{ e.nombre }}">
 							</div>
 						</div>
-					</div>
-				</form>
+						<div class="form-group">
+							<label class="col-xs-5 control-label" for="carga_horaria_semanal">Carga horaria semanal:</label>
+							<div class="col-xs-7">
+								<input type="number" id="carga_horaria_semanal" name="carga_horaria_semanal" class="form-control" value="{{ e.carga_horaria_semanal }}">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-xs-5 control-label" for="max_horas_diaria">Carga máxima diaria:</label>
+							<div class="col-xs-7">
+								<input type="text" id="max_horas_diaria" name="max_horas_diaria" class="form-control" value="{{ e.max_horas_diaria }}">
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-md-offset-8">
+								<div class="btn btn-block">
+									<a href="{% url 'calendario:especialidad_all' %}" class="btn btn-default">
+										<< Volver
+									</a>
+									<button type="submit" class="btn btn-primary">
+										Editar
+									</button>
+								</div>
+							</div>
+						</div>
+					</form>
+				</fieldset>
 			</div>
 		</div>
 	</div>
