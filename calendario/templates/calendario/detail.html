@@ -20,19 +20,45 @@
 				</dl>
 				<table class="table table-bordered">
 					<thead>
-						<tr class="info">
-							<th class="text-center">Lunes</th>
-							<th class="text-center">Martes</th>
-							<th class="text-center">Miercoles</th>
-							<th class="text-center">Jueves</th>
-							<th class="text-center">Viernes</th>
+						<tr class="bg-primary">
+							<th class="text-center">
+								
+							</th>
+							<th class="text-center">
+								<h4><strong>Lunes</strong></h4>
+							</th>
+							<th class="text-center">
+								<h4><strong>Martes</strong></h4>
+							</th>
+							<th class="text-center">
+								<h4><strong>Miercoles</strong></h4>
+							</th>
+							<th class="text-center">
+								<h4><strong>Jueves</strong></h4>
+							</th>
+							<th class="text-center">
+								<h4><strong>Viernes</strong></h4>
+							</th>
 						</tr>
 					</thead>
 					<tbody>
 					{% for hs in calendario.getHorarios %}
 						<tr>
+							<td class="text-center bg-primary">
+								<h4>
+									<strong>{{ hs.1.hora_desde }}</strong>
+								</h4>
+								<h4>
+									<strong>{{ hs.1.hora_hasta }}</strong>
+								</h4>
+							</td>
 						{% for h in hs %}
-							<td class="text-center">{{ h.profesional.especialidad }}</td>
+							<td class="text-center active">
+								<h4 class="text-primary">
+									<strong>{{ h.profesional.especialidad }}</strong>
+								</h4>
+								[{{ h.profesional.apellido }}, {{ h.profesional.nombre}}]
+								</td>
 						{% endfor %}
 						</tr>
 					{% endfor %}

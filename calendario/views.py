@@ -15,7 +15,7 @@ def index(request):
 def all(request):
 	
 	cs = Calendario.objects.all()
-	print "Por aca paso"
+	
 	context = {'cs': cs, 'cantidad': len(cs)}
 	
 	return render(request, 'calendario/all.html', context)
