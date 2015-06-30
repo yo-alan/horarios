@@ -9,7 +9,7 @@ class Especialidad(models.Model):
 	max_horas_diaria = models.IntegerField(default=0, null=False)
 	
 	def __str__(self, ):
-		return self.nombre
+		return self.nombre.encode('utf-8')
 	
 	def __eq__(self, o):
 		return self.nombre == o.nombre
@@ -34,7 +34,7 @@ class Profesional(Persona):
 	especialidad = models.ForeignKey(Especialidad)
 	
 	def __str__(self, ):
-		return self.apellido + ", " + self.nombre
+		return self.apellido.encode('utf-8') + ", " + self.nombre.encode('utf-8')
 	
 	def __eq__(self, o):
 		return self.cuil == o.cuil
