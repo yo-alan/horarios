@@ -18,6 +18,9 @@ class Especialidad(models.Model):
 class Espacio(models.Model):
 	
 	nombre = models.CharField(max_length=100, null=False, blank=False)
+	#HARDCODED
+	_dias_habiles = [1, 2, 3, 4, 5]
+	_horarios = {1 : "7:30", 2 : "8:10", 3 : "9:00", 4 : "9:40", 5 : "10:30", 6 : "11:10", 7 : "11:50"}
 	
 	def __str__(self, ):
 		return self.nombre
@@ -155,12 +158,10 @@ class Entorno(object):
 	
 	DIAS = {0 : "Domingo", 1 : "Lunes", 2 : "Martes", 3 : "Miercoles", 4 : "Jueves", 5 : "Viernes", 6 : "Sabado"}
 	
-	#HARDCODED
-	_dias_habiles = [1, 2, 3, 4, 5]
-	_horarios = {1 : "7:30", 2 : "8:10", 3 : "9:00", 4 : "9:40", 5 : "10:30", 6 : "11:10", 7 : "11:50"}
-	
 	_poblacion = []
 	_restricciones = []
+	_profesionales = []
+	_especialidades = []
 	_generaciones = 0
 	_espacio = None
 	
@@ -177,6 +178,8 @@ class Entorno(object):
 		"""
 		
 		self.restricciones = Restriccion.objects.all() #Asignamos todas las restricciones de la BBDD.
+		self.especialidades = Especialidad.objects.all() #Asignamos todas las especialidades de la BBDD.
+		self.profesionales = Profesional.objects.all() #Asignamos todas las especialidades de la BBDD.
 		self.generaciones = generaciones
 		self.espacio = espacio
 		
@@ -193,9 +196,6 @@ class Entorno(object):
 		None
 		"""
 		
-		#Obtenemos los profesionales de la BBDD.
-		ps = Profesional.objects.all()
-		
 		#Iteramos generando todas las combinaciones posibles de horarios.
 		#Y los agregamos a un calendario.
 		for dia in range(0, 7): #Cantidad de iteraciones por los dias.
@@ -204,7 +204,8 @@ class Entorno(object):
 				continue
 			
 			for horario in range(1, len(self.horarios)): #Cantidad de iteraciones por los horarios.
-				for p in ps: #Iteracion por cada profesional.
+				
+				for p in self.profesionales: #Iteracion por cada profesional.
 					
 					c = Calendario() #Se crea un Calendario.
 					c.espacio = self.espacio #Se le asigna el espacio.
@@ -281,17 +282,35 @@ class Entorno(object):
 			if c.puntaje != 0:
 				continue
 			
-			#Comparamos los horarios de las restriccines con las restriccinones de
+			#Comparamos los horarios con las restriccinones de
 			#los profesionales. Cada superposicion vale un punto, mientras mas
-			#alto sea el puntaje, menos apto es el individuo. FALTA COMPROBAR QUE SEAN DEL MISMO DIA!!!
-			for dia in c.horarios: #Por cada lista de dias.
-				for h in dia: #Por cada horario en el dia.
-					for r in self.restriccines: #Por cada restriccion.
-						if (h.desde >= r.desde and h.desde <= r.hasta) or \
-							(h.hasta >= r.desde and h.hasta <= r.hasta) or \
-							(h.desde <= r.desde and h.hasta >= r.hasta):#OJOOOOOOO h.desde <= r.desde???
-							c.puntaje += 1
+			#alto sea el puntaje, menos apto es el individuo.
+			for p in self.profesionales:
+				
+				rs = Restriccion.objects.donde(profesional=p)
+				
+				for franja_horaria in c.horarios:
+					
+					for h in franja_horaria:
 						
+						if h.profesional != p: #
+							continue
+						
+						for r in self.restricciones: #Por cada restriccion.
+							
+							if h.dia_semana != r.dia_semana:
+								continue
+							
+							#~ if (h.desde >= r.desde and h.desde <= r.hasta) or \
+								#~ (h.hasta >= r.desde and h.hasta <= r.hasta) or \
+								#~ (h.desde <= r.desde and h.hasta >= r.hasta):
+							if (h.desde >= r.desde and h.desde < r.hasta) or \
+								(h.hasta > r.desde and h.hasta <= r.hasta) or \
+								(h.desde <= r.desde and h.hasta >= r.hasta):
+								c.puntaje += 1
+									
+		
+		
 		#Obtenemos todas las especialidades de la BBDD.
 		es = Especialidad.objects.all()
 		
@@ -374,4 +393,12 @@ class Entorno(object):
 	@dias_habiles.setter
 	def dias_habiles(self, dias_habiles):
 		self._dias_habiles = dias_habiles
+	
+	@property
+	def especialidades(self, ):
+		return self._especialidades
+	
+	@especialidades.setter
+	def especialidades(self, especialidades):
+		self._especialidades = especialidades
 	
