@@ -28,6 +28,7 @@ def generar(request):
 	
 	e = Entorno(espacio=espacio)
 	
+	e.evolucionar()
 	
 	tiempo = (time.time() - start_time)
 	
@@ -117,6 +118,22 @@ def especialidad_all(request):
 def especialidad_add(request):
 	
 	context = {}
+	
+	if request.method == 'POST':
+		
+		try:
+			e = Especialidad()
+			
+			e.nombre = request.POST["nombre"]
+			e.carga_horaria_semanal = request.POST["carga_horaria_semanal"]
+			e.max_horas_diaria = request.POST["max_horas_diaria"]
+			
+			e.save()
+			
+			return HttpResponseRedirect(reverse('calendario:especialidad_all'))
+			
+		except Exception as ex:
+			context['error_message'] = "Error al guardar la especialidad: " + str(ex)
 	
 	return render(request, 'calendario/especialidad/add.html', context)
 

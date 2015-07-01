@@ -23,7 +23,8 @@ class Espacio(models.Model):
 	_horarios = {1 : "7:30", 2 : "8:10", 3 : "9:00", 4 : "9:40", 5 : "10:30", 6 : "11:10", 7 : "11:50"}
 	
 	def __str__(self, ):
-		return self.nombre
+		return self.nombre.encode('utf-8')
+	
 
 class Persona(models.Model):
 	
@@ -200,10 +201,10 @@ class Entorno(object):
 		#Y los agregamos a un calendario.
 		for dia in range(0, 7): #Cantidad de iteraciones por los dias.
 			
-			if dia not in self.dias_habiles:
+			if dia not in self.espacio._dias_habiles:
 				continue
 			
-			for horario in range(1, len(self.horarios)): #Cantidad de iteraciones por los horarios.
+			for horario in range(1, len(self.espacio._horarios)): #Cantidad de iteraciones por los horarios.
 				
 				for p in self.profesionales: #Iteracion por cada profesional.
 					
@@ -213,8 +214,8 @@ class Entorno(object):
 					
 					h = Horario() #Se crea un Horario.
 					h.profesional = p #Se le asigna un Profesional.
-					h.hora_desde = self.horarios[horario] #Se le asigna una hora desde.
-					h.hora_hasta = self.horarios[horario+1] #Se le asigna una hora hasta.
+					h.hora_desde = self.espacio._horarios[horario] #Se le asigna una hora desde.
+					h.hora_hasta = self.espacio._horarios[horario+1] #Se le asigna una hora hasta.
 					h.dia_semana = dia #Se le asigna un dia de la semana.
 					h.calendario = c #Se le asigna el calendario.
 					h.save() #Y se guarda.
@@ -229,23 +230,22 @@ class Entorno(object):
 			
 			for dia in range(0, 7): #Iteramos por la cantidad de dias.
 				
-				if dia not in self.dias_habiles:
+				if dia not in self.espacio._dias_habiles:
 					continue
 				
-				for horario in range(1, len(self.horarios)): #Tambien por la cantidad de horarios.
+				for horario in range(1, len(self.espacio._horarios)): #Tambien por la cantidad de horarios.
 					
 					h = Horario() #Se crea un Horario.
-					h.profesional = ps[randrange(1, len(ps))] #Se le asigna un Profesional.
-					h.hora_desde = self.horarios[horario] #Se le asigna una hora desde.
-					h.hora_hasta = self.horarios[horario+1] #Se le asigna una hora hasta.
+					h.profesional = self.profesionales[randrange(1, len(self.profesionales))] #Se le asigna un Profesional.
+					h.hora_desde = self.espacio._horarios[horario] #Se le asigna una hora desde.
+					h.hora_hasta = self.espacio._horarios[horario+1] #Se le asigna una hora hasta.
 					h.dia_semana = dia #Se le asigna un dia de la semana.
 					h.calendario = c #Se le asigna el calendario.
-					h.save() #Y se guarda.
 					
 					#Comprobamos que el Horario generado no exista en el Calendario.
 					existe = False
-					for dh in c.horarios:
-						for hh in dh:
+					for franja_horaria in c.horarios:
+						for hh in franja_horaria:
 							if h == hh:
 								existe = True
 					
@@ -261,7 +261,8 @@ class Entorno(object):
 		
 	
 	def evolucionar(self, ):
-		pass
+		print "FITNESS"
+		self.fitness()
 	
 	def fitness(self, ):
 		"""
@@ -276,29 +277,30 @@ class Entorno(object):
 		None
 		"""
 		
+		#Primera evaluacion: Que los horarios asignados cumplan las restricciones.
+		
 		for c in self.poblacion: #Por cada individuo en la poblacion.
 			
 			#Si el individuo ya fue evaluado seguimos con otro.
 			if c.puntaje != 0:
 				continue
 			
-			#Comparamos los horarios con las restriccinones de
+			#Comparamos los horarios con las restricciones de
 			#los profesionales. Cada superposicion vale un punto, mientras mas
 			#alto sea el puntaje, menos apto es el individuo.
-			for p in self.profesionales:
+			
+			for r in self.restricciones: #Por cada restriccion.
 				
-				rs = Restriccion.objects.donde(profesional=p)
-				
-				for franja_horaria in c.horarios:
+				for franja_horaria in c.horarios: #Por cada franja de horarios.
 					
-					for h in franja_horaria:
+					for h in franja_horaria: #Por cada por cada horario dentro de la franja.
 						
-						if h.profesional != p: #
-							continue
-						
-						for r in self.restricciones: #Por cada restriccion.
+						for p in self.profesionales: #Por cada profesional.
 							
-							if h.dia_semana != r.dia_semana:
+							if h.profesional != p: #Si no es el profesional del horario continuamos.
+								continue
+							
+							if h.dia_semana != r.dia_semana: #Si no es el mismo dia de la semana del horario continuamos.
 								continue
 							
 							#~ if (h.desde >= r.desde and h.desde <= r.hasta) or \
@@ -308,32 +310,30 @@ class Entorno(object):
 								(h.hasta > r.desde and h.hasta <= r.hasta) or \
 								(h.desde <= r.desde and h.hasta >= r.hasta):
 								c.puntaje += 1
-									
-		
-		
-		#Obtenemos todas las especialidades de la BBDD.
-		es = Especialidad.objects.all()
-		
-		for c in self.poblacion: #Por cada individuo en la poblacion.
+							
+			#Segunda evaluacion: Que se cumplan las horas semanales y diarias de la especialidad.
 			
-			for e in es: #Por cada especialidad
+			for e in self.especialidades: #Por cada especialidad
 				
 				horas_semanales = 0 #Contador de horas semanales.
-				for dia in c.horarios: #Por cada lista de dias.
-					for h in dia: #Por cada horario en el dia.
+				for franja_horaria in c.horarios: #Por cada franja de horarios.
+					
+					for h in franja_horaria: #Por cada horario en la franja horaria.
 						
-						#Si la especialidad del profes
+						#Si la especialidad del profesional es igual, contamos.
 						if h.profesional.especialidad == e:
 							horas_semanales += 1
 					
 					if horas_semanales != e.carga_horaria_semanal:
-						#-20% (del ranking)
-						x = abs(e.carga_semanal - contador)
-						#HARDCODED
-						y = (35 - e.carga_semanal) / (x * 100)
-						#HARDCODED
-						p_total += (100 / len(especialidad) / (20 + y) * 100)
-		
+						c.puntaje += abs(e.carga_horaria_semanal - horas_semanales)
+			
+			for i in range(len(self.espacio._dias_habiles)):
+				
+				for j in range(len(self.espacio._horarios)):
+					
+					print c.horarios[i][j]
+				
+			
 	
 	def seleccionar(self, ):
 		pass
@@ -377,22 +377,6 @@ class Entorno(object):
 	@dias.setter
 	def dias(self, dias):
 		self._dias = dias
-	
-	@property
-	def horarios(self, ):
-		return self._horarios
-	
-	@horarios.setter
-	def horarios(self, horarios):
-		self._horarios = horarios
-	
-	@property
-	def dias_habiles(self, ):
-		return self._dias_habiles
-	
-	@dias_habiles.setter
-	def dias_habiles(self, dias_habiles):
-		self._dias_habiles = dias_habiles
 	
 	@property
 	def especialidades(self, ):
