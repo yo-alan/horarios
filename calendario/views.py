@@ -32,15 +32,27 @@ def generar(request):
 	
 	tiempo = (time.time() - start_time)
 	
-	context = {'cs': e.poblacion, 'tiempo' : tiempo}
+	context = {'cs': e.poblacion, 'tiempo': tiempo, 'cantidad': len(e.poblacion)}
 	
 	return render(request, 'calendario/all.html', context)
 
 def detail(request, calendario_id):
 	
 	calendario = get_object_or_404(Calendario, pk=calendario_id)
+	anterior = None
+	siguiente = None
 	
-	context = {'calendario': calendario, 'dias' : range(5), 'horas' : range(6)}
+	try:
+		anterior = get_object_or_404(Calendario, pk=int(calendario_id)-1)
+	except Exception as ex:
+		print ex
+	
+	try:
+		siguiente = get_object_or_404(Calendario, pk=int(calendario_id)+1)
+	except Exception as ex:
+		print ex
+	
+	context = {'calendario': calendario, 'dias': range(5), 'horas': range(6), 'anterior': anterior, 'siguiente': siguiente}
 	
 	return render(request, 'calendario/detail.html', context)
 

@@ -64,9 +64,12 @@
 					{% endfor %}
 					</tbody>
 				</table>
-				<a class="btn btn-default btn-lg" type="button" href="{% url 'calendario:all' %}">
-					&lt;&lt; Volver
-				</a>
+				{% if anterior %}
+					<a href="{% url 'calendario:detail' anterior.id %}" class="btn btn-info btn-sm pull-left">&lt;&lt; Anterior</a>
+				{% endif %}
+				{% if siguiente %}
+					<a href="{% url 'calendario:detail' siguiente.id %}" class="btn btn-info btn-sm pull-right">Siguiente &gt;&gt;</a>
+				{% endif %}
 			</div>
 		</div>
 	</div>

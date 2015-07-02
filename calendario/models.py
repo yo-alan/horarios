@@ -20,6 +20,8 @@ class Espacio(models.Model):
 	nombre = models.CharField(max_length=100, null=False, blank=False)
 	#HARDCODED
 	_dias_habiles = [1, 2, 3, 4, 5]
+	
+	#Quizas sea mejor cambiar a una matriz [[desde, hasta], [desde, hasta]]...
 	_horarios = {1 : "7:30", 2 : "8:10", 3 : "9:00", 4 : "9:40", 5 : "10:30", 6 : "11:10", 7 : "11:50"}
 	
 	def __str__(self, ):
@@ -331,7 +333,7 @@ class Entorno(object):
 				
 				for j in range(len(self.espacio._horarios)):
 					
-					print c.horarios[i][j]
+					c.horarios[i][j]
 				
 			
 	
