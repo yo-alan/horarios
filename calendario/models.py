@@ -1,5 +1,6 @@
 from random import random, randrange
 from django.db import models
+from django.contrib.postgres.fields import ArrayField
 
 
 class Especialidad(models.Model):
@@ -20,9 +21,13 @@ class Espacio(models.Model):
 	nombre = models.CharField(max_length=100, null=False, blank=False)
 	#HARDCODED
 	_dias_habiles = [1, 2, 3, 4, 5]
-	
-	#Quizas sea mejor cambiar a una matriz [[desde, hasta], [desde, hasta]]...
-	_horarios = {1 : "7:30", 2 : "8:10", 3 : "9:00", 4 : "9:40", 5 : "10:30", 6 : "11:10", 7 : "11:50"}
+	_horarios = [["18:15", "18:55"],
+				["18:55", "19:35"],
+				["19:45", "20:25"],
+				["20:25", "21:05"],
+				["21:05", "21:45"],
+				["21:45", "22:25"],
+				["22:25", "23:05"]]
 	
 	def __str__(self, ):
 		return self.nombre.encode('utf-8')
@@ -216,8 +221,8 @@ class Entorno(object):
 					
 					h = Horario() #Se crea un Horario.
 					h.profesional = p #Se le asigna un Profesional.
-					h.hora_desde = self.espacio._horarios[horario] #Se le asigna una hora desde.
-					h.hora_hasta = self.espacio._horarios[horario+1] #Se le asigna una hora hasta.
+					h.hora_desde = self.espacio._horarios[horario][0] #Se le asigna una hora desde.
+					h.hora_hasta = self.espacio._horarios[horario][1] #Se le asigna una hora hasta.
 					h.dia_semana = dia #Se le asigna un dia de la semana.
 					h.calendario = c #Se le asigna el calendario.
 					h.save() #Y se guarda.
@@ -239,8 +244,8 @@ class Entorno(object):
 					
 					h = Horario() #Se crea un Horario.
 					h.profesional = self.profesionales[randrange(1, len(self.profesionales))] #Se le asigna un Profesional.
-					h.hora_desde = self.espacio._horarios[horario] #Se le asigna una hora desde.
-					h.hora_hasta = self.espacio._horarios[horario+1] #Se le asigna una hora hasta.
+					h.hora_desde = self.espacio._horarios[horario][0] #Se le asigna una hora desde.
+					h.hora_hasta = self.espacio._horarios[horario][1] #Se le asigna una hora hasta.
 					h.dia_semana = dia #Se le asigna un dia de la semana.
 					h.calendario = c #Se le asigna el calendario.
 					
