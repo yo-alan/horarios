@@ -1,6 +1,5 @@
 from random import random, randrange
 from django.db import models
-from django.contrib.postgres.fields import ArrayField
 
 
 class Especialidad(models.Model):
@@ -179,15 +178,20 @@ class Entorno(object):
 		
 		@Parametros:
 		generaciones - cantidad de generaciones a generar. Valor: 50.
-		espacio - . Valor: None.
+		espacio - El espacio para el cual se generaran los calendarios. Valor: None.
 		
 		@Return:
 		None
 		"""
 		
-		self.restricciones = Restriccion.objects.all() #Asignamos todas las restricciones de la BBDD.
-		self.especialidades = Especialidad.objects.all() #Asignamos todas las especialidades de la BBDD.
-		self.profesionales = Profesional.objects.all() #Asignamos todas las especialidades de la BBDD.
+		self.profesionales = Profesional.objects.all()[:5] #Asignamos todas las especialidades de la BBDD.
+		
+		for p in self.profesionales:
+			
+			self.restricciones += Profesional_restriccion.objects.filter(profesional=p)
+			
+			self.especialidades.append(p.especialidad)
+		
 		self.generaciones = generaciones
 		self.espacio = espacio
 		
@@ -211,7 +215,7 @@ class Entorno(object):
 			if dia not in self.espacio._dias_habiles:
 				continue
 			
-			for horario in range(1, len(self.espacio._horarios)): #Cantidad de iteraciones por los horarios.
+			for horario in range(len(self.espacio._horarios)): #Cantidad de iteraciones por los horarios.
 				
 				for p in self.profesionales: #Iteracion por cada profesional.
 					
@@ -240,7 +244,7 @@ class Entorno(object):
 				if dia not in self.espacio._dias_habiles:
 					continue
 				
-				for horario in range(1, len(self.espacio._horarios)): #Tambien por la cantidad de horarios.
+				for horario in range(len(self.espacio._horarios)): #Tambien por la cantidad de horarios.
 					
 					h = Horario() #Se crea un Horario.
 					h.profesional = self.profesionales[randrange(1, len(self.profesionales))] #Se le asigna un Profesional.
@@ -317,6 +321,7 @@ class Entorno(object):
 								(h.hasta > r.desde and h.hasta <= r.hasta) or \
 								(h.desde <= r.desde and h.hasta >= r.hasta):
 								c.puntaje += 1
+			
 							
 			#Segunda evaluacion: Que se cumplan las horas semanales y diarias de la especialidad.
 			
@@ -331,8 +336,10 @@ class Entorno(object):
 						if h.profesional.especialidad == e:
 							horas_semanales += 1
 					
-					if horas_semanales != e.carga_horaria_semanal:
-						c.puntaje += abs(e.carga_horaria_semanal - horas_semanales)
+				if horas_semanales != e.carga_horaria_semanal:
+					c.puntaje += abs(e.carga_horaria_semanal - horas_semanales)
+					
+					print c.puntaje
 			
 			for i in range(len(self.espacio._dias_habiles)):
 				
