@@ -4,6 +4,7 @@
 	<head>
 		<title>{% block title %}{% endblock %}</title>		
 		<link rel="stylesheet" type="text/css" href="{% static 'calendario/css/bootstrap.css' %}" />
+		<link rel="stylesheet" type="text/css" href="{% static 'calendario/css/custom.css' %}" />
 		<link rel="shortcut icon" type="image/png" href="{% static 'calendario/images/favicon.png' %}"/>
 		<script type="text/javascript" src="{% static 'calendario/js/jquery-1.11.3.js' %}"></script>
 		<script type="text/javascript" src="{% static 'calendario/js/bootstrap.js' %}"></script>
@@ -52,7 +53,7 @@
 								</ul>
 								<ul class="nav navbar-nav navbar-right">
 									<li>
-										<a href="#">Salir</a>
+										<a href="/">Cerrar sesión</a>
 									</li>
 								</ul>
 							</div>
@@ -61,10 +62,6 @@
 				</div>
 			</div>
 		</header>
-			<br>
-			<br>
-			<br>
-			<br>
 		<article>
 			{% block article %}{% endblock %}
 		</article>

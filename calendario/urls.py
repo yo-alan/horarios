@@ -19,6 +19,8 @@ urlpatterns = [
     url(r'^profesional/add/$', views.profesional_add, name='profesional_add'),
     # ex: /calendario/profesional/edit/
     url(r'^profesional/edit/(?P<profesional_id>[0-9]+)/$', views.profesional_edit, name='profesional_edit'),
+    # ex: /calendario/profesional/delete/
+    url(r'^profesional/delete/(?P<profesional_id>[0-9]+)/$', views.profesional_delete, name='profesional_delete'),
     # ex: /calendario/especialidad/
     url(r'^especialidad/$', views.especialidad_all, name='especialidad_all'),
     # ex: /calendario/especialidad/all/
@@ -27,4 +29,6 @@ urlpatterns = [
     url(r'^especialidad/add/$', views.especialidad_add, name='especialidad_add'),
     # ex: /calendario/especialidad/edit/
     url(r'^especialidad/edit/(?P<especialidad_id>[0-9]+)/$', views.especialidad_edit, name='especialidad_edit'),
+    # ex: /calendario/especialidad/delete/
+    url(r'^especialidad/delete/(?P<especialidad_id>[0-9]+)/$', views.especialidad_delete, name='especialidad_delete'),
 ]

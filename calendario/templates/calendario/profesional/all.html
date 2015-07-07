@@ -11,7 +11,7 @@
 						Profesionales<small>.</small>
 					</h1>
 				</div>
-				<div class="modal fade" id="modal-container-789271" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+				<div class="modal fade" id="diaEliminarProfesional" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 					<div class="modal-dialog">
 						<div class="modal-content">
 							<div class="modal-header text-center">
@@ -23,14 +23,14 @@
 								</h4>
 							</div>
 							<div class="modal-body">
-								¿Está seguro que desea eliminar a -tanto-?
+								¿Está seguro que desea eliminar a este profesional?
 							</div>
 							<div class="modal-footer">
 								 
 								<button type="button" class="btn btn-default" data-dismiss="modal">
 									No
 								</button> 
-								<button type="button" class="btn btn-primary">
+								<button type="button" class="btn btn-primary" onclick="this.modal('hide')">
 									Eliminar
 								</button>
 							</div>
@@ -71,7 +71,7 @@
 									<td>
 										<div class="btn btn-group btn-block">
 											<a class="btn btn-default" title="Editar profesional" href="{% url 'calendario:profesional_edit' p.id %}"><i class="glyphicon glyphicon-pencil"></i></a>
-											<a id="modal-789271" href="#modal-container-789271" role="button" class="btn btn-danger" data-toggle="modal"><i class="glyphicon glyphicon-trash"></i></a>
+											<a id="btnEliminarProfesional" href="{% url 'calendario:profesional_delete' p.id %}" role="button" class="btn btn-danger" data-toggle="modal"><i class="glyphicon glyphicon-trash"></i></a>
 										</div>
 									</td>
 								</tr>

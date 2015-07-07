@@ -119,6 +119,22 @@ def profesional_edit(request, profesional_id):
 	
 	return render(request, 'calendario/profesional/edit.html', context)
 
+def profesional_delete(request, profesional_id):
+	
+	context = {}
+	
+	try:
+		p = Profesional.objects.get(pk=profesional_id)
+		
+		p.delete()
+		
+		return HttpResponseRedirect(reverse('calendario:profesional_all'))
+		
+	except Exception as ex:
+		context['error_message'] = "Error eliminando el profesional: " + str(ex)
+	
+	return render(request, 'calendario/profesional/all.html', context)
+
 def especialidad_all(request):
 	
 	es = Especialidad.objects.all().order_by('nombre')
@@ -172,3 +188,19 @@ def especialidad_edit(request, especialidad_id):
 	context['e'] = e
 	
 	return render(request, 'calendario/especialidad/edit.html', context)
+
+def especialidad_delete(request, especialidad_id):
+	
+	context = {}
+	
+	try:
+		e = Especialidad.objects.get(pk=especialidad_id)
+		
+		e.delete()
+		
+		return HttpResponseRedirect(reverse('calendario:especialidad_all'))
+		
+	except Exception as ex:
+		context['error_message'] = "Error eliminando la especialidad: " + str(ex)
+	
+	return render(request, 'calendario/especialidad/all.html', context)
