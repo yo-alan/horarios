@@ -55,6 +55,11 @@ class Calendario(models.Model):
 	horarios = []
 	puntaje = models.IntegerField(default=0)
 	
+	def __str__(self, ):
+		return str(self.espacio) + "(" + str(self.id) + ")"
+	
+	def 
+	
 	def getHorarios(self, ):
 		"""
 		Actualiza los horarios del Calendario.
@@ -82,10 +87,10 @@ class Calendario(models.Model):
 		Agrega un Horario a la lista de horarios del Calendario.
 		"""
 		
-		for dia in self.horarios: #Por cada dia.
+		for franja_horaria in self.horarios: #Por cada dia.
 			#Si contiene un Horario con mismo dia_desde lo agrega a la lista
-			if dia[0].hora_desde == horario.hora_desde:
-				dia.append(horario)
+			if franja_horaria[0].hora_desde == horario.hora_desde:
+				franja_horaria.append(horario)
 				return
 		
 		#Sino crea una nueva lista con el Horario
@@ -125,7 +130,7 @@ class Horario(models.Model):
 	
 	def __str__(self, ):
 		#~ return str(self.profesional.especialidad)
-		return str(self.hora_desde)
+		return str(self.hora_desde) + "(" + str(self.calendario.id) + ")"
 	
 	def __eq__(self, o):
 		return self.hora_desde == o.hora_desde and self.hora_hasta == o.hora_hasta and self.dia_semana == o.dia_semana and self.calendario == o.calendario
@@ -184,7 +189,7 @@ class Entorno(object):
 		None
 		"""
 		
-		self.profesionales = Profesional.objects.all()[:5] #Asignamos todas las especialidades de la BBDD.
+		self.profesionales = Profesional.objects.all()[:3] #Asignamos todas las especialidades de la BBDD.
 		
 		for p in self.profesionales:
 			
@@ -291,7 +296,8 @@ class Entorno(object):
 		#Primera evaluacion: Que los horarios asignados cumplan las restricciones.
 		
 		for c in self.poblacion: #Por cada individuo en la poblacion.
-			
+			print c
+			raw_input()
 			#Si el individuo ya fue evaluado seguimos con otro.
 			if c.puntaje != 0:
 				continue
@@ -300,46 +306,49 @@ class Entorno(object):
 			#los profesionales. Cada superposicion vale un punto, mientras mas
 			#alto sea el puntaje, menos apto es el individuo.
 			
-			for r in self.restricciones: #Por cada restriccion.
-				
-				for franja_horaria in c.horarios: #Por cada franja de horarios.
-					
-					for h in franja_horaria: #Por cada por cada horario dentro de la franja.
-						
-						for p in self.profesionales: #Por cada profesional.
-							
-							if h.profesional != p: #Si no es el profesional del horario continuamos.
-								continue
-							
-							if h.dia_semana != r.dia_semana: #Si no es el mismo dia de la semana del horario continuamos.
-								continue
-							
-							#~ if (h.desde >= r.desde and h.desde <= r.hasta) or \
-								#~ (h.hasta >= r.desde and h.hasta <= r.hasta) or \
+			#~ for r in self.restricciones: #Por cada restriccion.
+				#~ 
+				#~ for franja_horaria in c.horarios: #Por cada franja de horarios.
+					#~ 
+					#~ for h in franja_horaria: #Por cada por cada horario dentro de la franja.
+						#~ 
+						#~ for p in self.profesionales: #Por cada profesional.
+							#~ 
+							#~ if h.profesional != p: #Si no es el profesional del horario continuamos.
+								#~ continue
+							#~ 
+							#~ if h.dia_semana != r.dia_semana: #Si no es el mismo dia de la semana del horario continuamos.
+								#~ continue
+							#~ 
+							#~ if (h.desde >= r.desde and h.desde < r.hasta) or \
+								#~ (h.hasta > r.desde and h.hasta <= r.hasta) or \
 								#~ (h.desde <= r.desde and h.hasta >= r.hasta):
-							if (h.desde >= r.desde and h.desde < r.hasta) or \
-								(h.hasta > r.desde and h.hasta <= r.hasta) or \
-								(h.desde <= r.desde and h.hasta >= r.hasta):
-								c.puntaje += 1
+								#~ c.puntaje += 1
 			
-							
+			
 			#Segunda evaluacion: Que se cumplan las horas semanales y diarias de la especialidad.
 			
 			for e in self.especialidades: #Por cada especialidad
-				
+				print e
+				raw_input()
 				horas_semanales = 0 #Contador de horas semanales.
-				for franja_horaria in c.horarios: #Por cada franja de horarios.
-					
+				for franja_horaria in c.getHorarios(): #Por cada franja de horarios.
+					#~ print franja_horaria
+					#~ raw_input()
 					for h in franja_horaria: #Por cada horario en la franja horaria.
-						
+						print h
+						raw_input()
 						#Si la especialidad del profesional es igual, contamos.
 						if h.profesional.especialidad == e:
+							print str(h.profesional.especialidad) + " == " + str(e)
+							raw_input()
 							horas_semanales += 1
 					
 				if horas_semanales != e.carga_horaria_semanal:
 					c.puntaje += abs(e.carga_horaria_semanal - horas_semanales)
 					
-					print c.puntaje
+					print horas_semanales
+					#~ print c.puntaje
 			
 			for i in range(len(self.espacio._dias_habiles)):
 				
