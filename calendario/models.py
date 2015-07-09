@@ -20,7 +20,7 @@ class Espacio(models.Model):
 	nombre = models.CharField(max_length=100, null=False, blank=False)
 	#HARDCODED
 	_dias_habiles = [1, 2, 3, 4, 5]
-	_horarios = [["18:15", "18:55"],
+	_horas = [["18:15", "18:55"],
 				["18:55", "19:35"],
 				["19:45", "20:25"],
 				["20:25", "21:05"],
@@ -30,6 +30,19 @@ class Espacio(models.Model):
 	
 	def __str__(self, ):
 		return self.nombre.encode('utf-8')
+	
+	def horas(self, ):
+		
+		if self._horas:
+			self._horas = Hora.objects.filter(espacio=self).order_by('hora_desde')
+		
+		return self._horas
+
+class Hora(models.Model):
+	
+	hora_desde = models.TimeField('desde', null=False)
+	hora_hasta = models.TimeField('hasta', null=False)
+	espacio = models.ForeignKey(Espacio)
 	
 
 class Persona(models.Model):
@@ -58,8 +71,11 @@ class Calendario(models.Model):
 	def __str__(self, ):
 		return str(self.espacio) + "(" + str(self.id) + ")"
 	
-	def 
-	
+	#Por cada franja horaria de uso se inserta una nueva lista de horarios vacia
+	######################################################
+	#~ for dia in dias:
+		#~ horarios.append([])
+	######################################################
 	def getHorarios(self, ):
 		"""
 		Actualiza los horarios del Calendario.
@@ -129,12 +145,40 @@ class Horario(models.Model):
 	profesional = models.ForeignKey(Profesional)
 	
 	def __str__(self, ):
-		#~ return str(self.profesional.especialidad)
-		return str(self.hora_desde) + "(" + str(self.calendario.id) + ")"
+		return str(self.profesional.especialidad)
 	
 	def __eq__(self, o):
-		return self.hora_desde == o.hora_desde and self.hora_hasta == o.hora_hasta and self.dia_semana == o.dia_semana and self.calendario == o.calendario
+		return self.hora_desde == o.hora_desde and\
+				self.hora_hasta == o.hora_hasta and\
+				self.dia_semana == o.dia_semana and\
+				self.calendario == o.calendario
 	
+	def __ne__(self, o):
+		return self.dia_semana != o.dia_semana and self.hora_desde != o.hora_desde
+	
+	def __lt__(self, o):
+		if self.dia_semana == o.dia_semana:
+			return self.hora_desde < o.hora_desde
+		
+		return self.dia_semana < o.dia_semana
+	
+	def __le__(self, o):
+		if self.dia_semana == o.dia_semana:
+			return self.hora_desde <= o.hora_desde
+		
+		return self.dia_semana <= o.dia_semana
+	
+	def __gt__(self, o):
+		if self.dia_semana == o.dia_semana:
+			return self.hora_desde > o.hora_desde
+		
+		return self.dia_semana > o.dia_semana
+	
+	def __ge__(self, o):
+		if self.dia_semana == o.dia_semana:
+			return self.hora_desde >= o.hora_desde
+		
+		return self.dia_semana >= o.dia_semana
 
 class Restriccion(models.Model):
 	
@@ -159,16 +203,17 @@ class Entorno(object):
 	Clase que abarca el medio ambiente en el cual se desarrolla el algoritmo.
 	
 	@Atributos:
-	.DIAS - constante con los dias de la semana. Valor: {}.
+	.DIAS - constante con los dias de la semana. Valor: {0 : 'Domingo', 1 : 'Lunes', 2 : 'Martes', 3 : 'Miercoles', 4 : 'Jueves', 5 : 'Viernes', 6 : 'Sabado'}.
 	.dias_habiles - lista con los dias a cubrir. Valor: {}.
 	.horarios - diccionario con los horarios a cubrir. Valor: {}.
 	.poblacion - lista de individuos. Valor: [].
-	.restricciones - lista de restricciones. Valor: [].
+	.profesionales - lista de profesionales a utilizar. Valor: [].
+	.restricciones - lista de restricciones a utilizar. Valor: [].
 	.generaciones - cantidad de generacion a generar. Valor: 0.
 	.espacio - espacio para el cual se generan los individuos. Valor: None.
 	"""
 	
-	DIAS = {0 : "Domingo", 1 : "Lunes", 2 : "Martes", 3 : "Miercoles", 4 : "Jueves", 5 : "Viernes", 6 : "Sabado"}
+	DIAS = {0 : 'Domingo', 1 : 'Lunes', 2 : 'Martes', 3 : 'Miercoles', 4 : 'Jueves', 5 : 'Viernes', 6 : 'Sabado'}
 	
 	_poblacion = []
 	_restricciones = []
