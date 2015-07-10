@@ -20,20 +20,22 @@ class Espacio(models.Model):
 	nombre = models.CharField(max_length=100, null=False, blank=False)
 	#HARDCODED
 	_dias_habiles = [1, 2, 3, 4, 5]
-	_horas = [["18:15", "18:55"],
-				["18:55", "19:35"],
-				["19:45", "20:25"],
-				["20:25", "21:05"],
-				["21:05", "21:45"],
-				["21:45", "22:25"],
-				["22:25", "23:05"]]
+	_horas = []
+	#~ _horas = [["18:15", "18:55"],
+				#~ ["18:55", "19:35"],
+				#~ ["19:45", "20:25"],
+				#~ ["20:25", "21:05"],
+				#~ ["21:05", "21:45"],
+				#~ ["21:45", "22:25"],
+				#~ ["22:25", "23:05"]]
 	
 	def __str__(self, ):
 		return self.nombre.encode('utf-8')
 	
+	@property
 	def horas(self, ):
 		
-		if self._horas:
+		if not self._horas:
 			self._horas = Hora.objects.filter(espacio=self).order_by('hora_desde')
 		
 		return self._horas
@@ -265,7 +267,7 @@ class Entorno(object):
 			if dia not in self.espacio._dias_habiles:
 				continue
 			
-			for horario in range(len(self.espacio._horarios)): #Cantidad de iteraciones por los horarios.
+			for hora in self.espacio.horas: #Cantidad de iteraciones por los horarios.
 				
 				for p in self.profesionales: #Iteracion por cada profesional.
 					
@@ -275,8 +277,8 @@ class Entorno(object):
 					
 					h = Horario() #Se crea un Horario.
 					h.profesional = p #Se le asigna un Profesional.
-					h.hora_desde = self.espacio._horarios[horario][0] #Se le asigna una hora desde.
-					h.hora_hasta = self.espacio._horarios[horario][1] #Se le asigna una hora hasta.
+					h.hora_desde = hora.hora_desde #Se le asigna una hora desde.
+					h.hora_hasta = hora.hora_hasta #Se le asigna una hora hasta.
 					h.dia_semana = dia #Se le asigna un dia de la semana.
 					h.calendario = c #Se le asigna el calendario.
 					h.save() #Y se guarda.
@@ -294,12 +296,12 @@ class Entorno(object):
 				if dia not in self.espacio._dias_habiles:
 					continue
 				
-				for horario in range(len(self.espacio._horarios)): #Tambien por la cantidad de horarios.
+				for hora in self.espacio.horas: #Tambien por la cantidad de horarios.
 					
 					h = Horario() #Se crea un Horario.
 					h.profesional = self.profesionales[randrange(1, len(self.profesionales))] #Se le asigna un Profesional.
-					h.hora_desde = self.espacio._horarios[horario][0] #Se le asigna una hora desde.
-					h.hora_hasta = self.espacio._horarios[horario][1] #Se le asigna una hora hasta.
+					h.hora_desde = hora.hora_desde #Se le asigna una hora desde.
+					h.hora_hasta = hora.hora_hasta #Se le asigna una hora hasta.
 					h.dia_semana = dia #Se le asigna un dia de la semana.
 					h.calendario = c #Se le asigna el calendario.
 					
@@ -341,8 +343,7 @@ class Entorno(object):
 		#Primera evaluacion: Que los horarios asignados cumplan las restricciones.
 		
 		for c in self.poblacion: #Por cada individuo en la poblacion.
-			print c
-			raw_input()
+			
 			#Si el individuo ya fue evaluado seguimos con otro.
 			if c.puntaje != 0:
 				continue
@@ -374,19 +375,15 @@ class Entorno(object):
 			#Segunda evaluacion: Que se cumplan las horas semanales y diarias de la especialidad.
 			
 			for e in self.especialidades: #Por cada especialidad
-				print e
-				raw_input()
+				
 				horas_semanales = 0 #Contador de horas semanales.
 				for franja_horaria in c.getHorarios(): #Por cada franja de horarios.
-					#~ print franja_horaria
-					#~ raw_input()
+					
 					for h in franja_horaria: #Por cada horario en la franja horaria.
-						print h
-						raw_input()
+						
 						#Si la especialidad del profesional es igual, contamos.
 						if h.profesional.especialidad == e:
-							print str(h.profesional.especialidad) + " == " + str(e)
-							raw_input()
+							
 							horas_semanales += 1
 					
 				if horas_semanales != e.carga_horaria_semanal:
@@ -397,9 +394,8 @@ class Entorno(object):
 			
 			for i in range(len(self.espacio._dias_habiles)):
 				
-				for j in range(len(self.espacio._horarios)):
-					
-					c.horarios[i][j]
+				for j in self.espacio.horas:
+					pass
 				
 			
 	
