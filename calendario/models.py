@@ -78,27 +78,6 @@ class Calendario(models.Model):
 	#~ for dia in dias:
 		#~ horarios.append([])
 	######################################################
-	def getHorarios(self, ):
-		"""
-		Actualiza los horarios del Calendario.
-		
-		@Parametros:
-		None
-		
-		@Return:
-		lista de horarios.
-		"""
-		
-		#Trae los horarios del Calendario de la BBDD.
-		hs = Horario.objects.filter(calendario=self).order_by('hora_desde', 'dia_semana')
-		
-		self.horarios = [] #Setea a vacia su lista actual.
-		
-		#Y agrega los que recibio de la BBDD.
-		for h in hs:
-			self.agregar_horario(h)
-		
-		return self.horarios
 	
 	def agregar_horario(self, horario):
 		"""
@@ -109,10 +88,13 @@ class Calendario(models.Model):
 			#Si contiene un Horario con mismo dia_desde lo agrega a la lista
 			if franja_horaria[0].hora_desde == horario.hora_desde:
 				franja_horaria.append(horario)
+				print franja_horaria
+				raw_input()
 				return
 		
 		#Sino crea una nueva lista con el Horario
 		self.horarios.append([horario])
+		#~ print self.horarios
 	
 	def cruce(self, madre, prob_mutacion=0.01):
 		"""
@@ -236,7 +218,7 @@ class Entorno(object):
 		None
 		"""
 		
-		self.profesionales = Profesional.objects.all()[:3] #Asignamos todas las especialidades de la BBDD.
+		self.profesionales = Profesional.objects.all()[:6] #Asignamos todas las especialidades de la BBDD.
 		
 		for p in self.profesionales:
 			
@@ -269,25 +251,28 @@ class Entorno(object):
 			
 			for hora in self.espacio.horas: #Cantidad de iteraciones por los horarios.
 				
-				for p in self.profesionales: #Iteracion por cada profesional.
+				for profesional in self.profesionales: #Iteracion por cada profesional(p).
 					
 					c = Calendario() #Se crea un Calendario.
 					c.espacio = self.espacio #Se le asigna el espacio.
 					c.save() #Y se guarda.
 					
+					self.poblacion.append(c) #A su vez el Calendario es agregado a la poblacion del Entorno.
+					
 					h = Horario() #Se crea un Horario.
-					h.profesional = p #Se le asigna un Profesional.
+					h.profesional = profesional #Se le asigna un Profesional.
 					h.hora_desde = hora.hora_desde #Se le asigna una hora desde.
 					h.hora_hasta = hora.hora_hasta #Se le asigna una hora hasta.
 					h.dia_semana = dia #Se le asigna un dia de la semana.
 					h.calendario = c #Se le asigna el calendario.
-					h.save() #Y se guarda.
+					#~ h.save() #Y se guarda.
 					
 					c.agregar_horario(h) #El Horario es agregado a la lista del Calendario.
 					
-					self.poblacion.append(c) #A su vez el Calendario es agregado a la poblacion del Entorno.
+					#~ print c.horarios
+					#~ raw_input()
 					
-		
+		"""
 		#Rellenamos el Calendario generando Horarios aleatorios.
 		for c in self.poblacion: #Por cada Calendario en la poblacion.
 			
@@ -314,14 +299,15 @@ class Entorno(object):
 					
 					#Si ya existe continuamos generando.
 					if existe:
+						print "Objeto eliminado."
 						continue
-					
+					print "Objeto nuevo."
 					#Sino lo guardamos.
-					h.save()
+					#~ h.save()
 					
 					#Y lo agregamos a la lista de horarios del Calendario
 					c.agregar_horario(h)
-		
+		"""
 	
 	def evolucionar(self, ):
 		print "FITNESS"
@@ -377,7 +363,7 @@ class Entorno(object):
 			for e in self.especialidades: #Por cada especialidad
 				
 				horas_semanales = 0 #Contador de horas semanales.
-				for franja_horaria in c.getHorarios(): #Por cada franja de horarios.
+				for franja_horaria in c.horarios: #Por cada franja de horarios.
 					
 					for h in franja_horaria: #Por cada horario en la franja horaria.
 						
@@ -389,7 +375,7 @@ class Entorno(object):
 				if horas_semanales != e.carga_horaria_semanal:
 					c.puntaje += abs(e.carga_horaria_semanal - horas_semanales)
 					
-					print horas_semanales
+					#~ print horas_semanales
 					#~ print c.puntaje
 			
 			for i in range(len(self.espacio._dias_habiles)):
