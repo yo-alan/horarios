@@ -5,7 +5,7 @@
 {% block article %}
 	<div class="container-fluid">
 		<div class="row">
-			<div class="col-md-10 col-md-offset-1">
+			<div class="col-md-12">
 				<div>
 					<div class="panel panel-primary">
 						<div class="panel-heading">
@@ -17,10 +17,10 @@
 								{% endif %}
 							</b></h3>
 						</div>
-						{% if cs %}
+						{% if calendarios %}
 							<ul class="list-group">
-								{% for c in cs %}
-									<li class="list-group-item"><a href="{% url 'calendario:detail' c.id %}">{{ c.id }}</a></li>
+								{% for calendario in calendarios %}
+									<li class="list-group-item"><a href="{% url 'calendario:detail' calendario.id %}">{{ calendario.id }}</a></li>
 								{% endfor %}
 							</ul>
 						{% else %}

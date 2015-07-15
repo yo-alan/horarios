@@ -3,15 +3,33 @@
 {% block title %}Listado de profesionales{% endblock %}
 
 {% block article %}
-	<div class="container">
+	<script>
+		function eliminarProfesional(profesional_id){
+			
+			if(!confirm("¿Está seguro que desea eliminar a este profesional?"))
+				return;
+			
+			$.ajax({
+				url: '/calendario/profesional/delete/' + profesional_id + '/',
+				type: 'POST',
+				data: {
+					csrfmiddlewaretoken: '{{ csrf_token }}'
+				},
+				success: function(response) {
+					window.location.href = "{% url 'calendario:profesional_all' %}";
+				}
+			});
+		}
+	</script>
+	<div class="container-fluid">
 		<div class="row clearfix">
-			<div class="col-md-10 col-md-offset-1 column">
+			<div class="col-md-12">
 				<div class="page-header">
 					<h1>
 						Profesionales<small>.</small>
 					</h1>
 				</div>
-				<div class="modal fade" id="diaEliminarProfesional" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+				<div class="modal fade" id="eliminarModal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 					<div class="modal-dialog">
 						<div class="modal-content">
 							<div class="modal-header text-center">
@@ -26,7 +44,6 @@
 								¿Está seguro que desea eliminar a este profesional?
 							</div>
 							<div class="modal-footer">
-								 
 								<button type="button" class="btn btn-default" data-dismiss="modal">
 									No
 								</button> 
@@ -55,23 +72,23 @@
 							</th>
 						</tr>
 					</thead>
-					{% if ps %}
+					{% if profesionales %}
 						<tbody>
-							{% for p in ps %}
+							{% for profesional in profesionales %}
 								<tr>
 									<td>
-										{{ p.apellido }}, {{ p.nombre }}
+										{{ profesional.apellido }}, {{ profesional.nombre }}
 									</td>
 									<td>
-										{{ p.cuil }}
+										{{ profesional.cuil }}
 									</td>
 									<td>
-										{{ p.especialidad }}
+										{{ profesional.especialidad }}
 									</td>
 									<td>
 										<div class="btn btn-group btn-block">
-											<a class="btn btn-default" title="Editar profesional" href="{% url 'calendario:profesional_edit' p.id %}"><i class="glyphicon glyphicon-pencil"></i></a>
-											<a id="btnEliminarProfesional" href="{% url 'calendario:profesional_delete' p.id %}" role="button" class="btn btn-danger" data-toggle="modal"><i class="glyphicon glyphicon-trash"></i></a>
+											<a class="btn btn-default" title="Editar profesional" href="{% url 'calendario:profesional_edit' profesional.id %}"><i class="glyphicon glyphicon-pencil"></i></a>
+											<a id="btnEliminarProfesional" onclick="eliminarProfesional({{ profesional.id }})" role="button" class="btn btn-danger" data-toggle="modal"><i class="glyphicon glyphicon-trash"></i></a>
 										</div>
 									</td>
 								</tr>

@@ -3,9 +3,9 @@
 {% block title %}Detalles del calendario {{ calendario.id }} {% endblock %}
 
 {% block article %}
-	<div class="container">
+	<div class="container-fluid">
 		<div class="row">
-			<div class="col-md-12">
+			<div class="col-md-8">
 				<h3 class="text-center">
 					Detalles del calendario #{{ calendario.id }}
 				</h3>
@@ -22,7 +22,6 @@
 					<thead>
 						<tr class="bg-primary">
 							<th class="text-center">
-								
 							</th>
 							<th class="text-center">
 								<h4><strong>Lunes</strong></h4>
@@ -42,22 +41,22 @@
 						</tr>
 					</thead>
 					<tbody>
-					{% for hs in calendario.horarios %}
+					{% for franja_horaria in calendario.horarios %}
 						<tr>
 							<td class="text-center bg-primary">
 								<h4>
-									<strong>{{ hs.1.hora_desde }}</strong>
+									<strong>{{ franja_horaria.1.hora_desde }}</strong>
 								</h4>
 								<h4>
-									<strong>{{ hs.1.hora_hasta }}</strong>
+									<strong>{{ franja_horaria.1.hora_hasta }}</strong>
 								</h4>
 							</td>
-						{% for h in hs %}
+						{% for horario in franja_horaria %}
 							<td class="text-center active">
 								<h4 class="text-primary">
-									<strong>{{ h.profesional.especialidad }}</strong>
+									<strong>{{ horario.profesional.especialidad }}</strong>
 								</h4>
-								[{{ h.profesional.apellido }}, {{ h.profesional.nombre}}]
+								[{{ horario.profesional.apellido }}, {{ horario.profesional.nombre}}]
 								</td>
 						{% endfor %}
 						</tr>

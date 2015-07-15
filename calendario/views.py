@@ -24,7 +24,7 @@ def generar(request):
 	
 	start_time = time.time()
 	
-	espacio = Espacio.objects.get(pk=1)
+	espacio = Espacio.objects.get(pk=2)
 	
 	e = Entorno(espacio=espacio)
 	
@@ -58,9 +58,9 @@ def detail(request, calendario_id):
 
 def profesional_all(request):
 	
-	ps = Profesional.objects.all().order_by('apellido', 'nombre')
+	profesionales = Profesional.objects.all().order_by('apellido', 'nombre')
 	
-	context = {'ps': ps, }
+	context = {'profesionales': profesionales, }
 	
 	return render(request, 'calendario/profesional/all.html', context)
 
@@ -121,25 +121,29 @@ def profesional_edit(request, profesional_id):
 
 def profesional_delete(request, profesional_id):
 	
-	context = {}
+	if request.method == 'POST':
+		
+		context = {}
+		
+		try:
+			p = Profesional.objects.get(pk=profesional_id)
+			
+			p.delete()
+			
+			return HttpResponseRedirect(reverse('calendario:profesional_all'))
+			
+		except Exception as ex:
+			context['error_message'] = "Error eliminando el profesional: " + str(ex)
+		
+		return render(request, 'calendario/profesional/all.html', context)
 	
-	try:
-		p = Profesional.objects.get(pk=profesional_id)
-		
-		p.delete()
-		
-		return HttpResponseRedirect(reverse('calendario:profesional_all'))
-		
-	except Exception as ex:
-		context['error_message'] = "Error eliminando el profesional: " + str(ex)
-	
-	return render(request, 'calendario/profesional/all.html', context)
+	return HttpResponseRedirect(reverse('calendario:profesional_all'))
 
 def especialidad_all(request):
 	
-	es = Especialidad.objects.all().order_by('nombre')
+	especialidades = Especialidad.objects.all().order_by('nombre')
 	
-	context = {'es' : es}
+	context = {'especialidades' : especialidades}
 	
 	return render(request, 'calendario/especialidad/all.html', context)
 
@@ -180,7 +184,7 @@ def especialidad_edit(request, especialidad_id):
 			
 			e.save()
 			
-			return HttpResponseRedirect(reverse('calendario:profesional_all'))
+			return HttpResponseRedirect(reverse('calendario:especialidad_all'))
 			
 		except Exception as ex:
 			context['error_message'] = "Error editando la especialidad: " + str(ex)
@@ -191,16 +195,20 @@ def especialidad_edit(request, especialidad_id):
 
 def especialidad_delete(request, especialidad_id):
 	
-	context = {}
+	if request.method == 'POST':
+		
+		context = {}
+		
+		try:
+			e = Especialidad.objects.get(pk=especialidad_id)
+			
+			e.delete()
+			
+			return HttpResponseRedirect(reverse('calendario:especialidad_all'))
+			
+		except Exception as ex:
+			context['error_message'] = "Error eliminando la especialidad: " + str(ex)
+		
+		return render(request, 'calendario/especialidad/all.html', context)
 	
-	try:
-		e = Especialidad.objects.get(pk=especialidad_id)
-		
-		e.delete()
-		
-		return HttpResponseRedirect(reverse('calendario:especialidad_all'))
-		
-	except Exception as ex:
-		context['error_message'] = "Error eliminando la especialidad: " + str(ex)
-	
-	return render(request, 'calendario/especialidad/all.html', context)
+	return HttpResponseRedirect(reverse('calendario:especialidad_all'))

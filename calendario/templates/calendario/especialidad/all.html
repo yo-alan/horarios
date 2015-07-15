@@ -3,9 +3,27 @@
 {% block title %}Listado de especialidades{% endblock %}
 
 {% block article %}
-	<div class="container">
+	<script>
+		function eliminarEspecialidad(especialidad_id){
+			
+			if(!confirm("¿Está seguro que desea eliminar a esta especialidad?"))
+				return;
+			
+			$.ajax({
+				url: '/calendario/especialidad/delete/' + especialidad_id + '/',
+				type: 'POST',
+				data: {
+					csrfmiddlewaretoken: '{{ csrf_token }}'
+				},
+				success: function(response) {
+					window.location.href = "{% url 'calendario:especialidad_all' %}";
+				}
+			});
+		}
+	</script>
+	<div class="container-fluid">
 		<div class="row clearfix">
-			<div class="col-md-10 col-md-offset-1 column">
+			<div class="col-md-12">
 				<div class="page-header">
 					<h1>
 						Especialidades<small>.</small>
@@ -55,23 +73,23 @@
 							</th>
 						</tr>
 					</thead>
-					{% if es %}
+					{% if especialidades %}
 						<tbody>
-							{% for e in es %}
+							{% for especialidad in especialidades %}
 								<tr>
 									<td>
-										{{ e.nombre }}
+										{{ especialidad.nombre }}
 									</td>
 									<td>
-										{{ e.carga_horaria_semanal }}
+										{{ especialidad.carga_horaria_semanal }}
 									</td>
 									<td>
-										{{ e.max_horas_diaria }}
+										{{ especialidad.max_horas_diaria }}
 									</td>
 									<td>
 										<div class="btn btn-group btn-block">
-											<a class="btn btn-default" title="Editar especialidad" href="{% url 'calendario:especialidad_edit' e.id %}"><i class="glyphicon glyphicon-pencil"></i></a>
-											<a id="modal-789271" href="{% url 'calendario:especialidad_delete' e.id %}" role="button" class="btn btn-danger" data-toggle="modal"><i class="glyphicon glyphicon-trash"></i></a>
+											<a class="btn btn-default" title="Editar especialidad" href="{% url 'calendario:especialidad_edit' especialidad.id %}"><i class="glyphicon glyphicon-pencil"></i></a>
+											<a id="modal-789271" onclick="eliminarProfesional({{ profesional.id }})" role="button" class="btn btn-danger" data-toggle="modal"><i class="glyphicon glyphicon-trash"></i></a>
 										</div>
 									</td>
 								</tr>
