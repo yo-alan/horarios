@@ -41,8 +41,8 @@
 							<label class="col-xs-3 control-label" for="especialidad">Especialidad:</label>
 							<div class="col-xs-9">
 								<select class="form-control" id="especialidad" name="especialidad">
-									{% for e in es %}
-										<option value="{{ e.id }}">{{ e }}</option>
+									{% for especialidad in especialidades %}
+										<option value="{{ especialidad.id }}">{{ especialidad }}</option>
 									{% endfor %}
 								</select>
 							</div>

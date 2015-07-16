@@ -21,13 +21,6 @@ class Espacio(models.Model):
 	#HARDCODED
 	_dias_habiles = [1, 2, 3, 4, 5]
 	_horas = []
-	#~ _horas = [["18:15", "18:55"],
-				#~ ["18:55", "19:35"],
-				#~ ["19:45", "20:25"],
-				#~ ["20:25", "21:05"],
-				#~ ["21:05", "21:45"],
-				#~ ["21:45", "22:25"],
-				#~ ["22:25", "23:05"]]
 	
 	def __str__(self, ):
 		return self.nombre.encode('utf-8')
@@ -67,7 +60,7 @@ class Profesional(Persona):
 class Calendario(models.Model):
 	
 	espacio = models.ForeignKey(Espacio)
-	horarios = []
+	_horarios = []
 	puntaje = models.IntegerField(default=0)
 	
 	def __str__(self, ):
@@ -79,6 +72,9 @@ class Calendario(models.Model):
 		#~ horarios.append([])
 	######################################################
 	
+	def limpiar(self, ):
+		self._horarios = []
+	
 	def agregar_horario(self, horario):
 		"""
 		Agrega un Horario a la lista de horarios del Calendario.
@@ -88,13 +84,10 @@ class Calendario(models.Model):
 			#Si contiene un Horario con mismo dia_desde lo agrega a la lista
 			if franja_horaria[0].hora_desde == horario.hora_desde:
 				franja_horaria.append(horario)
-				print franja_horaria
-				raw_input()
 				return
 		
 		#Sino crea una nueva lista con el Horario
 		self.horarios.append([horario])
-		#~ print self.horarios
 	
 	def cruce(self, madre, prob_mutacion=0.01):
 		"""
@@ -119,13 +112,21 @@ class Calendario(models.Model):
 	def mutar(self, ):
 		pass
 	
+	@property
+	def horarios(self, ):
+		return self._horarios
+	
+	@horarios.setter
+	def horarios(self, horarios):
+		self._horarios = horarios
+	
 
 class Horario(models.Model):
 	
 	hora_desde = models.TimeField('desde', null=False)
 	hora_hasta = models.TimeField('hasta', null=False)
 	dia_semana = models.IntegerField(default=0, null=False)
-	calendario = models.ForeignKey(Calendario)
+	calendario = models.ForeignKey(Calendario, null=True)
 	profesional = models.ForeignKey(Profesional)
 	
 	def __str__(self, ):
@@ -220,11 +221,11 @@ class Entorno(object):
 		
 		self.profesionales = Profesional.objects.all()[:6] #Asignamos todas las especialidades de la BBDD.
 		
-		for p in self.profesionales:
+		for profesional in self.profesionales:
 			
-			self.restricciones += Profesional_restriccion.objects.filter(profesional=p)
+			self.restricciones += Profesional_restriccion.objects.filter(profesional=profesional)
 			
-			self.especialidades.append(p.especialidad)
+			self.especialidades.append(profesional.especialidad)
 		
 		self.generaciones = generaciones
 		self.espacio = espacio
@@ -253,23 +254,22 @@ class Entorno(object):
 				
 				for profesional in self.profesionales: #Iteracion por cada profesional(p).
 					
-					c = Calendario() #Se crea un Calendario.
-					c.espacio = self.espacio #Se le asigna el espacio.
-					c.save() #Y se guarda.
+					calendario = Calendario() #Se crea un Calendario.
+					calendario.limpiar()
+					calendario.espacio = self.espacio #Se le asigna el espacio.
+					calendario.save() #Y se guarda.
 					
-					self.poblacion.append(c) #A su vez el Calendario es agregado a la poblacion del Entorno.
+					self.poblacion.append(calendario) #A su vez el Calendario es agregado a la poblacion del Entorno.
 					
-					h = Horario() #Se crea un Horario.
-					h.profesional = profesional #Se le asigna un Profesional.
-					h.hora_desde = hora.hora_desde #Se le asigna una hora desde.
-					h.hora_hasta = hora.hora_hasta #Se le asigna una hora hasta.
-					h.dia_semana = dia #Se le asigna un dia de la semana.
-					h.calendario = c #Se le asigna el calendario.
-					#~ h.save() #Y se guarda.
+					horario = Horario() #Se crea un Horario.
+					horario.profesional = profesional #Se le asigna un Profesional.
+					horario.hora_desde = hora.hora_desde #Se le asigna una hora desde.
+					horario.hora_hasta = hora.hora_hasta #Se le asigna una hora hasta.
+					horario.dia_semana = dia #Se le asigna un dia de la semana.
 					
-					c.agregar_horario(h) #El Horario es agregado a la lista del Calendario.
-					
-					#~ print c.horarios
+					calendario.agregar_horario(horario) #El Horario es agregado a la lista del Calendario.
+					#~ 
+					#~ print "Soy el calendario: " + str(calendario.id) + ", " + str(calendario.horarios)
 					#~ raw_input()
 					
 		"""
@@ -283,30 +283,26 @@ class Entorno(object):
 				
 				for hora in self.espacio.horas: #Tambien por la cantidad de horarios.
 					
-					h = Horario() #Se crea un Horario.
-					h.profesional = self.profesionales[randrange(1, len(self.profesionales))] #Se le asigna un Profesional.
-					h.hora_desde = hora.hora_desde #Se le asigna una hora desde.
-					h.hora_hasta = hora.hora_hasta #Se le asigna una hora hasta.
-					h.dia_semana = dia #Se le asigna un dia de la semana.
-					h.calendario = c #Se le asigna el calendario.
+					horario = Horario() #Se crea un Horario.
+					horario.profesional = self.profesionales[randrange(1, len(self.profesionales))] #Se le asigna un Profesional.
+					horario.hora_desde = hora.hora_desde #Se le asigna una hora desde.
+					horario.hora_hasta = hora.hora_hasta #Se le asigna una hora hasta.
+					horario.dia_semana = dia #Se le asigna un dia de la semana.
+					horario.calendario = calendario #Se le asigna el calendario.
 					
 					#Comprobamos que el Horario generado no exista en el Calendario.
 					existe = False
 					for franja_horaria in c.horarios:
-						for hh in franja_horaria:
-							if h == hh:
+						for horario_comp in franja_horaria:
+							if horario == horario_comp:
 								existe = True
 					
 					#Si ya existe continuamos generando.
 					if existe:
-						print "Objeto eliminado."
 						continue
-					print "Objeto nuevo."
-					#Sino lo guardamos.
-					#~ h.save()
 					
 					#Y lo agregamos a la lista de horarios del Calendario
-					c.agregar_horario(h)
+					calendario.agregar_horario(horario)
 		"""
 	
 	def evolucionar(self, ):
@@ -328,55 +324,52 @@ class Entorno(object):
 		
 		#Primera evaluacion: Que los horarios asignados cumplan las restricciones.
 		
-		for c in self.poblacion: #Por cada individuo en la poblacion.
+		for calendario in self.poblacion: #Por cada individuo en la poblacion.
 			
 			#Si el individuo ya fue evaluado seguimos con otro.
-			if c.puntaje != 0:
+			if calendario.puntaje != 0:
 				continue
 			
 			#Comparamos los horarios con las restricciones de
 			#los profesionales. Cada superposicion vale un punto, mientras mas
 			#alto sea el puntaje, menos apto es el individuo.
 			
-			#~ for r in self.restricciones: #Por cada restriccion.
+			#~ for restriccion in self.restricciones: #Por cada restriccion.
 				#~ 
-				#~ for franja_horaria in c.horarios: #Por cada franja de horarios.
+				#~ for franja_horaria in calendario.horarios: #Por cada franja de horarios.
 					#~ 
-					#~ for h in franja_horaria: #Por cada por cada horario dentro de la franja.
+					#~ for horario in franja_horaria: #Por cada por cada horario dentro de la franja.
 						#~ 
-						#~ for p in self.profesionales: #Por cada profesional.
+						#~ for profesional in self.profesionales: #Por cada profesional.
 							#~ 
-							#~ if h.profesional != p: #Si no es el profesional del horario continuamos.
+							#~ if horario.profesional != profesional: #Si no es el profesional del horario continuamos.
 								#~ continue
 							#~ 
-							#~ if h.dia_semana != r.dia_semana: #Si no es el mismo dia de la semana del horario continuamos.
+							#~ if horario.dia_semana != restriccion.dia_semana: #Si no es el mismo dia de la semana del horario continuamos.
 								#~ continue
 							#~ 
-							#~ if (h.desde >= r.desde and h.desde < r.hasta) or \
-								#~ (h.hasta > r.desde and h.hasta <= r.hasta) or \
-								#~ (h.desde <= r.desde and h.hasta >= r.hasta):
-								#~ c.puntaje += 1
+							#~ if (horario.desde >= restriccion.desde and horario.desde < restriccion.hasta) or \
+								#~ (horario.hasta > restriccion.desde and horario.hasta <= restriccion.hasta) or \
+								#~ (horario.desde <= restriccion.desde and horario.hasta >= restriccion.hasta):
+								#~ calendario.puntaje += 1
 			
 			
 			#Segunda evaluacion: Que se cumplan las horas semanales y diarias de la especialidad.
 			
-			for e in self.especialidades: #Por cada especialidad
+			for especialidad in self.especialidades: #Por cada especialidad
 				
 				horas_semanales = 0 #Contador de horas semanales.
-				for franja_horaria in c.horarios: #Por cada franja de horarios.
+				for franja_horaria in calendario.horarios: #Por cada franja de horarios.
 					
-					for h in franja_horaria: #Por cada horario en la franja horaria.
+					for horario in franja_horaria: #Por cada horario en la franja horaria.
 						
 						#Si la especialidad del profesional es igual, contamos.
-						if h.profesional.especialidad == e:
+						if horario.profesional.especialidad == especialidad:
 							
 							horas_semanales += 1
 					
-				if horas_semanales != e.carga_horaria_semanal:
-					c.puntaje += abs(e.carga_horaria_semanal - horas_semanales)
-					
-					#~ print horas_semanales
-					#~ print c.puntaje
+				if horas_semanales != especialidad.carga_horaria_semanal:
+					calendario.puntaje += abs(especialidad.carga_horaria_semanal - horas_semanales)
 			
 			for i in range(len(self.espacio._dias_habiles)):
 				

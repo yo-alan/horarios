@@ -5,6 +5,7 @@ from django.core.urlresolvers import reverse
 
 from .models import Entorno, Calendario, Profesional, Horario, Restriccion, Especialidad, Espacio
 
+entorno = None
 
 def index(request):
 	
@@ -14,9 +15,9 @@ def index(request):
 
 def all(request):
 	
-	cs = Calendario.objects.all()
+	calendarios = Calendario.objects.all()
 	
-	context = {'cs': cs, 'cantidad': len(cs)}
+	context = {'calendarios': calendarios, 'cantidad': len(calendarios)}
 	
 	return render(request, 'calendario/all.html', context)
 
@@ -26,13 +27,13 @@ def generar(request):
 	
 	espacio = Espacio.objects.get(pk=2)
 	
-	e = Entorno(espacio=espacio)
+	entorno = Entorno(espacio=espacio)
 	
-	e.evolucionar()
+	entorno.evolucionar()
 	
 	tiempo = (time.time() - start_time)
 	
-	context = {'cs': e.poblacion, 'tiempo': tiempo, 'cantidad': len(e.poblacion)}
+	context = {'calendarios': entorno.poblacion, 'tiempo': tiempo, 'cantidad': len(entorno.poblacion)}
 	
 	return render(request, 'calendario/all.html', context)
 
@@ -71,23 +72,23 @@ def profesional_add(request):
 	if request.method == 'POST':
 		
 		try:
-			p = Profesional()
+			profesional = Profesional()
 			
-			p.nombre = request.POST["nombre"]
-			p.apellido = request.POST["apellido"]
-			p.cuil = request.POST["cuil"]
-			p.especialidad = Especialidad.objects.get(pk=request.POST["especialidad"])
+			profesional.nombre = request.POST["nombre"]
+			profesional.apellido = request.POST["apellido"]
+			profesional.cuil = request.POST["cuil"]
+			profesional.especialidad = Especialidad.objects.get(pk=request.POST["especialidad"])
 			
-			p.save()
+			profesional.save()
 			
 			return HttpResponseRedirect(reverse('calendario:profesional_all'))
 			
 		except Exception as ex:
 			context['error_message'] = "Error al guardar el profesional: " + str(ex)
 	
-	es = Especialidad.objects.all().order_by('nombre')
+	especialidades = Especialidad.objects.all().order_by('nombre')
 	
-	context['es'] = es
+	context['especialidades'] = especialidades
 	
 	return render(request, 'calendario/profesional/add.html', context)
 
@@ -95,27 +96,27 @@ def profesional_edit(request, profesional_id):
 	
 	context = {}
 	
-	p = Profesional.objects.get(pk=profesional_id)
+	profesional = Profesional.objects.get(pk=profesional_id)
 	
 	if request.method == 'POST':
 		
 		try:
-			p.nombre = request.POST["nombre"]
-			p.apellido = request.POST["apellido"]
-			p.cuil = request.POST["cuil"]
-			p.especialidad = Especialidad.objects.get(pk=request.POST["especialidad"])
+			profesional.nombre = request.POST["nombre"]
+			profesional.apellido = request.POST["apellido"]
+			profesional.cuil = request.POST["cuil"]
+			profesional.especialidad = Especialidad.objects.get(pk=request.POST["especialidad"])
 			
-			p.save()
+			profesional.save()
 			
 			return HttpResponseRedirect(reverse('calendario:profesional_all'))
 			
 		except Exception as ex:
 			context['error_message'] = "Error editando el profesional: " + str(ex)
 	
-	es = Especialidad.objects.all().order_by('nombre')
+	especialidades = Especialidad.objects.all().order_by('nombre')
 	
-	context['p'] = p
-	context['es'] = es
+	context['profesional'] = profesional
+	context['especialidades'] = especialidades
 	
 	return render(request, 'calendario/profesional/edit.html', context)
 
@@ -126,9 +127,9 @@ def profesional_delete(request, profesional_id):
 		context = {}
 		
 		try:
-			p = Profesional.objects.get(pk=profesional_id)
+			profesional = Profesional.objects.get(pk=profesional_id)
 			
-			p.delete()
+			profesional.delete()
 			
 			return HttpResponseRedirect(reverse('calendario:profesional_all'))
 			
@@ -154,13 +155,13 @@ def especialidad_add(request):
 	if request.method == 'POST':
 		
 		try:
-			e = Especialidad()
+			especialidad = Especialidad()
 			
-			e.nombre = request.POST["nombre"]
-			e.carga_horaria_semanal = request.POST["carga_horaria_semanal"]
-			e.max_horas_diaria = request.POST["max_horas_diaria"]
+			especialidad.nombre = request.POST["nombre"]
+			especialidad.carga_horaria_semanal = request.POST["carga_horaria_semanal"]
+			especialidad.max_horas_diaria = request.POST["max_horas_diaria"]
 			
-			e.save()
+			especialidad.save()
 			
 			return HttpResponseRedirect(reverse('calendario:especialidad_all'))
 			
@@ -173,23 +174,23 @@ def especialidad_edit(request, especialidad_id):
 	
 	context = {}
 	
-	e = Especialidad.objects.get(pk=especialidad_id)
+	especialidad = Especialidad.objects.get(pk=especialidad_id)
 	
 	if request.method == 'POST':
 		
 		try:
-			e.nombre = request.POST["nombre"]
-			e.carga_horaria_semanal = request.POST["carga_horaria_semanal"]
-			e.max_horas_diaria = request.POST["max_horas_diaria"]
+			especialidad.nombre = request.POST["nombre"]
+			especialidad.carga_horaria_semanal = request.POST["carga_horaria_semanal"]
+			especialidad.max_horas_diaria = request.POST["max_horas_diaria"]
 			
-			e.save()
+			especialidad.save()
 			
 			return HttpResponseRedirect(reverse('calendario:especialidad_all'))
 			
 		except Exception as ex:
 			context['error_message'] = "Error editando la especialidad: " + str(ex)
 	
-	context['e'] = e
+	context['especialidad'] = especialidad
 	
 	return render(request, 'calendario/especialidad/edit.html', context)
 
@@ -200,9 +201,9 @@ def especialidad_delete(request, especialidad_id):
 		context = {}
 		
 		try:
-			e = Especialidad.objects.get(pk=especialidad_id)
+			especialidad = Especialidad.objects.get(pk=especialidad_id)
 			
-			e.delete()
+			especialidad.delete()
 			
 			return HttpResponseRedirect(reverse('calendario:especialidad_all'))
 			
