@@ -1,0 +1,87 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Crear un calendario a medida {% endblock %}
+
+{% block article %}
+	<script>
+		function allowDrop(ev) {
+			ev.preventDefault();
+		}
+		
+		function drag(ev) {
+			ev.dataTransfer.setData("text", ev.target.id);
+		}
+		
+		function drop(ev) {
+			ev.preventDefault();
+			var idNuevo = ev.dataTransfer.getData("text");
+			var nuevo = document.getElementById(idNuevo);
+			var anterior = ev.target.firstChild;
+			
+			var divOrigen = nuevo.parentNode;
+			
+			//~ divOrigen.removeChild(nuevo);
+			
+			if(anterior != null)
+				divOrigen.appendChild(anterior);
+			
+			ev.target.appendChild(nuevo);
+		}
+	</script>
+	<div class="container-fluid">
+		<div class="row clearfix">
+			<div class="col-md-12">
+				<h3 class="text-center">
+					Titulo
+				</h3>
+				<div class="col-md-9 col-md-pull-0">
+					<table class="table table-bordered">
+						<thead>
+							<tr class="bg-primary">
+								<th class="text-center">
+								</th>
+								{% for dia in entorno.espacio.dias_habiles %}
+									<th class="text-center">
+										<h4><strong>{{ dia }}</strong></h4>
+									</th>
+								{% endfor %}
+							</tr>
+						</thead>
+						<tbody>
+							{% for hora in entorno.espacio.horas %}
+								<tr>
+									<td class="text-center bg-primary">
+										<h4>
+											<strong>{{ hora.hora_desde }}</strong>
+										</h4>
+										<h4>
+											<strong>{{ hora.hora_hasta }}</strong>
+										</h4>
+									</td>
+									{% for dia in entorno.espacio.dias_habiles %}
+										<td class="text-center active">
+											<div id="{{ hora }}{{ dia }}" ondrop="drop(event)" ondragover="allowDrop(event)">
+												
+											</div>
+										</td>
+									{% endfor %}
+								</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+				<div class="col-md-3 col-md-pull-0">
+					<ul class="list-unstyled">
+						{% for profesional in entorno.profesionales %}
+							<li>
+								<p id="{{ profesional.especialidad.id }}" name="{{ profesional.especialidad.id }}" draggable="true" ondragstart="drag(event)" class="bg-success lead border-especialidad text-center">
+									{{ profesional.especialidad }}
+								</p>
+							</li>
+						{% endfor %}
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}

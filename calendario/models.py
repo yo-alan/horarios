@@ -9,11 +9,10 @@ class Especialidad(models.Model):
 	max_horas_diaria = models.IntegerField(default=0, null=False)
 	
 	def __str__(self, ):
-		return self.nombre.encode('utf-8')
+		return unicode(self.nombre).encode('utf-8')
 	
 	def __eq__(self, o):
-		return self.nombre == o.nombre
-	
+		return self.nombre == o.nombre	
 
 class Espacio(models.Model):
 	
@@ -32,6 +31,10 @@ class Espacio(models.Model):
 			self._horas = Hora.objects.filter(espacio=self).order_by('hora_desde')
 		
 		return self._horas
+	
+	@property
+	def dias_habiles(self, ):
+		return self._dias_habiles
 
 class Hora(models.Model):
 	
@@ -39,6 +42,8 @@ class Hora(models.Model):
 	hora_hasta = models.TimeField('hasta', null=False)
 	espacio = models.ForeignKey(Espacio)
 	
+	def __str__(self, ):
+		return str(self.hora_desde)
 
 class Persona(models.Model):
 	
@@ -72,23 +77,6 @@ class Calendario(models.Model):
 		#~ horarios.append([])
 	######################################################
 	
-	def limpiar(self, ):
-		self._horarios = []
-	
-	def agregar_horario(self, horario):
-		"""
-		Agrega un Horario a la lista de horarios del Calendario.
-		"""
-		
-		for franja_horaria in self.horarios: #Por cada dia.
-			#Si contiene un Horario con mismo dia_desde lo agrega a la lista
-			if franja_horaria[0].hora_desde == horario.hora_desde:
-				franja_horaria.append(horario)
-				return
-		
-		#Sino crea una nueva lista con el Horario
-		self.horarios.append([horario])
-	
 	def cruce(self, madre, prob_mutacion=0.01):
 		"""
 		Cruza el individuo con otro madre.
@@ -112,13 +100,48 @@ class Calendario(models.Model):
 	def mutar(self, ):
 		pass
 	
+	def limpiar(self, ):
+		self._horarios = []
+	
+	def agregar_horario(self, horario):
+		"""
+		Agrega un Horario a la lista de horarios del Calendario.
+		"""
+		
+		for franja_horaria in self._horarios: #Por cada dia.
+			#Si contiene un Horario con mismo dia_desde lo agrega a la lista
+			if franja_horaria[0].hora_desde == horario.hora_desde:
+				franja_horaria.append(horario)
+				return
+		
+		#Sino crea una nueva lista con el Horario
+		self._horarios.append([horario])
+	
+	def full_save(self, ):
+		
+		#Se guarda el mismo para obtener una ID de la BBDD.
+		self.save()
+		
+		for franja_horaria in self.horarios: #Por cada dia.
+			#Guarda todos y cada uno de los horarios que posee.
+			for horario in franja_horaria:
+				horario.calendario = self
+				horario.save()
+	
 	@property
 	def horarios(self, ):
+		
+		if not self._horarios:
+			horarios = Horario.objects.filter(calendario=self).order_by('hora_desde', 'dia_semana')
+			
+			for horario in horarios:
+				self.agregar_horario(horario)
+		
 		return self._horarios
 	
-	@horarios.setter
-	def horarios(self, horarios):
-		self._horarios = horarios
+	#~ @horarios.setter
+	#~ def horarios(self, horarios):
+		#~ self._horarios = horarios
 	
 
 class Horario(models.Model):
@@ -229,8 +252,6 @@ class Entorno(object):
 		
 		self.generaciones = generaciones
 		self.espacio = espacio
-		
-		self.generar_poblacion_inicial()
 	
 	def generar_poblacion_inicial(self, ):
 		"""
@@ -247,7 +268,7 @@ class Entorno(object):
 		#Y los agregamos a un calendario.
 		for dia in range(0, 7): #Cantidad de iteraciones por los dias.
 			
-			if dia not in self.espacio._dias_habiles:
+			if dia not in self.espacio.dias_habiles:
 				continue
 			
 			for hora in self.espacio.horas: #Cantidad de iteraciones por los horarios.
@@ -257,7 +278,7 @@ class Entorno(object):
 					calendario = Calendario() #Se crea un Calendario.
 					calendario.limpiar()
 					calendario.espacio = self.espacio #Se le asigna el espacio.
-					calendario.save() #Y se guarda.
+					#~ calendario.save() #Y se guarda.
 					
 					self.poblacion.append(calendario) #A su vez el Calendario es agregado a la poblacion del Entorno.
 					
@@ -268,13 +289,10 @@ class Entorno(object):
 					horario.dia_semana = dia #Se le asigna un dia de la semana.
 					
 					calendario.agregar_horario(horario) #El Horario es agregado a la lista del Calendario.
-					#~ 
-					#~ print "Soy el calendario: " + str(calendario.id) + ", " + str(calendario.horarios)
-					#~ raw_input()
 					
-		"""
+		
 		#Rellenamos el Calendario generando Horarios aleatorios.
-		for c in self.poblacion: #Por cada Calendario en la poblacion.
+		for calendario in self.poblacion: #Por cada Calendario en la poblacion.
 			
 			for dia in range(0, 7): #Iteramos por la cantidad de dias.
 				
@@ -288,11 +306,11 @@ class Entorno(object):
 					horario.hora_desde = hora.hora_desde #Se le asigna una hora desde.
 					horario.hora_hasta = hora.hora_hasta #Se le asigna una hora hasta.
 					horario.dia_semana = dia #Se le asigna un dia de la semana.
-					horario.calendario = calendario #Se le asigna el calendario.
+					#~ horario.calendario = calendario #Se le asigna el calendario.
 					
 					#Comprobamos que el Horario generado no exista en el Calendario.
 					existe = False
-					for franja_horaria in c.horarios:
+					for franja_horaria in calendario.horarios:
 						for horario_comp in franja_horaria:
 							if horario == horario_comp:
 								existe = True
@@ -303,7 +321,9 @@ class Entorno(object):
 					
 					#Y lo agregamos a la lista de horarios del Calendario
 					calendario.agregar_horario(horario)
-		"""
+		
+		for calendario in self.poblacion:
+			calendario.full_save()
 	
 	def evolucionar(self, ):
 		print "FITNESS"

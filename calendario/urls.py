@@ -7,6 +7,8 @@ urlpatterns = [
     url(r'^$', views.all, name='all'),
     # ex: /calendario/all/
     url(r'^all/$', views.all, name='all'),
+    # ex: /calendario/add/
+    url(r'^add/$', views.add, name='add'),
     # ex: /calendario/5/
     url(r'^(?P<calendario_id>[0-9]+)/$', views.detail, name='detail'),
     # ex: /calendario/generar/

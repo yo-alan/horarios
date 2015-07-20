@@ -21,6 +21,17 @@ def all(request):
 	
 	return render(request, 'calendario/all.html', context)
 
+def add(request):
+	
+	entorno = Entorno(espacio=Espacio.objects.get(pk=2))
+	
+	print entorno.espacio.dias_habiles
+	print entorno.espacio.horas
+	
+	context = {'entorno': entorno}
+	
+	return render(request, 'calendario/add.html', context)
+
 def generar(request):
 	
 	start_time = time.time()
@@ -28,6 +39,8 @@ def generar(request):
 	espacio = Espacio.objects.get(pk=2)
 	
 	entorno = Entorno(espacio=espacio)
+	
+	entorno.generar_poblacion_inicial()
 	
 	entorno.evolucionar()
 	
@@ -40,6 +53,7 @@ def generar(request):
 def detail(request, calendario_id):
 	
 	calendario = get_object_or_404(Calendario, pk=calendario_id)
+	
 	anterior = None
 	siguiente = None
 	

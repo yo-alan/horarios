@@ -21,8 +21,18 @@
 							</div>
 							<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 								<ul class="nav navbar-nav">
-									<li>
-										<a href="{% url 'calendario:all' %}">Calendario</a>
+									<li class="dropdown">
+										 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Calendario<strong class="caret"></strong></a>
+										<ul class="dropdown-menu inverse">
+											<li>
+												<a href="{% url 'calendario:add' %}">Crear a medida</a>
+											</li>
+											<li class="divider">
+											</li>
+											<li>
+												<a href="{% url 'calendario:all' %}">Ver todos</a>
+											</li>
+										</ul>
 									</li>
 									<li class="dropdown">
 										 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Profesionales<strong class="caret"></strong></a>
