@@ -25,9 +25,6 @@ def add(request):
 	
 	entorno = Entorno(espacio=Espacio.objects.get(pk=2))
 	
-	print entorno.espacio.dias_habiles
-	print entorno.espacio.horas
-	
 	context = {'entorno': entorno}
 	
 	return render(request, 'calendario/add.html', context)

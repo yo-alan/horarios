@@ -34,7 +34,7 @@
 				<h3 class="text-center">
 					Titulo
 				</h3>
-				<div class="col-md-9 col-md-pull-0">
+				<div class="col-md-8 pull-left">
 					<table class="table table-bordered">
 						<thead>
 							<tr class="bg-primary">
@@ -60,7 +60,7 @@
 									</td>
 									{% for dia in entorno.espacio.dias_habiles %}
 										<td class="text-center active">
-											<div id="{{ hora }}{{ dia }}" ondrop="drop(event)" ondragover="allowDrop(event)">
+											<div id="{{ hora }}{{ dia }}" ondrop="drop(event)" ondragover="allowDrop(event)" class="horario-container">
 												
 											</div>
 										</td>
@@ -70,11 +70,11 @@
 						</tbody>
 					</table>
 				</div>
-				<div class="col-md-3 col-md-pull-0">
+				<div class="col-md-2 pull-right">
 					<ul class="list-unstyled">
 						{% for profesional in entorno.profesionales %}
 							<li>
-								<p id="{{ profesional.especialidad.id }}" name="{{ profesional.especialidad.id }}" draggable="true" ondragstart="drag(event)" class="bg-success lead border-especialidad text-center">
+								<p id="{{ profesional.especialidad.id }}" name="{{ profesional.especialidad.id }}" draggable="true" ondragstart="drag(event)" class="bg-success lead border-especialidad text-center horario">
 									{{ profesional.especialidad }}
 								</p>
 							</li>
