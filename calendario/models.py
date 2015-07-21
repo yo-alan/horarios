@@ -242,7 +242,7 @@ class Entorno(object):
 		None
 		"""
 		
-		self.profesionales = Profesional.objects.all()[:6] #Asignamos todas las especialidades de la BBDD.
+		self.profesionales = Profesional.objects.all()[:10] #Asignamos todas las especialidades de la BBDD.
 		
 		for profesional in self.profesionales:
 			

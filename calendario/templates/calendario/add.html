@@ -14,18 +14,38 @@
 		
 		function drop(ev) {
 			ev.preventDefault();
-			var idNuevo = ev.dataTransfer.getData("text");
-			var nuevo = document.getElementById(idNuevo);
+			var especialidadId = ev.dataTransfer.getData("text");
+			var especialidad = document.getElementById(especialidadId);
 			var anterior = ev.target.firstChild;
 			
-			var divOrigen = nuevo.parentNode;
+			var nodePadre = especialidad.parentNode;
 			
+			if(nodePadre.nodeName == 'LI'){
+				especialidad = especialidad.cloneNode(true);
+			}
+			else if(nodePadre.nodeName == 'DIV'){
+				
+				nodePadre.appendChild(anterior.parentNode);
+				
+				
+				
+			}
+			//GENERAR NUEVOS ID y NAME
 			//~ divOrigen.removeChild(nuevo);
 			
-			if(anterior != null)
-				divOrigen.appendChild(anterior);
-			
-			ev.target.appendChild(nuevo);
+			ev.target.appendChild(especialidad);
+		}
+		
+		function guardar(){
+			alert("Guardando...");
+		}
+		
+		function imprimir(){
+			alert("Imprimiendo...");
+		}
+		
+		function nuevo(){
+			location.reload();
 		}
 	</script>
 	<div class="container-fluid">
@@ -34,13 +54,27 @@
 				<h3 class="text-center">
 					Titulo
 				</h3>
+				<ul class="list-inline">
+					<li>
+						<img class="btn" src="/static/calendario/images/new.png" onclick="nuevo();" title="Nuevo calendario...">
+					</li>
+					<li>
+						<img class="btn" src="/static/calendario/images/save.png" onclick="guardar();" title="Guardar calendario...">
+					</li>
+					<li>
+						<img class="btn" src="/static/calendario/images/print.png" onclick="imprimir();" title="Imprimir calendario...">
+					</li>
+					<li>
+						<img src="/static/calendario/images/trash.png">
+					</li>
+				</ul>
 				<div class="col-md-8 pull-left">
 					<table class="table table-bordered">
 						<thead>
 							<tr class="bg-primary">
 								<th class="text-center">
 								</th>
-								{% for dia in entorno.espacio.dias_habiles %}
+								{% for dia in dias %}
 									<th class="text-center">
 										<h4><strong>{{ dia }}</strong></h4>
 									</th>
@@ -75,7 +109,7 @@
 						{% for profesional in entorno.profesionales %}
 							<li>
 								<p id="{{ profesional.especialidad.id }}" name="{{ profesional.especialidad.id }}" draggable="true" ondragstart="drag(event)" class="bg-success lead border-especialidad text-center horario">
-									{{ profesional.especialidad }}
+									<strong>{{ profesional.especialidad }}</strong>
 								</p>
 							</li>
 						{% endfor %}

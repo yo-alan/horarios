@@ -25,7 +25,13 @@ def add(request):
 	
 	entorno = Entorno(espacio=Espacio.objects.get(pk=2))
 	
-	context = {'entorno': entorno}
+	dias = []
+	
+	for num in entorno.DIAS:
+		if num in entorno.espacio.dias_habiles:
+			dias.append(entorno.DIAS[num])
+	
+	context = {'entorno': entorno, 'dias': dias}
 	
 	return render(request, 'calendario/add.html', context)
 

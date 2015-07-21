@@ -14,17 +14,17 @@ article {
 p.border-especialidad {
 	border: 1px solid grey;
 	cursor: move;
-	height: 100px;
-	width: 130px;
-	margin-right: 10px;
+	height: 80px;
+	width: 120px;
+	padding-top: 10%;
 }
 
 div.horario {
-	height: 100px;
-	width: 130px;
+	height: 80px;
+	width: 120px;
 }
 
-div.horario-container {
-	height: 100px;
-	width: 130px;
+div.horario-container, li.horario-container {
+	height: 80px;
+	width: 120px;
 }
