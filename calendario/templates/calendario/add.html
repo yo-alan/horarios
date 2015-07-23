@@ -18,6 +18,26 @@
 			var especialidad = document.getElementById(especialidadId);
 			var anterior = ev.target.firstChild;
 			
+			if(ev.target.children.length == 0){
+				
+				especialidad = especialidad.cloneNode(true);
+				
+				especialidad.setAttribute('desde', ev.target.getAttribute('desde'));
+				especialidad.setAttribute('dia', ev.target.getAttribute('dia'));
+				
+				ev.target.appendChild(especialidad);
+			}
+			
+			
+			
+			
+			return;
+			
+			alert(ev.target.children.length);
+			
+			
+			return;
+			
 			var nodePadre = especialidad.parentNode;
 			
 			if(nodePadre.nodeName == 'LI'){
@@ -44,6 +64,16 @@
 			alert("Imprimiendo...");
 		}
 		
+		function eliminar(ev){
+			var especialidadId = ev.dataTransfer.getData("text");
+			var especialidad = document.getElementById(especialidadId);
+			var nodePadre = especialidad.parentNode;
+			
+			if(nodePadre.nodeName == 'DIV'){
+				nodePadre.removeChild(nodePadre.firstChild);
+			}
+		}
+		
 		function nuevo(){
 			location.reload();
 		}
@@ -65,7 +95,7 @@
 						<img class="btn" src="/static/calendario/images/print.png" onclick="imprimir();" title="Imprimir calendario...">
 					</li>
 					<li>
-						<img src="/static/calendario/images/trash.png">
+						<img src="/static/calendario/images/trash.png" id="trash" ondrop="eliminar(event)" ondragover="allowDrop(event)">
 					</li>
 				</ul>
 				<div class="col-md-8 pull-left">
@@ -94,7 +124,7 @@
 									</td>
 									{% for dia in entorno.espacio.dias_habiles %}
 										<td class="text-center active">
-											<div id="{{ hora }}{{ dia }}" ondrop="drop(event)" ondragover="allowDrop(event)" class="horario-container">
+											<div id="{{ hora }}{{ dia }}" dia="{{ dia }}" desde="{{ hora }}" ondrop="drop(event)" ondragover="allowDrop(event)" class="horario-container">
 												
 											</div>
 										</td>
