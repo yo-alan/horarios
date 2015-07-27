@@ -67,11 +67,14 @@
 		function eliminar(ev){
 			var especialidadId = ev.dataTransfer.getData("text");
 			var especialidad = document.getElementById(especialidadId);
+			
+			if(especialidad == null)
+				return;
+			
 			var nodePadre = especialidad.parentNode;
 			
-			if(nodePadre.nodeName == 'DIV'){
-				nodePadre.removeChild(nodePadre.firstChild);
-			}
+			if(nodePadre.nodeName == 'DIV')
+				nodePadre.removeChild(especialidad);
 		}
 		
 		function nuevo(){
