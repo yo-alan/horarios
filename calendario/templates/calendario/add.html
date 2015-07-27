@@ -16,44 +16,22 @@
 			ev.preventDefault();
 			var especialidadId = ev.dataTransfer.getData("text");
 			var especialidad = document.getElementById(especialidadId);
-			var anterior = ev.target.firstChild;
+			
+			if(especialidad == null)
+				return;
 			
 			if(ev.target.children.length == 0){
 				
 				especialidad = especialidad.cloneNode(true);
 				
+				//PARA ASIGNAR UN ID HAY QUE COMPROBAR SU UBICACION.
+				especialidad.setAttribute('id', "ID");
 				especialidad.setAttribute('desde', ev.target.getAttribute('desde'));
 				especialidad.setAttribute('dia', ev.target.getAttribute('dia'));
 				
 				ev.target.appendChild(especialidad);
 			}
 			
-			
-			
-			
-			return;
-			
-			alert(ev.target.children.length);
-			
-			
-			return;
-			
-			var nodePadre = especialidad.parentNode;
-			
-			if(nodePadre.nodeName == 'LI'){
-				especialidad = especialidad.cloneNode(true);
-			}
-			else if(nodePadre.nodeName == 'DIV'){
-				
-				nodePadre.appendChild(anterior.parentNode);
-				
-				
-				
-			}
-			//GENERAR NUEVOS ID y NAME
-			//~ divOrigen.removeChild(nuevo);
-			
-			ev.target.appendChild(especialidad);
 		}
 		
 		function guardar(){
