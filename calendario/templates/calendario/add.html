@@ -20,12 +20,25 @@
 			if(especialidad == null)
 				return;
 			
-			if(ev.target.children.length == 0){
+			if(ev.target.nodeName == 'STRONG' && especialidad.parentNode.nodeName != 'LI'){
+				
+				var especialidadDestino = ev.target.parentNode;
+				var divDestino = especialidadDestino.parentNode;
+				var divOrigen = especialidad.parentNode;
+				
+				divDestino.appendChild(especialidad);
+				divOrigen.appendChild(especialidadDestino);
+				
+			}
+			else if(ev.target.children.length == 0){
+				
+				if(ev.target.nodeName == 'STRONG')
+					return;
 				
 				especialidad = especialidad.cloneNode(true);
 				
 				//PARA ASIGNAR UN ID HAY QUE COMPROBAR SU UBICACION.
-				especialidad.setAttribute('id', "ID");
+				especialidad.setAttribute('id', parseInt(ev.target.getAttribute("horario"))*{{ entorno.espacio.dias_habiles|length }}+parseInt(ev.target.getAttribute("dia")));
 				especialidad.setAttribute('desde', ev.target.getAttribute('desde'));
 				especialidad.setAttribute('dia', ev.target.getAttribute('dia'));
 				
@@ -36,6 +49,22 @@
 		
 		function guardar(){
 			alert("Guardando...");
+			var calendario = {};
+			for(i = 0; i < {{ entorno.espacio.dias_habiles|length }}*{{ entorno.espacio.horas|length }}; i++){
+				//~ calendario.
+				
+			}
+			calendario.csrfmiddlewaretoken = "{{ csrf_token }}";
+			$.ajax({
+				url: "/calendario/add",
+				type: 'POST',
+				data: calendario,
+				success: function(response){
+					
+					
+					
+				}
+			});
 		}
 		
 		function imprimir(){
@@ -105,7 +134,7 @@
 									</td>
 									{% for dia in entorno.espacio.dias_habiles %}
 										<td class="text-center active">
-											<div id="{{ hora }}{{ dia }}" dia="{{ dia }}" desde="{{ hora }}" ondrop="drop(event)" ondragover="allowDrop(event)" class="horario-container">
+											<div id="{{ hora }}{{ dia }}" dia="{{ dia }}" desde="{{ hora }}" horario="{{ forloop.parentloop.counter0 }}"ondrop="drop(event)" ondragover="allowDrop(event)" class="horario-container">
 												
 											</div>
 										</td>
@@ -119,7 +148,7 @@
 					<ul class="list-unstyled">
 						{% for profesional in entorno.profesionales %}
 							<li>
-								<p id="{{ profesional.especialidad.id }}" name="{{ profesional.especialidad.id }}" draggable="true" ondragstart="drag(event)" class="bg-success lead border-especialidad text-center horario">
+								<p id="{{ profesional.especialidad.nombre }}" name="{{ profesional.especialidad.id }}" draggable="true" ondragstart="drag(event)" class="img-rounded lead especialidad text-center" style="background-color:{{ colores.2 }}">
 									<strong>{{ profesional.especialidad }}</strong>
 								</p>
 							</li>

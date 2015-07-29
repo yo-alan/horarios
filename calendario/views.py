@@ -31,7 +31,10 @@ def add(request):
 		if num in entorno.espacio.dias_habiles:
 			dias.append(entorno.DIAS[num])
 	
-	context = {'entorno': entorno, 'dias': dias}
+	colores = ['#337ab7', '#5cb85c', '#5bc0de', '#f0ad4e', '#d9534f', '#73e673', '#ffc879', '#ff625c', '#', '#', '#', '#', '#', '#', '#', '#']
+	#~ colores = {'uno': '#337ab7',}
+	
+	context = {'entorno': entorno, 'dias': dias, 'colores': colores, 'rango': range(len(entorno.profesionales))}
 	
 	return render(request, 'calendario/add.html', context)
 

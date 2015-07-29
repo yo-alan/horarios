@@ -11,20 +11,15 @@ article {
     padding: 5px;
 }
 
-p.border-especialidad {
+p.especialidad {
 	border: 1px solid grey;
 	cursor: move;
-	height: 80px;
-	width: 120px;
 	padding-top: 10%;
-}
-
-div.horario {
 	height: 80px;
 	width: 120px;
 }
 
-div.horario-container, li.horario-container {
+div.horario-container {
 	height: 80px;
 	width: 120px;
 }
