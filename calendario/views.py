@@ -17,12 +17,16 @@ def all(request):
 	
 	calendarios = Calendario.objects.all()
 	
-	context = {'calendarios': calendarios, 'cantidad': len(calendarios)}
+	context = {'calendarios': calendarios}
 	
 	return render(request, 'calendario/all.html', context)
 
 def add(request):
 	
+	if request.method == 'POST':
+		
+		return HttpResponseRedirect(reverse('calendario:all'))
+		
 	entorno = Entorno(espacio=Espacio.objects.get(pk=2))
 	
 	dias = []
@@ -32,9 +36,8 @@ def add(request):
 			dias.append(entorno.DIAS[num])
 	
 	colores = ['#337ab7', '#5cb85c', '#5bc0de', '#f0ad4e', '#d9534f', '#73e673', '#ffc879', '#ff625c', '#', '#', '#', '#', '#', '#', '#', '#']
-	#~ colores = {'uno': '#337ab7',}
 	
-	context = {'entorno': entorno, 'dias': dias, 'colores': colores, 'rango': range(len(entorno.profesionales))}
+	context = {'entorno': entorno, 'dias': dias, 'colores': colores}
 	
 	return render(request, 'calendario/add.html', context)
 
@@ -52,7 +55,7 @@ def generar(request):
 	
 	tiempo = (time.time() - start_time)
 	
-	context = {'calendarios': entorno.poblacion, 'tiempo': tiempo, 'cantidad': len(entorno.poblacion)}
+	context = {'calendarios': entorno.poblacion, 'tiempo': tiempo}
 	
 	return render(request, 'calendario/all.html', context)
 

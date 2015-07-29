@@ -48,7 +48,7 @@
 		}
 		
 		function guardar(){
-			alert("Guardando...");
+			
 			var calendario = {};
 			for(i = 0; i < {{ entorno.espacio.dias_habiles|length }}*{{ entorno.espacio.horas|length }}; i++){
 				//~ calendario.
@@ -134,7 +134,7 @@
 									</td>
 									{% for dia in entorno.espacio.dias_habiles %}
 										<td class="text-center active">
-											<div id="{{ hora }}{{ dia }}" dia="{{ dia }}" desde="{{ hora }}" horario="{{ forloop.parentloop.counter0 }}"ondrop="drop(event)" ondragover="allowDrop(event)" class="horario-container">
+											<div id="{{ hora }}{{ dia }}" dia="{{ dia }}" desde="{{ hora }}" horario="{{ forloop.parentloop.counter0 }}" ondrop="drop(event)" ondragover="allowDrop(event)" class="horario-container">
 												
 											</div>
 										</td>
