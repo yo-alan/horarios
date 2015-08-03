@@ -14,11 +14,15 @@ urlpatterns = [
     # ex: /calendario/generar/
     url(r'^generar/$', views.generar, name='generar'),
     # ex: /calendario/espacio/
-    url(r'^espacio/$', views.profesional_all, name='profesional_all'),
+    url(r'^espacio/$', views.espacio_all, name='espacio_all'),
     # ex: /calendario/espacio/all/
     url(r'^espacio/all/$', views.espacio_all, name='espacio_all'),
     # ex: /calendario/espacio/add/
     url(r'^espacio/add/$', views.espacio_add, name='espacio_add'),
+    # ex: /calendario/espacio/edit/
+    url(r'^espacio/edit/(?P<espacio_id>[0-9]+)/$', views.espacio_edit, name='espacio_edit'),
+    # ex: /calendario/espacio/delete/
+    url(r'^espacio/delete/(?P<espacio_id>[0-9]+)/$', views.espacio_delete, name='espacio_delete'),
     # ex: /calendario/profesional/
     url(r'^profesional/$', views.profesional_all, name='profesional_all'),
     # ex: /calendario/profesional/all/

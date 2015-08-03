@@ -106,7 +106,49 @@ def espacio_add(request):
 		except Exception as ex:
 			context['error_message'] = "Error al guardar el espacio: " + str(ex)
 	
-	return render(request, 'calendario/profesional/add.html', context)
+	return render(request, 'calendario/espacio/add.html', context)
+
+def espacio_edit(request, espacio_id):
+	
+	context = {}
+	
+	espacio = Espacio.objects.get(pk=espacio_id)
+	
+	if request.method == 'POST':
+		
+		try:
+			espacio.nombre = request.POST["nombre"]
+			
+			espacio.save()
+			
+			return HttpResponseRedirect(reverse('calendario:espacio_all'))
+			
+		except Exception as ex:
+			context['error_message'] = "Error editando el espacio: " + str(ex)
+	
+	context['espacio'] = espacio
+	
+	return render(request, 'calendario/espacio/edit.html', context)
+
+def espacio_delete(request, espacio_id):
+	
+	if request.method == 'POST':
+		
+		context = {}
+		
+		try:
+			espacio = Espacio.objects.get(pk=espacio_id)
+			
+			espacio.delete()
+			
+			return HttpResponseRedirect(reverse('calendario:espacio_all'))
+			
+		except Exception as ex:
+			context['error_message'] = "Error eliminando el espacio: " + str(ex)
+		
+		return render(request, 'calendario/espacio/all.html', context)
+	
+	return HttpResponseRedirect(reverse('calendario:espacio_all'))
 
 def profesional_all(request):
 	

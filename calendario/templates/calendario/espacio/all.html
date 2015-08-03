@@ -1,0 +1,96 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Listado de espacios{% endblock %}
+
+{% block article %}
+	<script>
+		function eliminarEspacio(espacio_id){
+			
+			if(!confirm("¿Está seguro que desea eliminar a esta espacio?"))
+				return;
+			
+			$.ajax({
+				url: '/calendario/espacio/delete/' + espacio_id + '/',
+				type: 'POST',
+				data: {
+					csrfmiddlewaretoken: '{{ csrf_token }}'
+				},
+				success: function(response) {
+					window.location.href = "{% url 'calendario:espacio_all' %}";
+				}
+			});
+		}
+	</script>
+	<div class="container-fluid">
+		<div class="row clearfix">
+			<div class="col-md-12">
+				<div class="page-header">
+					<h1>
+						Espacios<small>.</small>
+					</h1>
+				</div>
+				<div class="modal fade" id="modal-container-789271" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<div class="modal-header text-center">
+								<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+									×
+								</button>
+								<h4 class="modal-title" id="myModalLabel">
+									Eliminar espacio
+								</h4>
+							</div>
+							<div class="modal-body">
+								¿Está seguro que desea eliminar a -tanto-?
+							</div>
+							<div class="modal-footer">
+								 
+								<button type="button" class="btn btn-default" data-dismiss="modal">
+									No
+								</button> 
+								<button type="button" class="btn btn-primary">
+									Eliminar
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+				<table class="table table-hover">
+					<thead>
+						<tr>
+							<th>
+								Nombre
+							</th>
+							<th>
+								Acciones
+							</th>
+						</tr>
+					</thead>
+					{% if espacios %}
+						<tbody>
+							{% for espacio in espacios %}
+								<tr>
+									<td>
+										{{ espacio.nombre }}
+									</td>
+									<td>
+										<div class="btn btn-group btn-block">
+											<a class="btn btn-default" title="Editar espacio" href="{% url 'calendario:espacio_edit' espacio.id %}"><i class="glyphicon glyphicon-pencil"></i></a>
+											<a id="modal-789271" onclick="eliminarEspacio({{ espacio.id }})" role="button" class="btn btn-danger" data-toggle="modal"><i class="glyphicon glyphicon-trash"></i></a>
+										</div>
+									</td>
+								</tr>
+							{% endfor %}
+						</tbody>
+					{% else %}
+						<tfoot align="center">
+							<tr>
+								<td colspan="5">No hay espacios cargadas.</td>
+							</tr>
+						</tfoot>
+					{% endif %}
+				</table>
+			</div>
+		</div>
+	</div>
+{% endblock %}
