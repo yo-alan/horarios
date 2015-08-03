@@ -80,6 +80,34 @@ def detail(request, calendario_id):
 	
 	return render(request, 'calendario/detail.html', context)
 
+def espacio_all(request):
+	
+	espacios = Espacio.objects.all().order_by('nombre')
+	
+	context = {'espacios': espacios, }
+	
+	return render(request, 'calendario/espacio/all.html', context)
+
+def espacio_add(request):
+	
+	context = {}
+	
+	if request.method == 'POST':
+		
+		try:
+			espacio = Espacio()
+			
+			espacio.nombre = request.POST["nombre"]
+			
+			espacio.save()
+			
+			return HttpResponseRedirect(reverse('calendario:espacio_all'))
+			
+		except Exception as ex:
+			context['error_message'] = "Error al guardar el espacio: " + str(ex)
+	
+	return render(request, 'calendario/profesional/add.html', context)
+
 def profesional_all(request):
 	
 	profesionales = Profesional.objects.all().order_by('apellido', 'nombre')

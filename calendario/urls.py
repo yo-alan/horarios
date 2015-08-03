@@ -13,6 +13,12 @@ urlpatterns = [
     url(r'^(?P<calendario_id>[0-9]+)/$', views.detail, name='detail'),
     # ex: /calendario/generar/
     url(r'^generar/$', views.generar, name='generar'),
+    # ex: /calendario/espacio/
+    url(r'^espacio/$', views.profesional_all, name='profesional_all'),
+    # ex: /calendario/espacio/all/
+    url(r'^espacio/all/$', views.espacio_all, name='espacio_all'),
+    # ex: /calendario/espacio/add/
+    url(r'^espacio/add/$', views.espacio_add, name='espacio_add'),
     # ex: /calendario/profesional/
     url(r'^profesional/$', views.profesional_all, name='profesional_all'),
     # ex: /calendario/profesional/all/

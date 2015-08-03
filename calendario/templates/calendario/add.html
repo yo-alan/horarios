@@ -1,6 +1,6 @@
 {% extends "admin/base.html" %}
 
-{% block title %}Crear un calendario a medida {% endblock %}
+{% block title %}Crear un calendario a medida{% endblock %}
 
 {% block article %}
 	<script>
@@ -35,7 +35,8 @@
 				if(ev.target.nodeName == 'STRONG')
 					return;
 				
-				especialidad = especialidad.cloneNode(true);
+				if(especialidad.parentNode.nodeName != 'DIV')
+					especialidad = especialidad.cloneNode(true);
 				
 				//PARA ASIGNAR UN ID HAY QUE COMPROBAR SU UBICACION.
 				especialidad.setAttribute('id', parseInt(ev.target.getAttribute("horario"))*{{ entorno.espacio.dias_habiles|length }}+parseInt(ev.target.getAttribute("dia")));
@@ -49,22 +50,35 @@
 		
 		function guardar(){
 			
-			var calendario = {};
-			for(i = 0; i < {{ entorno.espacio.dias_habiles|length }}*{{ entorno.espacio.horas|length }}; i++){
-				//~ calendario.
+			var horarios = [];
+			for(i = 1; i < {{ entorno.espacio.dias_habiles|length }}*{{ entorno.espacio.horas|length }}+1; i++){
 				
-			}
-			calendario.csrfmiddlewaretoken = "{{ csrf_token }}";
-			$.ajax({
-				url: "/calendario/add",
-				type: 'POST',
-				data: calendario,
-				success: function(response){
-					
-					
-					
+				var espacio_horario = document.getElementById(i);
+				
+				if(espacio_horario == null){
+					alert("El calendario no se puede cargar por que no está completo:" + i);
+					return;
 				}
-			});
+				
+				var horario = {}
+				
+				horario.especialidad = espacio_horario.getAttribute('name');
+				horario.desde = espacio_horario.getAttribute('desde');
+				horario.dia = espacio_horario.getAttribute('dia');
+				
+				horarios[i] = horario;
+			}
+			
+			//~ $.ajax({
+				//~ url: "/calendario/add",
+				//~ type: 'POST',
+				//~ data: { csrfmiddlewaretoken: "{{ csrf_token }}", horarios: horarios},
+				//~ success: function(response){
+					
+					
+					
+				//~ }
+			//~ });
 		}
 		
 		function imprimir(){
@@ -92,7 +106,7 @@
 		<div class="row clearfix">
 			<div class="col-md-12">
 				<h3 class="text-center">
-					Titulo
+					Calendario para "{{ entorno.espacio }}"
 				</h3>
 				<ul class="list-inline">
 					<li>

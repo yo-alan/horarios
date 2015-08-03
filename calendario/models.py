@@ -140,10 +140,6 @@ class Calendario(models.Model):
 		
 		return self._horarios
 	
-	#~ @horarios.setter
-	#~ def horarios(self, horarios):
-		#~ self._horarios = horarios
-	
 
 class Horario(models.Model):
 	
