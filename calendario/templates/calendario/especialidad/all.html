@@ -103,6 +103,21 @@
 						</tfoot>
 					{% endif %}
 				</table>
+				<div class="pagination">
+					<span class="step-links">
+						{% if especialidades.has_previous %}
+							<a href="{% url 'calendario:especialidad_all' especialidades.previous_page_number %} ">Anterior</a>
+						{% endif %}
+						
+						<span class="current">
+							Página {{ especialidades.number }} de {{ especialidades.paginator.num_pages }}.
+						</span>
+						
+						{% if especialidades.has_next %}
+							<a href="{% url 'calendario:especialidad_all' especialidades.next_page_number %} ">Siguiente</a>
+						{% endif %}
+					</span>
+				</div>
 			</div>
 		</div>
 	</div>

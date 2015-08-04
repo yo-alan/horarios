@@ -1,7 +1,8 @@
-import time
+import time, json
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from .models import Entorno, Calendario, Profesional, Horario, Restriccion, Especialidad, Espacio
 
@@ -24,6 +25,22 @@ def all(request):
 def add(request):
 	
 	if request.method == 'POST':
+		
+		calendario = Calendario()
+		
+		calendario.espacio = Espacio.objects.get(pk=2)
+		calendario.save()
+		
+		for i in range(1, len(request.POST)/3+1):
+			
+			horario = Horario()
+			
+			horario.calendario = calendario
+			horario.profesional = request.POST[str(i) + '[especialidad]']
+			horario.desde = request.POST[str(i) + '[desde]']
+			horario.dia_semana = request.POST[str(i) + '[dia]']
+			
+			horario.save()
 		
 		return HttpResponseRedirect(reverse('calendario:all'))
 		
@@ -80,9 +97,17 @@ def detail(request, calendario_id):
 	
 	return render(request, 'calendario/detail.html', context)
 
-def espacio_all(request):
+def espacio_all(request, pagina=1):
 	
-	espacios = Espacio.objects.all().order_by('nombre')
+	total_espacios = Espacio.objects.all().order_by('nombre')
+	paginator = Paginator(total_espacios, 10)
+	
+	try:
+		espacios = paginator.page(pagina)
+	except PageNotAnInteger:
+		espacios = paginator.page(1)
+	except EmptyPage:
+		espacios = paginator.page(paginator.num_pages)
 	
 	context = {'espacios': espacios, }
 	
@@ -150,11 +175,19 @@ def espacio_delete(request, espacio_id):
 	
 	return HttpResponseRedirect(reverse('calendario:espacio_all'))
 
-def profesional_all(request):
+def profesional_all(request, pagina=1):
 	
-	profesionales = Profesional.objects.all().order_by('apellido', 'nombre')
+	total_profesionales = Profesional.objects.all().order_by('apellido', 'nombre')
+	paginator = Paginator(total_profesionales, 10)
 	
-	context = {'profesionales': profesionales, }
+	try:
+		profesionales = paginator.page(pagina)
+	except PageNotAnInteger:
+		profesionales = paginator.page(1)
+	except EmptyPage:
+		profesionales = paginator.page(paginator.num_pages)
+	
+	context = {'profesionales': profesionales}
 	
 	return render(request, 'calendario/profesional/all.html', context)
 
@@ -233,9 +266,17 @@ def profesional_delete(request, profesional_id):
 	
 	return HttpResponseRedirect(reverse('calendario:profesional_all'))
 
-def especialidad_all(request):
+def especialidad_all(request, pagina=1):
 	
-	especialidades = Especialidad.objects.all().order_by('nombre')
+	total_especialidades = Especialidad.objects.all().order_by('nombre')
+	paginator = Paginator(total_especialidades, 10)
+	
+	try:
+		especialidades = paginator.page(pagina)
+	except PageNotAnInteger:
+		especialidades = paginator.page(1)
+	except EmptyPage:
+		especialidades = paginator.page(paginator.num_pages)
 	
 	context = {'especialidades' : especialidades}
 	

@@ -85,11 +85,26 @@
 					{% else %}
 						<tfoot align="center">
 							<tr>
-								<td colspan="5">No hay espacios cargadas.</td>
+								<td colspan="5">No hay espacios cargados.</td>
 							</tr>
 						</tfoot>
 					{% endif %}
 				</table>
+				<div class="pagination">
+					<span class="step-links">
+						{% if espacios.has_previous %}
+							<a href="{% url 'calendario:espacio_all' espacios.previous_page_number %} ">Anterior</a>
+						{% endif %}
+						
+						<span class="current">
+							Página {{ espacios.number }} de {{ espacios.paginator.num_pages }}.
+						</span>
+						
+						{% if espacios.has_next %}
+							<a href="{% url 'calendario:espacio_all' espacios.next_page_number %} ">Siguiente</a>
+						{% endif %}
+					</span>
+				</div>
 			</div>
 		</div>
 	</div>

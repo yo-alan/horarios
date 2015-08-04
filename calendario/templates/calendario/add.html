@@ -50,35 +50,38 @@
 		
 		function guardar(){
 			
-			var horarios = [];
+			var datos = {csrfmiddlewaretoken: "{{ csrf_token }}"};
 			for(i = 1; i < {{ entorno.espacio.dias_habiles|length }}*{{ entorno.espacio.horas|length }}+1; i++){
 				
 				var espacio_horario = document.getElementById(i);
 				
 				if(espacio_horario == null){
-					alert("El calendario no se puede cargar por que no está completo:" + i);
+					alert("El calendario no se puede guardar por que no está completo:" + i);
 					return;
 				}
 				
-				var horario = {}
-				
-				horario.especialidad = espacio_horario.getAttribute('name');
-				horario.desde = espacio_horario.getAttribute('desde');
-				horario.dia = espacio_horario.getAttribute('dia');
-				
-				horarios[i] = horario;
+				datos[i] = {};
+				datos[i].especialidad = espacio_horario.getAttribute('name');
+				datos[i].desde = espacio_horario.getAttribute('desde');
+				datos[i].dia = espacio_horario.getAttribute('dia');
 			}
 			
-			//~ $.ajax({
-				//~ url: "/calendario/add",
-				//~ type: 'POST',
-				//~ data: { csrfmiddlewaretoken: "{{ csrf_token }}", horarios: horarios},
-				//~ success: function(response){
+			$.ajax({
+				url: "/calendario/add/",
+				type: 'POST',
+				dataType: 'json',
+				data: datos,
+				success: function(response){
 					
+					alert(response.mensaje);
 					
+				},
+				error: function(response){
 					
-				//~ }
-			//~ });
+					alert(response.responseText);
+					
+				}
+			});
 		}
 		
 		function imprimir(){
