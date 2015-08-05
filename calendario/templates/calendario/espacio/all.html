@@ -75,7 +75,8 @@
 									</td>
 									<td>
 										<div class="btn btn-group btn-block">
-											<a class="btn btn-default" title="Editar espacio" href="{% url 'calendario:espacio_edit' espacio.id %}"><i class="glyphicon glyphicon-pencil"></i></a>
+											<a class="btn btn-default" title="Editar espacio" href="{% url 'calendario:espacio_edit' espacio.id %}"><i class="glyphicon glyphicon-edit"></i></a>
+											<a class="btn btn-warning" title="Horas" href="{% url 'calendario:espacio_horas' espacio.id %}"><i class="glyphicon glyphicon-th"></i></a>
 											<a id="modal-789271" onclick="eliminarEspacio({{ espacio.id }})" role="button" class="btn btn-danger" data-toggle="modal"><i class="glyphicon glyphicon-trash"></i></a>
 										</div>
 									</td>

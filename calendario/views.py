@@ -175,6 +175,44 @@ def espacio_delete(request, espacio_id):
 	
 	return HttpResponseRedirect(reverse('calendario:espacio_all'))
 
+def espacio_horas(request, espacio_id):
+	
+	context = {}
+	
+	espacio = Espacio.objects.get(pk=espacio_id)
+	
+	context['espacio'] = espacio
+	
+	return render(request, 'calendario/espacio/horas.html', context)
+
+def espacio_add_hora(request):
+	
+	context = {}
+	
+	if request.method != 'POST':
+		return render(request, 'calendario/espacio/horas.html', context)
+	
+	espacio = Espacio.objects.get(pk=request.POST['espacio_id'])
+	
+	context['espacio'] = espacio
+	
+	try:
+		
+		hora = Hora()
+		
+		hora.hora_desde = request.POST['hora_desde']
+		hora.hora_hasta = request.POST['hora_hasta']
+		hora.espacio = espacio
+		
+		hora.save()
+		
+		return HttpResponseRedirect(reverse('calendario:espacio_all'))
+		
+	except Exception as ex:
+		context['error_message'] = str(ex)
+	
+	return render(request, 'calendario/espacio/horas.html', context)
+
 def profesional_all(request, pagina=1):
 	
 	total_profesionales = Profesional.objects.all().order_by('apellido', 'nombre')
