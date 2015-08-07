@@ -3,14 +3,6 @@
 {% block title %}Agregar un espacio{% endblock %}
 
 {% block article %}
-	<script type="text/javascript">
-		$(function () {
-			$('#hora_desde').timepicker({
-				use24hours: true,
-				format: 'hh:mm'
-			});
-		});
-	</script>
 	<div class="container-fluid">
 		<div class="row clearfix">
 			<div class="col-md-8 col-md-offset-2">
@@ -30,12 +22,17 @@
 					<fieldset>
 						{% csrf_token %}
 						<div class="form-group">
-							<label class="col-xs-3 control-label" for="nombre">Nombre:</label>
-							<div class="col-xs-9">
-								<div class="input-group bootstrap-timepicker timepicker">
-									<input id="hora_desde" type="text" class="form-control input-small">
-									<span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
-								</div>
+							<label class="col-xs-3 control-label" for="desde">Hora desde:</label>
+							<div class="col-xs-3">
+								<input id="hora_desde" name="hora_desde" type="number" class="form-control" value="00">
+								<input id="min_desde" name="min_desde" type="number" class="form-control" value="00">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-xs-3 control-label" for="hasta">Hora hasta:</label>
+							<div class="col-xs-3">
+								<input id="hora_desde" type="number" class="form-control" value="00">
+								<input id="min_desde" type="number" class="form-control" value="00">
 							</div>
 						</div>
 						<div class="form-group">
