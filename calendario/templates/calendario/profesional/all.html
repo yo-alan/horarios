@@ -76,16 +76,16 @@
 						<tbody>
 							{% for profesional in profesionales %}
 								<tr>
-									<td>
+									<td class="vert-align">
 										{{ profesional.apellido }}, {{ profesional.nombre }}
 									</td>
-									<td>
+									<td class="vert-align">
 										{{ profesional.cuil }}
 									</td>
-									<td>
+									<td class="vert-align">
 										{{ profesional.especialidad }}
 									</td>
-									<td>
+									<td class="vert-align">
 										<div class="btn btn-group btn-block">
 											<a class="btn btn-default" title="Editar profesional" href="{% url 'calendario:profesional_edit' profesional.id %}"><i class="glyphicon glyphicon-pencil"></i></a>
 											<a id="btnEliminarProfesional" onclick="eliminarProfesional({{ profesional.id }})" role="button" class="btn btn-danger" data-toggle="modal"><i class="glyphicon glyphicon-trash"></i></a>

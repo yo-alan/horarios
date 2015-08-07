@@ -12,7 +12,9 @@ article {
 }
 
 p.especialidad {
+/*
 	border: 1px solid grey;
+*/
 	cursor: move;
 	padding-top: 10%;
 	height: 80px;
@@ -22,4 +24,8 @@ p.especialidad {
 div.horario-container {
 	height: 80px;
 	width: 120px;
+}
+
+.table tbody>tr>td.vert-align{
+    vertical-align: middle;
 }
