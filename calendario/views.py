@@ -26,7 +26,7 @@ def add(request, espacio_id):
 	
 	if request.method == 'POST':
 		
-		calendario = Calendario()
+		calendario = Calendario.create()
 		
 		calendario.espacio = Espacio.objects.get(pk=espacio_id)
 		calendario.save()
@@ -81,7 +81,7 @@ def generar(request):
 
 def detail(request, calendario_id):
 	
-	calendario = get_object_or_404(Calendario, pk=calendario_id)
+	calendario = Calendario.create(calendario_id)
 	
 	anterior = None
 	siguiente = None

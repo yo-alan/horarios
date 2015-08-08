@@ -66,8 +66,22 @@ class Profesional(Persona):
 class Calendario(models.Model):
 	
 	espacio = models.ForeignKey(Espacio)
-	_horarios = []
 	puntaje = models.IntegerField(default=0)
+	
+	@classmethod
+	def create(cls, calendario_id=0):
+		
+		if calendario_id != 0:
+			
+			calendario = Calendario.objects.get(pk=calendario_id)
+			calendario._horarios = []
+		
+			return calendario
+		
+		calendario = Calendario()
+		calendario._horarios = []
+		
+		return calendario
 	
 	def __str__(self, ):
 		return str(self.espacio) + "(" + str(self.id) + ")"
@@ -272,7 +286,7 @@ class Entorno(object):
 				
 				for profesional in self.profesionales: #Iteracion por cada profesional(p).
 					
-					calendario = Calendario() #Se crea un Calendario.
+					calendario = Calendario.create() #Se crea un Calendario.
 					calendario.limpiar()
 					calendario.espacio = self.espacio #Se le asigna el espacio.
 					#~ calendario.save() #Y se guarda.

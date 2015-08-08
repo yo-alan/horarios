@@ -1,6 +1,6 @@
 {% extends "admin/base.html" %}
 
-{% block title %}Listado de calendarios{% endblock %}
+{% block title %}Listado de calendarios.{% endblock %}
 
 {% block article %}
 	<div class="container-fluid">
@@ -24,7 +24,7 @@
 								{% endfor %}
 							</ul>
 						{% else %}
-							<div class="panel-body">No hay calendarios disponibles. <a href="{% url 'calendario:generar' %}">Generar!</a></div>
+							<div class="panel-body">No hay calendarios disponibles.</div>
 						{% endif %}
 					</div>
 				</div>

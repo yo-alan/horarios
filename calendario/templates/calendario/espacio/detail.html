@@ -14,7 +14,13 @@
 						Attr: <span>{{ espacio }}</span>
 					</dt>
 				</dl>
-				
+				<form method="POST" action="{% url 'calendario:generar' %}">
+					{% csrf_token %}
+					<input type="hidden" id="espacio_id" name="espacio_id" value="{{ espacio.id }}">
+					<button type="submit">
+						Generar
+					</button>
+				</form>
 			</div>
 		</div>
 	</div>
