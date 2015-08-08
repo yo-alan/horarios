@@ -7,14 +7,16 @@ urlpatterns = [
     url(r'^$', views.all, name='all'),
     # ex: /calendario/all/
     url(r'^all/$', views.all, name='all'),
-    # ex: /calendario/add/
-    url(r'^add/$', views.add, name='add'),
+    # ex: /calendario/add/5
+    url(r'^add/(?P<espacio_id>[0-9]+)/$', views.add, name='add'),
     # ex: /calendario/5/
     url(r'^(?P<calendario_id>[0-9]+)/$', views.detail, name='detail'),
     # ex: /calendario/generar/
     url(r'^generar/$', views.generar, name='generar'),
     # ex: /calendario/espacio/
     url(r'^espacio/$', views.espacio_all, name='espacio_all'),
+    # ex: /calendario/espacio/5/
+    url(r'^espacio/(?P<espacio_id>[0-9]+)/$', views.espacio_detail, name='espacio_detail'),
     # ex: /calendario/espacio/all/
     url(r'^espacio/all/$', views.espacio_all, name='espacio_all'),
     # ex: /calendario/espacio/all/pagina/
@@ -25,9 +27,9 @@ urlpatterns = [
     url(r'^espacio/edit/(?P<espacio_id>[0-9]+)/$', views.espacio_edit, name='espacio_edit'),
     # ex: /calendario/espacio/delete/
     url(r'^espacio/delete/(?P<espacio_id>[0-9]+)/$', views.espacio_delete, name='espacio_delete'),
-    # ex: /calendario/espacio/horas/
+    # ex: /calendario/espacio/horas/5
     url(r'^espacio/horas/(?P<espacio_id>[0-9]+)/$', views.espacio_horas, name='espacio_horas'),
-    # ex: /calendario/espacio/horas/
+    # ex: /calendario/espacio/horas/add/
     url(r'^espacio/horas/add/$', views.espacio_add_hora, name='espacio_add_hora'),
     # ex: /calendario/profesional/
     url(r'^profesional/$', views.profesional_all, name='profesional_all'),

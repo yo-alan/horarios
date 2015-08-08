@@ -4,7 +4,7 @@ from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
-from .models import Entorno, Calendario, Profesional, Horario, Restriccion, Especialidad, Espacio
+from .models import Entorno, Calendario, Profesional, Horario, Restriccion, Especialidad, Espacio, Hora
 
 entorno = None
 
@@ -22,13 +22,13 @@ def all(request):
 	
 	return render(request, 'calendario/all.html', context)
 
-def add(request):
+def add(request, espacio_id):
 	
 	if request.method == 'POST':
 		
 		calendario = Calendario()
 		
-		calendario.espacio = Espacio.objects.get(pk=2)
+		calendario.espacio = Espacio.objects.get(pk=espacio_id)
 		calendario.save()
 		
 		for i in range(1, len(request.POST)/3+1):
@@ -44,7 +44,7 @@ def add(request):
 		
 		return HttpResponseRedirect(reverse('calendario:all'))
 		
-	entorno = Entorno(espacio=Espacio.objects.get(pk=2))
+	entorno = Entorno(espacio=Espacio.objects.get(pk=espacio_id))
 	
 	dias = []
 	
@@ -60,9 +60,12 @@ def add(request):
 
 def generar(request):
 	
+	if request.method != 'POST':
+		return HttpResponseRedirect(reverse('calendario:all'))
+	
 	start_time = time.time()
 	
-	espacio = Espacio.objects.get(pk=2)
+	espacio = Espacio.objects.get(pk=request.POST['espacio_id'])
 	
 	entorno = Entorno(espacio=espacio)
 	
@@ -112,6 +115,14 @@ def espacio_all(request, pagina=1):
 	context = {'espacios': espacios, }
 	
 	return render(request, 'calendario/espacio/all.html', context)
+
+def espacio_detail(request, espacio_id):
+	
+	espacio = get_object_or_404(Espacio, pk=espacio_id)
+	
+	context = {'espacio': espacio}
+	
+	return render(request, 'calendario/espacio/detail.html', context)
 
 def espacio_add(request):
 	
@@ -190,7 +201,7 @@ def espacio_add_hora(request):
 	context = {}
 	
 	if request.method != 'POST':
-		return render(request, 'calendario/espacio/horas.html', context)
+		return HttpResponseRedirect(reverse('calendario:espacio_all'))
 	
 	espacio = Espacio.objects.get(pk=request.POST['espacio_id'])
 	
@@ -200,8 +211,8 @@ def espacio_add_hora(request):
 		
 		hora = Hora()
 		
-		hora.hora_desde = request.POST['hora_desde']
-		hora.hora_hasta = request.POST['hora_hasta']
+		hora.hora_desde = request.POST['hora_desde'] + ":" + request.POST['min_desde']
+		hora.hora_hasta = request.POST['hora_hasta'] + ":" + request.POST['min_hasta']
 		hora.espacio = espacio
 		
 		hora.save()
@@ -209,7 +220,7 @@ def espacio_add_hora(request):
 		return HttpResponseRedirect(reverse('calendario:espacio_all'))
 		
 	except Exception as ex:
-		context['error_message'] = str(ex)
+		context['error_message'] = str(ex).decode('utf-8')
 	
 	return render(request, 'calendario/espacio/horas.html', context)
 

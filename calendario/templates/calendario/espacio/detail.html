@@ -1,0 +1,21 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Detalles del espacio {{ espacio }}.{% endblock %}
+
+{% block article %}
+	<div class="container-fluid">
+		<div class="row clearfix">
+			<div class="col-md-12">
+				<h3 class="text-center">
+					Detalles del espacio {{ espacio }}.
+				</h3>
+				<dl>
+					<dt>
+						Attr: <span>{{ espacio }}</span>
+					</dt>
+				</dl>
+				
+			</div>
+		</div>
+	</div>
+{% endblock %}

@@ -1,6 +1,6 @@
 {% extends "admin/base.html" %}
 
-{% block title %}Editar a {{ espacio.nombre }}{% endblock %}
+{% block title %}Editando a {{ espacio.nombre }}.{% endblock %}
 
 {% block article %}
 	<div class="container-fluid">
@@ -17,7 +17,7 @@
 				{% endif %}
 				<form class="form-horizontal" method="POST" action="{% url 'calendario:espacio_edit' espacio.id %}">
 					<fieldset>
-						<legend class="text-center"><b>Editar a {{ especialidad.nombre }}.</b></legend>
+						<legend class="text-center"><b>Editando a {{ espacio.nombre }}.</b></legend>
 						{% csrf_token %}
 						<div class="form-group">
 							<label class="col-xs-3 control-label" for="nombre">Nombre:</label>
