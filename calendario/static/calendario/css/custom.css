@@ -12,9 +12,6 @@ article {
 }
 
 p.especialidad {
-/*
-	border: 1px solid grey;
-*/
 	cursor: move;
 	padding-top: 10%;
 	height: 80px;
@@ -28,4 +25,10 @@ div.horario-container {
 
 .table tbody>tr>td.vert-align{
     vertical-align: middle;
+}
+
+div.especialidades {
+	height: 400px;
+	width: 400px;
+    overflow-y: scroll;
 }

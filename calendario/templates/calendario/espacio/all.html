@@ -75,13 +75,11 @@
 									</td>
 									<td>
 										<div class="btn btn-group btn-block">
-<!--
-											<a class="btn btn-default" title="Editar espacio" href="{% url 'calendario:espacio_edit' espacio.id %}"><i class="glyphicon glyphicon-edit"></i></a>
--->
-											<a class="btn btn-default" title="Configuración" href="{% url 'calendario:espacio_detail' espacio.id %}"><i class="glyphicon glyphicon-edit"></i></a>
-											<a class="btn btn-success" title="Horas" href="{% url 'calendario:espacio_horas' espacio.id %}"><i class="glyphicon glyphicon-th"></i></a>
+											<a class="btn btn-default" title="Editar" href="{% url 'calendario:espacio_detail' espacio.id %}#atributos"><i class="glyphicon glyphicon-edit"></i></a>
+											<a class="btn btn-default" title="Especialidades" href="{% url 'calendario:espacio_detail' espacio.id %}#especialidades"><i class="glyphicon glyphicon-edit"></i></a>
+											<a class="btn btn-success" title="Horas" href="{% url 'calendario:espacio_detail' espacio.id %}#horas"><i class="glyphicon glyphicon-th"></i></a>
 											<a class="btn btn-primary" title="Crear calendario para" href="{% url 'calendario:add' espacio.id %}"><i class="glyphicon glyphicon-calendar"></i></a>
-											<a class="btn btn-danger" title="Eliminar espacio" onclick="eliminarEspacio({{ espacio.id }})"><i class="glyphicon glyphicon-trash"></i></a>
+											<a class="btn btn-danger" title="Eliminar" onclick="eliminarEspacio({{ espacio.id }})"><i class="glyphicon glyphicon-trash"></i></a>
 										</div>
 									</td>
 								</tr>

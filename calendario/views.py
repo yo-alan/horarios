@@ -1,4 +1,4 @@
-import time, json
+import time
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
@@ -36,7 +36,7 @@ def add(request, espacio_id):
 			horario = Horario()
 			
 			horario.calendario = calendario
-			horario.profesional = request.POST[str(i) + '[especialidad]']
+			horario.profesional = request.POST[str(i) + '[profesional]']
 			horario.desde = request.POST[str(i) + '[desde]']
 			horario.dia_semana = request.POST[str(i) + '[dia]']
 			
@@ -120,7 +120,9 @@ def espacio_detail(request, espacio_id):
 	
 	espacio = get_object_or_404(Espacio, pk=espacio_id)
 	
-	context = {'espacio': espacio}
+	especialidades = Especialidad.objects.all().order_by('nombre')
+	
+	context = {'espacio': espacio, 'especialidades': especialidades}
 	
 	return render(request, 'calendario/espacio/detail.html', context)
 
