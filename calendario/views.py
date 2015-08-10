@@ -6,8 +6,6 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from .models import Entorno, Calendario, Profesional, Horario, Restriccion, Especialidad, Espacio, Hora
 
-entorno = None
-
 def index(request):
 	
 	context = {}
@@ -28,7 +26,7 @@ def add(request, espacio_id):
 		
 		calendario = Calendario.create()
 		
-		calendario.espacio = Espacio.objects.get(pk=espacio_id)
+		calendario.espacio = Espacio.create(espacio_id)
 		calendario.save()
 		
 		for i in range(1, len(request.POST)/3+1):
@@ -43,8 +41,8 @@ def add(request, espacio_id):
 			horario.save()
 		
 		return HttpResponseRedirect(reverse('calendario:all'))
-		
-	entorno = Entorno(espacio=Espacio.objects.get(pk=espacio_id))
+	
+	entorno = Entorno(espacio=Espacio.create(espacio_id))
 	
 	dias = []
 	
@@ -65,7 +63,7 @@ def generar(request):
 	
 	start_time = time.time()
 	
-	espacio = Espacio.objects.get(pk=request.POST['espacio_id'])
+	espacio = Espacio.create(POST['espacio_id'])
 	
 	entorno = Entorno(espacio=espacio)
 	
@@ -118,7 +116,7 @@ def espacio_all(request, pagina=1):
 
 def espacio_detail(request, espacio_id):
 	
-	espacio = get_object_or_404(Espacio, pk=espacio_id)
+	espacio = Espacio.create(espacio_id)
 	
 	especialidades = Especialidad.objects.all().order_by('nombre')
 	
@@ -133,7 +131,7 @@ def espacio_add(request):
 	if request.method == 'POST':
 		
 		try:
-			espacio = Espacio()
+			espacio = Espacio.create()
 			
 			espacio.nombre = request.POST["nombre"]
 			
@@ -150,7 +148,7 @@ def espacio_edit(request, espacio_id):
 	
 	context = {}
 	
-	espacio = Espacio.objects.get(pk=espacio_id)
+	espacio = Espacio.create(espacio_id)
 	
 	if request.method == 'POST':
 		
@@ -175,7 +173,7 @@ def espacio_delete(request, espacio_id):
 		context = {}
 		
 		try:
-			espacio = Espacio.objects.get(pk=espacio_id)
+			espacio = Espacio.create(espacio_id)
 			
 			espacio.delete()
 			
@@ -192,7 +190,7 @@ def espacio_horas(request, espacio_id):
 	
 	context = {}
 	
-	espacio = Espacio.objects.get(pk=espacio_id)
+	espacio = Espacio.create(espacio_id)
 	
 	context['espacio'] = espacio
 	
@@ -205,7 +203,7 @@ def espacio_add_hora(request):
 	if request.method != 'POST':
 		return HttpResponseRedirect(reverse('calendario:espacio_all'))
 	
-	espacio = Espacio.objects.get(pk=request.POST['espacio_id'])
+	espacio = Espacio.create(request.POST['espacio_id'])
 	
 	context['espacio'] = espacio
 	
@@ -251,12 +249,13 @@ def profesional_add(request):
 		try:
 			profesional = Profesional()
 			
-			profesional.nombre = request.POST["nombre"]
-			profesional.apellido = request.POST["apellido"]
-			profesional.cuil = request.POST["cuil"]
-			profesional.especialidad = Especialidad.objects.get(pk=request.POST["especialidad"])
+			profesional.nombre = request.POST['nombre']
+			profesional.apellido = request.POST['apellido']
+			profesional.cuil = request.POST['cuil']
 			
 			profesional.save()
+			
+			profesional.especialidades.add(Especialidad.objects.get(pk=request.POST['especialidad_id']))
 			
 			return HttpResponseRedirect(reverse('calendario:profesional_all'))
 			

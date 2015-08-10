@@ -83,7 +83,9 @@
 										{{ profesional.cuil }}
 									</td>
 									<td class="vert-align">
-										{{ profesional.especialidad }}
+										{% for especialidad in profesional.especialidades.all %}
+											{{ especialidad }}, 
+										{% endfor %}
 									</td>
 									<td class="vert-align">
 										<div class="btn btn-group btn-block">

@@ -24,11 +24,10 @@ div.horario-container {
 }
 
 .table tbody>tr>td.vert-align{
-    vertical-align: middle;
+	vertical-align: middle;
 }
 
-div.especialidades {
+ul.especialidades {
 	height: 400px;
-	width: 400px;
     overflow-y: scroll;
 }
