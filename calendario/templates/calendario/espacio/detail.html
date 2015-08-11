@@ -49,6 +49,12 @@
 			}
 			
 		}
+		
+		function verCalendario(calendario){
+			
+			window.location.href = calendario;
+			
+		}
 	</script>
 	<div class="container-fluid">
 		<div class="row">
@@ -68,7 +74,7 @@
 							<a href="#horas" data-toggle="tab">Horas</a>
 						</li>
 						<li>
-							<a href="#generar" data-toggle="tab">Generar calendarios</a>
+							<a href="#calendarios" data-toggle="tab">Calendarios</a>
 						</li>
 					</ul>
 					<div class="tab-content">
@@ -189,7 +195,23 @@
 								</form>
 							</div>
 						</div>
-						<div class="tab-pane" id="generar">
+						<div class="tab-pane" id="calendarios">
+							<div class="col-md-5">
+								<div class="panel panel-primary">
+									<div class="panel-heading">
+										<h3 class="panel-title"><b>Listado de calendarios</b></h3>
+									</div>
+									<ul id="ulCalendarios" class="list-group calendarios">
+										{% for calendario in espacio.calendarios %}
+											<li id="{{ calendario.id }}" class="btn list-group-item" onclick="verCalendario('{% url 'calendario:detail' calendario.id %}')">
+												<p class="text-left">
+													{{ calendario.id }}
+												</p>
+											</li>
+										{% endfor %}
+									</ul>
+								</div>
+							</div>
 							{% for hora in espacio.horas %}
 								<dl>
 									<dt>

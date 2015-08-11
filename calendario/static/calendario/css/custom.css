@@ -31,3 +31,9 @@ ul.especialidades {
 	height: 400px;
     overflow-y: scroll;
 }
+
+ul.calendarios {
+	height: 400px;
+	width: 365px;
+    overflow-y: scroll;
+}

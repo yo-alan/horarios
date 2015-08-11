@@ -29,32 +29,6 @@
 						Especialidades<small>.</small>
 					</h1>
 				</div>
-				<div class="modal fade" id="modal-container-789271" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-					<div class="modal-dialog">
-						<div class="modal-content">
-							<div class="modal-header text-center">
-								<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-									×
-								</button>
-								<h4 class="modal-title" id="myModalLabel">
-									Eliminar especialidad
-								</h4>
-							</div>
-							<div class="modal-body">
-								¿Está seguro que desea eliminar a -tanto-?
-							</div>
-							<div class="modal-footer">
-								 
-								<button type="button" class="btn btn-default" data-dismiss="modal">
-									No
-								</button> 
-								<button type="button" class="btn btn-primary">
-									Eliminar
-								</button>
-							</div>
-						</div>
-					</div>
-				</div>
 				<table class="table table-hover">
 					<thead>
 						<tr>
@@ -66,7 +40,6 @@
 							</th>
 							<th>
 								Carga máxima diaria
-							</th>
 							</th>
 							<th>
 								Acciones
@@ -88,8 +61,8 @@
 									</td>
 									<td class="vert-align">
 										<div class="btn btn-group btn-block">
-											<a class="btn btn-default" title="Editar especialidad" href="{% url 'calendario:especialidad_edit' especialidad.id %}"><i class="glyphicon glyphicon-pencil"></i></a>
-											<a id="modal-789271" onclick="eliminarEspecialidad({{ especialidad.id }})" role="button" class="btn btn-danger" data-toggle="modal"><i class="glyphicon glyphicon-trash"></i></a>
+											<a class="btn btn-default" title="Editar" href="{% url 'calendario:especialidad_edit' especialidad.id %}"><i class="glyphicon glyphicon-pencil"></i></a>
+											<a class="btn btn-danger" title="Eliminar" onclick="eliminarEspecialidad({{ especialidad.id }})"><i class="glyphicon glyphicon-trash"></i></a>
 										</div>
 									</td>
 								</tr>

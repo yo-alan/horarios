@@ -63,7 +63,7 @@ def generar(request):
 	
 	start_time = time.time()
 	
-	espacio = Espacio.create(POST['espacio_id'])
+	espacio = Espacio.create(request.POST['espacio_id'])
 	
 	entorno = Entorno(espacio=espacio)
 	

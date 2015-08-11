@@ -15,6 +15,7 @@ class Espacio(models.Model):
 		else:
 			espacio = Espacio()
 		
+		espacio._calendarios = []
 		espacio._horas = []
 		#HARDACODED
 		espacio._dias_habiles = [1, 2, 3, 4, 5]
@@ -40,3 +41,11 @@ class Espacio(models.Model):
 	@property
 	def especialidades(self, ):
 		return []
+	
+	@property
+	def calendarios(self, ):
+		from calendario import Calendario
+		if not self._calendarios:
+			self._calendarios = Calendario.objects.filter(espacio=self)
+		
+		return self._calendarios

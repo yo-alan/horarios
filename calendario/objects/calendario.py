@@ -83,7 +83,7 @@ class Calendario(models.Model):
 	
 	@property
 	def horarios(self, ):
-		
+		from horario import Horario
 		if not self._horarios:
 			horarios = Horario.objects.filter(calendario=self).order_by('hora_desde', 'dia_semana')
 			
