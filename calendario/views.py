@@ -224,6 +224,15 @@ def espacio_add_hora(request):
 	
 	return render(request, 'calendario/espacio/horas.html', context)
 
+def espacio_add_especialidades(request, ):
+	
+	if request.method != 'POST':
+		return HttpResponseRedirect(reverse('calendario:espacio_all'))
+	
+	print request.POST
+	
+	return HttpResponseRedirect(reverse('calendario:espacio_all'))
+
 def profesional_all(request, pagina=1):
 	
 	total_profesionales = Profesional.objects.all().order_by('apellido', 'nombre')
@@ -268,7 +277,7 @@ def profesional_add(request):
 	
 	return render(request, 'calendario/profesional/add.html', context)
 
-def profesional_edit(request, profesional_id):
+def profesional_detail(request, profesional_id):
 	
 	context = {}
 	
@@ -294,7 +303,32 @@ def profesional_edit(request, profesional_id):
 	context['profesional'] = profesional
 	context['especialidades'] = especialidades
 	
-	return render(request, 'calendario/profesional/edit.html', context)
+	return render(request, 'calendario/profesional/detail.html', context)
+
+def profesional_edit(request):
+	
+	if request.method != 'POST':
+		return HttpResponseRedirect(reverse('calendario:profesional_all'))
+	
+	contex = {}
+	
+	try:
+		
+		profesional = Profesional.objects.get(pk=request.POST['profesional_id'])
+		
+		profesional.nombre = request.POST['nombre']
+		profesional.apellido = request.POST['apellido']
+		profesional.cuil = request.POST['cuil']
+		profesional.especialidad = Especialidad.objects.get(pk=request.POST['especialidad'])
+		
+		profesional.save()
+		
+		return HttpResponseRedirect(reverse('calendario:profesional_all'))
+		
+	except Exception as ex:
+		context['error_message'] = "Error editando el profesional: " + str(ex)
+	
+	return render(request, 'calendario/profesional/detail.html', context)
 
 def profesional_delete(request, profesional_id):
 	

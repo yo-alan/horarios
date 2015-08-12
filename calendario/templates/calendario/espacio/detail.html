@@ -44,9 +44,22 @@
 			
 			var eAsignadas = document.getElementById('eAsignadas');
 			
+			var especialidades = []
+			
 			for(i = 0; i < eAsignadas.children.length; i++){
-				alert(eAsignadas.children[i].id);
+				especialidades.push(eAsignadas.children[i].id);
 			}
+			
+			$.ajax({
+				url: "{% url 'calendario:espacio_add_especialidades' %}",
+				type: 'POST',
+				data: {
+					csrfmiddlewaretoken: '{{ csrf_token }}', espacio_id: {{ espacio.id }}, especialidades: especialidades
+				},
+				success: function(response) {
+					
+				}
+			});
 			
 		}
 		
