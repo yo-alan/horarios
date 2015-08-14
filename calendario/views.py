@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import time
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect
@@ -5,6 +6,8 @@ from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from .models import Entorno, Calendario, Profesional, Horario, Restriccion, Especialidad, Espacio, Hora
+
+DIAS = {0 : 'Domingo', 1 : 'Lunes', 2 : 'Martes', 3 : 'Miércoles', 4 : 'Jueves', 5 : 'Viernes', 6 : 'Sábado'}
 
 def index(request):
 	
@@ -29,12 +32,13 @@ def add(request, espacio_id):
 		calendario.espacio = Espacio.create(espacio_id)
 		calendario.save()
 		
+		#Dividimos por 3 por esa es la cantidad de atributos y mas 1 por que el primero es el csrf.
 		for i in range(1, len(request.POST)/3+1):
 			
 			horario = Horario()
 			
 			horario.calendario = calendario
-			horario.profesional = request.POST[str(i) + '[profesional]']
+			horario.profesional = request.POST[str(i) + '[especialidad]']
 			horario.desde = request.POST[str(i) + '[desde]']
 			horario.dia_semana = request.POST[str(i) + '[dia]']
 			
@@ -42,17 +46,17 @@ def add(request, espacio_id):
 		
 		return HttpResponseRedirect(reverse('calendario:all'))
 	
-	entorno = Entorno(espacio=Espacio.create(espacio_id))
+	espacio = Espacio.create(espacio_id)
 	
 	dias = []
 	
-	for num in entorno.DIAS:
-		if num in entorno.espacio.dias_habiles:
-			dias.append(entorno.DIAS[num])
+	for num in DIAS:
+		if num in espacio.dias_habiles:
+			dias.append(DIAS[num])
 	
 	colores = ['#337ab7', '#5cb85c', '#5bc0de', '#f0ad4e', '#d9534f', '#73e673', '#ffc879', '#ff625c', '#', '#', '#', '#', '#', '#', '#', '#']
 	
-	context = {'entorno': entorno, 'dias': dias, 'colores': colores}
+	context = {'espacio': espacio, 'dias': dias, 'colores': colores}
 	
 	return render(request, 'calendario/add.html', context)
 
@@ -229,7 +233,7 @@ def espacio_add_especialidades(request, ):
 	if request.method != 'POST':
 		return HttpResponseRedirect(reverse('calendario:espacio_all'))
 	
-	print request.POST
+	print dict(request.POST.iterlists())
 	
 	return HttpResponseRedirect(reverse('calendario:espacio_all'))
 

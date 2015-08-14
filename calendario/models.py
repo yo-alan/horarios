@@ -18,22 +18,14 @@ class Entorno(object):
 	Clase que abarca el medio ambiente en el cual se desarrolla el algoritmo.
 	
 	@Atributos:
-	.DIAS - constante con los dias de la semana. Valor: {0 : 'Domingo', 1 : 'Lunes', 2 : 'Martes', 3 : 'Miercoles', 4 : 'Jueves', 5 : 'Viernes', 6 : 'Sabado'}.
 	.dias_habiles - lista con los dias a cubrir. Valor: {}.
 	.horarios - diccionario con los horarios a cubrir. Valor: {}.
 	.poblacion - lista de individuos. Valor: [].
-	.profesionales - lista de profesionales a utilizar. Valor: [].
-	.restricciones - lista de restricciones a utilizar. Valor: [].
 	.generaciones - cantidad de generacion a generar. Valor: 0.
 	.espacio - espacio para el cual se generan los individuos. Valor: None.
 	"""
 	
-	DIAS = {0 : 'Domingo', 1 : 'Lunes', 2 : 'Martes', 3 : 'Miércoles', 4 : 'Jueves', 5 : 'Viernes', 6 : 'Sábado'}
-	
 	_poblacion = []
-	_restricciones = []
-	_profesionales = []
-	_especialidades = []
 	_generaciones = 0
 	_espacio = None
 	
@@ -48,14 +40,6 @@ class Entorno(object):
 		@Return:
 		None
 		"""
-		
-		self.profesionales = Profesional.objects.all()[:10] #Asignamos todas las especialidades de la BBDD.
-		
-		for profesional in self.profesionales:
-			
-			self.restricciones += Profesional_restriccion.objects.filter(profesional=profesional)
-			
-			self.especialidades.append(profesional.especialidad)
 		
 		self.generaciones = generaciones
 		self.espacio = espacio

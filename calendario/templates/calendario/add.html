@@ -39,7 +39,7 @@
 					especialidad = especialidad.cloneNode(true);
 				
 				//PARA ASIGNAR UN ID HAY QUE COMPROBAR SU UBICACION.
-				especialidad.setAttribute('id', parseInt(ev.target.getAttribute("horario"))*{{ entorno.espacio.dias_habiles|length }}+parseInt(ev.target.getAttribute("dia")));
+				especialidad.setAttribute('id', parseInt(ev.target.getAttribute("horario"))*{{ espacio.dias_habiles|length }}+parseInt(ev.target.getAttribute("dia")));
 				especialidad.setAttribute('desde', ev.target.getAttribute('desde'));
 				especialidad.setAttribute('dia', ev.target.getAttribute('dia'));
 				
@@ -51,7 +51,7 @@
 		function guardar(){
 			
 			var datos = {csrfmiddlewaretoken: "{{ csrf_token }}"};
-			for(i = 1; i < {{ entorno.espacio.dias_habiles|length }}*{{ entorno.espacio.horas|length }}+1; i++){
+			for(i = 1; i < {{ espacio.dias_habiles|length }}*{{ espacio.horas|length }}+1; i++){
 				
 				var espacio_horario = document.getElementById(i);
 				
@@ -109,17 +109,17 @@
 		<div class="row clearfix">
 			<div class="col-md-12">
 				<h3 class="text-center">
-					Calendario para "{{ entorno.espacio }}".
+					Calendario para "{{ espacio }}".
 				</h3>
 				<ul class="list-inline">
 					<li>
-						<img class="btn" src="/static/calendario/images/new.png" onclick="nuevo();" title="Nuevo calendario...">
+						<img class="btn" src="/static/calendario/images/new.png" onclick="nuevo()" title="Nuevo calendario...">
 					</li>
 					<li>
-						<img class="btn" src="/static/calendario/images/save.png" onclick="guardar();" title="Guardar calendario...">
+						<img class="btn" src="/static/calendario/images/save.png" onclick="guardar()" title="Guardar calendario...">
 					</li>
 					<li>
-						<img class="btn" src="/static/calendario/images/print.png" onclick="imprimir();" title="Imprimir calendario...">
+						<img class="btn" src="/static/calendario/images/print.png" onclick="imprimir()" title="Imprimir calendario...">
 					</li>
 					<li>
 						<img src="/static/calendario/images/trash.png" id="trash" ondrop="eliminar(event)" ondragover="allowDrop(event)">
@@ -139,7 +139,7 @@
 							</tr>
 						</thead>
 						<tbody>
-							{% for hora in entorno.espacio.horas %}
+							{% for hora in espacio.horas %}
 								<tr>
 									<td class="text-center bg-primary">
 										<h4>
@@ -149,7 +149,7 @@
 											<strong>{{ hora.hora_hasta }}</strong>
 										</h4>
 									</td>
-									{% for dia in entorno.espacio.dias_habiles %}
+									{% for dia in espacio.dias_habiles %}
 										<td class="text-center active">
 											<div id="{{ hora }}{{ dia }}" dia="{{ dia }}" desde="{{ hora }}" horario="{{ forloop.parentloop.counter0 }}" ondrop="drop(event)" ondragover="allowDrop(event)" class="horario-container">
 												
@@ -163,10 +163,10 @@
 				</div>
 				<div class="col-md-2 pull-right">
 					<ul class="list-unstyled">
-						{% for profesional in entorno.profesionales %}
+						{% for especialidad in espacio.especialidades %}
 							<li>
-								<p id="{{ profesional.especialidad.nombre }}" name="{{ profesional.especialidad.id }}" draggable="true" ondragstart="drag(event)" class="lead especialidad text-center" style="background-color:{{ colores.2 }}">
-									<strong>{{ profesional.especialidad }}</strong>
+								<p id="{{ especialidad.nombre }}" name="{{ especialidad.id }}" draggable="true" ondragstart="drag(event)" class="lead especialidad text-center" style="background-color:{{ colores.2 }}">
+									<strong>{{ especialidad }}</strong>
 								</p>
 							</li>
 						{% endfor %}

@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 from django.db import models
+from especialidad import Especialidad
 
 class Espacio(models.Model):
 	
 	nombre = models.CharField(max_length=100, null=False, blank=False)
+	especialidades = models.ManyToManyField(Especialidad)
 	
 	@classmethod
 	def create(cls, espacio_id=0):
@@ -28,7 +30,7 @@ class Espacio(models.Model):
 	@property
 	def horas(self, ):
 		from hora import Hora
-
+		
 		if not self._horas:
 			self._horas = Hora.objects.filter(espacio=self).order_by('hora_desde')
 		
@@ -45,6 +47,7 @@ class Espacio(models.Model):
 	@property
 	def calendarios(self, ):
 		from calendario import Calendario
+		
 		if not self._calendarios:
 			self._calendarios = Calendario.objects.filter(espacio=self)
 		

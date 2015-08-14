@@ -57,7 +57,7 @@
 					csrfmiddlewaretoken: '{{ csrf_token }}', espacio_id: {{ espacio.id }}, especialidades: especialidades
 				},
 				success: function(response) {
-					
+					alert(response);
 				}
 			});
 			
@@ -138,7 +138,7 @@
 												{% for especialidad in especialidades %}
 													<li id="{{ especialidad.id }}" class="btn list-group-item" onclick="agregar(this)">
 														<p class="text-left">
-															{{ especialidad.nombre }}
+															{{ especialidad }}
 														</p>
 													</li>
 												{% endfor %}
