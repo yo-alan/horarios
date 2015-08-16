@@ -10,10 +10,10 @@
 				return;
 			
 			$.ajax({
-				url: '/calendario/espacio/delete/' + espacio_id + '/',
+				url: '/calendario/espacio/delete/',
 				type: 'POST',
 				data: {
-					csrfmiddlewaretoken: '{{ csrf_token }}'
+					csrfmiddlewaretoken: '{{ csrf_token }}', espacio_id: espacio_id
 				},
 				success: function(response) {
 					window.location.href = "{% url 'calendario:espacio_all' %}";

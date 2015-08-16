@@ -41,10 +41,6 @@ class Espacio(models.Model):
 		return self._dias_habiles
 	
 	@property
-	def especialidades(self, ):
-		return []
-	
-	@property
 	def calendarios(self, ):
 		from calendario import Calendario
 		

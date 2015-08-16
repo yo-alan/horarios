@@ -10,10 +10,10 @@
 				return;
 			
 			$.ajax({
-				url: '/calendario/profesional/delete/' + profesional_id + '/',
+				url: '/calendario/profesional/delete/',
 				type: 'POST',
 				data: {
-					csrfmiddlewaretoken: '{{ csrf_token }}'
+					csrfmiddlewaretoken: '{{ csrf_token }}', profesional_id: profesional_id
 				},
 				success: function(response) {
 					window.location.href = "{% url 'calendario:profesional_all' %}";

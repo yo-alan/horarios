@@ -163,7 +163,7 @@
 				</div>
 				<div class="col-md-2 pull-right">
 					<ul class="list-unstyled">
-						{% for especialidad in espacio.especialidades %}
+						{% for especialidad in espacio.especialidades.all %}
 							<li>
 								<p id="{{ especialidad.nombre }}" name="{{ especialidad.id }}" draggable="true" ondragstart="drag(event)" class="lead especialidad text-center" style="background-color:{{ colores.2 }}">
 									<strong>{{ especialidad }}</strong>

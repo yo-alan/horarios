@@ -25,6 +25,11 @@ class Entorno(object):
 	.espacio - espacio para el cual se generan los individuos. Valor: None.
 	"""
 	
+	PUNTOS_RESTRICCION_PROFESIONAL = 3
+	PUNTOS_HORAS_SEMANALES = 2
+	PUNTOS_HORAS_DIARIAS = 1
+	PUNTOS_DISTRIBUCION_HORARIA = 1
+	
 	_poblacion = []
 	_generaciones = 0
 	_espacio = None
@@ -64,7 +69,7 @@ class Entorno(object):
 			
 			for hora in self.espacio.horas: #Cantidad de iteraciones por los horarios.
 				
-				for profesional in self.profesionales: #Iteracion por cada profesional(p).
+				for especialidad in self.espacio.especialidades: #Iteracion por cada especialidad.
 					
 					calendario = Calendario.create() #Se crea un Calendario.
 					calendario.limpiar()
@@ -74,7 +79,7 @@ class Entorno(object):
 					self.poblacion.append(calendario) #A su vez el Calendario es agregado a la poblacion del Entorno.
 					
 					horario = Horario() #Se crea un Horario.
-					horario.profesional = profesional #Se le asigna un Profesional.
+					horario.especialidad = especialidad #Se le asigna un Especialidad.
 					horario.hora_desde = hora.hora_desde #Se le asigna una hora desde.
 					horario.hora_hasta = hora.hora_hasta #Se le asigna una hora hasta.
 					horario.dia_semana = dia #Se le asigna un dia de la semana.
@@ -93,7 +98,7 @@ class Entorno(object):
 				for hora in self.espacio.horas: #Tambien por la cantidad de horarios.
 					
 					horario = Horario() #Se crea un Horario.
-					horario.profesional = self.profesionales[randrange(1, len(self.profesionales))] #Se le asigna un Profesional.
+					horario.especialidad = self.espacio.especialidades[randrange(1, len(self.espacio.especialidades))] #Se le asigna un Especialidad.
 					horario.hora_desde = hora.hora_desde #Se le asigna una hora desde.
 					horario.hora_hasta = hora.hora_hasta #Se le asigna una hora hasta.
 					horario.dia_semana = dia #Se le asigna un dia de la semana.
@@ -145,42 +150,43 @@ class Entorno(object):
 			#los profesionales. Cada superposicion vale un punto, mientras mas
 			#alto sea el puntaje, menos apto es el individuo.
 			
-			#~ for restriccion in self.restricciones: #Por cada restriccion.
-				#~ 
-				#~ for franja_horaria in calendario.horarios: #Por cada franja de horarios.
-					#~ 
-					#~ for horario in franja_horaria: #Por cada por cada horario dentro de la franja.
-						#~ 
-						#~ for profesional in self.profesionales: #Por cada profesional.
-							#~ 
-							#~ if horario.profesional != profesional: #Si no es el profesional del horario continuamos.
-								#~ continue
-							#~ 
-							#~ if horario.dia_semana != restriccion.dia_semana: #Si no es el mismo dia de la semana del horario continuamos.
-								#~ continue
-							#~ 
-							#~ if (horario.desde >= restriccion.desde and horario.desde < restriccion.hasta) or \
-								#~ (horario.hasta > restriccion.desde and horario.hasta <= restriccion.hasta) or \
-								#~ (horario.desde <= restriccion.desde and horario.hasta >= restriccion.hasta):
-								#~ calendario.puntaje += 1
+			for restriccion in self.restricciones: #Por cada restriccion.
+				
+				for franja_horaria in calendario.horarios: #Por cada franja de horarios.
+					
+					for horario in franja_horaria: #Por cada por cada horario dentro de la franja.
+						
+						for especialidad in self.espacio.especialidades: #Por cada especialidad.
+							
+							if horario.especialidad.profesional != especialidad.profesional: #Si no es el profesional del horario continuamos.
+								continue
+							
+							if horario.dia_semana != restriccion.dia_semana: #Si no es el mismo dia de la semana del horario continuamos.
+								continue
+							
+							if (horario.desde >= restriccion.desde and horario.desde < restriccion.hasta) or \
+								(horario.hasta > restriccion.desde and horario.hasta <= restriccion.hasta) or \
+								(horario.desde <= restriccion.desde and horario.hasta >= restriccion.hasta):
+								calendario.puntaje += PUNTOS_RESTRICCION_PROFESIONAL
 			
 			
 			#Segunda evaluacion: Que se cumplan las horas semanales y diarias de la especialidad.
+			#Horas semanales: cada hora extra o faltante es penalizada con la suma de puntos.
 			
-			for especialidad in self.especialidades: #Por cada especialidad
+			for especialidad in self.espacio.especialidades: #Por cada especialidad
 				
 				horas_semanales = 0 #Contador de horas semanales.
 				for franja_horaria in calendario.horarios: #Por cada franja de horarios.
 					
 					for horario in franja_horaria: #Por cada horario en la franja horaria.
 						
-						#Si la especialidad del profesional es igual, contamos.
+						#Si la especialidad es igual, contamos.
 						if horario.profesional.especialidad == especialidad:
-							
 							horas_semanales += 1
 					
 				if horas_semanales != especialidad.carga_horaria_semanal:
-					calendario.puntaje += abs(especialidad.carga_horaria_semanal - horas_semanales)
+					#~ calendario.puntaje += abs(especialidad.carga_horaria_semanal - horas_semanales)
+					calendario.puntaje += PUNTOS_HORAS_SEMANALES
 			
 			for i in range(len(self.espacio._dias_habiles)):
 				
@@ -231,12 +237,4 @@ class Entorno(object):
 	@dias.setter
 	def dias(self, dias):
 		self._dias = dias
-	
-	@property
-	def especialidades(self, ):
-		return self._especialidades
-	
-	@especialidades.setter
-	def especialidades(self, especialidades):
-		self._especialidades = especialidades
 	

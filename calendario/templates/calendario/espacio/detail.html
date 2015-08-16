@@ -64,9 +64,7 @@
 		}
 		
 		function verCalendario(calendario){
-			
 			window.location.href = calendario;
-			
 		}
 	</script>
 	<div class="container-fluid">
@@ -92,7 +90,23 @@
 					</ul>
 					<div class="tab-content">
 						<div class="tab-pane active" id="atributos">
-							<div class="col-md-8 col-md-offset-2">
+							<div class="col-md-6">
+								<div class="panel panel-primary">
+									<div class="panel-heading">
+										<h3 class="panel-title"><b>Especialidades</b></h3>
+									</div>
+									<ul id="eAsignadas" class="list-group">
+										{% for especialidad in espacio.especialidades.all %}
+											<li id="{{ especialidad.id }}" class="list-group-item">
+												<p class="text-left">
+													{{ especialidad }}
+												</p>
+											</li>
+										{% endfor %}
+									</ul>
+								</div>
+							</div>
+							<div class="col-md-6">
 								{% if error_message %}
 									<div class="alert alert-danger">
 										<a href="#" class="close" data-dismiss="alert">&times;</a>
@@ -102,25 +116,15 @@
 										</p>
 									</div>
 								{% endif %}
-								<form class="form-horizontal" method="POST" action="{% url 'calendario:espacio_edit' espacio.id %}">
-									<fieldset>
-										<legend class="text-center">Editando a {{ espacio.nombre }}.</legend>
-										{% csrf_token %}
-										<div class="form-group">
-											<label class="col-xs-3 control-label" for="nombre">Nombre:</label>
-											<div class="col-xs-9">
-												<input type="text" id="nombre" name="nombre" class="form-control" value="{{ espacio.nombre }}">
-											</div>
-										</div>
-										<div class="form-group">
-											<div class="col-md-1 col-md-offset-10">
-												<button type="submit" class="btn btn-primary">
-													Editar
-												</button>
-											</div>
-										</div>
-									</form>
-								</fieldset>
+								<form class="form-inline" method="POST" action="{% url 'calendario:espacio_edit' %}">
+									{% csrf_token %}
+									<input id="espacio_id" name="espacio_id" type="hidden" value="{{ espacio.id }}">
+									<div class="form-group">
+										<label class="control-label" for="nombre">Nombre del espacio:</label>
+										<input type="text" id="nombre" name="nombre" class="form-control" value="{{ espacio.nombre }}">
+									</div>
+									<button type="submit" class="btn btn-primary">Guardar</button>
+								</form>
 							</div>
 						</div>
 						<div class="tab-pane" id="especialidades">
@@ -136,11 +140,13 @@
 											</div>
 											<ul id="eDisponibles" class="list-group especialidades">
 												{% for especialidad in especialidades %}
-													<li id="{{ especialidad.id }}" class="btn list-group-item" onclick="agregar(this)">
-														<p class="text-left">
-															{{ especialidad }}
-														</p>
-													</li>
+													{% if not especialidad in espacio.especialidades.all %}
+														<li id="{{ especialidad.id }}" class="btn list-group-item" onclick="agregar(this)">
+															<p class="text-left">
+																{{ especialidad }}
+															</p>
+														</li>
+													{% endif %}
 												{% endfor %}
 											</ul>
 										</div>
@@ -151,6 +157,13 @@
 												<h3 class="panel-title"><b>Asignadas</b></h3>
 											</div>
 											<ul id="eAsignadas" class="list-group especialidades">
+												{% for especialidad in espacio.especialidades.all %}
+													<li id="{{ especialidad.id }}" class="btn list-group-item" onclick="eliminar(this)">
+														<p class="text-left">
+															{{ especialidad }}
+														</p>
+													</li>
+												{% endfor %}
 											</ul>
 										</div>
 									</div>
@@ -172,39 +185,37 @@
 									</div>
 								{% endif %}
 								<form class="form-horizontal col-md-offset-3" method="POST" action="{% url 'calendario:espacio_add_hora' %}">
-									<fieldset>
-										{% csrf_token %}
-										<input id="espacio_id" name="espacio_id" type="hidden" value="{{ espacio.id }}">
-										<div class="form-group">
-											<div class="row">
-												<label class="col-xs-3 control-label" for="desde">Hora desde:</label>
-												<div class="col-xs-2">
-													<input id="hora_desde" name="hora_desde" type="number" class="form-control" min="00" max="23" value="00" onchange="onValChange(this)">
-												</div>
-												<div class="col-xs-2">
-													<input id="min_desde" name="min_desde" type="number" class="form-control" min="00" max="59" value="00" onchange="onValChange(this)">
-												</div>
+									{% csrf_token %}
+									<input id="espacio_id" name="espacio_id" type="hidden" value="{{ espacio.id }}">
+									<div class="form-group">
+										<div class="row">
+											<label class="col-xs-3 control-label" for="desde">Hora desde:</label>
+											<div class="col-xs-2">
+												<input id="hora_desde" name="hora_desde" type="number" class="form-control" min="00" max="23" value="00" onchange="onValChange(this)">
+											</div>
+											<div class="col-xs-2">
+												<input id="min_desde" name="min_desde" type="number" class="form-control" min="00" max="59" value="00" onchange="onValChange(this)">
 											</div>
 										</div>
-										<div class="form-group">
-											<div class="row">
-												<label class="col-xs-3 control-label" for="hasta">Hora hasta:</label>
-												<div class="col-xs-2">
-													<input id="hora_hasta" name="hora_hasta" type="number" class="form-control" min="00" max="23" value="00" onchange="onValChange(this)">
-												</div>
-												<div class="col-xs-2">
-													<input id="min_hasta" name="min_hasta" type="number" class="form-control" min="00" max="59" value="00" onchange="onValChange(this)">
-												</div>
+									</div>
+									<div class="form-group">
+										<div class="row">
+											<label class="col-xs-3 control-label" for="hasta">Hora hasta:</label>
+											<div class="col-xs-2">
+												<input id="hora_hasta" name="hora_hasta" type="number" class="form-control" min="00" max="23" value="00" onchange="onValChange(this)">
+											</div>
+											<div class="col-xs-2">
+												<input id="min_hasta" name="min_hasta" type="number" class="form-control" min="00" max="59" value="00" onchange="onValChange(this)">
 											</div>
 										</div>
-										<div class="form-group">
-											<div class="col-md-offset-10">
-												<button type="submit" class="btn btn-primary">
-													Agregar
-												</button>
-											</div>
+									</div>
+									<div class="form-group">
+										<div class="col-md-offset-10">
+											<button type="submit" class="btn btn-primary">
+												Agregar
+											</button>
 										</div>
-									</fieldset>
+									</div>
 								</form>
 							</div>
 						</div>

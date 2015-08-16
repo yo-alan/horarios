@@ -4,11 +4,13 @@ body {
 
 article {
 	background-color: white;
-    margin: auto;
-    margin-top: 50px;
-    width: 1000px;
-    border: 3px solid;
-    padding: 5px;
+	margin: auto;
+	margin-top: 50px;
+    min-height: 600px;
+	width: 1000px;
+	border: 3px solid;
+	padding: 5px;
+	vertical-align: middle;
 }
 
 p.especialidad {
@@ -29,11 +31,15 @@ div.horario-container {
 
 ul.especialidades {
 	height: 400px;
-    overflow-y: scroll;
+	overflow-y: scroll;
 }
 
 ul.calendarios {
 	height: 400px;
 	width: 365px;
-    overflow-y: scroll;
+	overflow-y: scroll;
+}
+
+.tab-content {
+	margin-top: 20px;
 }

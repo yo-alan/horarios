@@ -10,10 +10,10 @@
 				return;
 			
 			$.ajax({
-				url: '/calendario/especialidad/delete/' + especialidad_id + '/',
+				url: '/calendario/especialidad/delete/',
 				type: 'POST',
 				data: {
-					csrfmiddlewaretoken: '{{ csrf_token }}'
+					csrfmiddlewaretoken: '{{ csrf_token }}', especialidad_id: especialidad_id
 				},
 				success: function(response) {
 					window.location.href = "{% url 'calendario:especialidad_all' %}";

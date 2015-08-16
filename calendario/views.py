@@ -148,47 +148,49 @@ def espacio_add(request):
 	
 	return render(request, 'calendario/espacio/add.html', context)
 
-def espacio_edit(request, espacio_id):
+def espacio_edit(request):
+	
+	if request.method != 'POST':
+		return HttpResponseRedirect(reverse('calendario:espacio_all'))
 	
 	context = {}
+	espacio = None
 	
-	espacio = Espacio.create(espacio_id)
-	
-	if request.method == 'POST':
+	try:
+		espacio = Espacio.create(request.POST['espacio_id'])
 		
-		try:
-			espacio.nombre = request.POST["nombre"]
-			
-			espacio.save()
-			
-			return HttpResponseRedirect(reverse('calendario:espacio_all'))
-			
-		except Exception as ex:
-			context['error_message'] = "Error editando el espacio: " + str(ex)
+		espacio.nombre = request.POST['nombre']
+		
+		espacio.save()
+		
+		return HttpResponseRedirect(reverse('calendario:espacio_all'))
+		
+	except Exception as ex:
+		context['error_message'] = "Error editando el espacio: " + str(ex)
 	
 	context['espacio'] = espacio
 	
-	return render(request, 'calendario/espacio/edit.html', context)
+	return render(request, 'calendario/espacio/detail.html', context)
 
-def espacio_delete(request, espacio_id):
+def espacio_delete(request):
 	
-	if request.method == 'POST':
-		
-		context = {}
-		
-		try:
-			espacio = Espacio.create(espacio_id)
-			
-			espacio.delete()
-			
-			return HttpResponseRedirect(reverse('calendario:espacio_all'))
-			
-		except Exception as ex:
-			context['error_message'] = "Error eliminando el espacio: " + str(ex)
-		
-		return render(request, 'calendario/espacio/all.html', context)
+	if request.method != 'POST':
+		return HttpResponseRedirect(reverse('calendario:espacio_all'))
 	
-	return HttpResponseRedirect(reverse('calendario:espacio_all'))
+	context = {}
+	espacio = None
+	
+	try:
+		espacio = Espacio.create(request.POST['espacio_id'])
+		
+		espacio.delete()
+		
+		return HttpResponseRedirect(reverse('calendario:espacio_all'))
+		
+	except Exception as ex:
+		context['error_message'] = "Error eliminando el espacio: " + str(ex)
+	
+	return render(request, 'calendario/espacio/all.html', context)
 
 def espacio_horas(request, espacio_id):
 	
@@ -233,7 +235,13 @@ def espacio_add_especialidades(request, ):
 	if request.method != 'POST':
 		return HttpResponseRedirect(reverse('calendario:espacio_all'))
 	
-	print dict(request.POST.iterlists())
+	espacio_id = dict(request.POST.iterlists())['espacio_id'][0]
+	especialidades = dict(request.POST.iterlists())['especialidades[]']
+	
+	espacio = Espacio.create(espacio_id)
+	
+	for especialidad in especialidades:
+		espacio.especialidades.add(Especialidad.objects.get(pk=especialidad))
 	
 	return HttpResponseRedirect(reverse('calendario:espacio_all'))
 
@@ -334,25 +342,24 @@ def profesional_edit(request):
 	
 	return render(request, 'calendario/profesional/detail.html', context)
 
-def profesional_delete(request, profesional_id):
+def profesional_delete(request):
 	
-	if request.method == 'POST':
-		
-		context = {}
-		
-		try:
-			profesional = Profesional.objects.get(pk=profesional_id)
-			
-			profesional.delete()
-			
-			return HttpResponseRedirect(reverse('calendario:profesional_all'))
-			
-		except Exception as ex:
-			context['error_message'] = "Error eliminando el profesional: " + str(ex)
-		
-		return render(request, 'calendario/profesional/all.html', context)
+	if request.method != 'POST':
+		return HttpResponseRedirect(reverse('calendario:profesional_all'))
 	
-	return HttpResponseRedirect(reverse('calendario:profesional_all'))
+	context = {}
+	
+	try:
+		profesional = Profesional.objects.get(pk=request.POST['profesional_id'])
+		
+		profesional.delete()
+		
+		return HttpResponseRedirect(reverse('calendario:profesional_all'))
+		
+	except Exception as ex:
+		context['error_message'] = "Error eliminando el profesional: " + str(ex)
+	
+	return render(request, 'calendario/profesional/all.html', context)
 
 def especialidad_all(request, pagina=1):
 	
@@ -416,22 +423,21 @@ def especialidad_edit(request, especialidad_id):
 	
 	return render(request, 'calendario/especialidad/edit.html', context)
 
-def especialidad_delete(request, especialidad_id):
+def especialidad_delete(request):
 	
-	if request.method == 'POST':
+	if request.method != 'POST':
+		return HttpResponseRedirect(reverse('calendario:especialidad_all'))
 		
-		context = {}
-		
-		try:
-			especialidad = Especialidad.objects.get(pk=especialidad_id)
-			
-			especialidad.delete()
-			
-			return HttpResponseRedirect(reverse('calendario:especialidad_all'))
-			
-		except Exception as ex:
-			context['error_message'] = "Error eliminando la especialidad: " + str(ex)
-		
-		return render(request, 'calendario/especialidad/all.html', context)
+	context = {}
 	
-	return HttpResponseRedirect(reverse('calendario:especialidad_all'))
+	try:
+		especialidad = Especialidad.objects.get(pk=request.POST['especialidad_id'])
+		
+		especialidad.delete()
+		
+		return HttpResponseRedirect(reverse('calendario:especialidad_all'))
+		
+	except Exception as ex:
+		context['error_message'] = "Error eliminando la especialidad: " + str(ex)
+	
+	return render(request, 'calendario/especialidad/all.html', context)
