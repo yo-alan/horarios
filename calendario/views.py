@@ -35,6 +35,7 @@ def add(request, espacio_id):
 		#Dividimos por 3 por esa es la cantidad de atributos y mas 1 por que el primero es el csrf.
 		for i in range(1, len(request.POST)/3+1):
 			
+			#Creamos un horario y los completamos.
 			horario = Horario()
 			
 			horario.calendario = calendario

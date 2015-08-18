@@ -50,8 +50,8 @@ class Entorno(object):
 		self.generaciones = generaciones
 		self.espacio = espacio
 		
-		for especialidad in espacio.especialidades:
-			for restriccion in especialidad.profesional.restricciones:
+		for especialidad in espacio.especialidades.all():
+			for restriccion in especialidad.profesional_set.all()[0].restricciones:
 				self.restricciones.append(restriccion)
 	
 	def generar_poblacion_inicial(self, ):
@@ -172,7 +172,7 @@ class Entorno(object):
 							if (horario.desde >= restriccion.desde and horario.desde < restriccion.hasta) or \
 								(horario.hasta > restriccion.desde and horario.hasta <= restriccion.hasta) or \
 								(horario.desde <= restriccion.desde and horario.hasta >= restriccion.hasta):
-								calendario.puntaje += PUNTOS_RESTRICCION_PROFESIONAL
+								calendario.puntaje += self.PUNTOS_RESTRICCION_PROFESIONAL
 			
 			
 			#Segunda evaluacion: Que se cumplan las horas semanales y diarias de la especialidad.
@@ -186,17 +186,16 @@ class Entorno(object):
 					for horario in franja_horaria: #Por cada horario en la franja horaria.
 						
 						#Si la especialidad es igual, contamos.
-						if horario.profesional.especialidad == especialidad:
+						if horario.especialidad == especialidad:
 							horas_semanales += 1
 					
 				if horas_semanales != especialidad.carga_horaria_semanal:
-					#~ calendario.puntaje += abs(especialidad.carga_horaria_semanal - horas_semanales)
-					calendario.puntaje += PUNTOS_HORAS_SEMANALES
+					calendario.puntaje += abs(especialidad.carga_horaria_semanal - horas_semanales) * self.PUNTOS_HORAS_SEMANALES
 			
-			for i in range(len(self.espacio._dias_habiles)):
-				
-				for j in self.espacio.horas:
-					pass
+			#~ for i in range(len(self.espacio._dias_habiles)):
+				#~ 
+				#~ for j in self.espacio.horas:
+					#~ pass
 				
 			
 	
