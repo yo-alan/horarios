@@ -31,6 +31,7 @@ class Entorno(object):
 	PUNTOS_DISTRIBUCION_HORARIA = 1
 	
 	_poblacion = []
+	_restricciones = []
 	_generaciones = 0
 	_espacio = None
 	
@@ -48,6 +49,10 @@ class Entorno(object):
 		
 		self.generaciones = generaciones
 		self.espacio = espacio
+		
+		for especialidad in espacio.especialidades:
+			for restriccion in especialidad.profesional.restricciones:
+				self.restricciones.append(restriccion)
 	
 	def generar_poblacion_inicial(self, ):
 		"""
@@ -69,7 +74,7 @@ class Entorno(object):
 			
 			for hora in self.espacio.horas: #Cantidad de iteraciones por los horarios.
 				
-				for especialidad in self.espacio.especialidades: #Iteracion por cada especialidad.
+				for especialidad in self.espacio.especialidades.all(): #Iteracion por cada especialidad.
 					
 					calendario = Calendario.create() #Se crea un Calendario.
 					calendario.limpiar()
@@ -98,12 +103,12 @@ class Entorno(object):
 				for hora in self.espacio.horas: #Tambien por la cantidad de horarios.
 					
 					horario = Horario() #Se crea un Horario.
-					horario.especialidad = self.espacio.especialidades[randrange(1, len(self.espacio.especialidades))] #Se le asigna un Especialidad.
+					horario.especialidad = self.espacio.especialidades.all()[randrange(0, len(self.espacio.especialidades.all())-1)] #Se le asigna un Especialidad.
 					horario.hora_desde = hora.hora_desde #Se le asigna una hora desde.
 					horario.hora_hasta = hora.hora_hasta #Se le asigna una hora hasta.
 					horario.dia_semana = dia #Se le asigna un dia de la semana.
 					#~ horario.calendario = calendario #Se le asigna el calendario.
-					
+					print horario.especialidad
 					#Comprobamos que el Horario generado no exista en el Calendario.
 					existe = False
 					for franja_horaria in calendario.horarios:
@@ -156,7 +161,7 @@ class Entorno(object):
 					
 					for horario in franja_horaria: #Por cada por cada horario dentro de la franja.
 						
-						for especialidad in self.espacio.especialidades: #Por cada especialidad.
+						for especialidad in self.espacio.especialidades.all(): #Por cada especialidad.
 							
 							if horario.especialidad.profesional != especialidad.profesional: #Si no es el profesional del horario continuamos.
 								continue
@@ -173,7 +178,7 @@ class Entorno(object):
 			#Segunda evaluacion: Que se cumplan las horas semanales y diarias de la especialidad.
 			#Horas semanales: cada hora extra o faltante es penalizada con la suma de puntos.
 			
-			for especialidad in self.espacio.especialidades: #Por cada especialidad
+			for especialidad in self.espacio.especialidades.all(): #Por cada especialidad
 				
 				horas_semanales = 0 #Contador de horas semanales.
 				for franja_horaria in calendario.horarios: #Por cada franja de horarios.

@@ -54,7 +54,9 @@
 				url: "{% url 'calendario:espacio_add_especialidades' %}",
 				type: 'POST',
 				data: {
-					csrfmiddlewaretoken: '{{ csrf_token }}', espacio_id: {{ espacio.id }}, especialidades: especialidades
+					csrfmiddlewaretoken: '{{ csrf_token }}',
+					espacio_id: {{ espacio.id }},
+					especialidades: especialidades
 				},
 				success: function(response) {
 					alert(response);
@@ -66,6 +68,36 @@
 		function verCalendario(calendario){
 			window.location.href = calendario;
 		}
+		
+		function guardarHora(){
+			
+			var hora_desde = document.getElementById('hora_desde').value;
+			var min_desde = document.getElementById('min_desde').value;
+			var hora_hasta = document.getElementById('hora_hasta').value;
+			var min_hasta = document.getElementById('min_hasta').value;
+			
+			$.ajax({
+				url: "{% url 'calendario:espacio_add_hora' %}",
+				type: 'POST',
+				data: {
+					csrfmiddlewaretoken: '{{ csrf_token }}',
+					espacio_id: {{ espacio.id }},
+					hora_desde: hora_desde,
+					min_desde: min_desde,
+					hora_hasta: hora_hasta,
+					min_hasta: min_hasta
+				},
+				success: function(response){
+					if(response.error){
+						alert(response.error);
+						return;
+					}
+					
+					alert(response.mensaje);
+				}
+			});
+		}
+		
 	</script>
 	<div class="container-fluid">
 		<div class="row">
@@ -95,7 +127,7 @@
 									<div class="panel-heading">
 										<h3 class="panel-title"><b>Especialidades</b></h3>
 									</div>
-									<ul id="eAsignadas" class="list-group">
+									<ul class="list-group especialidades">
 										{% for especialidad in espacio.especialidades.all %}
 											<li id="{{ especialidad.id }}" class="list-group-item">
 												<p class="text-left">
@@ -184,9 +216,7 @@
 										</p>
 									</div>
 								{% endif %}
-								<form class="form-horizontal col-md-offset-3" method="POST" action="{% url 'calendario:espacio_add_hora' %}">
-									{% csrf_token %}
-									<input id="espacio_id" name="espacio_id" type="hidden" value="{{ espacio.id }}">
+								<form class="form-horizontal col-md-offset-3">
 									<div class="form-group">
 										<div class="row">
 											<label class="col-xs-3 control-label" for="desde">Hora desde:</label>
@@ -211,7 +241,7 @@
 									</div>
 									<div class="form-group">
 										<div class="col-md-offset-10">
-											<button type="submit" class="btn btn-primary">
+											<button type="button" class="btn btn-primary" onclick="guardarHora()">
 												Agregar
 											</button>
 										</div>

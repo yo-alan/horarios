@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import time
 from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
@@ -204,31 +204,29 @@ def espacio_horas(request, espacio_id):
 
 def espacio_add_hora(request):
 	
-	context = {}
-	
 	if request.method != 'POST':
 		return HttpResponseRedirect(reverse('calendario:espacio_all'))
 	
-	espacio = Espacio.create(request.POST['espacio_id'])
-	
-	context['espacio'] = espacio
-	
 	try:
+		
+		espacio = Espacio.create(request.POST['espacio_id'])
 		
 		hora = Hora()
 		
 		hora.hora_desde = request.POST['hora_desde'] + ":" + request.POST['min_desde']
 		hora.hora_hasta = request.POST['hora_hasta'] + ":" + request.POST['min_hasta']
+		
+		if hora.hora_desde == hora.hora_hasta:
+			raise Exception("Las horas no pueden ser iguales.")
+		
 		hora.espacio = espacio
 		
 		hora.save()
 		
-		return HttpResponseRedirect(reverse('calendario:espacio_all'))
+		return JsonResponse({'mensaje': "La hora fue agregada exitosamente."})
 		
 	except Exception as ex:
-		context['error_message'] = str(ex).decode('utf-8')
-	
-	return render(request, 'calendario/espacio/horas.html', context)
+		return JsonResponse({'error': str(ex).decode('utf-8')})
 
 def espacio_add_especialidades(request, ):
 	
@@ -243,7 +241,7 @@ def espacio_add_especialidades(request, ):
 	for especialidad in especialidades:
 		espacio.especialidades.add(Especialidad.objects.get(pk=especialidad))
 	
-	return HttpResponseRedirect(reverse('calendario:espacio_all'))
+	return HttpResponse("Las especialidades fueron asignadas exitosamente.")
 
 def profesional_all(request, pagina=1):
 	

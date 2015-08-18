@@ -67,7 +67,7 @@
 			}
 			
 			$.ajax({
-				url: "/calendario/add/",
+				url: "/calendario/add/{{ espacio.id }}/",
 				type: 'POST',
 				dataType: 'json',
 				data: datos,

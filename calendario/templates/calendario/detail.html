@@ -54,9 +54,9 @@
 						{% for horario in franja_horaria %}
 							<td class="text-center active">
 								<h4 class="text-primary">
-									<strong>{{ horario.profesional.especialidad }}</strong>
+									<strong>{{ horario.especialidad }}</strong>
 								</h4>
-								[{{ horario.profesional.apellido }}, {{ horario.profesional.nombre}}]
+								[{{ horario.especialidad.profesional.apellido }}, {{ horario.especialidad.profesional.nombre}}]
 							</td>
 						{% endfor %}
 						</tr>
