@@ -232,16 +232,26 @@ def espacio_add_especialidades(request, ):
 	
 	if request.method != 'POST':
 		return HttpResponseRedirect(reverse('calendario:espacio_all'))
+	try:
+		espacio_id = dict(request.POST.iterlists())['espacio_id'][0]
+		especialidades = dict(request.POST.iterlists())['especialidades[]']
+		
+		espacio = Espacio.create(espacio_id)
+		
+		for especialidad in espacio.especialidades.all():
+			espacio.especialidades.remove(especialidad)
+		
+		for especialidad in especialidades:
+			espacio.especialidades.add(Especialidad.objects.get(pk=especialidad))
+	except KeyError as ex:
+		#KeyError 'especialidades[]', vacio todo el arreglo.
+		for especialidad in espacio.especialidades.all():
+			espacio.especialidades.remove(especialidad)
+		
+	except Exception as ex:
+		return JsonResponse({'error': str(ex).decode('utf-8')})
 	
-	espacio_id = dict(request.POST.iterlists())['espacio_id'][0]
-	especialidades = dict(request.POST.iterlists())['especialidades[]']
-	
-	espacio = Espacio.create(espacio_id)
-	
-	for especialidad in especialidades:
-		espacio.especialidades.add(Especialidad.objects.get(pk=especialidad))
-	
-	return HttpResponse("Las especialidades fueron asignadas exitosamente.")
+	return JsonResponse({'mensaje': "Las especialidades fueron asignadas exitosamente."})
 
 def profesional_all(request, pagina=1):
 	

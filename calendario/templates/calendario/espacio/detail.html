@@ -40,7 +40,7 @@
 			eDisponibles.appendChild(item);
 		}
 		
-		function guardar(){
+		function guardarEspecialidades(){
 			
 			var eAsignadas = document.getElementById('eAsignadas');
 			
@@ -59,7 +59,13 @@
 					especialidades: especialidades
 				},
 				success: function(response) {
-					alert(response);
+					
+					if(response.error){
+						alert(response.error);
+						return;
+					}
+					
+					alert(response.mensaje);
 				}
 			});
 			
@@ -88,6 +94,7 @@
 					min_hasta: min_hasta
 				},
 				success: function(response){
+					
 					if(response.error){
 						alert(response.error);
 						return;
@@ -201,7 +208,7 @@
 									</div>
 								</div>
 							</div>
-							<button class="btn btn-primary col-md-offset-10" onclick="guardar()">
+							<button class="btn btn-primary col-md-offset-10" onclick="guardarEspecialidades()">
 								Guardar cambios
 							</button>
 						</div>
