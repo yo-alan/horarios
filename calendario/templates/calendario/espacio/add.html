@@ -3,24 +3,67 @@
 {% block title %}Agregar un espacio{% endblock %}
 
 {% block article %}
+	<script>
+		$(function(){
+			
+			var form = $("#addForm");
+			
+			form.submit(function (ev){
+				
+				ev.preventDefault();
+				
+				$("#btnGuardar").button('loading');
+				
+				$.ajax({
+					url: form.attr('action'),
+					type: form.attr('method'),
+					data: form.serialize(),
+					success: function (response){
+						
+						$("#btnGuardar").button('reset');
+						
+						$(".form-group").attr('class', "form-group");
+						
+						if(response.error){
+							
+							if(response.campo){
+								$("#"+ response.campo + "").parent().parent().attr('class', "form-group has-error");
+								$("#"+ response.campo + "").focus();
+							}
+							
+							$(".alert").attr('class', "alert alert-dismissable alert-danger");
+							$("#error").html(response.error);
+							return;
+						}
+						
+						alert(response.mensaje);
+						window.location.href = "{% url 'calendario:espacio_all' %}";
+					}
+				});
+			});
+		});
+	</script>
 	<div class="container-fluid">
 		<div class="row clearfix">
-			<div class="col-md-8 col-md-offset-2">
+			<div class="col-md-6 col-md-offset-3">
 				<div class="page-header text-center">
 					<h1>
 						Agregar espacio<small>.</small>
 					</h1>
 				</div>
-				{% if error_message %}
-					<div class="alert alert-danger">
-						<a href="#" class="close" data-dismiss="alert">&times;</a>
-						<h3 class="text-center text-danger"><b>Ocurrió el siguiente error:</b></h3>
-						<p class="text-danger">
-							<b>{{ error_message }}</b>
-						</p>
-					</div>
-				{% endif %}
-				<form class="form-horizontal" method="POST" action="{% url 'calendario:espacio_add' %}">
+				<div class="alert alert-dismissable alert-danger hidden">
+					<button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+						×
+					</button>
+					<h4>
+						Error al guardar el espacio.
+					</h4>
+					<strong>Ojo!</strong> Un campo no es válido:
+					<p id="error">
+						
+					</p>
+				</div>
+				<form class="form-horizontal" id="addForm" name="addForm" method="POST" action="{% url 'calendario:espacio_add' %}">
 					{% csrf_token %}
 					<div class="form-group">
 						<label class="col-xs-3 control-label" for="nombre">Nombre:</label>
@@ -30,7 +73,7 @@
 					</div>
 					<div class="form-group">
 						<div class="col-md-offset-10">
-							<button type="submit" class="btn btn-primary">
+							<button type="submit" id="btnGuardar" data-loading-text="Guardando..." class="btn btn-primary" autocomplete="off">
 								Agregar
 							</button>
 						</div>

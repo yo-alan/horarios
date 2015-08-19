@@ -10,10 +10,11 @@
 				return;
 			
 			$.ajax({
-				url: '/calendario/espacio/delete/',
+				url: "{% url 'calendario:espacio_delete' %}",
 				type: 'POST',
 				data: {
-					csrfmiddlewaretoken: '{{ csrf_token }}', espacio_id: espacio_id
+					csrfmiddlewaretoken: '{{ csrf_token }}',
+					espacio_id: espacio_id
 				},
 				success: function(response) {
 					window.location.href = "{% url 'calendario:espacio_all' %}";
@@ -49,7 +50,7 @@
 									</td>
 									<td>
 										<div class="btn btn-group btn-block">
-											<a class="btn btn-default" title="Editar" href="{% url 'calendario:espacio_detail' espacio.id %}#atributos"><i class="glyphicon glyphicon-edit"></i></a>
+											<a class="btn btn-default" title="Editar" href="{% url 'calendario:espacio_detail' espacio.id %}#espacio"><i class="glyphicon glyphicon-edit"></i></a>
 											<a class="btn btn-default" title="Especialidades" href="{% url 'calendario:espacio_detail' espacio.id %}#especialidades"><i class="glyphicon glyphicon-list-alt"></i></a>
 											<a class="btn btn-default" title="Horas" href="{% url 'calendario:espacio_detail' espacio.id %}#horas"><i class="glyphicon glyphicon-th"></i></a>
 											<a class="btn btn-success" title="Crear calendario para" href="{% url 'calendario:add' espacio.id %}"><i class="glyphicon glyphicon-calendar"></i></a>

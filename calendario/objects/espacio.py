@@ -2,6 +2,24 @@
 from django.db import models
 from especialidad import Especialidad
 
+def purificador(nombre):
+	
+	nombre_copia = nombre
+	
+	nombre = ""
+	
+	for n in nombre_copia.split(' '):
+		
+		if not n.isalpha():
+			raise
+		
+		nombre = nombre + " " + n.capitalize()	
+	
+	if nombre.startswith(' '):
+		nombre = nombre[1:]
+	
+	return nombre
+
 class Espacio(models.Model):
 	
 	nombre = models.CharField(max_length=100, null=False, blank=False)
@@ -48,3 +66,16 @@ class Espacio(models.Model):
 			self._calendarios = Calendario.objects.filter(espacio=self)
 		
 		return self._calendarios
+	
+	def setnombre(self, nombre):
+		
+		if nombre == "":
+			raise Exception("El nombre no puede estar vacío.")
+		
+		try:
+			nombre = purificador(nombre)
+		except:
+			raise Exception("El nombre posee caracteres no permitidos.")
+		
+		self.nombre = nombre
+	

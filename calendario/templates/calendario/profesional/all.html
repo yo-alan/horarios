@@ -10,10 +10,11 @@
 				return;
 			
 			$.ajax({
-				url: '/calendario/profesional/delete/',
+				url: "{% url 'calendario:profesional_delete' %}",
 				type: 'POST',
 				data: {
-					csrfmiddlewaretoken: '{{ csrf_token }}', profesional_id: profesional_id
+					csrfmiddlewaretoken: '{{ csrf_token }}',
+					profesional_id: profesional_id
 				},
 				success: function(response) {
 					window.location.href = "{% url 'calendario:profesional_all' %}";
@@ -63,7 +64,8 @@
 									</td>
 									<td class="vert-align">
 										<div class="btn btn-group btn-block">
-											<a class="btn btn-default" title="Editar" href="{% url 'calendario:profesional_detail' profesional.id %}#atributos"><i class="glyphicon glyphicon-edit"></i></a>
+											<a class="btn btn-default" title="Editar" href="{% url 'calendario:profesional_detail' profesional.id %}#profesional"><i class="glyphicon glyphicon-edit"></i></a>
+											<a class="btn btn-default" title="Restricciones" href="{% url 'calendario:profesional_detail' profesional.id %}#restricciones"><i class="glyphicon glyphicon-list"></i></a>
 											<a class="btn btn-default" title="Especialidades" href="{% url 'calendario:profesional_detail' profesional.id %}#especialidades"><i class="glyphicon glyphicon-list"></i></a>
 											<a class="btn btn-danger" title="Eliminar" onclick="eliminarProfesional({{ profesional.id }})"><i class="glyphicon glyphicon-trash"></i></a>
 										</div>

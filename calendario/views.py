@@ -135,17 +135,26 @@ def espacio_add(request):
 	
 	if request.method == 'POST':
 		
+		data = {}
+		
 		try:
 			espacio = Espacio.create()
 			
-			espacio.nombre = request.POST["nombre"]
+			espacio.setnombre(request.POST["nombre"])
 			
 			espacio.save()
 			
-			return HttpResponseRedirect(reverse('calendario:espacio_all'))
+			data = {'mensaje': "El espacio ha sido guardado exitosamente."}
 			
 		except Exception as ex:
-			context['error_message'] = "Error al guardar el espacio: " + str(ex)
+			
+			data = {'error': str(ex)}
+			
+			if 'nombre' in str(ex):
+				data['campo'] = 'nombre'
+			
+		finally:
+			return JsonResponse(data)
 	
 	return render(request, 'calendario/espacio/add.html', context)
 
@@ -276,21 +285,34 @@ def profesional_add(request):
 	
 	if request.method == 'POST':
 		
+		data = {}
+		
 		try:
 			profesional = Profesional()
 			
-			profesional.nombre = request.POST['nombre']
-			profesional.apellido = request.POST['apellido']
-			profesional.cuil = request.POST['cuil']
+			profesional.setnombre(request.POST['nombre'])
+			profesional.setapellido(request.POST['apellido'])
+			profesional.setcuil(request.POST['cuil'])
 			
 			profesional.save()
 			
-			profesional.especialidades.add(Especialidad.objects.get(pk=request.POST['especialidad_id']))
-			
-			return HttpResponseRedirect(reverse('calendario:profesional_all'))
+			data = {'mensaje': "El profesional ha sido guardado exitosamente."}
 			
 		except Exception as ex:
-			context['error_message'] = "Error al guardar el profesional: " + str(ex)
+			
+			data = {'error': str(ex)}
+			
+			if 'nombre' in str(ex):
+				data['campo'] = 'nombre'
+			
+			if 'apellido' in str(ex):
+				data['campo'] = 'apellido'
+			
+			if 'cuil' in str(ex):
+				data['campo'] = 'cuil'
+			
+		finally:
+			return JsonResponse(data)
 	
 	especialidades = Especialidad.objects.all().order_by('nombre')
 	
@@ -392,19 +414,37 @@ def especialidad_add(request):
 	
 	if request.method == 'POST':
 		
+		data = {}
+		
 		try:
 			especialidad = Especialidad()
 			
-			especialidad.nombre = request.POST["nombre"]
-			especialidad.carga_horaria_semanal = request.POST["carga_horaria_semanal"]
-			especialidad.max_horas_diaria = request.POST["max_horas_diaria"]
+			especialidad.setnombre(request.POST["nombre"])
+			especialidad.setcarga_horaria_semanal(request.POST["carga_horaria_semanal"])
+			especialidad.setmax_horas_diaria(request.POST["max_horas_diaria"])
+			
+			if especialidad.carga_horaria_semanal < especialidad.max_horas_diaria:
+				raise Exception("La carga horaria semanal no puede ser menor que la cantidad de horas.")
 			
 			especialidad.save()
 			
-			return HttpResponseRedirect(reverse('calendario:especialidad_all'))
+			data = {'mensaje': "La especialidad ha sido guardada exitosamente."}
 			
 		except Exception as ex:
-			context['error_message'] = "Error al guardar la especialidad: " + str(ex)
+			
+			data = {'error': str(ex)}
+			
+			if 'nombre' in str(ex):
+				data['campo'] = 'nombre'
+			
+			if 'semanal' in str(ex):
+				data['campo'] = 'carga_horaria_semanal'
+			
+			if 'diaria' in str(ex):
+				data['campo'] = 'max_horas_diaria'
+			
+		finally:
+			return JsonResponse(data)
 	
 	return render(request, 'calendario/especialidad/add.html', context)
 
@@ -450,3 +490,102 @@ def especialidad_delete(request):
 		context['error_message'] = "Error eliminando la especialidad: " + str(ex)
 	
 	return render(request, 'calendario/especialidad/all.html', context)
+
+def restriccion_all(request, pagina=1):
+	
+	total_restricciones = Restriccion.objects.all().order_by('nombre')
+	paginator = Paginator(total_restricciones, 10)
+	
+	try:
+		restricciones = paginator.page(pagina)
+	except PageNotAnInteger:
+		restricciones = paginator.page(1)
+	except EmptyPage:
+		restricciones = paginator.page(paginator.num_pages)
+	
+	context = {'restricciones' : restricciones}
+	
+	return render(request, 'calendario/restriccion/all.html', context)
+
+def restriccion_add(request):
+	
+	context = {}
+	
+	if request.method == 'POST':
+		
+		data = {}
+		
+		try:
+			restriccion = Restriccion()
+			
+			restriccion.setnombre(request.POST["nombre"])
+			restriccion.setcarga_horaria_semanal(request.POST["carga_horaria_semanal"])
+			restriccion.setmax_horas_diaria(request.POST["max_horas_diaria"])
+			
+			if restriccion.carga_horaria_semanal < restriccion.max_horas_diaria:
+				raise Exception("La carga horaria semanal no puede ser menor que la cantidad de horas.")
+			
+			restriccion.save()
+			
+			data = {'mensaje': "La especialidad ha sido guardada exitosamente."}
+			
+		except Exception as ex:
+			
+			data = {'error': str(ex)}
+			
+			if 'nombre' in str(ex):
+				data['campo'] = 'nombre'
+			
+			if 'semanal' in str(ex):
+				data['campo'] = 'carga_horaria_semanal'
+			
+			if 'diaria' in str(ex):
+				data['campo'] = 'max_horas_diaria'
+			
+		finally:
+			return JsonResponse(data)
+	
+	return render(request, 'calendario/restriccion/add.html', context)
+
+def restriccion_edit(request, restriccion_id):
+	
+	context = {}
+	
+	especialidad = Especialidad.objects.get(pk=especialidad_id)
+	
+	if request.method == 'POST':
+		
+		try:
+			especialidad.nombre = request.POST["nombre"]
+			especialidad.carga_horaria_semanal = request.POST["carga_horaria_semanal"]
+			especialidad.max_horas_diaria = request.POST["max_horas_diaria"]
+			
+			especialidad.save()
+			
+			return HttpResponseRedirect(reverse('calendario:especialidad_all'))
+			
+		except Exception as ex:
+			context['error_message'] = "Error editando la especialidad: " + str(ex)
+	
+	context['especialidad'] = especialidad
+	
+	return render(request, 'calendario/restriccion/edit.html', context)
+
+def restriccion_delete(request):
+	
+	if request.method != 'POST':
+		return HttpResponseRedirect(reverse('calendario:especialidad_all'))
+		
+	context = {}
+	
+	try:
+		especialidad = Especialidad.objects.get(pk=request.POST['especialidad_id'])
+		
+		especialidad.delete()
+		
+		return HttpResponseRedirect(reverse('calendario:especialidad_all'))
+		
+	except Exception as ex:
+		context['error_message'] = "Error eliminando la especialidad: " + str(ex)
+	
+	return render(request, 'calendario/restriccion/all.html', context)

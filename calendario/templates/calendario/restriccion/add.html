@@ -1,6 +1,6 @@
 {% extends "admin/base.html" %}
 
-{% block title %}Agregar un profesional{% endblock %}
+{% block title %}Agregar una restricción{% endblock %}
 
 {% block article %}
 	<script>
@@ -37,7 +37,7 @@
 						}
 						
 						alert(response.mensaje);
-						window.location.href = "{% url 'calendario:profesional_all' %}";
+						window.location.href = "{% url 'calendario:restriccion_all' %}";
 					}
 				});
 			});
@@ -48,7 +48,7 @@
 			<div class="col-md-6 col-md-offset-3">
 				<div class="page-header text-center">
 					<h1>
-						Agregar profesional<small>.</small>
+						Agregar restricción<small>.</small>
 					</h1>
 				</div>
 				<div class="alert alert-dismissable alert-danger hidden">
@@ -56,31 +56,31 @@
 						×
 					</button>
 					<h4>
-						Error al guardar el profesional.
+						Error al guardar la restricción.
 					</h4>
 					<strong>Ojo!</strong> Un campo no es válido:
 					<p id="error">
 						
 					</p>
 				</div>
-				<form class="form-horizontal" id="addForm" name="addForm" method="POST" action="{% url 'calendario:profesional_add' %}">
+				<form class="form-horizontal" id="addForm" name="addForm" method="POST" action="{% url 'calendario:restriccion_add' %}">
 					{% csrf_token %}
 					<div class="form-group">
-						<label class="col-xs-3 control-label" for="nombre">Nombre:</label>
+						<label class="col-xs-3 control-label" for="hora_desde">Hora desde:</label>
 						<div class="col-xs-9">
-							<input type="text" id="nombre" name="nombre" class="form-control" placeholder="Nombre del profesional">
+							<input type="text" id="hora_desde" name="hora_desde" class="form-control" placeholder="HH:mm" value="00:00">
 						</div>
 					</div>
 					<div class="form-group">
-						<label class="col-xs-3 control-label" for="apellido">Apellido:</label>
+						<label class="col-xs-3 control-label" for="hora_hasta">Hora hasta:</label>
 						<div class="col-xs-9">
-							<input type="text" id="apellido" name="apellido" class="form-control" placeholder="Apellido del profesional">
+							<input type="text" id="hora_hasta" name="hora_hasta" class="form-control" placeholder="HH:mm" value="00:00">
 						</div>
 					</div>
 					<div class="form-group">
-						<label class="col-xs-3 control-label" for="cuil">Cuil:</label>
+						<label class="col-xs-3 control-label" for="dia_semana">Día de la semana:</label>
 						<div class="col-xs-9">
-							<input type="text" id="cuil" name="cuil" class="form-control" placeholder="Número de cuil del profesional">
+							<input type="number" id="dia_semana" name="dia_semana" class="form-control" placeholder="Día de la semana" value="0">
 						</div>
 					</div>
 					<div class="form-group">
