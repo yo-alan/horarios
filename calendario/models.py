@@ -3,14 +3,12 @@ from random import random, randrange
 from django.db import models
 from objects.espacio import Espacio
 from objects.hora import Hora
-from objects.persona import Persona
 from objects.profesional import Profesional
 from objects.especialidad import Especialidad
 from objects.calendario import Calendario
 from objects.horario import Horario
-from objects.restriccion import Restriccion
-from objects.espacio_restriccion import Espacio_restriccion
-from objects.profesional_restriccion import Profesional_restriccion
+from objects.espacioRestriccion import EspacioRestriccion
+from objects.profesionalRestriccion import ProfesionalRestriccion
 
 
 class Entorno(object):

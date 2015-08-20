@@ -49,6 +49,10 @@ urlpatterns = [
     url(r'^profesional/edit/$', views.profesional_edit, name='profesional_edit'),
     # ex: /calendario/profesional/delete/
     url(r'^profesional/delete/$', views.profesional_delete, name='profesional_delete'),
+    # ex: /calendario/profesional/profesional_add_especialidades/
+    url(r'^profesional/profesional_add_especialidades/$', views.profesional_add_especialidades, name='profesional_add_especialidades'),
+    # ex: /calendario/profesional/profesional_add_restriccion/
+    url(r'^profesional/profesional_add_restriccion/$', views.profesional_add_restriccion, name='profesional_add_restriccion'),
     
     # ex: /calendario/especialidad/
     url(r'^especialidad/$', views.especialidad_all, name='especialidad_all'),
@@ -59,7 +63,7 @@ urlpatterns = [
     # ex: /calendario/especialidad/add/
     url(r'^especialidad/add/$', views.especialidad_add, name='especialidad_add'),
     # ex: /calendario/especialidad/edit/
-    url(r'^especialidad/edit/(?P<especialidad_id>[0-9]+)/$', views.especialidad_edit, name='especialidad_edit'),
+    url(r'^especialidad/edit/$', views.especialidad_edit, name='especialidad_edit'),
     # ex: /calendario/especialidad/delete/
     url(r'^especialidad/delete/$', views.especialidad_delete, name='especialidad_delete'),
     
@@ -72,7 +76,7 @@ urlpatterns = [
     # ex: /calendario/restriccion/add/
     url(r'^restriccion/add/$', views.restriccion_add, name='restriccion_add'),
     # ex: /calendario/restriccion/edit/
-    url(r'^restriccion/edit/(?P<restriccion_id>[0-9]+)/$', views.restriccion_edit, name='restriccion_edit'),
+    url(r'^restriccion/edit/$', views.restriccion_edit, name='restriccion_edit'),
     # ex: /calendario/restriccion/delete/
     url(r'^restriccion/delete/$', views.restriccion_delete, name='restriccion_delete'),
 ]

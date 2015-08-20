@@ -12,7 +12,7 @@ def purificador(nombre):
 		if not n.isalpha():
 			raise
 		
-		nombre = nombre + " " + n.capitalize()	
+		nombre = nombre + " " + n.capitalize()
 	
 	if nombre.startswith(' '):
 		nombre = nombre[1:]
@@ -24,6 +24,11 @@ class Persona(models.Model):
 	nombre = models.CharField(max_length=100, null=False, blank=False)
 	apellido = models.CharField(max_length=100, null=False, blank=False)
 	cuil = models.CharField(max_length=11, unique=True, null=False, blank=False)
+	estado = models.CharField(max_length=3, choices=[('ON', 'ON'), ('OFF', 'OFF')], default='ON')
+	usuario_creador = models.CharField(max_length=30, default='admin')
+	fecha_creacion = models.DateField(auto_now_add=True)
+	usuario_modificador = models.CharField(max_length=30, default='admin')
+	fecha_modificacion = models.DateField(auto_now=True)
 	
 	def setnombre(self, nombre):
 		

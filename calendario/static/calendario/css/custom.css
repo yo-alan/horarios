@@ -43,3 +43,8 @@ ul.calendarios {
 .tab-content {
 	margin-top: 20px;
 }
+
+.panel-default > .panel-heading {
+  background-color: #ddd;
+  color: #000;
+}

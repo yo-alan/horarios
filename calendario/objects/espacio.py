@@ -13,7 +13,7 @@ def purificador(nombre):
 		if not n.isalpha():
 			raise
 		
-		nombre = nombre + " " + n.capitalize()	
+		nombre = nombre + " " + n
 	
 	if nombre.startswith(' '):
 		nombre = nombre[1:]
@@ -23,6 +23,12 @@ def purificador(nombre):
 class Espacio(models.Model):
 	
 	nombre = models.CharField(max_length=100, null=False, blank=False)
+	estado = models.CharField(max_length=3, choices=[('ON', 'ON'), ('OFF', 'OFF')], default='ON')
+	usuario_creador = models.CharField(max_length=30, default='admin')
+	fecha_creacion = models.DateField(auto_now_add=True)
+	usuario_modificador = models.CharField(max_length=30, default='admin')
+	fecha_modificacion = models.DateField(auto_now=True)
+	
 	especialidades = models.ManyToManyField(Especialidad)
 	
 	@classmethod

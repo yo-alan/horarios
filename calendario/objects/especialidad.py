@@ -12,7 +12,7 @@ def purificador(nombre):
 		if not n.isalpha():
 			raise
 		
-		nombre = nombre + " " + n.capitalize()	
+		nombre = nombre + " " + n
 	
 	if nombre.startswith(' '):
 		nombre = nombre[1:]
@@ -24,6 +24,11 @@ class Especialidad(models.Model):
 	nombre = models.CharField(max_length=100, null=False)
 	carga_horaria_semanal = models.IntegerField(default=0, null=False)
 	max_horas_diaria = models.IntegerField(default=0, null=False)
+	estado = models.CharField(max_length=3, choices=[('ON', 'ON'), ('OFF', 'OFF')], default='ON')
+	usuario_creador = models.CharField(max_length=30, default='admin')
+	fecha_creacion = models.DateField(auto_now_add=True)
+	usuario_modificador = models.CharField(max_length=30, default='admin')
+	fecha_modificacion = models.DateField(auto_now=True)
 	
 	def __str__(self, ):
 		return unicode(self.nombre).encode('utf-8')
@@ -45,15 +50,15 @@ class Especialidad(models.Model):
 	
 	def setcarga_horaria_semanal(self, carga_horaria_semanal):
 		
-		if carga_horaria_semanal == "" or int(carga_horaria_semanal) == 0:
-			raise Exception("La carga horaria semanal no puede ser 0.")
+		if carga_horaria_semanal == "" or int(carga_horaria_semanal) < 1:
+			raise Exception("La carga horaria semanal no puede ser menor a 1.")
 		
 		self.carga_horaria_semanal = carga_horaria_semanal
 	
 	def setmax_horas_diaria(self, max_horas_diaria):
 		
-		if max_horas_diaria == "" or int(max_horas_diaria) == 0:
-			raise Exception("La horas diarias máxima no puede ser 0.")
+		if max_horas_diaria == "" or int(max_horas_diaria) < 1:
+			raise Exception("La horas diarias máxima no puede ser menor a 1.")
 		
 		self.max_horas_diaria = max_horas_diaria
 	

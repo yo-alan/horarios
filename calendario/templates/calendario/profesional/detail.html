@@ -1,6 +1,6 @@
 {% extends "admin/base.html" %}
 
-{% block title %}Detalles de {{ profesional.apellido }}, {{ profesional.nombre }}.{% endblock %}
+{% block title %}Detalles de {{ profesional }}.{% endblock %}
 
 {% block article %}
 	<script>
@@ -13,6 +13,45 @@
 			$('.nav-tabs a').on('shown.bs.tab', function (e){
 				window.location.hash = e.target.hash;
 				window.scrollTo(0, 0);
+			});
+			
+			$("[data-hide]").click(function(){
+				$(".alert").attr('class', "alert alert-dismissable alert-danger hidden");
+			});
+			
+			var form = $("#addForm");
+			
+			form.submit(function (ev){
+				
+				ev.preventDefault();
+				
+				$("#btnGuardar").button('loading');
+				
+				$.ajax({
+					url: form.attr('action'),
+					type: form.attr('method'),
+					data: form.serialize(),
+					success: function (response){
+						
+						$("#btnGuardar").button('reset');
+						
+						$(".form-group").attr('class', "form-group");
+						
+						if(response.error){
+							
+							if(response.campo){
+								$("#"+ response.campo + "").parent().parent().attr('class', "form-group has-error");
+								$("#"+ response.campo + "").focus();
+							}
+							
+							$(".alert").attr('class', "alert alert-dismissable alert-danger");
+							$("#error").html(response.error);
+							return;
+						}
+						
+						alert(response.mensaje);
+					}
+				});
 			});
 		});
 		
@@ -36,13 +75,34 @@
 			eDisponibles.appendChild(item);
 		}
 		
-		function guardar(){
+		function guardarEspecialidades(){
 			
 			var eAsignadas = document.getElementById('eAsignadas');
 			
+			var especialidades = []
+			
 			for(i = 0; i < eAsignadas.children.length; i++){
-				alert(eAsignadas.children[i].id);
+				especialidades.push(eAsignadas.children[i].id);
 			}
+			
+			$.ajax({
+				url: "{% url 'calendario:profesional_add_especialidades' %}",
+				type: 'POST',
+				data: {
+					csrfmiddlewaretoken: '{{ csrf_token }}',
+					profesional_id: {{ profesional.id }},
+					especialidades: especialidades
+				},
+				success: function(response) {
+					
+					if(response.error){
+						alert(response.error);
+						return;
+					}
+					
+					alert(response.mensaje);
+				}
+			});
 			
 		}
 	</script>
@@ -50,7 +110,7 @@
 		<div class="row clearfix">
 			<div class="col-md-12">
 				<h3 class="text-center">
-					{{ profesional.apellido }}, {{ profesional.nombre }}.
+					{{ profesional }}.
 				</h3>
 				<div class="tabbable" id="tabs-348111">
 					<ul class="nav nav-tabs">
@@ -66,16 +126,7 @@
 					</ul>
 					<div class="tab-content">
 						<div class="tab-pane active" id="profesional">
-							<div class="col-md-8 col-md-offset-2">
-								{% if error_message %}
-									<div class="alert alert-danger">
-										<a href="#" class="close" data-dismiss="alert">&times;</a>
-										<h3 class="text-center text-danger"><b>Ocurrió el siguiente error:</b></h3>
-										<p class="text-danger">
-											<b>{{ error_message }}</b>
-										</p>
-									</div>
-								{% endif %}
+							<div class="col-md-6 col-md-offset-3">
 								<form class="form-horizontal" method="POST" action="{% url 'calendario:profesional_edit' %}">
 									{% csrf_token %}
 									<div class="form-group">
@@ -96,18 +147,9 @@
 											<input type="text" id="cuil" name="cuil" class="form-control" value="{{ profesional.cuil }}">
 										</div>
 									</div>
-									<div class="form-group">
-										<div class="col-md-offset-8">
-											<div class="btn btn-block">
-												<a href="{% url 'calendario:profesional_all' %}" class="btn btn-default">
-													<< Volver
-												</a>
-												<button type="submit" class="btn btn-primary">
-													Editar
-												</button>
-											</div>
-										</div>
-									</div>
+									<button type="submit" class="btn btn-primary pull-right">
+										Editar
+									</button>
 								</form>
 							</div>
 						</div>
@@ -124,11 +166,13 @@
 											</div>
 											<ul id="eDisponibles" class="list-group especialidades">
 												{% for especialidad in especialidades %}
-													<li id="{{ especialidad.id }}" class="btn list-group-item" onclick="agregar(this)">
-														<p class="text-left">
-															{{ especialidad.nombre }}
-														</p>
-													</li>
+													{% if not especialidad in profesional.especialidades.all %}
+														<li id="{{ especialidad.id }}" class="btn list-group-item" onclick="agregar(this)">
+															<p class="text-left">
+																{{ especialidad }}
+															</p>
+														</li>
+													{% endif %}
 												{% endfor %}
 											</ul>
 										</div>
@@ -139,51 +183,75 @@
 												<h3 class="panel-title"><b>Asignadas</b></h3>
 											</div>
 											<ul id="eAsignadas" class="list-group especialidades">
+												{% for especialidad in profesional.especialidades.all %}
+													<li id="{{ especialidad.id }}" class="btn list-group-item" onclick="eliminar(this)">
+														<p class="text-left">
+															{{ especialidad }}
+														</p>
+													</li>
+												{% endfor %}
 											</ul>
 										</div>
 									</div>
 								</div>
 							</div>
-							<button class="btn btn-primary col-md-offset-10" onclick="guardar()">
+							<button class="btn btn-primary col-md-offset-10" onclick="guardarEspecialidades()">
 								Guardar cambios
 							</button>
 						</div>
 						<div class="tab-pane" id="restricciones">
-							<div class="alert alert-info" role="alert">
-								<p><span class="glyphicon glyphicon-info-sign"></span> Para asignar una especialidad hazle clic. Lo mismo para quitarla.</p>
-							</div>
-							<div class="col-md-12">
-								<div class="row">
-									<div class="col-md-5 col-md-offset-1">
-										<div class="panel panel-primary">
-											<div class="panel-heading">
-												<h3 class="panel-title"><b>Disponibles</b></h3>
-											</div>
-											<ul id="eDisponibles" class="list-group especialidades">
-												{% for especialidad in especialidades %}
-													<li id="{{ especialidad.id }}" class="btn list-group-item" onclick="agregar(this)">
-														<p class="text-left">
-															{{ especialidad.nombre }}
-														</p>
-													</li>
-												{% endfor %}
-											</ul>
-										</div>
+							<div class="col-md-5">
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<h3 class="panel-title"><b>Restricciones</b></h3>
 									</div>
-									<div class="col-md-5">
-										<div class=" panel panel-primary">
-											<div class="panel-heading">
-												<h3 class="panel-title"><b>Asignadas</b></h3>
+									<ul id="ulRestricciones" class="list-group restricciones">
+										{% for restriccion in profesional.restricciones %}
+											<li id="{{ restriccion.id }}" class="btn list-group-item" onclick="">
+												<p class="text-left">
+													El {{ restriccion.dia_semana }} de {{ restriccion.hora_desde }} a {{ restriccion.hora_hasta }}.
+												</p>
+											</li>
+										{% endfor %}
+									</ul>
+								</div>
+							</div>
+							<div class="col-md-5 col-md-offset-6">
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<h3 class="panel-title text-center">
+											Agregar restricción a {{ profesional }}
+										</h3>
+									</div>
+									<div class="panel-body">
+										<form class="form" id="addForm" name="addForm" method="POST" action="{% url 'calendario:profesional_add_restriccion' %}">
+											{% csrf_token %}
+											<input id="profesional_id" name="profesional_id" type="hidden" value="{{ profesional.id }}">
+											<div class="form-group">
+												<label for="dia_semana">
+													Día de la semana:
+												</label>
+												<input type="number" class="form-control" id="dia_semana" value="0"/>
 											</div>
-											<ul id="eAsignadas" class="list-group especialidades">
-											</ul>
-										</div>
+											<div class="form-group">
+												<label for="hora_desde">
+													Hora desde:
+												</label>
+												<input type="text" class="form-control" id="hora_desde" placeholder="HH:mm"/>
+											</div>
+											<div class="form-group">
+												<label for="hora_hasta">
+													Hora hasta:
+												</label>
+												<input type="text" class="form-control" id="hora_hasta" placeholder="HH:mm"/>
+											</div>
+											<button type="submit" id="btnGuardar" data-loading-text="Guardando..." class="btn btn-primary pull-right" autocomplete="off">
+												Agregar
+											</button>
+										</form>
 									</div>
 								</div>
 							</div>
-							<button class="btn btn-primary col-md-offset-10" onclick="guardar()">
-								Guardar cambios
-							</button>
 						</div>
 					</div>
 				</div>

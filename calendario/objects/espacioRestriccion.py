@@ -3,7 +3,7 @@ from django.db import models
 from restriccion import Restriccion
 from espacio import Espacio
 
-class Espacio_restriccion(Restriccion):
+class EspacioRestriccion(Restriccion):
 	
 	espacio = models.ForeignKey(Espacio)
 

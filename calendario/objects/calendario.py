@@ -6,6 +6,11 @@ class Calendario(models.Model):
 	
 	espacio = models.ForeignKey(Espacio)
 	puntaje = models.IntegerField(default=0)
+	estado = models.CharField(max_length=3, choices=[('ON', 'ON'), ('OFF', 'OFF')], default='ON')
+	usuario_creador = models.CharField(max_length=30, default='admin')
+	fecha_creacion = models.DateField(auto_now_add=True)
+	usuario_modificador = models.CharField(max_length=30, default='admin')
+	fecha_modificacion = models.DateField(auto_now=True)
 	
 	@classmethod
 	def create(cls, calendario_id=0):

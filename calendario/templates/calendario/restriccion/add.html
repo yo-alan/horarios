@@ -6,6 +6,10 @@
 	<script>
 		$(function(){
 			
+			$("[data-hide]").click(function(){
+				$(".alert").attr('class', "alert alert-dismissable alert-danger hidden");
+			});
+			
 			var form = $("#addForm");
 			
 			form.submit(function (ev){
@@ -52,7 +56,7 @@
 					</h1>
 				</div>
 				<div class="alert alert-dismissable alert-danger hidden">
-					<button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+					<button type="button" class="close" data-hide="alert" aria-hidden="true">
 						×
 					</button>
 					<h4>
