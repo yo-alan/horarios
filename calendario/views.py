@@ -171,11 +171,11 @@ def espacio_edit(request):
 		
 		espacio.save()
 		
-		data = {'mensaje', "El espacio fue editado exitosamente."}
+		data = {'mensaje': "El espacio fue editado exitosamente."}
 		
 	except Exception as ex:
 		
-		data = {'error', str(ex).decode('utf-8')}
+		data = {'error': str(ex).decode('utf-8')}
 		
 		if 'nombre' in str(ex):
 			data['campo'] = 'nombre'
@@ -194,10 +194,10 @@ def espacio_delete(request):
 		
 		espacio.delete()
 		
-		data = {'mensaje', "El espacio fue eliminado exitosamente."}
+		data = {'mensaje': "El espacio fue eliminado exitosamente."}
 		
 	except Exception as ex:
-		data = {'error', str(ex).decode('utf-8')}
+		data = {'error': str(ex).decode('utf-8')}
 	
 	return JsonResponse(data)
 
@@ -363,9 +363,11 @@ def profesional_edit(request):
 		
 		profesional.save()
 		
+		data = {'mensaje': "El profesional fue editado exitosamente."}
+		
 	except Exception as ex:
 		
-		data = {'error', str(ex).decode('utf-8')}
+		data = {'error': str(ex).decode('utf-8')}
 		
 		if 'nombre' in str(ex):
 			data['campo'] = 'nombre'
@@ -390,10 +392,10 @@ def profesional_delete(request):
 		
 		profesional.delete()
 		
-		data = {'mensaje', "El profesional fue eliminado exitosamente."}
+		data = {'mensaje': "El profesional fue eliminado exitosamente."}
 		
 	except Exception as ex:
-		data = {'error', str(ex).decode('utf-8')}
+		data = {'error': str(ex).decode('utf-8')}
 	
 	return JsonResponse(data)
 
@@ -569,10 +571,10 @@ def especialidad_delete(request):
 		
 		especialidad.delete()
 		
-		data = {'mensaje', "La especialidad fue eliminada exitosamente."}
+		data = {'mensaje': "La especialidad fue eliminada exitosamente."}
 		
 	except Exception as ex:
-		data = {'error', str(ex).decode('utf-8')}
+		data = {'error': str(ex).decode('utf-8')}
 	
 	return JsonResponse(data)
 
@@ -650,10 +652,10 @@ def restriccion_edit(request):
 		
 		especialidad.save()
 		
-		data = {'mensaje', "La restricción fue editada exitosamente."}
+		data = {'mensaje': "La restricción fue editada exitosamente."}
 		
 	except Exception as ex:
-		data = {'error', str(ex).decode('utf-8')}
+		data = {'error': str(ex).decode('utf-8')}
 	
 	return JsonResponse(data)
 
@@ -669,9 +671,9 @@ def restriccion_delete(request):
 		
 		especialidad.delete()
 		
-		data = {'mensaje', "El profesional fue eliminado exitosamente."}
+		data = {'mensaje': "El profesional fue eliminado exitosamente."}
 		
 	except Exception as ex:
-		data = {'error', str(ex).decode('utf-8')}
+		data = {'error': str(ex).decode('utf-8')}
 	
 	return JsonResponse(data)
