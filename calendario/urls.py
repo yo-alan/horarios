@@ -62,6 +62,8 @@ urlpatterns = [
     url(r'^especialidad/all/pagina/(?P<pagina>[0-9]+)/$', views.especialidad_all, name='especialidad_all'),
     # ex: /calendario/especialidad/add/
     url(r'^especialidad/add/$', views.especialidad_add, name='especialidad_add'),
+    # ex: /calendario/especialidad/5
+    url(r'^especialidad/(?P<especialidad_id>[0-9]+)/$', views.especialidad_detail, name='especialidad_detail'),
     # ex: /calendario/especialidad/edit/
     url(r'^especialidad/edit/$', views.especialidad_edit, name='especialidad_edit'),
     # ex: /calendario/especialidad/delete/

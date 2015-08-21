@@ -30,6 +30,18 @@ class Especialidad(models.Model):
 	usuario_modificador = models.CharField(max_length=30, default='admin')
 	fecha_modificacion = models.DateField(auto_now=True)
 	
+	@classmethod
+	def create(cls, especialidad_id=0):
+		
+		especialidad = None
+		
+		if especialidad_id != 0:
+			especialidad = Especialidad.objects.get(pk=especialidad_id)
+		else:
+			especialidad = Especialidad()
+		
+		return especialidad
+	
 	def __str__(self, ):
 		return unicode(self.nombre).encode('utf-8')
 	

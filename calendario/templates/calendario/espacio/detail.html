@@ -14,6 +14,76 @@
 				window.location.hash = e.target.hash;
 				window.scrollTo(0, 0);
 			});
+			
+			var form = $("#editForm");
+			
+			form.submit(function (ev){
+				
+				ev.preventDefault();
+				
+				$("#" + form.attr('id') + " button[type=submit]").button('loading');
+				
+				$.ajax({
+					url: form.attr('action'),
+					type: form.attr('method'),
+					data: form.serialize(),
+					success: function (response){
+						
+						$("#" + form.attr('id') + " button[type=submit]").button('reset');
+						
+						$(".form-group").attr('class', "form-group");
+						
+						if(response.error){
+							
+							if(response.campo){
+								$("#"+ response.campo).parent().parent().attr('class', "form-group has-error");
+								$("#"+ response.campo).focus();
+							}
+							
+							$("#" + form.attr('id') + " .alert").attr('class', "alert alert-dismissable alert-danger");
+							$("#" + form.attr('id') + " .alert p").html(response.error);
+							return;
+						}
+						
+						alert(response.mensaje);
+					}
+				});
+			});
+			
+			var formHora = $("#addHoraForm");
+			
+			formHora.submit(function (ev){
+				
+				ev.preventDefault();
+				
+				$("#" + formHora.attr('id') + " button[type=submit]").button('loading');
+				
+				$.ajax({
+					url: formHora.attr('action'),
+					type: formHora.attr('method'),
+					data: formHora.serialize(),
+					success: function (response){
+						
+						$("#" + formHora.attr('id') + " button[type=submit]").button('reset');
+						
+						$(".form-group").attr('class', "form-group");
+						
+						if(response.error){
+							
+							if(response.campo){
+								$("#"+ response.campo).parent().parent().attr('class', "form-group has-error");
+								$("#"+ response.campo).focus();
+							}
+							
+							$("#" + formHora.attr('id') + " .alert").attr('class', "alert alert-dismissable alert-danger");
+							$("#" + formHora.attr('id') + " .alert p").html(response.error);
+							return;
+						}
+						
+						alert(response.mensaje);
+					}
+				});
+			});
 		});
 		
 		function onValChange(object){
@@ -75,36 +145,6 @@
 			window.location.href = calendario;
 		}
 		
-		function guardarHora(){
-			
-			var hora_desde = document.getElementById('hora_desde').value;
-			var min_desde = document.getElementById('min_desde').value;
-			var hora_hasta = document.getElementById('hora_hasta').value;
-			var min_hasta = document.getElementById('min_hasta').value;
-			
-			$.ajax({
-				url: "{% url 'calendario:espacio_add_hora' %}",
-				type: 'POST',
-				data: {
-					csrfmiddlewaretoken: '{{ csrf_token }}',
-					espacio_id: {{ espacio.id }},
-					hora_desde: hora_desde,
-					min_desde: min_desde,
-					hora_hasta: hora_hasta,
-					min_hasta: min_hasta
-				},
-				success: function(response){
-					
-					if(response.error){
-						alert(response.error);
-						return;
-					}
-					
-					alert(response.mensaje);
-				}
-			});
-		}
-		
 	</script>
 	<div class="container-fluid">
 		<div class="row">
@@ -155,14 +195,16 @@
 										</p>
 									</div>
 								{% endif %}
-								<form class="form-inline" method="POST" action="{% url 'calendario:espacio_edit' %}">
+								<form class="form-inline" id="editForm" method="POST" action="{% url 'calendario:espacio_edit' %}">
 									{% csrf_token %}
 									<input id="espacio_id" name="espacio_id" type="hidden" value="{{ espacio.id }}">
 									<div class="form-group">
 										<label class="control-label" for="nombre">Nombre del espacio:</label>
 										<input type="text" id="nombre" name="nombre" class="form-control" value="{{ espacio.nombre }}">
 									</div>
-									<button type="submit" class="btn btn-primary">Guardar</button>
+									<button type="submit" id="btnGuardar" data-loading-text="Guardando..." class="btn btn-primary pull-right" autocomplete="off">
+										Guardar
+									</button>
 								</form>
 							</div>
 						</div>
@@ -223,7 +265,9 @@
 										</p>
 									</div>
 								{% endif %}
-								<form class="form-horizontal col-md-offset-3">
+								<form class="form-horizontal col-md-offset-3" id="addHoraForm" method="POST" action="{% url 'calendario:espacio_add_hora' %}">
+									{% csrf_token %}
+									<input type="hidden" id="espacio_id" name="espacio_id" value="{{ espacio.id }}">
 									<div class="form-group">
 										<div class="row">
 											<label class="col-xs-3 control-label" for="desde">Hora desde:</label>
@@ -248,7 +292,7 @@
 									</div>
 									<div class="form-group">
 										<div class="col-md-offset-10">
-											<button type="button" class="btn btn-primary" onclick="guardarHora()">
+											<button type="submit" id="btnHoraGuardar" data-loading-text="Guardando..." class="btn btn-primary pull-right" autocomplete="off">
 												Agregar
 											</button>
 										</div>

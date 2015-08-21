@@ -101,12 +101,12 @@ class Entorno(object):
 				for hora in self.espacio.horas: #Tambien por la cantidad de horarios.
 					
 					horario = Horario() #Se crea un Horario.
-					horario.especialidad = self.espacio.especialidades.all()[randrange(0, len(self.espacio.especialidades.all())-1)] #Se le asigna un Especialidad.
+					horario.especialidad = self.espacio.especialidades.all()[randrange(0, len(self.espacio.especialidades.all()))] #Se le asigna un Especialidad.
 					horario.hora_desde = hora.hora_desde #Se le asigna una hora desde.
 					horario.hora_hasta = hora.hora_hasta #Se le asigna una hora hasta.
 					horario.dia_semana = dia #Se le asigna un dia de la semana.
 					#~ horario.calendario = calendario #Se le asigna el calendario.
-					print horario.especialidad
+					
 					#Comprobamos que el Horario generado no exista en el Calendario.
 					existe = False
 					for franja_horaria in calendario.horarios:
@@ -194,7 +194,8 @@ class Entorno(object):
 				#~ 
 				#~ for j in self.espacio.horas:
 					#~ pass
-				
+			
+			calendario.save()	
 			
 	
 	def seleccionar(self, ):

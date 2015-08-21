@@ -16,7 +16,7 @@
 				
 				ev.preventDefault();
 				
-				$("#btnGuardar").button('loading');
+				$("#" + form.attr('id') + " button[type=submit]").button('loading');
 				
 				$.ajax({
 					url: form.attr('action'),
@@ -24,19 +24,19 @@
 					data: form.serialize(),
 					success: function (response){
 						
-						$("#btnGuardar").button('reset');
+						$("#" + form.attr('id') + " button[type=submit]").button('reset');
 						
 						$(".form-group").attr('class', "form-group");
 						
 						if(response.error){
 							
 							if(response.campo){
-								$("#"+ response.campo + "").parent().parent().attr('class', "form-group has-error");
-								$("#"+ response.campo + "").focus();
+								$("#"+ response.campo).parent().parent().attr('class', "form-group has-error");
+								$("#"+ response.campo).focus();
 							}
 							
-							$(".alert").attr('class', "alert alert-dismissable alert-danger");
-							$("#error").html(response.error);
+							$("#" + form.attr('id') + " .alert").attr('class', "alert alert-dismissable alert-danger");
+							$("#" + form.attr('id') + " .alert p").html(response.error);
 							return;
 						}
 						
@@ -78,13 +78,13 @@
 					<div class="form-group">
 						<label class="col-xs-5 control-label" for="carga_horaria_semanal">Carga horaria semanal:</label>
 						<div class="col-xs-7">
-							<input type="number" id="carga_horaria_semanal" name="carga_horaria_semanal" class="form-control" placeholder="Carga horaria semanal" value="0">
+							<input type="number" id="carga_horaria_semanal" name="carga_horaria_semanal" class="form-control" min="1" placeholder="Carga horaria semanal" value="0">
 						</div>
 					</div>
 					<div class="form-group">
 						<label class="col-xs-5 control-label" for="max_horas_diaria">Carga máxima diaria:</label>
 						<div class="col-xs-7">
-							<input type="number" id="max_horas_diaria" name="max_horas_diaria" class="form-control" placeholder="Carga máxima diaria" value="0">
+							<input type="number" id="max_horas_diaria" name="max_horas_diaria" class="form-control" min="1" placeholder="Carga máxima diaria" value="0">
 						</div>
 					</div>
 					<button type="submit" id="btnGuardar" data-loading-text="Guardando..." class="btn btn-primary pull-right" autocomplete="off">

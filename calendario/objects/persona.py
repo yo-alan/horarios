@@ -30,6 +30,12 @@ class Persona(models.Model):
 	usuario_modificador = models.CharField(max_length=30, default='admin')
 	fecha_modificacion = models.DateField(auto_now=True)
 	
+	def __str__(self, ):
+		return self.apellido.encode('utf-8') + ", " + self.nombre.encode('utf-8')
+	
+	def __eq__(self, o):
+		return self.cuil == o.cuil
+	
 	def setnombre(self, nombre):
 		
 		if nombre == "":
