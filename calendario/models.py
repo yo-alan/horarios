@@ -153,24 +153,20 @@ class Entorno(object):
 			#los profesionales. Cada superposicion vale un punto, mientras mas
 			#alto sea el puntaje, menos apto es el individuo.
 			
-			for restriccion in self.restricciones: #Por cada restriccion.
+			
+			for franja_horaria in calendario.horarios: #Por cada franja de horarios.
 				
-				for franja_horaria in calendario.horarios: #Por cada franja de horarios.
+				for horario in franja_horaria: #Por cada por cada horario dentro de la franja.
 					
-					for horario in franja_horaria: #Por cada por cada horario dentro de la franja.
+					for restriccion in horario.especialidad.profesional.restricciones.all(): #Por cada restriccion del profesional.
 						
-						for especialidad in self.espacio.especialidades.all(): #Por cada especialidad.
-							
-							if horario.especialidad.profesional != especialidad.profesional: #Si no es el profesional del horario continuamos.
-								continue
-							
-							if horario.dia_semana != restriccion.dia_semana: #Si no es el mismo dia de la semana del horario continuamos.
-								continue
-							
-							if (horario.desde >= restriccion.desde and horario.desde < restriccion.hasta) or \
-								(horario.hasta > restriccion.desde and horario.hasta <= restriccion.hasta) or \
-								(horario.desde <= restriccion.desde and horario.hasta >= restriccion.hasta):
-								calendario.puntaje += self.PUNTOS_RESTRICCION_PROFESIONAL
+						if horario.dia_semana != restriccion.dia_semana: #Si no es el mismo dia de la semana del horario continuamos.
+							continue
+						
+						if (horario.desde >= restriccion.desde and horario.desde < restriccion.hasta) or \
+							(horario.hasta > restriccion.desde and horario.hasta <= restriccion.hasta) or \
+							(horario.desde <= restriccion.desde and horario.hasta >= restriccion.hasta):
+							calendario.puntaje += self.PUNTOS_RESTRICCION_PROFESIONAL
 			
 			
 			#Segunda evaluacion: Que se cumplan las horas semanales y diarias de la especialidad.

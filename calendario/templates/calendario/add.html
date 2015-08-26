@@ -44,6 +44,8 @@
 				especialidad.setAttribute('dia', ev.target.getAttribute('dia'));
 				
 				ev.target.appendChild(especialidad);
+				
+				ev.target.parentNode.style.backgroundColor = especialidad.style.backgroundColor;
 			}
 			
 		}
