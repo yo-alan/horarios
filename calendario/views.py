@@ -2,6 +2,7 @@
 import time
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
+from django.core import serializers
 from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
@@ -572,29 +573,11 @@ def especialidad_delete(request):
 	
 	return JsonResponse(data)
 
-def restriccion_all(request, pagina=1):
-	
-	total_restricciones = Restriccion.objects.all().order_by('nombre')
-	paginator = Paginator(total_restricciones, 10)
-	
-	try:
-		restricciones = paginator.page(pagina)
-	except PageNotAnInteger:
-		restricciones = paginator.page(1)
-	except EmptyPage:
-		restricciones = paginator.page(paginator.num_pages)
-	
-	context = {'restricciones' : restricciones}
-	
-	return render(request, 'calendario/restriccion/all.html', context)
-
 def restriccion_add(request):
 	
-	if request.method == 'GET':
-		context = {}
-		
-		return render(request, 'calendario/restriccion/add.html', context)
-		
+	if request.method != 'POST':
+		return HttpResponseRedirect(reverse('calendario:profesional_all'))
+	
 	data = {}
 	
 	try:
@@ -629,10 +612,8 @@ def restriccion_add(request):
 
 def restriccion_edit(request):
 	
-	if request.method == 'GET':
-		context = {}
-	
-		return render(request, 'calendario/restriccion/edit.html', context)
+	if request.method != 'POST':
+		return HttpResponseRedirect(reverse('calendario:profesional_all'))
 	
 	data = {}
 	
@@ -656,8 +637,8 @@ def restriccion_edit(request):
 def restriccion_delete(request):
 	
 	if request.method != 'POST':
-		return HttpResponseRedirect(reverse('calendario:especialidad_all'))
-		
+		return HttpResponseRedirect(reverse('calendario:profesional_all'))
+	
 	data = {}
 	
 	try:
@@ -666,6 +647,26 @@ def restriccion_delete(request):
 		especialidad.delete()
 		
 		data = {'mensaje': "El profesional fue eliminado exitosamente."}
+		
+	except Exception as ex:
+		data = {'error': str(ex).decode('utf-8')}
+	
+	return JsonResponse(data)
+
+def getrestriccionesof(request):
+	
+	if request.method != 'GET':
+		return HttpResponseRedirect(reverse('calendario:profesional_all'))
+	
+	data = {}
+	
+	try:
+		
+		profesional = Profesional.create(request.GET['profesional_id'])
+		
+		data = serializers.serialize('json', profesional.restricciones.all())
+		
+		print data
 		
 	except Exception as ex:
 		data = {'error': str(ex).decode('utf-8')}

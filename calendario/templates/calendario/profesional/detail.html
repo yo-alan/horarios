@@ -5,6 +5,7 @@
 {% block article %}
 	<script>
 		$(function (){
+			
 			var url = document.location.toString();
 			if(url.match('#')) {
 				$('.nav-tabs a[href=#'+url.split('#')[1]+']').tab('show') ;
@@ -60,7 +61,7 @@
 				
 				ev.preventDefault();
 				
-				$("#" + form.attr('id') + " button[type=submit]").button('loading');
+				$("#" + formRestriccion.attr('id') + " button[type=submit]").button('loading');
 				
 				$.ajax({
 					url: formRestriccion.attr('action'),
@@ -86,7 +87,25 @@
 						
 						alert(response.mensaje);
 						
-						//TODO: Llenar el listado de restricciones.
+						//Recuperamos las restricciones del profesional desde la BBDD.
+						$.ajax({
+							url: "{% url 'calendario:getrestriccionesof' %}",
+							type: 'GET',
+							data: {
+								profesional_id: {{ profesional.id }}
+							},
+							success: function (response){
+								
+								if(response.error){
+									alert(response.error);
+									return;
+								}
+								
+								$.each(response.restricciones, function(i){
+									alert(restricciones[i]);
+								});
+							}
+						});
 					}
 				});
 			});

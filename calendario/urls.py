@@ -69,16 +69,12 @@ urlpatterns = [
     # ex: /calendario/especialidad/delete/
     url(r'^especialidad/delete/$', views.especialidad_delete, name='especialidad_delete'),
     
-    # ex: /calendario/restriccion/
-    url(r'^restriccion/$', views.restriccion_all, name='restriccion_all'),
-    # ex: /calendario/restriccion/all/
-    url(r'^restriccion/all/$', views.restriccion_all, name='restriccion_all'),
-    # ex: /calendario/restriccion/all/pagina/
-    url(r'^restriccion/all/pagina/(?P<pagina>[0-9]+)/$', views.restriccion_all, name='restriccion_all'),
     # ex: /calendario/restriccion/add/
     url(r'^restriccion/add/$', views.restriccion_add, name='restriccion_add'),
     # ex: /calendario/restriccion/edit/
     url(r'^restriccion/edit/$', views.restriccion_edit, name='restriccion_edit'),
     # ex: /calendario/restriccion/delete/
     url(r'^restriccion/delete/$', views.restriccion_delete, name='restriccion_delete'),
+    # ex: /calendario/restriccion/getrestriccionesof/
+    url(r'^restriccion/getrestriccionesof/$', views.getrestriccionesof, name='getrestriccionesof'),
 ]
