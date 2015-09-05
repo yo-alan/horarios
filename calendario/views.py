@@ -18,7 +18,7 @@ def index(request):
 
 def all(request):
 	
-	calendarios = Calendario.objects.all()
+	calendarios = Calendario.objects.filter(estado='ON')
 	
 	context = {'calendarios': calendarios}
 	
@@ -104,7 +104,7 @@ def detail(request, calendario_id):
 
 def espacio_all(request, pagina=1):
 	
-	total_espacios = Espacio.objects.all().order_by('nombre')
+	total_espacios = Espacio.objects.filter(estado='ON').order_by('nombre')
 	paginator = Paginator(total_espacios, 10)
 	
 	try:
@@ -122,8 +122,8 @@ def espacio_detail(request, espacio_id):
 	
 	espacio = Espacio.create(espacio_id)
 	
-	especialidades = Especialidad.objects.all().order_by('nombre')
-	profesionales = Profesional.objects.all().order_by('apellido', 'nombre')
+	especialidades = Especialidad.objects.filter(estado='ON').order_by('nombre')
+	profesionales = Profesional.objects.filter(estado='ON').order_by('apellido', 'nombre')
 	
 	context = {'espacio': espacio, 'especialidades': especialidades, 'profesionales': profesionales}
 	
@@ -192,7 +192,9 @@ def espacio_delete(request):
 	try:
 		espacio = Espacio.create(request.POST['espacio_id'])
 		
-		espacio.delete()
+		espacio.estado = 'OFF'
+		
+		espacio.save()
 		
 		data = {'mensaje': "El espacio fue eliminado exitosamente."}
 		
@@ -250,7 +252,7 @@ def espacio_add_especialidades(request):
 		
 		espacio = Espacio.create(espacio_id)
 		
-		for especialidad in espacio.especialidades.all():
+		for especialidad in espacio.especialidades.filter(estado='ON'):
 			espacio.especialidades.remove(especialidad)
 		
 		for especialidad in especialidades:
@@ -260,7 +262,7 @@ def espacio_add_especialidades(request):
 		
 	except KeyError as ex:
 		#KeyError 'especialidades[]', vacio todo el arreglo.
-		for especialidad in espacio.especialidades.all():
+		for especialidad in espacio.especialidades.filter(estado='ON'):
 			espacio.especialidades.remove(especialidad)
 		
 	except Exception as ex:
@@ -281,7 +283,7 @@ def espacio_add_profesionales(request):
 		
 		espacio = Espacio.create(espacio_id)
 		
-		for profesional in espacio.profesionales.all():
+		for profesional in espacio.profesionales.filter(estado='ON'):
 			espacio.profesionales.remove(profesional)
 		
 		for profesional in profesionales:
@@ -291,7 +293,7 @@ def espacio_add_profesionales(request):
 		
 	except KeyError as ex:
 		#KeyError 'profesionales[]', vacio todo el arreglo.
-		for profesional in espacio.profesionales.all():
+		for profesional in espacio.profesionales.filter(estado='ON'):
 			espacio.profesionales.remove(profesional)
 		
 	except Exception as ex:
@@ -301,7 +303,7 @@ def espacio_add_profesionales(request):
 
 def profesional_all(request, pagina=1):
 	
-	total_profesionales = Profesional.objects.all().order_by('apellido', 'nombre')
+	total_profesionales = Profesional.objects.filter(estado='ON').order_by('apellido', 'nombre')
 	paginator = Paginator(total_profesionales, 10)
 	
 	try:
@@ -357,7 +359,7 @@ def profesional_detail(request, profesional_id):
 	
 	profesional = Profesional.create(profesional_id)
 	
-	especialidades = Especialidad.objects.all().order_by('nombre')
+	especialidades = Especialidad.objects.filter(estado='ON').order_by('nombre')
 	
 	context['profesional'] = profesional
 	context['especialidades'] = especialidades
@@ -406,7 +408,9 @@ def profesional_delete(request):
 	try:
 		profesional = Profesional.create(request.POST['profesional_id'])
 		
-		profesional.delete()
+		profesional.estado = 'OFF'
+		
+		profesional.save()
 		
 		data = {'mensaje': "El profesional fue eliminado exitosamente."}
 		
@@ -428,7 +432,7 @@ def profesional_add_especialidades(request, ):
 		
 		profesional = Profesional.create(profesional_id)
 		
-		for especialidad in profesional.especialidades.all():
+		for especialidad in profesional.especialidades.filter(estado='ON'):
 			profesional.especialidades.remove(especialidad)
 		
 		for especialidad in especialidades:
@@ -438,7 +442,7 @@ def profesional_add_especialidades(request, ):
 		
 	except KeyError as ex:
 		#KeyError 'especialidades[]', vacio todo el arreglo.
-		for especialidad in profesional.especialidades.all():
+		for especialidad in profesional.especialidades.filter(estado='ON'):
 			profesional.especialidades.remove(especialidad)
 		
 	except Exception as ex:
@@ -486,7 +490,7 @@ def profesional_add_restriccion(request):
 
 def especialidad_all(request, pagina=1):
 	
-	total_especialidades = Especialidad.objects.all().order_by('nombre')
+	total_especialidades = Especialidad.objects.filter(estado='ON').order_by('nombre')
 	paginator = Paginator(total_especialidades, 10)
 	
 	try:
@@ -594,7 +598,9 @@ def especialidad_delete(request):
 	try:
 		especialidad = Especialidad.objects.get(pk=request.POST['especialidad_id'])
 		
-		especialidad.delete()
+		especialidad.estado = 'OFF'
+		
+		especialidad.save()
 		
 		data = {'mensaje': "La especialidad fue eliminada exitosamente."}
 		
@@ -672,9 +678,11 @@ def restriccion_delete(request):
 	data = {}
 	
 	try:
-		especialidad = Especialidad.objects.get(pk=request.POST['especialidad_id'])
+		restriccion = Especialidad.objects.get(pk=request.POST['especialidad_id'])
 		
-		especialidad.delete()
+		restriccion.estado = 'OFF'
+		
+		restriccion.save()
 		
 		data = {'mensaje': "El profesional fue eliminado exitosamente."}
 		
@@ -694,7 +702,7 @@ def getrestriccionesof(request):
 		
 		profesional = Profesional.create(request.GET['profesional_id'])
 		
-		data = serializers.serialize('json', profesional.restricciones.all())
+		data = serializers.serialize('json', profesional.restricciones.filter(estado='ON'))
 		
 		print data
 		

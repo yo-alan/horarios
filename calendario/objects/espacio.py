@@ -87,7 +87,7 @@ class Espacio(models.Model):
 	
 	def generarpoblacioninicial(self, ):
 		"""
-		Crea la poblacion inicial de individuos y los guarda en el atributo 'poblacion'.
+		Genera individuos desde cero y los guarda en el atributo 'poblacion'.
 		
 		@Parametros:
 		None
@@ -197,13 +197,12 @@ class Espacio(models.Model):
 				continue
 			
 			#Comparamos los horarios con las restricciones de
-			#los profesionales. Cada superposicion vale un punto, mientras mas
+			#los profesionales. Cada superposicion es penalizada, mientras mas
 			#alto sea el puntaje, menos apto es el individuo.
-			
 			
 			for franja_horaria in calendario.horarios: #Por cada franja de horarios.
 				
-				for horario in franja_horaria: #Por cada por cada horario dentro de la franja.
+				for horario in franja_horaria: #Por cada horario dentro de la franja.
 					
 					for restriccion in horario.profesional.restricciones.all(): #Por cada restriccion del profesional.
 						
@@ -233,10 +232,22 @@ class Espacio(models.Model):
 				if horas_semanales != especialidad.carga_horaria_semanal:
 					calendario.puntaje += abs(especialidad.carga_horaria_semanal - horas_semanales) * self.PUNTOS_HORAS_SEMANALES
 			
-			#~ for i in range(len(self.dias_habiles)):
-				#~ 
-				#~ for j in self.horas:
-					#~ pass
+			#Tercera evaluacion: Se busca que las especialidades cumplan con la horas maximas por dia.
+			#Horas maxima por dia: Cada especialidad tiene un atributo max_horas_diaria,
+			#en el caso que un calendario exceda este valor recibira una penalizacion.
+			
+			for franja_horaria in calendario.horarios: #Por cada franja de horarios.
+				
+				for horario in franja_horaria: #Por cada horario dentro de la franja.
+					
+					especialidad = horario.especialidad
+			
+			
+			#Cuarta evaluacion: En esta instancia se desea comprobar la distribucion horaria de las especialidades.
+			#Horas semanales: cada hora extra o faltante es penalizada con la suma de puntos.
+			
+			
+			
 			
 			#~ calendario.save()	
 			
