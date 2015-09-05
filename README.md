@@ -10,8 +10,8 @@ Horarios está programado en Django 1.8, si no lo tienes instalado [haz click aq
 
 ###*Configurar la aplicación para su uso:*
 #####Una vez clonado el proyecto seguir estos pasos:
-* Renombrar el archivo `horarios/settings.base.py` a `horarios/settings.py`. En su interior realizar los cambios necesarios a la configuración de la base de datos.
 * Crear la base de datos.
+* Renombrar el archivo `horarios/settings.base.py` a `horarios/settings.py`. En su interior realizar los cambios de acuerdo a su configuración.
 * Situarse en el directorio raíz del proyecto.
 * Realizar las migraciones del proyecto: `python manage.py makemigrations`.
 * Migrar la base de datos: `python manage.py migrate`.
