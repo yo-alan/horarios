@@ -29,7 +29,7 @@ div.horario-container {
 	vertical-align: middle;
 }
 
-ul.especialidades, ul.calendarios, ul.restricciones {
+ul.profesionales, ul.especialidades, ul.calendarios, ul.restricciones {
 	height: 400px;
 }
 
@@ -49,4 +49,8 @@ ul.overflow {
 .table tbody > tr > td, .table thead > tr > th {
 	border-top: none;
 	border-bottom: none;
+}
+
+a.logout {
+	margin-right: 10px;
 }

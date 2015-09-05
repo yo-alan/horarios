@@ -33,7 +33,7 @@ def add(request, espacio_id):
 		calendario.espacio = Espacio.create(espacio_id)
 		calendario.save()
 		
-		#Dividimos por 3 por esa es la cantidad de atributos y mas 1 por que el primero es el csrf.
+		#Dividimos por 3, esa es la cantidad de atributos. Mas 1 por que el primero es el csrf.
 		for i in range(1, len(request.POST)/3+1):
 			
 			#Creamos un horario y los completamos.
@@ -71,7 +71,7 @@ def generar(request):
 	
 	espacio = Espacio.create(request.POST['espacio_id'])
 	
-	espacio.generar_poblacion_inicial()
+	espacio.generarpoblacioninicial()
 	
 	espacio.evolucionar()
 	
@@ -123,8 +123,9 @@ def espacio_detail(request, espacio_id):
 	espacio = Espacio.create(espacio_id)
 	
 	especialidades = Especialidad.objects.all().order_by('nombre')
+	profesionales = Profesional.objects.all().order_by('apellido', 'nombre')
 	
-	context = {'espacio': espacio, 'especialidades': especialidades}
+	context = {'espacio': espacio, 'especialidades': especialidades, 'profesionales': profesionales}
 	
 	return render(request, 'calendario/espacio/detail.html', context)
 
@@ -236,7 +237,7 @@ def espacio_add_hora(request):
 	except Exception as ex:
 		return JsonResponse({'error': str(ex).decode('utf-8')})
 
-def espacio_add_especialidades(request, ):
+def espacio_add_especialidades(request):
 	
 	if request.method != 'POST':
 		return HttpResponseRedirect(reverse('calendario:espacio_all'))
@@ -261,6 +262,37 @@ def espacio_add_especialidades(request, ):
 		#KeyError 'especialidades[]', vacio todo el arreglo.
 		for especialidad in espacio.especialidades.all():
 			espacio.especialidades.remove(especialidad)
+		
+	except Exception as ex:
+		data = {'error': str(ex).decode('utf-8')}
+	
+	return JsonResponse(data)
+
+def espacio_add_profesionales(request):
+	
+	if request.method != 'POST':
+		return HttpResponseRedirect(reverse('calendario:espacio_all'))
+	
+	data = {}
+	
+	try:
+		espacio_id = dict(request.POST.iterlists())['espacio_id'][0]
+		profesionales = dict(request.POST.iterlists())['profesionales[]']
+		
+		espacio = Espacio.create(espacio_id)
+		
+		for profesional in espacio.profesionales.all():
+			espacio.profesionales.remove(profesional)
+		
+		for profesional in profesionales:
+			espacio.profesionales.add(Profesional.objects.get(pk=profesional))
+		
+		data = {'mensaje': "Los profesionales fueron asignados exitosamente."}
+		
+	except KeyError as ex:
+		#KeyError 'profesionales[]', vacio todo el arreglo.
+		for profesional in espacio.profesionales.all():
+			espacio.profesionales.remove(profesional)
 		
 	except Exception as ex:
 		data = {'error': str(ex).decode('utf-8')}

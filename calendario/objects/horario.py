@@ -9,7 +9,7 @@ class Horario(models.Model):
 	hora_desde = models.TimeField('desde', null=False)
 	hora_hasta = models.TimeField('hasta', null=False)
 	dia_semana = models.IntegerField(default=0, null=False)
-	calendario = models.ForeignKey(Calendario, null=True)
+	calendario = models.ForeignKey(Calendario)
 	profesional = models.ForeignKey(Profesional)
 	especialidad = models.ForeignKey(Especialidad)
 	
@@ -19,8 +19,7 @@ class Horario(models.Model):
 	def __eq__(self, o):
 		return self.hora_desde == o.hora_desde and\
 				self.hora_hasta == o.hora_hasta and\
-				self.dia_semana == o.dia_semana and\
-				self.calendario == o.calendario
+				self.dia_semana == o.dia_semana
 	
 	def __ne__(self, o):
 		return self.dia_semana != o.dia_semana and self.hora_desde != o.hora_desde

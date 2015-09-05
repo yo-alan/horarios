@@ -31,7 +31,7 @@ class Espacio(models.Model):
 	profesionales = models.ManyToManyField(Profesional)
 	
 	@classmethod
-	def create(cls, espacio_id=0):
+	def create(cls, espacio_id=0, generaciones=0):
 		
 		espacio = None
 		
@@ -44,7 +44,7 @@ class Espacio(models.Model):
 		espacio._horas = []
 		espacio._poblacion = []
 		espacio._restricciones = []
-		espacio._generaciones = 0
+		espacio._generaciones = generaciones
 		
 		#HARDCODED
 		espacio._dias_habiles = [1, 2, 3, 4, 5]
@@ -85,7 +85,7 @@ class Espacio(models.Model):
 	
 	# GENETIC ALGORITHMS
 	
-	def generar_poblacion_inicial(self, ):
+	def generarpoblacioninicial(self, ):
 		"""
 		Crea la poblacion inicial de individuos y los guarda en el atributo 'poblacion'.
 		
@@ -115,8 +115,14 @@ class Espacio(models.Model):
 					self.poblacion.append(calendario) #A su vez el Calendario es agregado a la poblacion.
 					
 					horario = Horario() #Se crea un Horario.
+					
 					horario.especialidad = especialidad #Se le asigna una Especialidad.
-					horario.profesional = profesional #Se le asigna un Profesional.
+					
+					for profesional in self.profesionales.all():
+						for pespecialidad in profesional.especialidades.all():
+							if especialidad.nombre == pespecialidad.nombre:
+								horario.profesional = profesional #Se le asigna un Profesional.
+					
 					horario.hora_desde = hora.hora_desde #Se le asigna una hora desde.
 					horario.hora_hasta = hora.hora_hasta #Se le asigna una hora hasta.
 					horario.dia_semana = dia #Se le asigna un dia de la semana.
@@ -135,8 +141,13 @@ class Espacio(models.Model):
 				for hora in self.horas: #Tambien por la cantidad de horarios.
 					
 					horario = Horario() #Se crea un Horario.
-					horario.especialidad = self.especialidades.all()[randrange(0, len(self.especialidades.all()))] #Se le asigna un Especialidad.
-					horario.profesional = profesional #Se le asigna un Profesional.
+					horario.especialidad = self.especialidades.all()[randrange(0, len(self.especialidades.all()))] #Se le asigna una Especialidad.
+					
+					for profesional in self.profesionales.all():
+						for pespecialidad in profesional.especialidades.all():
+							if especialidad.nombre == pespecialidad.nombre:
+								horario.profesional = profesional #Se le asigna un Profesional.
+					
 					horario.hora_desde = hora.hora_desde #Se le asigna una hora desde.
 					horario.hora_hasta = hora.hora_hasta #Se le asigna una hora hasta.
 					horario.dia_semana = dia #Se le asigna un dia de la semana.
@@ -156,12 +167,13 @@ class Espacio(models.Model):
 					#Y lo agregamos a la lista de horarios del Calendario
 					calendario.agregar_horario(horario)
 		
-		#~ for calendario in self.poblacion:
-			#~ calendario.full_save()
 	
 	def evolucionar(self, ):
 		print "FITNESS"
 		self.fitness()
+		
+		for calendario in self.poblacion:
+			calendario.full_save()
 	
 	def fitness(self, ):
 		"""
@@ -193,14 +205,14 @@ class Espacio(models.Model):
 				
 				for horario in franja_horaria: #Por cada por cada horario dentro de la franja.
 					
-					for restriccion in horario.especialidad.profesional.restricciones.all(): #Por cada restriccion del profesional.
+					for restriccion in horario.profesional.restricciones.all(): #Por cada restriccion del profesional.
 						
 						if horario.dia_semana != restriccion.dia_semana: #Si no es el mismo dia de la semana del horario continuamos.
 							continue
 						
-						if (horario.desde >= restriccion.desde and horario.desde < restriccion.hasta) or \
-							(horario.hasta > restriccion.desde and horario.hasta <= restriccion.hasta) or \
-							(horario.desde <= restriccion.desde and horario.hasta >= restriccion.hasta):
+						if (horario.hora_desde >= restriccion.hora_desde and horario.hora_desde < restriccion.hora_hasta) or \
+							(horario.hora_hasta > restriccion.hora_desde and horario.hora_hasta <= restriccion.hora_hasta) or \
+							(horario.hora_desde <= restriccion.hora_desde and horario.hora_hasta >= restriccion.hora_hasta):
 							calendario.puntaje += self.PUNTOS_RESTRICCION_PROFESIONAL
 			
 			
@@ -226,7 +238,7 @@ class Espacio(models.Model):
 				#~ for j in self.horas:
 					#~ pass
 			
-			calendario.save()	
+			#~ calendario.save()	
 			
 	
 	def seleccionar(self, ):

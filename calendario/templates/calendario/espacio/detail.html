@@ -110,6 +110,26 @@
 			eDisponibles.appendChild(item);
 		}
 		
+		function agregarProfesional(item){
+			var texto = item.children[0].innerHTML;
+			
+			var pAsignados = document.getElementById('pAsignados');
+			
+			item.setAttribute('onclick', 'eliminarProfesional(this)');
+			
+			pAsignados.appendChild(item);
+		}
+		
+		function eliminarProfesional(item){
+			var texto = item.children[0].innerHTML;
+			
+			var pDisponibles = document.getElementById('pDisponibles');
+			
+			item.setAttribute('onclick', 'agregarProfesional(this)');
+			
+			pDisponibles.appendChild(item);
+		}
+		
 		function guardarEspecialidades(){
 			
 			var eAsignadas = document.getElementById('eAsignadas');
@@ -127,6 +147,37 @@
 					csrfmiddlewaretoken: '{{ csrf_token }}',
 					espacio_id: {{ espacio.id }},
 					especialidades: especialidades
+				},
+				success: function(response) {
+					
+					if(response.error){
+						alert(response.error);
+						return;
+					}
+					
+					alert(response.mensaje);
+				}
+			});
+			
+		}
+		
+		function guardarProfesionales(){
+			
+			var pAsignados = document.getElementById('pAsignados');
+			
+			var profesionales = []
+			
+			for(i = 0; i < pAsignados.children.length; i++){
+				profesionales.push(pAsignados.children[i].id);
+			}
+			
+			$.ajax({
+				url: "{% url 'calendario:espacio_add_profesionales' %}",
+				type: 'POST',
+				data: {
+					csrfmiddlewaretoken: '{{ csrf_token }}',
+					espacio_id: {{ espacio.id }},
+					profesionales: profesionales
 				},
 				success: function(response) {
 					
@@ -257,8 +308,51 @@
 								Guardar cambios
 							</button>
 						</div>
-						<div class="tab-pane" id="especialidades">
-							
+						<div class="tab-pane" id="profesionales">
+							<div class="alert alert-info" role="alert">
+								<p><span class="glyphicon glyphicon-info-sign"></span> Para asignar un profesional hazle clic. Lo mismo para quitarlo.</p>
+							</div>
+							<div class="col-md-12">
+								<div class="row">
+									<div class="col-md-5 col-md-offset-1">
+										<div class="panel panel-primary">
+											<div class="panel-heading">
+												<h3 class="panel-title"><b>Disponibles</b></h3>
+											</div>
+											<ul id="pDisponibles" class="list-group profesionales overflow">
+												{% for profesional in profesionales %}
+													{% if not profesional in espacio.profesionales.all %}
+														<li id="{{ profesional.id }}" class="btn list-group-item" onclick="agregarProfesional(this)">
+															<p class="text-left">
+																{{ profesional }}
+															</p>
+														</li>
+													{% endif %}
+												{% endfor %}
+											</ul>
+										</div>
+									</div>
+									<div class="col-md-5">
+										<div class=" panel panel-primary">
+											<div class="panel-heading">
+												<h3 class="panel-title"><b>Asignados</b></h3>
+											</div>
+											<ul id="pAsignados" class="list-group profesionales overflow">
+												{% for profesional in espacio.profesionales.all %}
+													<li id="{{ profesional.id }}" class="btn list-group-item" onclick="eliminarProfesional(this)">
+														<p class="text-left">
+															{{ profesional }}
+														</p>
+													</li>
+												{% endfor %}
+											</ul>
+										</div>
+									</div>
+								</div>
+							</div>
+							<button class="btn btn-primary col-md-offset-10" onclick="guardarProfesionales()">
+								Guardar cambios
+							</button>
 						</div>
 						<div class="tab-pane" id="horas">
 							<div class="col-md-8 col-md-offset-2">
