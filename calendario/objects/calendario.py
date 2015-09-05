@@ -58,9 +58,6 @@ class Calendario(models.Model):
 	def mutar(self, ):
 		pass
 	
-	def limpiar(self, ):
-		self._horarios = []
-	
 	def agregar_horario(self, horario):
 		"""
 		Agrega un Horario a la lista de horarios del Calendario.

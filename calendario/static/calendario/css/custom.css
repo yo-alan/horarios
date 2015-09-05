@@ -29,19 +29,16 @@ div.horario-container {
 	vertical-align: middle;
 }
 
-ul.especialidades {
+ul.especialidades, ul.calendarios, ul.restricciones {
 	height: 400px;
-	overflow-y: auto;
 }
 
-ul.calendarios {
-	height: 400px;
-	width: 365px;
+ul.overflow {
 	overflow-y: auto;
 }
 
 .tab-content {
-	margin-top: 20px;
+	padding-top: 30px;
 }
 
 .panel-default > .panel-heading {

@@ -229,7 +229,7 @@
 										<div class="panel-heading">
 											<h3 class="panel-title"><b>Restricciones</b></h3>
 										</div>
-										<ul id="ulRestricciones" class="list-group">
+										<ul id="ulRestricciones" class="list-group restricciones overflow">
 											{% for restriccion in profesional.restricciones %}
 												<li id="{{ restriccion.id }}" class="btn list-group-item" onclick="">
 													<p class="text-left">
@@ -295,7 +295,7 @@
 											<div class="panel-heading">
 												<h3 class="panel-title"><b>Disponibles</b></h3>
 											</div>
-											<ul id="eDisponibles" class="list-group especialidades">
+											<ul id="eDisponibles" class="list-group especialidades overflow">
 												{% for especialidad in especialidades %}
 													{% if not especialidad in profesional.especialidades.all %}
 														<li id="{{ especialidad.id }}" class="btn list-group-item" onclick="agregar(this)">
@@ -313,7 +313,7 @@
 											<div class="panel-heading">
 												<h3 class="panel-title"><b>Asignadas</b></h3>
 											</div>
-											<ul id="eAsignadas" class="list-group especialidades">
+											<ul id="eAsignadas" class="list-group especialidades overflow">
 												{% for especialidad in profesional.especialidades.all %}
 													<li id="{{ especialidad.id }}" class="btn list-group-item" onclick="eliminar(this)">
 														<p class="text-left">

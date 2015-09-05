@@ -6,7 +6,7 @@ from django.core import serializers
 from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
-from .models import Entorno, Calendario, Profesional, Horario, ProfesionalRestriccion, EspacioRestriccion, Especialidad, Espacio, Hora
+from .models import Calendario, Profesional, Horario, ProfesionalRestriccion, EspacioRestriccion, Especialidad, Espacio, Hora
 
 DIAS = {0 : 'Domingo', 1 : 'Lunes', 2 : 'Martes', 3 : 'Miércoles', 4 : 'Jueves', 5 : 'Viernes', 6 : 'Sábado'}
 
@@ -71,15 +71,13 @@ def generar(request):
 	
 	espacio = Espacio.create(request.POST['espacio_id'])
 	
-	entorno = Entorno(espacio=espacio)
+	espacio.generar_poblacion_inicial()
 	
-	entorno.generar_poblacion_inicial()
-	
-	entorno.evolucionar()
+	espacio.evolucionar()
 	
 	tiempo = (time.time() - start_time)
 	
-	context = {'calendarios': entorno.poblacion, 'tiempo': tiempo}
+	context = {'calendarios': espacio.poblacion, 'tiempo': tiempo}
 	
 	return render(request, 'calendario/all.html', context)
 
@@ -116,7 +114,7 @@ def espacio_all(request, pagina=1):
 	except EmptyPage:
 		espacios = paginator.page(paginator.num_pages)
 	
-	context = {'espacios': espacios, }
+	context = {'espacios': espacios}
 	
 	return render(request, 'calendario/espacio/all.html', context)
 

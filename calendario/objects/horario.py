@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.db import models
 from calendario import Calendario
+from profesional import Profesional
 from especialidad import Especialidad
 
 class Horario(models.Model):
@@ -9,6 +10,7 @@ class Horario(models.Model):
 	hora_hasta = models.TimeField('hasta', null=False)
 	dia_semana = models.IntegerField(default=0, null=False)
 	calendario = models.ForeignKey(Calendario, null=True)
+	profesional = models.ForeignKey(Profesional)
 	especialidad = models.ForeignKey(Especialidad)
 	
 	def __str__(self, ):

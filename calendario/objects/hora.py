@@ -2,7 +2,6 @@
 from django.db import models
 from espacio import Espacio
 
-
 class Hora(models.Model):
 	
 	hora_desde = models.TimeField('desde', null=False)

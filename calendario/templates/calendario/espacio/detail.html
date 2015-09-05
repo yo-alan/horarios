@@ -177,7 +177,7 @@
 									<div class="panel-heading">
 										<h3 class="panel-title"><b>Especialidades</b></h3>
 									</div>
-									<ul class="list-group especialidades">
+									<ul class="list-group especialidades overflow">
 										{% for especialidad in espacio.especialidades.all %}
 											<li id="{{ especialidad.id }}" class="list-group-item">
 												<p class="text-left">
@@ -222,7 +222,7 @@
 											<div class="panel-heading">
 												<h3 class="panel-title"><b>Disponibles</b></h3>
 											</div>
-											<ul id="eDisponibles" class="list-group especialidades">
+											<ul id="eDisponibles" class="list-group especialidades overflow">
 												{% for especialidad in especialidades %}
 													{% if not especialidad in espacio.especialidades.all %}
 														<li id="{{ especialidad.id }}" class="btn list-group-item" onclick="agregar(this)">
@@ -240,7 +240,7 @@
 											<div class="panel-heading">
 												<h3 class="panel-title"><b>Asignadas</b></h3>
 											</div>
-											<ul id="eAsignadas" class="list-group especialidades">
+											<ul id="eAsignadas" class="list-group especialidades overflow">
 												{% for especialidad in espacio.especialidades.all %}
 													<li id="{{ especialidad.id }}" class="btn list-group-item" onclick="eliminar(this)">
 														<p class="text-left">
@@ -312,7 +312,7 @@
 									<div class="panel-heading">
 										<h3 class="panel-title"><b>Calendarios</b></h3>
 									</div>
-									<ul id="ulCalendarios" class="list-group calendarios">
+									<ul id="ulCalendarios" class="list-group calendarios overflow">
 										{% for calendario in espacio.calendarios %}
 											<li id="{{ calendario.id }}" class="btn list-group-item" onclick="verCalendario('{% url 'calendario:detail' calendario.id %}')">
 												<p class="text-left">
