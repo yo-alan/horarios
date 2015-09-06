@@ -58,19 +58,19 @@
 	</script>
 	<div class="container-fluid">
 		<div class="row clearfix">
-			<div class="col-md-12">
+			<div class="col-xs-12">
 				<h3 class="text-center">
 					{{ especialidad }}.
 				</h3>
 				<div class="tabbable" id="tabs-348111">
 					<ul class="nav nav-tabs">
 						<li class="active">
-							<a href="#especialidad" data-toggle="tab">Especialidad</a>
+							<a href="#especialidad" data-toggle="tab"><i class="glyphicon glyphicon-th-list"> Especialidad</i></a>
 						</li>
 					</ul>
 					<div class="tab-content">
 						<div class="tab-pane active" id="especialidad">
-							<div class="col-md-6 col-md-offset-3">
+							<div class="col-xs-6 col-xs-offset-3">
 								<form class="form-horizontal" id="editForm" method="POST" action="{% url 'calendario:especialidad_edit' %}">
 									<div class="alert alert-dismissable alert-danger hidden">
 										<button type="button" class="close" data-hide="alert" aria-hidden="true">
