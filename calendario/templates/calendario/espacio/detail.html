@@ -417,13 +417,37 @@
 									</ul>
 								</div>
 							</div>
-							{% for hora in espacio.horas %}
-								<dl>
-									<dt>
-										Hora: <span>De {{ hora.hora_desde }} a {{ hora.hora_hasta }}.</span>
-									</dt>
-								</dl>
-							{% endfor %}
+							<!--
+								Mini-calendario.
+							-->
+							<table class="table mini-calendario">
+								<thead>
+									<tr class="bg-primary">
+										<th class="text-center">
+										</th>
+										{% for dia in dias %}
+											<th class="text-center">
+												<h4><strong>{{ dia }}</strong></h4>
+											</th>
+										{% endfor %}
+									</tr>
+								</thead>
+								<tbody>
+									{% for hora in espacio.horas %}
+										<tr>
+											<td class="text-center bg-primary">
+												<h4>
+													<strong>{{ hora.hora_desde }}</strong>
+												</h4>
+											</td>
+											{% for dia in espacio.dias_habiles %}
+												<td class="text-center active">
+												</td>
+											{% endfor %}
+										</tr>
+									{% endfor %}
+								</tbody>
+							</table>
 							<form class="form-horizontal col-xs-offset-3" method="POST" action="{% url 'calendario:generar' %}">
 								{% csrf_token %}
 								<input type="hidden" id="espacio_id" name="espacio_id" value="{{ espacio.id }}">

@@ -125,7 +125,13 @@ def espacio_detail(request, espacio_id):
 	especialidades = Especialidad.objects.filter(estado='ON').order_by('nombre')
 	profesionales = Profesional.objects.filter(estado='ON').order_by('apellido', 'nombre')
 	
-	context = {'espacio': espacio, 'especialidades': especialidades, 'profesionales': profesionales}
+	dias = []
+	
+	for num in DIAS:
+		if num in espacio.dias_habiles:
+			dias.append(DIAS[num])
+	
+	context = {'espacio': espacio, 'especialidades': especialidades, 'profesionales': profesionales, 'dias': dias}
 	
 	return render(request, 'calendario/espacio/detail.html', context)
 
