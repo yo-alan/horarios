@@ -94,3 +94,21 @@ class Calendario(models.Model):
 		
 		return self._horarios
 	
+	
+	def __eq__(self, o):
+		return self.puntaje == o.puntaje
+	
+	def __ne__(self, o):
+		return self.puntaje != o.puntaje
+	
+	def __lt__(self, o):
+		return self.puntaje < o.puntaje
+	
+	def __le__(self, o):
+		return self.puntaje <= o.puntaje
+	
+	def __gt__(self, o):
+		return self.puntaje > o.puntaje
+	
+	def __ge__(self, o):
+		return self.puntaje >= o.puntaje

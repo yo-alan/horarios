@@ -15,6 +15,15 @@
 				window.scrollTo(0, 0);
 			});
 			
+			//~ var formGenerar = $("#formGenerar");
+			
+			//~ formGenerar.submit(function (ev){
+				
+				//~ ev.preventDefault();
+				
+				//~ $("#" + formGenerar.attr('id') + " button[type=submit]").button('loading');
+			//~ }
+			
 			var form = $("#editForm");
 			
 			form.submit(function (ev){
@@ -448,16 +457,12 @@
 									{% endfor %}
 								</tbody>
 							</table>
-							<form class="form-horizontal col-xs-offset-3" method="POST" action="{% url 'calendario:generar' %}">
+							<form class="form-horizontal" id="" method="POST" action="{% url 'calendario:generar' %}">
 								{% csrf_token %}
 								<input type="hidden" id="espacio_id" name="espacio_id" value="{{ espacio.id }}">
-								<div class="form-group">
-									<div class="col-xs-offset-10">
-										<button type="submit" class="btn btn-success">
-											Generar
-										</button>
-									</div>
-								</div>
+								<button type="submit" class="btn btn-success pull-right"  data-loading-text="Generando..." onclick="$(this).button('loading')">
+									Generar
+								</button>
 							</form>
 						</div>
 					</div>

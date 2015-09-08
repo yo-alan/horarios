@@ -4,6 +4,7 @@ from calendario import Calendario
 from profesional import Profesional
 from especialidad import Especialidad
 
+
 class Horario(models.Model):
 	
 	hora_desde = models.TimeField('desde', null=False)

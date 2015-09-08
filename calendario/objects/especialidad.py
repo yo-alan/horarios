@@ -43,7 +43,10 @@ class Especialidad(models.Model):
 		return especialidad
 	
 	def __str__(self, ):
-		return unicode(self.nombre).encode('utf-8')
+		return self.nombre.encode('utf-8')
+	
+	def __repr__(self, ):
+		return self.nombre.encode('utf-8')
 	
 	def __eq__(self, o):
 		return self.nombre == o.nombre	

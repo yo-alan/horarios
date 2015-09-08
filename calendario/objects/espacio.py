@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 from random import random, randrange
 from django.db import models
+from django.utils.encoding import python_2_unicode_compatible
 from especialidad import Especialidad
 from profesional import Profesional
 
+@python_2_unicode_compatible
 class Espacio(models.Model):
 	"""
 	Clase que abarca el medio ambiente en el cual se desarrolla el algoritmo.
@@ -52,7 +54,7 @@ class Espacio(models.Model):
 		return espacio
 	
 	def __str__(self, ):
-		return self.nombre.encode('utf-8')
+		return unicode(self.nombre)
 	
 	@property
 	def horas(self, ):
@@ -172,6 +174,12 @@ class Espacio(models.Model):
 		print "FITNESS"
 		self.fitness()
 		
+		#Ordenamos la lista ubicando los individuos más aptos de principio a fin.
+		self.poblacion.sort()
+		
+		#Cortamos la lista, quedándonos con los 100 individuos más aptos.
+		self.poblacion = self.poblacion[:100]
+		
 		for calendario in self.poblacion:
 			calendario.full_save()
 	
@@ -229,6 +237,7 @@ class Espacio(models.Model):
 						if horario.especialidad == especialidad:
 							horas_semanales += 1
 					
+				#Esta linea se puede comentar?
 				if horas_semanales != especialidad.carga_horaria_semanal:
 					calendario.puntaje += abs(especialidad.carga_horaria_semanal - horas_semanales) * self.PUNTOS_HORAS_SEMANALES
 			
@@ -236,20 +245,62 @@ class Espacio(models.Model):
 			#Horas maxima por dia: Cada especialidad tiene un atributo max_horas_diaria,
 			#en el caso que un calendario exceda este valor recibira una penalizacion.
 			
+			#DECIDIR LA MANERA EN LA QUE SE RECORRE ESTE TIPO DE PENALIZACION.
+			#POR ESPECIALIDAD O POR HORARIO, PROGRAMATICAMENTE POR ESPECIALIDAD ES MAS SENCILLA.
+			
 			for franja_horaria in calendario.horarios: #Por cada franja de horarios.
 				
 				for horario in franja_horaria: #Por cada horario dentro de la franja.
 					
-					especialidad = horario.especialidad
+					horas_diarias = 1
+					
+					for franja_horaria_comparacion in calendario.horarios: #Por cada franja de horarios.
+						
+						for horario_comparacion in franja_horaria: #Por cada horario dentro de la franja.
+							
+							if horario == horario_comparacion:
+								break
+							
+							if horario.especialidad == horario_comparacion.especialidad:
+								horas_diarias += 1
+					
+					if horas_diarias != horario.especialidad.max_horas_diaria:
+						calendario.puntaje += abs(especialidad.max_horas_diaria - horas_diarias) * self.PUNTOS_HORAS_DIARIAS
+					
 			
-			
-			#Cuarta evaluacion: En esta instancia se desea comprobar la distribucion horaria de las especialidades.
+			#Cuarta evaluacion: En esta instancia se desea comprobar la distribución horaria de las especialidades.
 			#Horas semanales: cada hora extra o faltante es penalizada con la suma de puntos.
 			
+			for franja_horaria in calendario.horarios: #Por cada franja de horarios.
+				
+				for horario in franja_horaria: #Por cada horario dentro de la franja.
+					
+					for franja_horaria_comparacion in calendario.horarios: #Por cada franja de horarios.
+						
+						for horario_comparacion in franja_horaria_comparacion: #Por cada horario dentro de la franja.
+							
+							if horario == horario_comparacion:
+								break
+							
+							if horario.especialidad != horario_comparacion.especialidad:
+								continue
+							
+							#~ if horario not in franja_horaria:
+								#~ print str(horario) + " no está en " + str(franja_horaria)
+								#~ continue
+							
+							#~ if horario_comparacion not in franja_horaria_comparacion:
+								#~ print str(horario_comparacion) + " no está en " + str(franja_horaria_comparacion)
+								#~ continue
+							
+							#Una mejor manera de obtener el index.
+							
+							if franja_horaria.index(horario) + 1 == franja_horaria_comparacion.index(horario_comparacion):
+								horario = horario_comparacion
+							else:
+								calendario.puntaje += self.PUNTOS_DISTRIBUCION_HORARIA
 			
-			
-			
-			#~ calendario.save()	
+			#~ calendario.save()
 			
 	
 	def seleccionar(self, ):
