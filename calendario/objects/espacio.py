@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
 from random import random, randrange
 from django.db import models
-from django.utils.encoding import python_2_unicode_compatible
 from especialidad import Especialidad
 from profesional import Profesional
 
-@python_2_unicode_compatible
 class Espacio(models.Model):
 	"""
 	Clase que abarca el medio ambiente en el cual se desarrolla el algoritmo.
@@ -44,6 +42,7 @@ class Espacio(models.Model):
 		
 		espacio._calendarios = []
 		espacio._horas = []
+		espacio._coordinadores = []
 		espacio._poblacion = []
 		espacio._restricciones = []
 		espacio._generaciones = generaciones
@@ -64,6 +63,15 @@ class Espacio(models.Model):
 			self._horas = Hora.objects.filter(espacio=self).order_by('hora_desde')
 		
 		return self._horas
+	
+	@property
+	def coordinadores(self, ):
+		from coordinador import Coordinador
+		
+		if not self._coordinadores:
+			self._coordinadores = Coordinador.objects.filter(espacio=self).order_by('hora_desde')
+		
+		return self._coordinadores
 	
 	@property
 	def dias_habiles(self, ):
@@ -283,7 +291,7 @@ class Espacio(models.Model):
 								break
 							
 							if horario.especialidad != horario_comparacion.especialidad:
-								continue
+								break
 							
 							#~ if horario not in franja_horaria:
 								#~ print str(horario) + " no está en " + str(franja_horaria)
@@ -295,7 +303,7 @@ class Espacio(models.Model):
 							
 							#Una mejor manera de obtener el index.
 							
-							if franja_horaria.index(horario) + 1 == franja_horaria_comparacion.index(horario_comparacion):
+							if calendario.horarios.index(franja_horaria) + 1 == calendario.horarios.index(franja_horaria_comparacion):
 								horario = horario_comparacion
 							else:
 								calendario.puntaje += self.PUNTOS_DISTRIBUCION_HORARIA
