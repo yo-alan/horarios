@@ -98,7 +98,15 @@ def detail(request, calendario_id):
 	except Exception as ex:
 		print ex
 	
-	context = {'calendario': calendario, 'dias': range(5), 'horas': range(6), 'anterior': anterior, 'siguiente': siguiente}
+	espacio = Espacio.create(espacio_id=calendario.espacio.id)
+	
+	dias = []
+	
+	for num in DIAS:
+		if num in espacio.dias_habiles:
+			dias.append(DIAS[num])
+	
+	context = {'calendario': calendario, 'anterior': anterior, 'siguiente': siguiente, 'dias': dias}
 	
 	return render(request, 'calendario/detail.html', context)
 
@@ -123,7 +131,19 @@ def espacio_detail(request, espacio_id):
 	espacio = Espacio.create(espacio_id)
 	
 	especialidades = Especialidad.objects.filter(estado='ON').order_by('nombre')
-	profesionales = Profesional.objects.filter(estado='ON').order_by('apellido', 'nombre')
+	
+	todas_profesionales = Profesional.objects.filter(estado='ON').order_by('apellido', 'nombre')
+	
+	#Muestro solo los profesionales que ejercen las especialidades asignadas al espacio.
+	profesionales = []
+	
+	for profesional in todas_profesionales:
+		
+		for especialidad in espacio.especialidades.all():
+			
+			if especialidad in profesional.especialidades.all():
+				profesionales.append(profesional)
+	
 	
 	dias = []
 	

@@ -33,7 +33,7 @@ ul.profesionales, ul.especialidades, ul.calendarios, ul.restricciones {
 	height: 400px;
 }
 
-ul.overflow {
+.overflow {
 	overflow-y: auto;
 }
 

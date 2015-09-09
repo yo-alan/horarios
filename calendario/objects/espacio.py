@@ -55,37 +55,6 @@ class Espacio(models.Model):
 	def __str__(self, ):
 		return unicode(self.nombre)
 	
-	@property
-	def horas(self, ):
-		from hora import Hora
-		
-		if not self._horas:
-			self._horas = Hora.objects.filter(espacio=self).order_by('hora_desde')
-		
-		return self._horas
-	
-	@property
-	def coordinadores(self, ):
-		from coordinador import Coordinador
-		
-		if not self._coordinadores:
-			self._coordinadores = Coordinador.objects.filter(espacio=self).order_by('hora_desde')
-		
-		return self._coordinadores
-	
-	@property
-	def dias_habiles(self, ):
-		return self._dias_habiles
-	
-	@property
-	def calendarios(self, ):
-		from calendario import Calendario
-		
-		if not self._calendarios:
-			self._calendarios = Calendario.objects.filter(espacio=self)
-		
-		return self._calendarios
-	
 	def setnombre(self, nombre):
 		
 		if nombre == "":
@@ -116,7 +85,7 @@ class Espacio(models.Model):
 			
 			for hora in self.horas: #Cantidad de iteraciones por los horarios.
 				
-				for especialidad in self.especialidades.all(): #Iteracion por cada especialidad.
+				for coordinador in self.coordinadores: #Iteracion por cada especialidad.
 					
 					calendario = Calendario.create() #Se crea un Calendario.
 					
@@ -126,13 +95,8 @@ class Espacio(models.Model):
 					
 					horario = Horario() #Se crea un Horario.
 					
-					horario.especialidad = especialidad #Se le asigna una Especialidad.
-					
-					for profesional in self.profesionales.all():
-						for pespecialidad in profesional.especialidades.all():
-							if especialidad.nombre == pespecialidad.nombre:
-								horario.profesional = profesional #Se le asigna un Profesional.
-					
+					horario.especialidad = coordinador.especialidad #Se le asigna una Especialidad.
+					horario.profesional = coordinador.profesional #Se le asigna una Profesional.
 					horario.hora_desde = hora.hora_desde #Se le asigna una hora desde.
 					horario.hora_hasta = hora.hora_hasta #Se le asigna una hora hasta.
 					horario.dia_semana = dia #Se le asigna un dia de la semana.
@@ -150,14 +114,11 @@ class Espacio(models.Model):
 				
 				for hora in self.horas: #Tambien por la cantidad de horarios.
 					
+					coordinador = self.coordinadores[randrange(0, len(self.coordinadores))]
+					
 					horario = Horario() #Se crea un Horario.
-					horario.especialidad = self.especialidades.all()[randrange(0, len(self.especialidades.all()))] #Se le asigna una Especialidad.
-					
-					for profesional in self.profesionales.all():
-						for pespecialidad in profesional.especialidades.all():
-							if especialidad.nombre == pespecialidad.nombre:
-								horario.profesional = profesional #Se le asigna un Profesional.
-					
+					horario.especialidad = coordinador.especialidad #Se le asigna una Especialidad.
+					horario.profesional = coordinador.profesional #Se le asigna una Profesional.
 					horario.hora_desde = hora.hora_desde #Se le asigna una hora desde.
 					horario.hora_hasta = hora.hora_hasta #Se le asigna una hora hasta.
 					horario.dia_semana = dia #Se le asigna un dia de la semana.
@@ -345,4 +306,35 @@ class Espacio(models.Model):
 	@dias.setter
 	def dias(self, dias):
 		self._dias = dias
+	
+	@property
+	def horas(self, ):
+		from hora import Hora
+		
+		if not self._horas:
+			self._horas = Hora.objects.filter(espacio=self).order_by('hora_desde')
+		
+		return self._horas
+	
+	@property
+	def coordinadores(self, ):
+		from coordinador import Coordinador
+		
+		if not self._coordinadores:
+			self._coordinadores = Coordinador.objects.filter(espacio=self)
+		
+		return self._coordinadores
+	
+	@property
+	def dias_habiles(self, ):
+		return self._dias_habiles
+	
+	@property
+	def calendarios(self, ):
+		from calendario import Calendario
+		
+		if not self._calendarios:
+			self._calendarios = Calendario.objects.filter(espacio=self)
+		
+		return self._calendarios
 	

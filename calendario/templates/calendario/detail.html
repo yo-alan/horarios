@@ -3,6 +3,26 @@
 {% block title %}Detalles del calendario {{ calendario.id }} {% endblock %}
 
 {% block article %}
+	<script>
+		document.onkeydown = checkKey;
+
+		function checkKey(e) {
+
+			e = e || window.event;
+			
+			if (e.keyCode == '37') {
+				{% if anterior %}
+					window.location.href = "{% url 'calendario:detail' anterior.id %}";
+				{% endif %}
+			}
+			else if (e.keyCode == '39') {
+				{% if siguiente %}
+					window.location.href = "{% url 'calendario:detail' siguiente.id %}";
+				{% endif %}
+			}
+			
+		}
+	</script>
 	<div class="container-fluid">
 		<div class="row clearfix">
 			<div class="col-xs-12">
@@ -22,21 +42,11 @@
 						<tr class="bg-primary">
 							<th class="text-center">
 							</th>
-							<th class="text-center">
-								<h4><strong>Lunes</strong></h4>
-							</th>
-							<th class="text-center">
-								<h4><strong>Martes</strong></h4>
-							</th>
-							<th class="text-center">
-								<h4><strong>Miercoles</strong></h4>
-							</th>
-							<th class="text-center">
-								<h4><strong>Jueves</strong></h4>
-							</th>
-							<th class="text-center">
-								<h4><strong>Viernes</strong></h4>
-							</th>
+							{% for dia in dias %}
+								<th class="text-center">
+									<h4><strong>{{ dia }}</strong></h4>
+								</th>
+							{% endfor %}
 						</tr>
 					</thead>
 					<tbody>
@@ -55,7 +65,7 @@
 								<h4 class="text-primary">
 									<strong>{{ horario.especialidad }}</strong>
 								</h4>
-								[{{ horario.especialidad.profesional.apellido }}, {{ horario.especialidad.profesional.nombre}}]
+								{{ horario.profesional }}
 							</td>
 						{% endfor %}
 						</tr>
