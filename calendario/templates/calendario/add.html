@@ -4,6 +4,13 @@
 
 {% block article %}
 	<script>
+		
+		$(document).ready(function (){
+			{% for especialidad in especialidades %}
+				$("#{{ especialidad|cut:" " }}").css('background-color', "{{ especialidad.color }}");
+			{% endfor %}
+		});
+		
 		function allowDrop(ev) {
 			ev.preventDefault();
 		}
@@ -167,7 +174,7 @@
 					<ul class="list-unstyled">
 						{% for especialidad in espacio.especialidades.all %}
 							<li>
-								<p id="{{ especialidad.nombre }}" name="{{ especialidad.id }}" draggable="true" ondragstart="drag(event)" class="lead especialidad text-center" style="background-color:{{ colores.2 }}">
+								<p id="{{ especialidad|cut:" " }}" name="{{ especialidad.id }}" draggable="true" ondragstart="drag(event)" class="lead especialidad text-center">
 									<strong>{{ especialidad }}</strong>
 								</p>
 							</li>

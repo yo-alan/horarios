@@ -8,7 +8,11 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from .models import Calendario, Profesional, Horario, ProfesionalRestriccion, EspacioRestriccion, Especialidad, Espacio, Hora
 
-DIAS = {0 : 'Domingo', 1 : 'Lunes', 2 : 'Martes', 3 : 'Miércoles', 4 : 'Jueves', 5 : 'Viernes', 6 : 'Sábado'}
+DIAS = {0 : 'Domingo', 1 : 'Lunes', 2 : 'Martes', 3 : 'Miércoles',
+		4 : 'Jueves', 5 : 'Viernes', 6 : 'Sábado'}
+COLORES = ['#337ab7', '#5cb85c', '#5bc0de', '#f0ad4e',
+			'#d9534f', '#73e673', '#ffc879', '#ff625c', '#8181f7',
+			'#f781f3']
 
 def index(request):
 	
@@ -56,9 +60,18 @@ def add(request, espacio_id):
 		if num in espacio.dias_habiles:
 			dias.append(DIAS[num])
 	
-	colores = ['#337ab7', '#5cb85c', '#5bc0de', '#f0ad4e', '#d9534f', '#73e673', '#ffc879', '#ff625c', '#', '#', '#', '#', '#', '#', '#', '#']
+	especialidades = []
+	i = 0
+	for especialidad in espacio.especialidades.all():
+		
+		especialidad.color = COLORES[i]
+		
+		especialidades.append(especialidad)
+		
+		i += 1
 	
-	context = {'espacio': espacio, 'dias': dias, 'colores': colores}
+	context = {'espacio': espacio, 'dias': dias,
+				'especialidades': especialidades}
 	
 	return render(request, 'calendario/add.html', context)
 
@@ -106,7 +119,19 @@ def detail(request, calendario_id):
 		if num in espacio.dias_habiles:
 			dias.append(DIAS[num])
 	
-	context = {'calendario': calendario, 'anterior': anterior, 'siguiente': siguiente, 'dias': dias}
+	especialidades = []
+	i = 0
+	for especialidad in espacio.especialidades.all():
+		
+		especialidad.color = COLORES[i]
+		
+		especialidades.append(especialidad)
+		
+		i += 1
+	
+	context = {'calendario': calendario, 'anterior': anterior,
+				'siguiente': siguiente, 'dias': dias,
+				'especialidades': especialidades}
 	
 	return render(request, 'calendario/detail.html', context)
 
@@ -151,7 +176,8 @@ def espacio_detail(request, espacio_id):
 		if num in espacio.dias_habiles:
 			dias.append(DIAS[num])
 	
-	context = {'espacio': espacio, 'especialidades': especialidades, 'profesionales': profesionales, 'dias': dias}
+	context = {'espacio': espacio, 'especialidades': especialidades,
+				'profesionales': profesionales, 'dias': dias}
 	
 	return render(request, 'calendario/espacio/detail.html', context)
 
@@ -381,14 +407,13 @@ def profesional_add(request):
 
 def profesional_detail(request, profesional_id):
 	
-	context = {}
-	
 	profesional = Profesional.create(profesional_id)
 	
 	especialidades = Especialidad.objects.filter(estado='ON').order_by('nombre')
 	
-	context['profesional'] = profesional
-	context['especialidades'] = especialidades
+	#TODO DIAS
+	context = {'profesional': profesional,
+				'especialidades': especialidades, 'dias': DIAS}
 	
 	return render(request, 'calendario/profesional/detail.html', context)
 
