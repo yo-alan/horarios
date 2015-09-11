@@ -52,7 +52,11 @@
 										<div class="btn btn-group btn-block">
 											<a class="btn btn-default" title="Editar" href="{% url 'calendario:espacio_detail' espacio.id %}#espacio"><i class="glyphicon glyphicon-edit"></i></a>
 											<a class="btn btn-default" title="Especialidades" href="{% url 'calendario:espacio_detail' espacio.id %}#especialidades"><i class="glyphicon glyphicon-th-list"></i></a>
-											<a class="btn btn-default" title="Profesionales" href="{% url 'calendario:espacio_detail' espacio.id %}#profesionales"><i class="glyphicon glyphicon-user"></i></a>
+											{% if espacio.especialidades.all %}
+												<a class="btn btn-default" title="Profesionales" href="{% url 'calendario:espacio_detail' espacio.id %}#profesionales"><i class="glyphicon glyphicon-user"></i></a>
+											{% else %}
+												<a class="btn btn-default disabled" title="Profesionales" href="{% url 'calendario:espacio_detail' espacio.id %}#profesionales"><i class="glyphicon glyphicon-user"></i></a>
+											{% endif %}
 											<a class="btn btn-default" title="Horas" href="{% url 'calendario:espacio_detail' espacio.id %}#horas"><i class="glyphicon glyphicon-th"></i></a>
 											<a class="btn btn-default" title="Calendarios" href="{% url 'calendario:espacio_detail' espacio.id %}#calendarios"><i class="glyphicon glyphicon-calendar"></i></a>
 											<a class="btn btn-danger" title="Eliminar" onclick="eliminarEspacio({{ espacio.id }})"><i class="glyphicon glyphicon-trash"></i></a>

@@ -15,15 +15,6 @@
 				window.scrollTo(0, 0);
 			});
 			
-			//~ var formGenerar = $("#formGenerar");
-			
-			//~ formGenerar.submit(function (ev){
-				
-				//~ ev.preventDefault();
-				
-				//~ $("#" + formGenerar.attr('id') + " button[type=submit]").button('loading');
-			//~ }
-			
 			var form = $("#editForm");
 			
 			form.submit(function (ev){
@@ -221,7 +212,11 @@
 							<a href="#especialidades" data-toggle="tab"><i class="glyphicon glyphicon-th-list"> Especialidades</i></a>
 						</li>
 						<li>
-							<a href="#profesionales" data-toggle="tab"><i class="glyphicon glyphicon-user"> Profesionales</i></a>
+							{% if espacio.especialidades.all %}
+								<a href="#profesionales" data-toggle="tab"><i class="glyphicon glyphicon-user"> Profesionales</i></a>
+							{% else %}
+								<a href="#profesionales"><i class="glyphicon glyphicon-user"> Profesionales</i></a>
+							{% endif %}
 						</li>
 						<li>
 							<a href="#horas" data-toggle="tab"><i class="glyphicon glyphicon-th"> Horas</i></a>
@@ -466,7 +461,11 @@
 							<form class="form-horizontal" id="" method="POST" action="{% url 'calendario:generar' %}">
 								{% csrf_token %}
 								<input type="hidden" id="espacio_id" name="espacio_id" value="{{ espacio.id }}">
-								<button type="submit" class="btn btn-success pull-right"  data-loading-text="Generando..." onclick="$(this).button('loading')">
+								{% if espacio.coordinadores and espacio.horas and espacio.dias_habiles %}
+									<button type="submit" class="btn btn-success pull-right"  data-loading-text="Generando..." onclick="$(this).button('loading')">
+								{% else %}
+									<button type="submit" class="btn btn-success pull-right disabled"  data-loading-text="Generando..." onclick="$(this).button('loading')">
+								{% endif %}
 									Generar
 								</button>
 							</form>

@@ -106,8 +106,10 @@
 			
 			var nodePadre = especialidad.parentNode;
 			
-			if(nodePadre.nodeName == 'DIV')
+			if(nodePadre.nodeName == 'DIV'){
 				nodePadre.removeChild(especialidad);
+				nodePadre.parentNode.style.backgroundColor = "white";
+			}
 		}
 		
 		function nuevo(){
@@ -159,7 +161,7 @@
 										</h4>
 									</td>
 									{% for dia in espacio.dias_habiles %}
-										<td class="text-center active">
+										<td class="text-center">
 											<div id="{{ hora }}{{ dia }}" dia="{{ dia }}" desde="{{ hora }}" horario="{{ forloop.parentloop.counter0 }}" ondrop="drop(event)" ondragover="allowDrop(event)" class="horario-container">
 												
 											</div>
@@ -172,10 +174,10 @@
 				</div>
 				<div class="col-xs-2 pull-right">
 					<ul class="list-unstyled">
-						{% for especialidad in espacio.especialidades.all %}
+						{% for coordinador in espacio.coordinadores %}
 							<li>
-								<p id="{{ especialidad|cut:" " }}" name="{{ especialidad.id }}" draggable="true" ondragstart="drag(event)" class="lead especialidad text-center">
-									<strong>{{ especialidad }}</strong>
+								<p id="{{ coordinador.especialidad|cut:" " }}" name="{{ coordinador.especialidad.id }}" draggable="true" ondragstart="drag(event)" class="lead especialidad text-center">
+									<strong>{{ coordinador.especialidad }}</strong>
 								</p>
 							</li>
 						{% endfor %}

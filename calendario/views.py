@@ -10,9 +10,9 @@ from .models import Calendario, Profesional, Horario, ProfesionalRestriccion, Es
 
 DIAS = {0 : 'Domingo', 1 : 'Lunes', 2 : 'Martes', 3 : 'Miércoles',
 		4 : 'Jueves', 5 : 'Viernes', 6 : 'Sábado'}
-COLORES = ['#337ab7', '#5cb85c', '#5bc0de', '#f0ad4e',
-			'#d9534f', '#73e673', '#ffc879', '#ff625c', '#8181f7',
-			'#f781f3']
+
+COLORES = ['#FE2E2E', '#FF8000', '#01DF3A', '#0080FF', '#F78181',
+			'#F7BE81', '#2EFE64', '#58ACFA', '#FA5882', '#FFBF00']
 
 def index(request):
 	
@@ -155,9 +155,11 @@ def espacio_detail(request, espacio_id):
 	
 	espacio = Espacio.create(espacio_id)
 	
-	especialidades = Especialidad.objects.filter(estado='ON').order_by('nombre')
+	especialidades = Especialidad.objects.filter(estado='ON')\
+											.order_by('nombre')
 	
-	todas_profesionales = Profesional.objects.filter(estado='ON').order_by('apellido', 'nombre')
+	todas_profesionales = Profesional.objects.filter(estado='ON')\
+												.order_by('apellido', 'nombre')
 	
 	#Muestro solo los profesionales que ejercen las especialidades asignadas al espacio.
 	profesionales = []
@@ -257,11 +259,9 @@ def espacio_delete(request):
 
 def espacio_horas(request, espacio_id):
 	
-	context = {}
-	
 	espacio = Espacio.create(espacio_id)
 	
-	context['espacio'] = espacio
+	context = {'espacio': espacio}
 	
 	return render(request, 'calendario/espacio/horas.html', context)
 
@@ -355,7 +355,8 @@ def espacio_add_profesionales(request):
 
 def profesional_all(request, pagina=1):
 	
-	total_profesionales = Profesional.objects.filter(estado='ON').order_by('apellido', 'nombre')
+	total_profesionales = Profesional.objects.filter(estado='ON')\
+											.order_by('apellido', 'nombre')
 	paginator = Paginator(total_profesionales, 10)
 	
 	try:
@@ -409,7 +410,8 @@ def profesional_detail(request, profesional_id):
 	
 	profesional = Profesional.create(profesional_id)
 	
-	especialidades = Especialidad.objects.filter(estado='ON').order_by('nombre')
+	especialidades = Especialidad.objects.filter(estado='ON')\
+											.order_by('nombre')
 	
 	#TODO DIAS
 	context = {'profesional': profesional,
@@ -541,7 +543,8 @@ def profesional_add_restriccion(request):
 
 def especialidad_all(request, pagina=1):
 	
-	total_especialidades = Especialidad.objects.filter(estado='ON').order_by('nombre')
+	total_especialidades = Especialidad.objects.filter(estado='ON')\
+												.order_by('nombre')
 	paginator = Paginator(total_especialidades, 10)
 	
 	try:
@@ -596,11 +599,9 @@ def especialidad_add(request):
 
 def especialidad_detail(request, especialidad_id):
 	
-	context = {}
-	
 	especialidad = Especialidad.create(especialidad_id)
 	
-	context['especialidad'] = especialidad
+	context = {'especialidad': especialidad}
 	
 	return render(request, 'calendario/especialidad/detail.html', context)
 
