@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.db import models
+
 from calendario import Calendario
 from profesional import Profesional
 from especialidad import Especialidad
@@ -23,7 +24,8 @@ class Horario(models.Model):
 				self.dia_semana == o.dia_semana
 	
 	def __ne__(self, o):
-		return self.dia_semana != o.dia_semana and self.hora_desde != o.hora_desde
+		return self.dia_semana != o.dia_semana and\
+				self.hora_desde != o.hora_desde
 	
 	def __lt__(self, o):
 		if self.dia_semana == o.dia_semana:

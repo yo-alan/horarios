@@ -24,7 +24,9 @@ class Especialidad(models.Model):
 	nombre = models.CharField(max_length=100, null=False)
 	carga_horaria_semanal = models.IntegerField(default=0, null=False)
 	max_horas_diaria = models.IntegerField(default=0, null=False)
-	estado = models.CharField(max_length=3, choices=[('ON', 'ON'), ('OFF', 'OFF')], default='ON')
+	estado = models.CharField(max_length=3,
+								choices=[('ON', 'ON'), ('OFF', 'OFF')],
+								default='ON')
 	usuario_creador = models.CharField(max_length=30, default='admin')
 	fecha_creacion = models.DateField(auto_now_add=True)
 	usuario_modificador = models.CharField(max_length=30, default='admin')

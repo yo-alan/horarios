@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from random import random, randrange
+
 from django.db import models
+
 from especialidad import Especialidad
 from profesional import Profesional
 
@@ -11,7 +13,8 @@ PUNTOS_DISTRIBUCION_HORARIA = 1
 
 class Espacio(models.Model):
 	"""
-	Clase que abarca el medio ambiente en el cual se desarrolla el algoritmo.
+	Clase que abarca el medio ambiente
+	en el cual se desarrolla el algoritmo.
 	
 	@Atributos:
 	.dias_habiles - lista con los dias a cubrir. Valor: {}.
@@ -67,7 +70,8 @@ class Espacio(models.Model):
 	
 	def generarpoblacioninicial(self, ):
 		"""
-		Genera individuos desde cero y los guarda en el atributo 'poblacion'.
+		Genera individuos desde cero y
+		los guarda en el atributo 'poblacion'.
 		
 		@Parametros:
 		None
@@ -185,7 +189,8 @@ class Espacio(models.Model):
 		None
 		"""
 		
-		#Primera evaluacion: Que los horarios asignados cumplan las restricciones.
+		#Primera evaluacion: Se evalua que los horarios asignados
+		#cumplan las restricciones del profesional que contienen.
 		
 		#Por cada individuo en la poblacion.
 		for calendario in self.poblacion:
@@ -194,9 +199,9 @@ class Espacio(models.Model):
 			if calendario.puntaje != 0:
 				continue
 			
-			#Comparamos los horarios con las restricciones de
-			#los profesionales. Cada superposicion es penalizada, mientras mas
-			#alto sea el puntaje, menos apto es el individuo.
+			#Comparamos los horarios con las restricciones de los
+			#profesionales. Cada superposicion es penalizada,
+			#mientras mas alto sea el puntaje, menos apto es el individuo.
 			
 			#Por cada franja de horarios.
 			for franja_horaria in calendario.horarios:
@@ -217,7 +222,7 @@ class Espacio(models.Model):
 							calendario.puntaje += PUNTOS_RESTRICCION_PROFESIONAL
 			
 			
-			#Segunda evaluacion: Que se cumplan las horas semanales y diarias de la especialidad.
+			#Segunda evaluacion: Que se cumplan las horas semanales de la especialidad.
 			#Horas semanales: cada hora extra o faltante es penalizada con la suma de puntos.
 			
 			#Por cada especialidad
@@ -237,19 +242,25 @@ class Espacio(models.Model):
 					
 				calendario.puntaje += abs(especialidad.carga_horaria_semanal - horas_semanales) * PUNTOS_HORAS_SEMANALES
 			
-			#Tercera evaluacion: Se busca que las especialidades cumplan con la horas maximas por dia.
-			#Horas maxima por dia: Cada especialidad tiene un atributo max_horas_diaria,
-			#en el caso que un calendario exceda este valor recibira una penalizacion.
+			#Tercera evaluacion: Se busca que las especialidades
+			#cumplan con la horas maximas por dia.
+			#Horas maxima por dia: Cada especialidad tiene un
+			#atributo max_horas_diaria, en el caso que un calendario
+			#exceda este valor recibira una penalizacion.
 			
-			for franja_horaria in calendario.horarios: #Por cada franja de horarios.
+			#Por cada franja de horarios.
+			for franja_horaria in calendario.horarios:
 				
-				for horario in franja_horaria: #Por cada horario dentro de la franja.
+				#Por cada horario dentro de la franja.
+				for horario in franja_horaria:
 					
 					horas_diarias = 1
 					
-					for franja_horaria_comparacion in calendario.horarios: #Por cada franja de horarios.
+					#Por cada franja de horarios.
+					for franja_horaria_comparacion in calendario.horarios:
 						
-						for horario_comparacion in franja_horaria: #Por cada horario dentro de la franja.
+						#Por cada horario dentro de la franja.
+						for horario_comparacion in franja_horaria:
 							
 							if horario == horario_comparacion:
 								break
@@ -261,8 +272,10 @@ class Espacio(models.Model):
 					calendario.puntaje += abs(especialidad.max_horas_diaria - horas_diarias) * PUNTOS_HORAS_DIARIAS
 					
 			
-			#Cuarta evaluacion: En esta instancia se desea comprobar la distribución horaria de las especialidades.
-			#Horas semanales: cada hora extra o faltante es penalizada con la suma de puntos.
+			#Cuarta evaluacion: En esta instancia se desea comprobar
+			#la distribución horaria de las especialidades.
+			#Horas semanales: cada hora extra o faltante es
+			#penalizada con la suma de puntos.
 			
 			#Por cada franja de horarios.
 			for franja_horaria in calendario.horarios:

@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 import time
+
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.core import serializers
 from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
-from .models import Calendario, Profesional, Horario, ProfesionalRestriccion, EspacioRestriccion, Especialidad, Espacio, Hora
+from .models import Calendario, Profesional, Horario,\
+					ProfesionalRestriccion, Especialidad, Espacio, Hora
 
 DIAS = {0 : 'Domingo', 1 : 'Lunes', 2 : 'Martes', 3 : 'Miércoles',
 		4 : 'Jueves', 5 : 'Viernes', 6 : 'Sábado'}

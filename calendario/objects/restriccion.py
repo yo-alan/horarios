@@ -6,15 +6,13 @@ class Restriccion(models.Model):
 	hora_desde = models.TimeField('desde', null=False, blank=False)
 	hora_hasta = models.TimeField('hasta', null=False, blank=False)
 	dia_semana = models.IntegerField(default=0, null=False, blank=False)
-	estado = models.CharField(max_length=3, choices=[('ON', 'ON'), ('OFF', 'OFF')], default='ON')
+	estado = models.CharField(max_length=3,
+								choices=[('ON', 'ON'), ('OFF', 'OFF')],
+								default='ON')
 	usuario_creador = models.CharField(max_length=30, default='admin')
 	fecha_creacion = models.DateField(auto_now_add=True)
 	usuario_modificador = models.CharField(max_length=30, default='admin')
 	fecha_modificacion = models.DateField(auto_now=True)
-	
-	def __eq__(self, o):
-		pass
-		#return self.hora_desde == o.hora_desde and self.hora_hasta == o.hora_hasta and self.
 	
 	def sethora_desde(self, hora_desde):
 		

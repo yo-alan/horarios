@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.db import models
+
 from persona import Persona
 from especialidad import Especialidad
 
@@ -25,4 +26,5 @@ class Profesional(Persona):
 	def restricciones(self, ):
 		from profesionalRestriccion import ProfesionalRestriccion
 		
-		return ProfesionalRestriccion.objects.filter(profesional=self).order_by('dia_semana', 'hora_desde')
+		return ProfesionalRestriccion.objects.filter(profesional=self)\
+												.order_by('dia_semana', 'hora_desde')

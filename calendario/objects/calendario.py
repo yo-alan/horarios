@@ -1,12 +1,15 @@
 # -*- coding: utf-8 -*-
 from django.db import models
+
 from espacio import Espacio
 
 class Calendario(models.Model):
 	
 	espacio = models.ForeignKey(Espacio)
 	puntaje = models.IntegerField(default=0)
-	estado = models.CharField(max_length=3, choices=[('ON', 'ON'), ('OFF', 'OFF')], default='ON')
+	estado = models.CharField(max_length=3,
+								choices=[('ON', 'ON'), ('OFF', 'OFF')],
+								default='ON')
 	usuario_creador = models.CharField(max_length=30, default='admin')
 	fecha_creacion = models.DateField(auto_now_add=True)
 	usuario_modificador = models.CharField(max_length=30, default='admin')
@@ -29,19 +32,14 @@ class Calendario(models.Model):
 	def __str__(self, ):
 		return str(self.espacio) + "(" + str(self.id) + ")"
 	
-	#Por cada franja horaria de uso se inserta una nueva lista de horarios vacia
-	######################################################
-	#~ for dia in dias:
-		#~ horarios.append([])
-	######################################################
-	
 	def cruce(self, madre, prob_mutacion=0.01):
 		"""
 		Cruza el individuo con otro madre.
 		
 		@Parametros:
 		madre - individuo con quien realizar la cruza.
-		prob_mutacion - probabilidad de mutacion para los hijos resultantes. Valor: 0.01.
+		prob_mutacion - probabilidad de mutacion para
+						los hijos resultantes. Valor: 0.01.
 		
 		@Return:
 		
@@ -63,7 +61,9 @@ class Calendario(models.Model):
 		Agrega un Horario a la lista de horarios del Calendario.
 		"""
 		
-		for franja_horaria in self._horarios: #Por cada dia.
+		#Por cada dia.
+		for franja_horaria in self._horarios:
+			
 			#Si contiene un Horario con mismo dia_desde lo agrega a la lista
 			if franja_horaria[0].hora_desde == horario.hora_desde:
 				franja_horaria.append(horario)
@@ -77,7 +77,9 @@ class Calendario(models.Model):
 		#Se guarda el mismo para obtener una ID de la BBDD.
 		self.save()
 		
-		for franja_horaria in self.horarios: #Por cada dia.
+		#Por cada dia.
+		for franja_horaria in self.horarios:
+			
 			#Guarda todos y cada uno de los horarios que posee.
 			for horario in franja_horaria:
 				horario.calendario = self
@@ -87,7 +89,8 @@ class Calendario(models.Model):
 	def horarios(self, ):
 		from horario import Horario
 		if not self._horarios:
-			horarios = Horario.objects.filter(calendario=self).order_by('hora_desde', 'dia_semana')
+			horarios = Horario.objects.filter(calendario=self)\
+										.order_by('hora_desde', 'dia_semana')
 			
 			for horario in horarios:
 				self.agregar_horario(horario)

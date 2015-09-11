@@ -23,15 +23,18 @@ class Persona(models.Model):
 	
 	nombre = models.CharField(max_length=100, null=False, blank=False)
 	apellido = models.CharField(max_length=100, null=False, blank=False)
-	cuil = models.CharField(max_length=11, unique=True, null=False, blank=False)
-	estado = models.CharField(max_length=3, choices=[('ON', 'ON'), ('OFF', 'OFF')], default='ON')
+	cuil = models.CharField(max_length=11, unique=True,
+							null=False, blank=False)
+	estado = models.CharField(max_length=3,
+								choices=[('ON', 'ON'), ('OFF', 'OFF')],
+								default='ON')
 	usuario_creador = models.CharField(max_length=30, default='admin')
 	fecha_creacion = models.DateField(auto_now_add=True)
 	usuario_modificador = models.CharField(max_length=30, default='admin')
 	fecha_modificacion = models.DateField(auto_now=True)
 	
 	def __str__(self, ):
-		return self.apellido.encode('utf-8') + ", " + self.nombre.encode('utf-8')
+		return (self.apellido + ", " + self.nombre).encode('utf-8')
 	
 	def __eq__(self, o):
 		return self.cuil == o.cuil
