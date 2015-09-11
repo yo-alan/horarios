@@ -189,15 +189,15 @@ class Espacio(models.Model):
 		None
 		"""
 		
-		#Primera evaluacion: Se evalua que los horarios asignados
-		#cumplan las restricciones del profesional que contienen.
-		
 		#Por cada individuo en la poblacion.
 		for calendario in self.poblacion:
 			
 			#Si el individuo ya fue evaluado seguimos con otro.
 			if calendario.puntaje != 0:
 				continue
+			
+			#Primera evaluacion: Se evalua que los horarios asignados
+			#cumplan las restricciones del profesional que contienen.
 			
 			#Comparamos los horarios con las restricciones de los
 			#profesionales. Cada superposicion es penalizada,
@@ -213,100 +213,118 @@ class Espacio(models.Model):
 					for restriccion in horario.profesional.restricciones.all():
 						
 						#Si no es el mismo dia de la semana del horario continuamos.
-						if horario.dia_semana != restriccion.dia_semana:
+						if horario.dia_semana != 7 and horario.dia_semana != restriccion.dia_semana:
 							continue
 						
-						if (horario.hora_desde >= restriccion.hora_desde and horario.hora_desde < restriccion.hora_hasta) or \
-							(horario.hora_hasta > restriccion.hora_desde and horario.hora_hasta <= restriccion.hora_hasta) or \
-							(horario.hora_desde <= restriccion.hora_desde and horario.hora_hasta >= restriccion.hora_hasta):
+						if (horario.hora_desde >= restriccion.hora_desde and horario.hora_desde < restriccion.hora_hasta):
 							calendario.puntaje += PUNTOS_RESTRICCION_PROFESIONAL
-			
+							break
+						if (horario.hora_hasta > restriccion.hora_desde and horario.hora_hasta <= restriccion.hora_hasta):
+							calendario.puntaje += PUNTOS_RESTRICCION_PROFESIONAL
+							break
+						if (horario.hora_desde <= restriccion.hora_desde and horario.hora_hasta >= restriccion.hora_hasta):
+							calendario.puntaje += PUNTOS_RESTRICCION_PROFESIONAL
+							break
+						if (horario.hora_desde > restriccion.hora_desde and horario.hora_hasta < restriccion.hora_hasta):
+							calendario.puntaje += PUNTOS_RESTRICCION_PROFESIONAL
+							break
+						if (horario.hora_desde == restriccion.hora_desde and horario.hora_hasta == restriccion.hora_hasta):
+							calendario.puntaje += PUNTOS_RESTRICCION_PROFESIONAL
+							
+								#~ if self.poblacion[0] == calendario:
+									#~ print horario.profesional
+									#~ print "Horario: " + str(horario.hora_desde) + " hasta " + str(horario.hora_hasta)
+									#~ print "Restriccion: " + str(restriccion.hora_desde) + " hasta " + str(restriccion.hora_hasta)
+									#~ print "Puntaje anterior:" + str(calendario.puntaje)
+									#~ calendario.puntaje += PUNTOS_RESTRICCION_PROFESIONAL
+									#~ print "Puntaje:" + str(calendario.puntaje)
+									#~ print "----------------------------"
 			
 			#Segunda evaluacion: Que se cumplan las horas semanales de la especialidad.
 			#Horas semanales: cada hora extra o faltante es penalizada con la suma de puntos.
-			
-			#Por cada especialidad
-			for especialidad in self.especialidades.all():
-				
-				#Contador de horas semanales.
-				horas_semanales = 0
-				#Por cada franja de horarios.
-				for franja_horaria in calendario.horarios:
-					
-					#Por cada horario en la franja horaria.
-					for horario in franja_horaria:
-						
-						#Si la especialidad es igual, contamos.
-						if horario.especialidad == especialidad:
-							horas_semanales += 1
-					
-				calendario.puntaje += abs(especialidad.carga_horaria_semanal - horas_semanales) * PUNTOS_HORAS_SEMANALES
-			
-			#Tercera evaluacion: Se busca que las especialidades
-			#cumplan con la horas maximas por dia.
-			#Horas maxima por dia: Cada especialidad tiene un
-			#atributo max_horas_diaria, en el caso que un calendario
-			#exceda este valor recibira una penalizacion.
-			
-			#Por cada franja de horarios.
-			for franja_horaria in calendario.horarios:
-				
-				#Por cada horario dentro de la franja.
-				for horario in franja_horaria:
-					
-					horas_diarias = 1
-					
-					#Por cada franja de horarios.
-					for franja_horaria_comparacion in calendario.horarios:
-						
-						#Por cada horario dentro de la franja.
-						for horario_comparacion in franja_horaria:
-							
-							if horario == horario_comparacion:
-								break
-							
-							if horario.especialidad == horario_comparacion.especialidad:
-								horas_diarias += 1
-					
-					
-					calendario.puntaje += abs(especialidad.max_horas_diaria - horas_diarias) * PUNTOS_HORAS_DIARIAS
-					
-			
-			#Cuarta evaluacion: En esta instancia se desea comprobar
-			#la distribución horaria de las especialidades.
-			#Horas semanales: cada hora extra o faltante es
-			#penalizada con la suma de puntos.
-			
-			#Por cada franja de horarios.
-			for franja_horaria in calendario.horarios:
-				
-				#Por cada horario dentro de la franja.
-				for horario in franja_horaria:
-					
-					#Por cada franja de horarios.
-					for franja_horaria_comparacion in calendario.horarios:
-						
-						#Por cada horario dentro de la franja.
-						for horario_comparacion in franja_horaria_comparacion:
-							
-							#Si los horarios son iguales significa que
-							#estamos evaluando la misma franja horaria
-							#si este es al caso cortamos el ciclo.
-							if horario == horario_comparacion:
-								break
-							
-							#Si la especialidades son distintas no
-							#tenemos que evaluarlo.
-							if horario.especialidad != horario_comparacion.especialidad:
-								break
-							
-							if calendario.horarios.index(franja_horaria) + 1 == calendario.horarios.index(franja_horaria_comparacion):
-								horario = horario_comparacion
-								break
-							
-							#ACA HAY QUE EVALUAR QUE ESTA PASANDO REALMENTE.
-							calendario.puntaje += PUNTOS_DISTRIBUCION_HORARIA
-			
+			#~ 
+			#~ #Por cada especialidad
+			#~ for especialidad in self.especialidades.all():
+				#~ 
+				#~ #Contador de horas semanales.
+				#~ horas_semanales = 0
+				#~ #Por cada franja de horarios.
+				#~ for franja_horaria in calendario.horarios:
+					#~ 
+					#~ #Por cada horario en la franja horaria.
+					#~ for horario in franja_horaria:
+						#~ 
+						#~ #Si la especialidad es igual, contamos.
+						#~ if horario.especialidad == especialidad:
+							#~ horas_semanales += 1
+					#~ 
+				#~ calendario.puntaje += abs(especialidad.carga_horaria_semanal - horas_semanales) * PUNTOS_HORAS_SEMANALES
+			#~ 
+			#~ #Tercera evaluacion: Se busca que las especialidades
+			#~ #cumplan con la horas maximas por dia.
+			#~ #Horas maxima por dia: Cada especialidad tiene un
+			#~ #atributo max_horas_diaria, en el caso que un calendario
+			#~ #exceda este valor recibira una penalizacion.
+			#~ 
+			#~ for i in range(len(self.dias_habiles)):
+				#~ 
+				#~ for j in range(len(self.horas)):
+					#~ 
+					#~ horas_diarias = 1
+					#~ 
+					#~ for k in range(len(self.dias_habiles)):
+						#~ 
+						#~ if i != k:
+							#~ continue
+						#~ 
+						#~ for l in range(len(self.horas)):
+							#~ 
+							#~ if calendario.horarios[i][j] == calendario.horarios[k][l]:
+								#~ continue
+							#~ 
+							#~ if calendario.horarios[i][j].especialidad == calendario.horarios[k][l].especialidad:
+								#~ horas_diarias += 1
+						#~ 
+						#~ if calendario.horarios[i][j].especialidad.max_horas_diaria < horas_diarias:
+							#~ calendario.puntaje += (horas_diarias - calendario.horarios[i][j].especialidad.max_horas_diaria) * PUNTOS_HORAS_DIARIAS
+						#~ break
+					#~ 
+			#~ 
+			#~ #Cuarta evaluacion: En esta instancia se desea comprobar
+			#~ #la distribución horaria de las especialidades.
+			#~ #Horas semanales: cada hora extra o faltante es
+			#~ #penalizada con la suma de puntos.
+			#~ 
+			#~ #Por cada franja de horarios.
+			#~ for franja_horaria in calendario.horarios:
+				#~ 
+				#~ #Por cada horario dentro de la franja.
+				#~ for horario in franja_horaria:
+					#~ 
+					#~ #Por cada franja de horarios.
+					#~ for franja_horaria_comparacion in calendario.horarios:
+						#~ 
+						#~ #Por cada horario dentro de la franja.
+						#~ for horario_comparacion in franja_horaria_comparacion:
+							#~ 
+							#~ #Si los horarios son iguales significa que
+							#~ #estamos evaluando la misma franja horaria
+							#~ #si este es al caso cortamos el ciclo.
+							#~ if horario == horario_comparacion:
+								#~ break
+							#~ 
+							#~ #Si la especialidades son distintas no
+							#~ #tenemos que evaluarlo.
+							#~ if horario.especialidad != horario_comparacion.especialidad:
+								#~ break
+							#~ 
+							#~ if calendario.horarios.index(franja_horaria) + 1 == calendario.horarios.index(franja_horaria_comparacion):
+								#~ horario = horario_comparacion
+								#~ break
+							#~ 
+							#~ #ACA HAY QUE EVALUAR QUE ESTA PASANDO REALMENTE.
+							#~ calendario.puntaje += PUNTOS_DISTRIBUCION_HORARIA
+			#~ 
 			#~ calendario.save()
 			
 	
