@@ -7,7 +7,7 @@
 		$(function(){
 			
 			$("[data-hide]").click(function(){
-				$(".alert").attr('class', "alert alert-dismissable alert-danger hidden");
+				$(".alert-danger").attr('class', "alert alert-dismissable alert-danger hidden");
 			});
 			
 			var form = $("#addForm");
@@ -55,19 +55,19 @@
 						Agregar especialidad<small>.</small>
 					</h1>
 				</div>
-				<div class="alert alert-dismissable alert-danger hidden">
-					<button type="button" class="close" data-hide="alert" aria-hidden="true">
-						×
-					</button>
-					<h4>
-						Error al guardar la especialidad.
-					</h4>
-					<strong>Ojo!</strong> Un campo no es válido:
-					<p id="error">
-						
-					</p>
-				</div>
 				<form class="form-horizontal" id="addForm" name="addForm" method="POST" action="{% url 'calendario:especialidad_add' %}">
+					<div class="alert alert-dismissable alert-danger hidden">
+						<button type="button" class="close" data-hide="alert" aria-hidden="true">
+							×
+						</button>
+						<h4>
+							Error al guardar la especialidad.
+						</h4>
+						<strong>Ojo!</strong> Un campo no es válido:
+						<p>
+							
+						</p>
+					</div>
 					{% csrf_token %}
 					<div class="form-group">
 						<label class="col-xs-5 control-label" for="nombre">Nombre:</label>

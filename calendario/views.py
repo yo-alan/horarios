@@ -298,11 +298,12 @@ def espacio_add_especialidades(request):
 	
 	data = {}
 	
+	espacio_id = dict(request.POST.iterlists())['espacio_id'][0]
+	espacio = Espacio.create(espacio_id)
+	
 	try:
-		espacio_id = dict(request.POST.iterlists())['espacio_id'][0]
-		especialidades = dict(request.POST.iterlists())['especialidades[]']
 		
-		espacio = Espacio.create(espacio_id)
+		especialidades = dict(request.POST.iterlists())['especialidades[]']
 		
 		for especialidad in espacio.especialidades.filter(estado='ON'):
 			espacio.especialidades.remove(especialidad)
@@ -316,6 +317,8 @@ def espacio_add_especialidades(request):
 		#KeyError 'especialidades[]', vacio todo el arreglo.
 		for especialidad in espacio.especialidades.filter(estado='ON'):
 			espacio.especialidades.remove(especialidad)
+		
+		data = {'mensaje': "Las especialidades fueron removidas exitosamente."}
 		
 	except Exception as ex:
 		data = {'error': str(ex).decode('utf-8')}
