@@ -280,6 +280,41 @@ ALTER SEQUENCE calendario_calendario_id_seq OWNED BY calendario_calendario.id;
 
 
 --
+-- Name: calendario_coordinador; Type: TABLE; Schema: public; Owner: django; Tablespace: 
+--
+
+CREATE TABLE calendario_coordinador (
+    id integer NOT NULL,
+    espacio_id integer NOT NULL,
+    especialidad_id integer NOT NULL,
+    profesional_id integer NOT NULL
+);
+
+
+ALTER TABLE public.calendario_coordinador OWNER TO django;
+
+--
+-- Name: calendario_coordinador_id_seq; Type: SEQUENCE; Schema: public; Owner: django
+--
+
+CREATE SEQUENCE calendario_coordinador_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.calendario_coordinador_id_seq OWNER TO django;
+
+--
+-- Name: calendario_coordinador_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: django
+--
+
+ALTER SEQUENCE calendario_coordinador_id_seq OWNED BY calendario_coordinador.id;
+
+
+--
 -- Name: calendario_espacio; Type: TABLE; Schema: public; Owner: django; Tablespace: 
 --
 
@@ -349,6 +384,40 @@ ALTER TABLE public.calendario_espacio_id_seq OWNER TO django;
 --
 
 ALTER SEQUENCE calendario_espacio_id_seq OWNED BY calendario_espacio.id;
+
+
+--
+-- Name: calendario_espacio_profesionales; Type: TABLE; Schema: public; Owner: django; Tablespace: 
+--
+
+CREATE TABLE calendario_espacio_profesionales (
+    id integer NOT NULL,
+    espacio_id integer NOT NULL,
+    profesional_id integer NOT NULL
+);
+
+
+ALTER TABLE public.calendario_espacio_profesionales OWNER TO django;
+
+--
+-- Name: calendario_espacio_profesionales_id_seq; Type: SEQUENCE; Schema: public; Owner: django
+--
+
+CREATE SEQUENCE calendario_espacio_profesionales_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.calendario_espacio_profesionales_id_seq OWNER TO django;
+
+--
+-- Name: calendario_espacio_profesionales_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: django
+--
+
+ALTER SEQUENCE calendario_espacio_profesionales_id_seq OWNED BY calendario_espacio_profesionales.id;
 
 
 --
@@ -447,8 +516,9 @@ CREATE TABLE calendario_horario (
     hora_desde time without time zone NOT NULL,
     hora_hasta time without time zone NOT NULL,
     dia_semana integer NOT NULL,
-    calendario_id integer,
-    especialidad_id integer NOT NULL
+    calendario_id integer NOT NULL,
+    especialidad_id integer NOT NULL,
+    profesional_id integer NOT NULL
 );
 
 
@@ -787,6 +857,13 @@ ALTER TABLE ONLY calendario_calendario ALTER COLUMN id SET DEFAULT nextval('cale
 -- Name: id; Type: DEFAULT; Schema: public; Owner: django
 --
 
+ALTER TABLE ONLY calendario_coordinador ALTER COLUMN id SET DEFAULT nextval('calendario_coordinador_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: django
+--
+
 ALTER TABLE ONLY calendario_espacio ALTER COLUMN id SET DEFAULT nextval('calendario_espacio_id_seq'::regclass);
 
 
@@ -795,6 +872,13 @@ ALTER TABLE ONLY calendario_espacio ALTER COLUMN id SET DEFAULT nextval('calenda
 --
 
 ALTER TABLE ONLY calendario_espacio_especialidades ALTER COLUMN id SET DEFAULT nextval('calendario_espacio_especialidades_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: django
+--
+
+ALTER TABLE ONLY calendario_espacio_profesionales ALTER COLUMN id SET DEFAULT nextval('calendario_espacio_profesionales_id_seq'::regclass);
 
 
 --
@@ -943,6 +1027,9 @@ COPY auth_permission (id, name, content_type_id, codename) FROM stdin;
 52	Can add profesional restriccion	18	add_profesionalrestriccion
 53	Can change profesional restriccion	18	change_profesionalrestriccion
 54	Can delete profesional restriccion	18	delete_profesionalrestriccion
+55	Can add coordinador	19	add_coordinador
+56	Can change coordinador	19	change_coordinador
+57	Can delete coordinador	19	delete_coordinador
 \.
 
 
@@ -950,7 +1037,7 @@ COPY auth_permission (id, name, content_type_id, codename) FROM stdin;
 -- Name: auth_permission_id_seq; Type: SEQUENCE SET; Schema: public; Owner: django
 --
 
-SELECT pg_catalog.setval('auth_permission_id_seq', 54, true);
+SELECT pg_catalog.setval('auth_permission_id_seq', 57, true);
 
 
 --
@@ -1011,7 +1098,32 @@ COPY calendario_calendario (id, puntaje, espacio_id, estado, fecha_creacion, fec
 -- Name: calendario_calendario_id_seq; Type: SEQUENCE SET; Schema: public; Owner: django
 --
 
-SELECT pg_catalog.setval('calendario_calendario_id_seq', 9988, true);
+SELECT pg_catalog.setval('calendario_calendario_id_seq', 12365, true);
+
+
+--
+-- Data for Name: calendario_coordinador; Type: TABLE DATA; Schema: public; Owner: django
+--
+
+COPY calendario_coordinador (id, espacio_id, especialidad_id, profesional_id) FROM stdin;
+2	4	33	88
+3	4	25	89
+4	4	36	91
+5	4	32	92
+6	4	37	93
+7	4	27	94
+8	4	21	96
+9	4	28	99
+10	4	26	100
+11	4	14	110
+\.
+
+
+--
+-- Name: calendario_coordinador_id_seq; Type: SEQUENCE SET; Schema: public; Owner: django
+--
+
+SELECT pg_catalog.setval('calendario_coordinador_id_seq', 11, true);
 
 
 --
@@ -1021,10 +1133,10 @@ SELECT pg_catalog.setval('calendario_calendario_id_seq', 9988, true);
 COPY calendario_espacio (id, nombre, estado, fecha_creacion, fecha_modificacion, usuario_creador, usuario_modificador) FROM stdin;
 5	1ro 2da	ON	2015-08-19	2015-08-19	admin	admin
 7	1ro 3ra	ON	2015-08-19	2015-08-19	admin	admin
-9	2do 2da	ON	2015-08-19	2015-08-19	admin	admin
 8	2do 1ra	ON	2015-08-19	2015-08-19	admin	admin
-10	2do 3ra	ON	2015-08-19	2015-08-19	admin	admin
-4	1ro 1ra	ON	2015-08-19	2015-08-20	admin	admin
+10	2do 3ra	OFF	2015-08-19	2015-09-05	admin	admin
+9	2do 2da	OFF	2015-08-19	2015-09-05	admin	admin
+4	1ro 1ra	ON	2015-08-19	2015-09-11	admin	admin
 \.
 
 
@@ -1033,19 +1145,26 @@ COPY calendario_espacio (id, nombre, estado, fecha_creacion, fecha_modificacion,
 --
 
 COPY calendario_espacio_especialidades (id, espacio_id, especialidad_id) FROM stdin;
-4	5	34
-5	5	25
-6	5	36
-7	5	32
-8	5	33
-9	5	37
-10	5	22
-15	5	24
-40	4	25
-41	4	32
-42	4	33
-43	4	36
-44	4	37
+45	4	32
+46	4	36
+47	4	37
+48	4	25
+49	4	33
+50	4	28
+51	4	27
+52	4	26
+53	4	21
+54	4	14
+55	5	25
+56	5	28
+57	5	26
+58	5	27
+59	5	21
+60	5	14
+61	5	15
+62	5	17
+63	5	16
+64	5	35
 \.
 
 
@@ -1053,14 +1172,39 @@ COPY calendario_espacio_especialidades (id, espacio_id, especialidad_id) FROM st
 -- Name: calendario_espacio_especialidades_id_seq; Type: SEQUENCE SET; Schema: public; Owner: django
 --
 
-SELECT pg_catalog.setval('calendario_espacio_especialidades_id_seq', 44, true);
+SELECT pg_catalog.setval('calendario_espacio_especialidades_id_seq', 73, true);
 
 
 --
 -- Name: calendario_espacio_id_seq; Type: SEQUENCE SET; Schema: public; Owner: django
 --
 
-SELECT pg_catalog.setval('calendario_espacio_id_seq', 13, true);
+SELECT pg_catalog.setval('calendario_espacio_id_seq', 14, true);
+
+
+--
+-- Data for Name: calendario_espacio_profesionales; Type: TABLE DATA; Schema: public; Owner: django
+--
+
+COPY calendario_espacio_profesionales (id, espacio_id, profesional_id) FROM stdin;
+6	4	88
+7	4	89
+8	4	91
+9	4	92
+10	4	93
+11	4	99
+12	4	94
+13	4	96
+14	4	100
+15	4	110
+\.
+
+
+--
+-- Name: calendario_espacio_profesionales_id_seq; Type: SEQUENCE SET; Schema: public; Owner: django
+--
+
+SELECT pg_catalog.setval('calendario_espacio_profesionales_id_seq', 15, true);
 
 
 --
@@ -1077,30 +1221,31 @@ COPY calendario_espaciorestriccion (restriccion_ptr_id, espacio_id) FROM stdin;
 
 COPY calendario_especialidad (id, nombre, carga_horaria_semanal, max_horas_diaria, estado, fecha_creacion, fecha_modificacion, usuario_creador, usuario_modificador) FROM stdin;
 14	Lengua	5	2	ON	2015-08-19	2015-08-19	admin	admin
-15	Matematica	5	2	ON	2015-08-19	2015-08-19	admin	admin
 16	Sociales	5	2	ON	2015-08-19	2015-08-19	admin	admin
 17	Naturales	5	2	ON	2015-08-19	2015-08-19	admin	admin
-18	Tecnologia	3	2	ON	2015-08-19	2015-08-19	admin	admin
-21	Ingles	3	2	ON	2015-08-19	2015-08-19	admin	admin
 22	Educación Fisica	2	2	ON	2015-08-19	2015-08-19	admin	admin
 23	Taller Ocupacional	2	2	ON	2015-08-19	2015-08-19	admin	admin
 24	Espacio Integrador	2	2	ON	2015-08-19	2015-08-19	admin	admin
-25	Biologia	5	2	ON	2015-08-19	2015-08-19	admin	admin
 26	Historia	5	2	ON	2015-08-19	2015-08-19	admin	admin
-27	Geografía	5	2	ON	2015-08-19	2015-08-19	admin	admin
-28	Fisica	5	2	ON	2015-08-19	2015-08-19	admin	admin
-29	Psicologia	3	2	ON	2015-08-19	2015-08-19	admin	admin
-30	Espacio y Reflexion Curricular	2	2	ON	2015-08-19	2015-08-19	admin	admin
-31	Teoria y Tecnica de la Organizacion Contable	5	2	ON	2015-08-19	2015-08-19	admin	admin
 32	Derecho	5	2	ON	2015-08-19	2015-08-19	admin	admin
-33	Economia	5	2	ON	2015-08-19	2015-08-19	admin	admin
-35	Quimica	5	2	ON	2015-08-19	2015-08-19	admin	admin
 36	Cultura	2	2	ON	2015-08-19	2015-08-19	admin	admin
-37	Educación Civica	6	2	ON	2015-08-19	2015-08-19	admin	admin
-38	Teoria y Finanzas Publicas	4	2	ON	2015-08-19	2015-08-19	admin	admin
-39	Introduccion al Estado, Sociedad y Cultura	4	2	ON	2015-08-19	2015-08-19	admin	admin
-40	Ingles Ll	3	4	ON	2015-08-19	2015-08-19	admin	admin
 34	Administración Pública	2	2	ON	2015-08-19	2015-08-20	admin	admin
+37	Educación Cívica	6	2	ON	2015-08-19	2015-09-06	admin	admin
+25	Biología	5	2	ON	2015-08-19	2015-09-06	admin	admin
+33	Economía	5	2	ON	2015-08-19	2015-09-06	admin	admin
+30	Espacio y Reflexión Curricular	2	2	ON	2015-08-19	2015-09-06	admin	admin
+28	Física	5	2	ON	2015-08-19	2015-09-06	admin	admin
+27	Geografía	5	2	ON	2015-08-19	2015-09-06	admin	admin
+21	Inglés	3	2	ON	2015-08-19	2015-09-06	admin	admin
+40	Inglés II	3	4	ON	2015-08-19	2015-09-06	admin	admin
+39	Introducción al Estado Sociedad y Cultura	4	2	ON	2015-08-19	2015-09-06	admin	admin
+15	Matemática	5	2	ON	2015-08-19	2015-09-06	admin	admin
+29	Psicología	3	2	ON	2015-08-19	2015-09-06	admin	admin
+35	Química	5	2	ON	2015-08-19	2015-09-06	admin	admin
+18	Tecnología	3	2	ON	2015-08-19	2015-09-06	admin	admin
+38	Teoría y Finanzas Públicas	4	2	ON	2015-08-19	2015-09-06	admin	admin
+31	Teoría y Técnica de la Organización Contable	5	2	ON	2015-08-19	2015-09-06	admin	admin
+43	Construcción Ciudadana	5	2	ON	2015-09-06	2015-09-06	admin	admin
 \.
 
 
@@ -1108,7 +1253,7 @@ COPY calendario_especialidad (id, nombre, carga_horaria_semanal, max_horas_diari
 -- Name: calendario_especialidad_id_seq; Type: SEQUENCE SET; Schema: public; Owner: django
 --
 
-SELECT pg_catalog.setval('calendario_especialidad_id_seq', 42, true);
+SELECT pg_catalog.setval('calendario_especialidad_id_seq', 43, true);
 
 
 --
@@ -1119,10 +1264,11 @@ COPY calendario_hora (id, hora_desde, hora_hasta, espacio_id) FROM stdin;
 12	18:15:00	18:55:00	4
 13	18:55:00	19:35:00	4
 14	19:45:00	20:25:00	4
-16	20:25:00	21:00:00	4
-17	21:00:00	21:45:00	4
 18	21:45:00	22:25:00	4
 19	22:25:00	23:00:00	4
+22	01:00:00	02:00:00	5
+16	20:25:00	21:05:00	4
+17	21:05:00	21:45:00	4
 \.
 
 
@@ -1130,14 +1276,14 @@ COPY calendario_hora (id, hora_desde, hora_hasta, espacio_id) FROM stdin;
 -- Name: calendario_hora_id_seq; Type: SEQUENCE SET; Schema: public; Owner: django
 --
 
-SELECT pg_catalog.setval('calendario_hora_id_seq', 21, true);
+SELECT pg_catalog.setval('calendario_hora_id_seq', 22, true);
 
 
 --
 -- Data for Name: calendario_horario; Type: TABLE DATA; Schema: public; Owner: django
 --
 
-COPY calendario_horario (id, hora_desde, hora_hasta, dia_semana, calendario_id, especialidad_id) FROM stdin;
+COPY calendario_horario (id, hora_desde, hora_hasta, dia_semana, calendario_id, especialidad_id, profesional_id) FROM stdin;
 \.
 
 
@@ -1145,7 +1291,7 @@ COPY calendario_horario (id, hora_desde, hora_hasta, dia_semana, calendario_id, 
 -- Name: calendario_horario_id_seq; Type: SEQUENCE SET; Schema: public; Owner: django
 --
 
-SELECT pg_catalog.setval('calendario_horario_id_seq', 239785, true);
+SELECT pg_catalog.setval('calendario_horario_id_seq', 322842, true);
 
 
 --
@@ -1211,7 +1357,8 @@ COPY calendario_persona (id, nombre, apellido, cuil, estado, fecha_creacion, fec
 98	Julio	Bartels	70752666159	ON	2015-08-19	2015-08-19	admin	admin
 150	Rodrigo	Rodriguez	30000000	ON	2015-08-19	2015-08-19	admin	admin
 161	Alan Franco	Marchán	23380460459	ON	2015-08-19	2015-08-19	admin	admin
-88	Guillermina	Abril	47144474185	ON	2015-08-19	2015-08-21	admin	admin
+88	Guillermina	Abril	47144474185	ON	2015-08-19	2015-09-05	admin	admin
+174	A	A	--	OFF	2015-09-11	2015-09-11	admin	admin
 \.
 
 
@@ -1219,7 +1366,7 @@ COPY calendario_persona (id, nombre, apellido, cuil, estado, fecha_creacion, fec
 -- Name: calendario_persona_id_seq; Type: SEQUENCE SET; Schema: public; Owner: django
 --
 
-SELECT pg_catalog.setval('calendario_persona_id_seq', 172, true);
+SELECT pg_catalog.setval('calendario_persona_id_seq', 174, true);
 
 
 --
@@ -1270,6 +1417,7 @@ COPY calendario_profesional (persona_ptr_id) FROM stdin;
 98
 150
 161
+174
 \.
 
 
@@ -1278,13 +1426,25 @@ COPY calendario_profesional (persona_ptr_id) FROM stdin;
 --
 
 COPY calendario_profesional_especialidades (id, profesional_id, especialidad_id) FROM stdin;
-2	88	33
-3	88	28
-4	88	15
-5	89	25
 6	91	36
-8	92	32
-9	93	37
+11	99	28
+13	96	21
+14	100	26
+15	110	14
+17	92	32
+18	92	37
+19	93	37
+20	93	32
+21	94	27
+22	94	16
+23	95	16
+24	95	27
+25	95	26
+26	88	33
+27	88	15
+28	88	38
+31	89	25
+32	89	17
 \.
 
 
@@ -1292,7 +1452,7 @@ COPY calendario_profesional_especialidades (id, profesional_id, especialidad_id)
 -- Name: calendario_profesional_especialidades_id_seq; Type: SEQUENCE SET; Schema: public; Owner: django
 --
 
-SELECT pg_catalog.setval('calendario_profesional_especialidades_id_seq', 9, true);
+SELECT pg_catalog.setval('calendario_profesional_especialidades_id_seq', 32, true);
 
 
 --
@@ -1300,13 +1460,11 @@ SELECT pg_catalog.setval('calendario_profesional_especialidades_id_seq', 9, true
 --
 
 COPY calendario_profesionalrestriccion (restriccion_ptr_id, profesional_id) FROM stdin;
-1	88
-2	88
-3	88
-4	89
-5	91
-6	92
-7	93
+17	88
+18	89
+19	93
+20	91
+21	92
 \.
 
 
@@ -1315,13 +1473,11 @@ COPY calendario_profesionalrestriccion (restriccion_ptr_id, profesional_id) FROM
 --
 
 COPY calendario_restriccion (id, hora_desde, hora_hasta, dia_semana, estado, fecha_creacion, fecha_modificacion, usuario_creador, usuario_modificador) FROM stdin;
-1	12:30:00	23:30:00	1	ON	2015-08-20	2015-08-20	admin	admin
-2	10:00:00	11:00:00	1	ON	2015-08-21	2015-08-21	admin	admin
-3	23:00:00	00:00:00	2	ON	2015-08-21	2015-08-21	admin	admin
-4	18:30:00	20:30:00	1	ON	2015-08-21	2015-08-21	admin	admin
-5	22:00:00	23:00:00	2	ON	2015-08-21	2015-08-21	admin	admin
-6	20:00:00	21:30:00	4	ON	2015-08-21	2015-08-21	admin	admin
-7	19:00:00	23:00:00	5	ON	2015-08-21	2015-08-21	admin	admin
+17	18:00:00	19:00:00	1	ON	2015-09-12	2015-09-12	admin	admin
+18	20:00:00	22:00:00	2	ON	2015-09-12	2015-09-12	admin	admin
+19	19:00:00	20:00:00	2	ON	2015-09-12	2015-09-12	admin	admin
+20	00:00:00	23:59:00	7	ON	2015-09-12	2015-09-12	admin	admin
+21	18:00:00	21:00:00	4	ON	2015-09-12	2015-09-12	admin	admin
 \.
 
 
@@ -1329,7 +1485,7 @@ COPY calendario_restriccion (id, hora_desde, hora_hasta, dia_semana, estado, fec
 -- Name: calendario_restriccion_id_seq; Type: SEQUENCE SET; Schema: public; Owner: django
 --
 
-SELECT pg_catalog.setval('calendario_restriccion_id_seq', 7, true);
+SELECT pg_catalog.setval('calendario_restriccion_id_seq', 21, true);
 
 
 --
@@ -1374,6 +1530,7 @@ COPY django_content_type (id, app_label, model) FROM stdin;
 16	calendario	hora
 17	calendario	espaciorestriccion
 18	calendario	profesionalrestriccion
+19	calendario	coordinador
 \.
 
 
@@ -1381,7 +1538,7 @@ COPY django_content_type (id, app_label, model) FROM stdin;
 -- Name: django_content_type_id_seq; Type: SEQUENCE SET; Schema: public; Owner: django
 --
 
-SELECT pg_catalog.setval('django_content_type_id_seq', 18, true);
+SELECT pg_catalog.setval('django_content_type_id_seq', 19, true);
 
 
 --
@@ -1415,6 +1572,9 @@ COPY django_migrations (id, app, name, applied) FROM stdin;
 24	calendario	0012_auto_20150812_2212	2015-08-12 19:14:09.402929-03
 25	calendario	0013_espacio_especialidades	2015-08-14 21:28:07.958442-03
 26	calendario	0014_auto_20150819_2042	2015-08-19 17:42:40.382181-03
+27	calendario	0015_auto_20150904_1638	2015-09-04 13:39:14.03392-03
+28	calendario	0016_auto_20150905_1824	2015-09-05 15:24:52.248092-03
+29	calendario	0017_coordinador	2015-09-08 19:13:52.969544-03
 \.
 
 
@@ -1422,7 +1582,7 @@ COPY django_migrations (id, app, name, applied) FROM stdin;
 -- Name: django_migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: django
 --
 
-SELECT pg_catalog.setval('django_migrations_id_seq', 26, true);
+SELECT pg_catalog.setval('django_migrations_id_seq', 29, true);
 
 
 --
@@ -1540,6 +1700,14 @@ ALTER TABLE ONLY calendario_calendario
 
 
 --
+-- Name: calendario_coordinador_pkey; Type: CONSTRAINT; Schema: public; Owner: django; Tablespace: 
+--
+
+ALTER TABLE ONLY calendario_coordinador
+    ADD CONSTRAINT calendario_coordinador_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: calendario_espacio_especialidade_espacio_id_especialidad_id_key; Type: CONSTRAINT; Schema: public; Owner: django; Tablespace: 
 --
 
@@ -1561,6 +1729,22 @@ ALTER TABLE ONLY calendario_espacio_especialidades
 
 ALTER TABLE ONLY calendario_espacio
     ADD CONSTRAINT calendario_espacio_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: calendario_espacio_profesionales_espacio_id_profesional_id_key; Type: CONSTRAINT; Schema: public; Owner: django; Tablespace: 
+--
+
+ALTER TABLE ONLY calendario_espacio_profesionales
+    ADD CONSTRAINT calendario_espacio_profesionales_espacio_id_profesional_id_key UNIQUE (espacio_id, profesional_id);
+
+
+--
+-- Name: calendario_espacio_profesionales_pkey; Type: CONSTRAINT; Schema: public; Owner: django; Tablespace: 
+--
+
+ALTER TABLE ONLY calendario_espacio_profesionales
+    ADD CONSTRAINT calendario_espacio_profesionales_pkey PRIMARY KEY (id);
 
 
 --
@@ -1784,6 +1968,27 @@ CREATE INDEX calendario_calendario_42380e88 ON calendario_calendario USING btree
 
 
 --
+-- Name: calendario_coordinador_42380e88; Type: INDEX; Schema: public; Owner: django; Tablespace: 
+--
+
+CREATE INDEX calendario_coordinador_42380e88 ON calendario_coordinador USING btree (espacio_id);
+
+
+--
+-- Name: calendario_coordinador_6e88626c; Type: INDEX; Schema: public; Owner: django; Tablespace: 
+--
+
+CREATE INDEX calendario_coordinador_6e88626c ON calendario_coordinador USING btree (profesional_id);
+
+
+--
+-- Name: calendario_coordinador_8a03056c; Type: INDEX; Schema: public; Owner: django; Tablespace: 
+--
+
+CREATE INDEX calendario_coordinador_8a03056c ON calendario_coordinador USING btree (especialidad_id);
+
+
+--
 -- Name: calendario_espacio_especialidades_42380e88; Type: INDEX; Schema: public; Owner: django; Tablespace: 
 --
 
@@ -1795,6 +2000,20 @@ CREATE INDEX calendario_espacio_especialidades_42380e88 ON calendario_espacio_es
 --
 
 CREATE INDEX calendario_espacio_especialidades_8a03056c ON calendario_espacio_especialidades USING btree (especialidad_id);
+
+
+--
+-- Name: calendario_espacio_profesionales_42380e88; Type: INDEX; Schema: public; Owner: django; Tablespace: 
+--
+
+CREATE INDEX calendario_espacio_profesionales_42380e88 ON calendario_espacio_profesionales USING btree (espacio_id);
+
+
+--
+-- Name: calendario_espacio_profesionales_6e88626c; Type: INDEX; Schema: public; Owner: django; Tablespace: 
+--
+
+CREATE INDEX calendario_espacio_profesionales_6e88626c ON calendario_espacio_profesionales USING btree (profesional_id);
 
 
 --
@@ -1816,6 +2035,13 @@ CREATE INDEX calendario_hora_42380e88 ON calendario_hora USING btree (espacio_id
 --
 
 CREATE INDEX calendario_horario_0a9eef5d ON calendario_horario USING btree (calendario_id);
+
+
+--
+-- Name: calendario_horario_6e88626c; Type: INDEX; Schema: public; Owner: django; Tablespace: 
+--
+
+CREATE INDEX calendario_horario_6e88626c ON calendario_horario USING btree (profesional_id);
 
 
 --
@@ -1893,6 +2119,22 @@ CREATE INDEX django_session_session_key_461cfeaa630ca218_like ON django_session 
 --
 
 CREATE INDEX django_session_session_key_630ca218_like ON django_session USING btree (session_key varchar_pattern_ops);
+
+
+--
+-- Name: D1329aca02d8f515778b31422ed7ad75; Type: FK CONSTRAINT; Schema: public; Owner: django
+--
+
+ALTER TABLE ONLY calendario_espacio_profesionales
+    ADD CONSTRAINT "D1329aca02d8f515778b31422ed7ad75" FOREIGN KEY (profesional_id) REFERENCES calendario_profesional(persona_ptr_id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: D6066de2eb463f188745bf8e96517237; Type: FK CONSTRAINT; Schema: public; Owner: django
+--
+
+ALTER TABLE ONLY calendario_coordinador
+    ADD CONSTRAINT "D6066de2eb463f188745bf8e96517237" FOREIGN KEY (profesional_id) REFERENCES calendario_profesional(persona_ptr_id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
@@ -2024,6 +2266,14 @@ ALTER TABLE ONLY auth_user_user_permissions
 
 
 --
+-- Name: bc1d2e37a301b41fbc5bea693bc4cc0d; Type: FK CONSTRAINT; Schema: public; Owner: django
+--
+
+ALTER TABLE ONLY calendario_horario
+    ADD CONSTRAINT bc1d2e37a301b41fbc5bea693bc4cc0d FOREIGN KEY (profesional_id) REFERENCES calendario_profesional(persona_ptr_id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
 -- Name: c6d89922d113e121f82dafd8dcbf1e03; Type: FK CONSTRAINT; Schema: public; Owner: django
 --
 
@@ -2096,6 +2346,14 @@ ALTER TABLE ONLY calendario_espacio_especialidades
 
 
 --
+-- Name: calendario_espacio_id_384401df08b3bae1_fk_calendario_espacio_id; Type: FK CONSTRAINT; Schema: public; Owner: django
+--
+
+ALTER TABLE ONLY calendario_espacio_profesionales
+    ADD CONSTRAINT calendario_espacio_id_384401df08b3bae1_fk_calendario_espacio_id FOREIGN KEY (espacio_id) REFERENCES calendario_espacio(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
 -- Name: calendario_espacio_id_4bb1c202f134affb_fk_calendario_espacio_id; Type: FK CONSTRAINT; Schema: public; Owner: django
 --
 
@@ -2109,6 +2367,14 @@ ALTER TABLE ONLY calendario_hora
 
 ALTER TABLE ONLY calendario_espaciorestriccion
     ADD CONSTRAINT calendario_espacio_id_7221ddb8852b420e_fk_calendario_espacio_id FOREIGN KEY (espacio_id) REFERENCES calendario_espacio(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: calendario_espacio_id_73f76867bf10615a_fk_calendario_espacio_id; Type: FK CONSTRAINT; Schema: public; Owner: django
+--
+
+ALTER TABLE ONLY calendario_coordinador
+    ADD CONSTRAINT calendario_espacio_id_73f76867bf10615a_fk_calendario_espacio_id FOREIGN KEY (espacio_id) REFERENCES calendario_espacio(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
@@ -2173,6 +2439,14 @@ ALTER TABLE ONLY calendario_profesional_especialidades
 
 ALTER TABLE ONLY calendario_espacio_especialidades
     ADD CONSTRAINT especialidad_id_74cbae319da60451_fk_calendario_especialidad_id FOREIGN KEY (especialidad_id) REFERENCES calendario_especialidad(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: especialidad_id_75edbe38a28ccd01_fk_calendario_especialidad_id; Type: FK CONSTRAINT; Schema: public; Owner: django
+--
+
+ALTER TABLE ONLY calendario_coordinador
+    ADD CONSTRAINT especialidad_id_75edbe38a28ccd01_fk_calendario_especialidad_id FOREIGN KEY (especialidad_id) REFERENCES calendario_especialidad(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
