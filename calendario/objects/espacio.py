@@ -131,8 +131,11 @@ class Espacio(models.Model):
 				#Tambien por la cantidad de horarios.
 				for hora in self.horas:
 					
+					#Obtenemos un indice aleatorio.
+					indice = randrange(0, len(self.coordinadores))
+					
 					#Obtenemos un coordinador aleatoriamente.
-					coordinador = self.coordinadores[randrange(0, len(self.coordinadores))]
+					coordinador = self.coordinadores[indice]
 					
 					#Se crea un Horario.
 					horario = Horario()
@@ -261,7 +264,12 @@ class Espacio(models.Model):
 			#Esto imprime un calendario entero.
 			for i in range(len(self.dias_habiles)):
 				
-				print calendario.horarios[i]
+				#~ print calendario.horarios[i]
+				
+				for j in range(len(self.horas)):
+					print calendario.horarios[j][i]
+					
+					
 				
 			print 
 			for i in range(len(self.dias_habiles)):
@@ -278,52 +286,51 @@ class Espacio(models.Model):
 						for l in range(len(self.horas)):
 							
 							#Esto imprime la ultima franja horaria que tiene el problema.
-							print calendario.horarios[k]
-							if calendario.horarios[i][j] == calendario.horarios[k][l]:
+							if calendario.horarios[j][i] == calendario.horarios[l][k]:
 								continue
 							
-							if calendario.horarios[i][j].especialidad == calendario.horarios[k][l].especialidad:
+							if calendario.horarios[j][i].especialidad == calendario.horarios[l][k].especialidad:
 								horas_diarias += 1
 						
-						if calendario.horarios[i][j].especialidad.max_horas_diaria < horas_diarias:
-							calendario.puntaje += (horas_diarias - calendario.horarios[i][j].especialidad.max_horas_diaria) * PUNTOS_HORAS_DIARIAS
+						if calendario.horarios[j][i].especialidad.max_horas_diaria < horas_diarias:
+							calendario.puntaje += (horas_diarias - calendario.horarios[j][i].especialidad.max_horas_diaria) * PUNTOS_HORAS_DIARIAS
 						break
 					
 			
-			#Cuarta evaluacion: En esta instancia se desea comprobar
-			#la distribución horaria de las especialidades.
-			#Horas semanales: cada hora extra o faltante es
-			#penalizada con la suma de puntos.
+			#~ #Cuarta evaluacion: En esta instancia se desea comprobar
+			#~ #la distribución horaria de las especialidades.
+			#~ #Horas semanales: cada hora extra o faltante es
+			#~ #penalizada con la suma de puntos.
 			
-			#Por cada franja de horarios.
-			for franja_horaria in calendario.horarios:
+			#~ #Por cada franja de horarios.
+			#~ for franja_horaria in calendario.horarios:
 				
-				#Por cada horario dentro de la franja.
-				for horario in franja_horaria:
+				#~ #Por cada horario dentro de la franja.
+				#~ for horario in franja_horaria:
 					
-					#Por cada franja de horarios.
-					for franja_horaria_comparacion in calendario.horarios:
+					#~ #Por cada franja de horarios.
+					#~ for franja_horaria_comparacion in calendario.horarios:
 						
-						#Por cada horario dentro de la franja.
-						for horario_comparacion in franja_horaria_comparacion:
+						#~ #Por cada horario dentro de la franja.
+						#~ for horario_comparacion in franja_horaria_comparacion:
 							
-							#Si los horarios son iguales significa que
-							#estamos evaluando la misma franja horaria
-							#si este es al caso cortamos el ciclo.
-							if horario == horario_comparacion:
-								break
+							#~ #Si los horarios son iguales significa que
+							#~ #estamos evaluando la misma franja horaria
+							#~ #si este es al caso cortamos el ciclo.
+							#~ if horario == horario_comparacion:
+								#~ break
 							
-							#Si la especialidades son distintas no
-							#tenemos que evaluarlo.
-							if horario.especialidad != horario_comparacion.especialidad:
-								break
+							#~ #Si la especialidades son distintas no
+							#~ #tenemos que evaluarlo.
+							#~ if horario.especialidad != horario_comparacion.especialidad:
+								#~ break
 							
-							if calendario.horarios.index(franja_horaria) + 1 == calendario.horarios.index(franja_horaria_comparacion):
-								horario = horario_comparacion
-								break
+							#~ if calendario.horarios.index(franja_horaria) + 1 == calendario.horarios.index(franja_horaria_comparacion):
+								#~ horario = horario_comparacion
+								#~ break
 							
-							#ACA HAY QUE EVALUAR QUE ESTA PASANDO REALMENTE.
-							calendario.puntaje += PUNTOS_DISTRIBUCION_HORARIA
+							#~ #ACA HAY QUE EVALUAR QUE ESTA PASANDO REALMENTE.
+							#~ calendario.puntaje += PUNTOS_DISTRIBUCION_HORARIA
 			#~ 
 			#~ calendario.save()
 			
