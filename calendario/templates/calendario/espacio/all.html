@@ -73,21 +73,17 @@
 						</tfoot>
 					{% endif %}
 				</table>
-				<div class="pagination">
-					<span class="step-links">
+				<nav>
+					<ul class="pager">
 						{% if espacios.has_previous %}
-							<a href="{% url 'calendario:espacio_all' espacios.previous_page_number %} ">Anterior</a>
+							<li class="previous"><a href="{% url 'calendario:espacio_all' espacios.previous_page_number %} "><span class="glyphicon glyphicon-arrow-left"></span> Anterior</a></li>
 						{% endif %}
-						
-						<span class="current">
-							Página {{ espacios.number }} de {{ espacios.paginator.num_pages }}.
-						</span>
 						
 						{% if espacios.has_next %}
-							<a href="{% url 'calendario:espacio_all' espacios.next_page_number %} ">Siguiente</a>
+							<li class="next"><a href="{% url 'calendario:espacio_all' espacios.next_page_number %} ">Siguiente <span class="glyphicon glyphicon-arrow-right"></span></a>
 						{% endif %}
-					</span>
-				</div>
+					</ul>
+				</nav>
 			</div>
 		</div>
 	</div>

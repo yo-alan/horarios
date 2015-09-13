@@ -173,15 +173,28 @@ def espacio_detail(request, espacio_id):
 			if especialidad in profesional.especialidades.all():
 				profesionales.append(profesional)
 	
-	
 	dias = []
 	
 	for num in DIAS:
 		if num in espacio.dias_habiles:
 			dias.append(DIAS[num])
 	
+	total_horas_especialidades = 0
+	for especialidad in especialidades:
+		total_horas_especialidades += especialidad.carga_horaria_semanal
+	
+	total_horas_calculadas = len(espacio.dias_habiles) * len(espacio.horas)
+	
+	calendario_valido = total_horas_calculadas == total_horas_especialidades
+	
+	listo = False
+	#~ if espacio.coordinadores and espacio.horas and dias and calendario_valido:
+	if espacio.coordinadores and espacio.horas and dias:
+		listo = True
+	
 	context = {'espacio': espacio, 'especialidades': especialidades,
-				'profesionales': profesionales, 'dias': dias}
+				'profesionales': profesionales, 'dias': dias,
+				'listo': listo}
 	
 	return render(request, 'calendario/espacio/detail.html', context)
 

@@ -77,21 +77,17 @@
 						</tfoot>
 					{% endif %}
 				</table>
-				<div class="pagination">
-					<span class="step-links">
+				<nav>
+					<ul class="pager">
 						{% if especialidades.has_previous %}
-							<a href="{% url 'calendario:especialidad_all' especialidades.previous_page_number %} ">Anterior</a>
+							<li class="previous"><a href="{% url 'calendario:especialidad_all' especialidades.previous_page_number %} "><span class="glyphicon glyphicon-arrow-left"></span> Anterior</a></li>
 						{% endif %}
-						
-						<span class="current">
-							Página {{ especialidades.number }} de {{ especialidades.paginator.num_pages }}.
-						</span>
 						
 						{% if especialidades.has_next %}
-							<a href="{% url 'calendario:especialidad_all' especialidades.next_page_number %} ">Siguiente</a>
+							<li class="next"><a href="{% url 'calendario:especialidad_all' especialidades.next_page_number %} ">Siguiente <span class="glyphicon glyphicon-arrow-right"></span></a>
 						{% endif %}
-					</span>
-				</div>
+					</ul>
+				</nav>
 			</div>
 		</div>
 	</div>

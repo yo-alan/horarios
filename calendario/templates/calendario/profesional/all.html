@@ -81,21 +81,17 @@
 						</tfoot>
 					{% endif %}
 				</table>
-				<div class="pagination">
-					<span class="step-links">
+				<nav>
+					<ul class="pager">
 						{% if profesionales.has_previous %}
-							<a href="{% url 'calendario:profesional_all' profesionales.previous_page_number %} ">Anterior</a>
+							<li class="previous"><a href="{% url 'calendario:profesional_all' profesionales.previous_page_number %} "><span class="glyphicon glyphicon-arrow-left"></span> Anterior</a></li>
 						{% endif %}
-						
-						<span class="current">
-							Página {{ profesionales.number }} de {{ profesionales.paginator.num_pages }}.
-						</span>
 						
 						{% if profesionales.has_next %}
-							<a href="{% url 'calendario:profesional_all' profesionales.next_page_number %} ">Siguiente</a>
+							<li class="next"><a href="{% url 'calendario:profesional_all' profesionales.next_page_number %} ">Siguiente <span class="glyphicon glyphicon-arrow-right"></span></a>
 						{% endif %}
-					</span>
-				</div>
+					</ul>
+				</nav>
 			</div>
 		</div>
 	</div>

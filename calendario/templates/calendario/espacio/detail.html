@@ -468,10 +468,10 @@
 							<form class="form-horizontal" id="" method="POST" action="{% url 'calendario:generar' %}">
 								{% csrf_token %}
 								<input type="hidden" id="espacio_id" name="espacio_id" value="{{ espacio.id }}">
-								{% if espacio.coordinadores and espacio.horas and espacio.dias_habiles %}
+								{% if listo %}
 									<button type="submit" class="btn btn-success pull-right"  data-loading-text="Generando..." onclick="$(this).button('loading')">
 								{% else %}
-									<button type="submit" class="btn btn-success pull-right disabled"  data-loading-text="Generando..." onclick="$(this).button('loading')">
+									<button type="submit" class="btn btn-success pull-right" disabled  data-loading-text="Generando..." onclick="$(this).button('loading')">
 								{% endif %}
 									Generar
 								</button>
