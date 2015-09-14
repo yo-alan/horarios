@@ -6,11 +6,7 @@
 	<div class="panel panel-primary">
 		<div class="panel-heading">
 			<h3 class="panel-title"><b>
-				{% if tiempo %}
-					Listado de calendarios generados en {{ tiempo }} segundos.
-				{% else %}
-					Listado de calendarios generados.
-				{% endif %}
+				Listado de calendarios generados.
 			</b></h3>
 		</div>
 		{% if calendarios %}
@@ -19,8 +15,6 @@
 					<li class="list-group-item"><a href="{% url 'calendario:detail' calendario.id %}">{{ calendario.id }}</a></li>
 				{% endfor %}
 			</ul>
-		{% else %}
-			<div class="panel-body">No hay calendarios disponibles.</div>
 		{% endif %}
 	</div>
 	{% if calendarios %}

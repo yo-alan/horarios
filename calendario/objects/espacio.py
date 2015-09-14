@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import time
 from random import random, randrange
 
 from django.db import models
@@ -166,18 +167,41 @@ class Espacio(models.Model):
 					calendario.agregar_horario(horario)
 		
 	
-	def evolucionar(self, ):
-		print "FITNESS"
+	def ejecutar(self, ):
+		
+		global_time = time.time()
+		
+		operation_time = time.time()
+		
+		self.generarpoblacioninicial()
+		
+		print "Población inicial generada en %7.3f seg." %  (time.time() - operation_time)
+		
+		operation_time = time.time()
+		
 		self.fitness()
+		
+		print "Evaluación realizada en %7.3f seg." %  (time.time() - operation_time)
+		
+		operation_time = time.time()
 		
 		#Ordenamos la lista ubicando los individuos más aptos de principio a fin.
 		self.poblacion.sort()
 		
+		print "El ordenamiento de %d calendarios tardó %7.3f seg." %  (len(self.poblacion), time.time() - operation_time)
+		
 		#Cortamos la lista, quedándonos con los 100 individuos más aptos.
 		self.poblacion = self.poblacion[:100]
 		
+		operation_time = time.time()
+		
 		for calendario in self.poblacion:
 			calendario.full_save()
+		
+		print "Guardar %d calendarios llevó %7.3f seg." %  (len(self.poblacion), time.time() - operation_time)
+		
+		print
+		print "La evolución tardó %7.3f seg." %  (time.time() - global_time)
 	
 	def fitness(self, ):
 		"""
@@ -261,17 +285,6 @@ class Espacio(models.Model):
 			#atributo max_horas_diaria, en el caso que un calendario
 			#exceda este valor recibira una penalizacion.
 			
-			#Esto imprime un calendario entero.
-			for i in range(len(self.dias_habiles)):
-				
-				#~ print calendario.horarios[i]
-				
-				for j in range(len(self.horas)):
-					print calendario.horarios[j][i]
-					
-					
-				
-			print 
 			for i in range(len(self.dias_habiles)):
 				
 				for j in range(len(self.horas)):
@@ -285,7 +298,6 @@ class Espacio(models.Model):
 						
 						for l in range(len(self.horas)):
 							
-							#Esto imprime la ultima franja horaria que tiene el problema.
 							if calendario.horarios[j][i] == calendario.horarios[l][k]:
 								continue
 							
@@ -297,40 +309,41 @@ class Espacio(models.Model):
 						break
 					
 			
-			#~ #Cuarta evaluacion: En esta instancia se desea comprobar
-			#~ #la distribución horaria de las especialidades.
-			#~ #Horas semanales: cada hora extra o faltante es
-			#~ #penalizada con la suma de puntos.
+			#Cuarta evaluacion: En esta instancia se desea comprobar
+			#la distribución horaria de las especialidades.
+			#Horas semanales: cada hora extra o faltante es
+			#penalizada con la suma de puntos.
 			
-			#~ #Por cada franja de horarios.
-			#~ for franja_horaria in calendario.horarios:
+			#Por cada franja de horarios.
+			for franja_horaria in calendario.horarios:
 				
-				#~ #Por cada horario dentro de la franja.
-				#~ for horario in franja_horaria:
+				#Por cada horario dentro de la franja.
+				for horario in franja_horaria:
 					
-					#~ #Por cada franja de horarios.
-					#~ for franja_horaria_comparacion in calendario.horarios:
+					#Por cada franja de horarios.
+					for franja_horaria_comparacion in calendario.horarios:
 						
-						#~ #Por cada horario dentro de la franja.
-						#~ for horario_comparacion in franja_horaria_comparacion:
+						#Por cada horario dentro de la franja.
+						for horario_comparacion in franja_horaria_comparacion:
 							
-							#~ #Si los horarios son iguales significa que
-							#~ #estamos evaluando la misma franja horaria
-							#~ #si este es al caso cortamos el ciclo.
-							#~ if horario == horario_comparacion:
-								#~ break
+							#Si los horarios son iguales significa que
+							#estamos evaluando la misma franja horaria
+							#si este es al caso cortamos el ciclo.
+							if horario == horario_comparacion:
+								break
 							
-							#~ #Si la especialidades son distintas no
-							#~ #tenemos que evaluarlo.
-							#~ if horario.especialidad != horario_comparacion.especialidad:
-								#~ break
+							#Si la especialidades son distintas no
+							#tenemos que evaluarlo.
+							if horario.especialidad != horario_comparacion.especialidad:
+								break
 							
-							#~ if calendario.horarios.index(franja_horaria) + 1 == calendario.horarios.index(franja_horaria_comparacion):
-								#~ horario = horario_comparacion
-								#~ break
+							#Y esta asigacion?.
+							if calendario.horarios.index(franja_horaria) + 1 == calendario.horarios.index(franja_horaria_comparacion):
+								horario = horario_comparacion
+								break
 							
-							#~ #ACA HAY QUE EVALUAR QUE ESTA PASANDO REALMENTE.
-							#~ calendario.puntaje += PUNTOS_DISTRIBUCION_HORARIA
+							#ACA HAY QUE EVALUAR QUE ESTA PASANDO REALMENTE.
+							calendario.puntaje += PUNTOS_DISTRIBUCION_HORARIA
 			#~ 
 			#~ calendario.save()
 			

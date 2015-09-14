@@ -35,14 +35,10 @@ class Especialidad(models.Model):
 	@classmethod
 	def create(cls, especialidad_id=0):
 		
-		especialidad = None
-		
 		if especialidad_id != 0:
-			especialidad = Especialidad.objects.get(pk=especialidad_id)
-		else:
-			especialidad = Especialidad()
+			return Especialidad.objects.get(pk=especialidad_id)
 		
-		return especialidad
+		return Especialidad()
 	
 	def __str__(self, ):
 		return self.nombre.encode('utf-8')

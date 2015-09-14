@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-import time
-
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.core import serializers
@@ -82,17 +80,11 @@ def generar(request):
 	if request.method != 'POST':
 		return HttpResponseRedirect(reverse('calendario:all'))
 	
-	start_time = time.time()
-	
 	espacio = Espacio.create(request.POST['espacio_id'])
 	
-	espacio.generarpoblacioninicial()
+	espacio.ejecutar()
 	
-	espacio.evolucionar()
-	
-	tiempo = (time.time() - start_time)
-	
-	context = {'calendarios': espacio.poblacion, 'tiempo': tiempo}
+	context = {'calendarios': espacio.poblacion}
 	
 	return render(request, 'calendario/all.html', context)
 

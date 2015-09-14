@@ -38,7 +38,7 @@
 	</h3>
 	<dl>
 		<dt>
-			Espacio: <span>{{ calendario.espacio }}</span>
+			Espacio: <span><a href="{% url 'calendario:espacio_detail' calendario.espacio.id %}">{{ calendario.espacio }}</a></span>
 		</dt>
 		<dt>
 			Puntaje: <span>{{ calendario.puntaje }}</span>
