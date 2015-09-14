@@ -2,7 +2,7 @@
 
 {% block title %}Agregar una especialidad{% endblock %}
 
-{% block article %}
+{% block head %}
 	<script>
 		$(function(){
 			
@@ -47,55 +47,51 @@
 			});
 		});
 	</script>
-	<div class="container-fluid">
-		<ol class="breadcrumb">
-			<li><a href="{% url 'calendario:especialidad_all' %}">Especialidades</a></li>
-			<li class="active">Agregar especialidad</li>
-		</ol>
-		<div class="row clearfix">
-			<div class="col-xs-6 col-xs-offset-3">
-				<div class="page-header text-center">
-					<h1>
-						Agregar especialidad<small>.</small>
-					</h1>
-				</div>
-				<form class="form-horizontal" id="addForm" name="addForm" method="POST" action="{% url 'calendario:especialidad_add' %}">
-					<div class="alert alert-dismissable alert-danger hidden">
-						<button type="button" class="close" data-hide="alert" aria-hidden="true">
-							×
-						</button>
-						<h4>
-							Error al guardar la especialidad.
-						</h4>
-						<strong>Ojo!</strong> Un campo no es válido:
-						<p>
-							
-						</p>
-					</div>
-					{% csrf_token %}
-					<div class="form-group">
-						<label class="col-xs-5 control-label" for="nombre">Nombre:</label>
-						<div class="col-xs-7">
-							<input type="text" id="nombre" name="nombre" class="form-control" autofocus placeholder="Nombre de la especialidad">
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="col-xs-5 control-label" for="carga_horaria_semanal">Carga horaria semanal:</label>
-						<div class="col-xs-7">
-							<input type="number" id="carga_horaria_semanal" name="carga_horaria_semanal" class="form-control" min="1" placeholder="Carga horaria semanal" value="0">
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="col-xs-5 control-label" for="max_horas_diaria">Carga máxima diaria:</label>
-						<div class="col-xs-7">
-							<input type="number" id="max_horas_diaria" name="max_horas_diaria" class="form-control" min="1" placeholder="Carga máxima diaria" value="0">
-						</div>
-					</div>
-					<button type="submit" id="btnGuardar" data-loading-text="Guardando..." class="btn btn-primary pull-right" autocomplete="off">
-						Agregar
-					</button>
-				</form>
+{% endblock %}
+{% block article %}
+	<ol class="breadcrumb">
+		<li><a href="{% url 'calendario:especialidad_all' %}">Especialidades</a></li>
+		<li class="active">Agregar especialidad</li>
+	</ol>
+	<div class="page-header text-center">
+		<h1>
+			Agregar especialidad<small>.</small>
+		</h1>
+	</div>
+	<form class="form-horizontal" id="addForm" name="addForm" method="POST" action="{% url 'calendario:especialidad_add' %}">
+		<div class="alert alert-dismissable alert-danger hidden">
+			<button type="button" class="close" data-hide="alert" aria-hidden="true">
+				×
+			</button>
+			<h4>
+				Error al guardar la especialidad.
+			</h4>
+			<strong>Ojo!</strong> Un campo no es válido:
+			<p>
+				
+			</p>
+		</div>
+		{% csrf_token %}
+		<div class="form-group">
+			<label class="col-xs-5 control-label" for="nombre">Nombre:</label>
+			<div class="col-xs-7">
+				<input type="text" id="nombre" name="nombre" class="form-control" autofocus placeholder="Nombre de la especialidad">
 			</div>
 		</div>
-	</div>
+		<div class="form-group">
+			<label class="col-xs-5 control-label" for="carga_horaria_semanal">Carga horaria semanal:</label>
+			<div class="col-xs-7">
+				<input type="number" id="carga_horaria_semanal" name="carga_horaria_semanal" class="form-control" min="1" placeholder="Carga horaria semanal" value="0">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-xs-5 control-label" for="max_horas_diaria">Carga máxima diaria:</label>
+			<div class="col-xs-7">
+				<input type="number" id="max_horas_diaria" name="max_horas_diaria" class="form-control" min="1" placeholder="Carga máxima diaria" value="0">
+			</div>
+		</div>
+		<button type="submit" id="btnGuardar" data-loading-text="Guardando..." class="btn btn-primary pull-right" autocomplete="off">
+			Agregar
+		</button>
+	</form>
 {% endblock %}

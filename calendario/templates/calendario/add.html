@@ -2,7 +2,7 @@
 
 {% block title %}Crear un calendario a medida.{% endblock %}
 
-{% block article %}
+{% block head %}
 	<script>
 		
 		$(document).ready(function (){
@@ -116,74 +116,70 @@
 			location.reload();
 		}
 	</script>
-	<div class="container-fluid">
-		<div class="row clearfix">
-			<div class="col-xs-12">
-				<h3 class="text-center">
-					Calendario para "{{ espacio }}".
-				</h3>
-				<ul class="list-inline">
-					<li>
-						<img class="btn" src="/static/calendario/images/new.png" onclick="nuevo()" title="Nuevo calendario...">
-					</li>
-					<li>
-						<img class="btn" src="/static/calendario/images/save.png" onclick="guardar()" title="Guardar calendario...">
-					</li>
-					<li>
-						<img class="btn" src="/static/calendario/images/print.png" onclick="imprimir()" title="Imprimir calendario...">
-					</li>
-					<li>
-						<img src="/static/calendario/images/trash.png" id="trash" ondrop="eliminar(event)" ondragover="allowDrop(event)">
-					</li>
-				</ul>
-				<div class="col-xs-8 pull-left center-block">
-					<table class="table center-block">
-						<thead>
-							<tr class="bg-primary">
-								<th class="text-center">
-								</th>
-								{% for dia in dias %}
-									<th class="text-center">
-										<h4><strong>{{ dia }}</strong></h4>
-									</th>
-								{% endfor %}
-							</tr>
-						</thead>
-						<tbody>
-							{% for hora in espacio.horas %}
-								<tr>
-									<td class="text-center bg-primary">
-										<h4>
-											<strong>{{ hora.hora_desde }}</strong>
-										</h4>
-										<h4>
-											<strong>{{ hora.hora_hasta }}</strong>
-										</h4>
-									</td>
-									{% for dia in espacio.dias_habiles %}
-										<td class="text-center">
-											<div id="{{ hora }}{{ dia }}" dia="{{ dia }}" desde="{{ hora }}" horario="{{ forloop.parentloop.counter0 }}" ondrop="drop(event)" ondragover="allowDrop(event)" class="horario-container">
-												
-											</div>
-										</td>
-									{% endfor %}
-								</tr>
-							{% endfor %}
-						</tbody>
-					</table>
-				</div>
-				<div class="col-xs-2 pull-right">
-					<ul class="list-unstyled">
-						{% for coordinador in espacio.coordinadores %}
-							<li>
-								<p id="{{ coordinador.especialidad|cut:" " }}" name="{{ coordinador.especialidad.id }}" draggable="true" ondragstart="drag(event)" class="lead especialidad text-center">
-									<strong>{{ coordinador.especialidad }}</strong>
-								</p>
-							</li>
+{% endblock %}
+{% block article %}
+	<h3 class="text-center">
+		Calendario para "{{ espacio }}".
+	</h3>
+	<ul class="list-inline">
+		<li>
+			<img class="btn" src="/static/calendario/images/new.png" onclick="nuevo()" title="Nuevo calendario...">
+		</li>
+		<li>
+			<img class="btn" src="/static/calendario/images/save.png" onclick="guardar()" title="Guardar calendario...">
+		</li>
+		<li>
+			<img class="btn" src="/static/calendario/images/print.png" onclick="imprimir()" title="Imprimir calendario...">
+		</li>
+		<li>
+			<img src="/static/calendario/images/trash.png" id="trash" ondrop="eliminar(event)" ondragover="allowDrop(event)">
+		</li>
+	</ul>
+	<div class="col-xs-8 pull-left center-block">
+		<table class="table center-block">
+			<thead>
+				<tr class="bg-primary">
+					<th class="text-center">
+					</th>
+					{% for dia in dias %}
+						<th class="text-center">
+							<h4><strong>{{ dia }}</strong></h4>
+						</th>
+					{% endfor %}
+				</tr>
+			</thead>
+			<tbody>
+				{% for hora in espacio.horas %}
+					<tr>
+						<td class="text-center bg-primary">
+							<h4>
+								<strong>{{ hora.hora_desde }}</strong>
+							</h4>
+							<h4>
+								<strong>{{ hora.hora_hasta }}</strong>
+							</h4>
+						</td>
+						{% for dia in espacio.dias_habiles %}
+							<td class="text-center">
+								<div id="{{ hora }}{{ dia }}" dia="{{ dia }}" desde="{{ hora }}" horario="{{ forloop.parentloop.counter0 }}" ondrop="drop(event)" ondragover="allowDrop(event)" class="horario-container">
+									
+								</div>
+							</td>
 						{% endfor %}
-					</ul>
-				</div>
-			</div>
-		</div>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+	<div class="col-xs-2 pull-right">
+		<ul class="list-unstyled">
+			{% for coordinador in espacio.coordinadores %}
+				<li>
+					<p id="{{ coordinador.especialidad|cut:" " }}" name="{{ coordinador.especialidad.id }}" draggable="true" ondragstart="drag(event)" class="lead especialidad text-center">
+						<strong>{{ coordinador.especialidad }}</strong>
+					</p>
+				</li>
+			{% endfor %}
+		</ul>
 	</div>
 {% endblock %}

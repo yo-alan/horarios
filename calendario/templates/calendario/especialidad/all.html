@@ -2,7 +2,7 @@
 
 {% block title %}Listado de especialidades{% endblock %}
 
-{% block article %}
+{% block head %}
 	<script>
 		function eliminarEspecialidad(especialidad_id){
 			
@@ -22,73 +22,69 @@
 			});
 		}
 	</script>
-	<div class="container-fluid">
-		<div class="row clearfix">
-			<div class="col-xs-12">
-				<div class="page-header">
-					<h1>
-						Especialidades<small>.</small>
-					</h1>
-				</div>
-				<table class="table table-hover">
-					<thead>
-						<tr>
-							<th>
-								Nombre
-							</th>
-							<th>
-								Carga horaria semanal
-							</th>
-							<th>
-								Carga máxima diaria
-							</th>
-							<th>
-								Acciones
-							</th>
-						</tr>
-					</thead>
-					{% if especialidades %}
-						<tbody>
-							{% for especialidad in especialidades %}
-								<tr>
-									<td class="vert-align">
-										{{ especialidad.nombre }}
-									</td>
-									<td class="vert-align">
-										{{ especialidad.carga_horaria_semanal }}
-									</td>
-									<td class="vert-align">
-										{{ especialidad.max_horas_diaria }}
-									</td>
-									<td class="vert-align">
-										<div class="btn btn-group btn-block">
-											<a class="btn btn-default" title="Editar" href="{% url 'calendario:especialidad_detail' especialidad.id %}#especialidad"><i class="glyphicon glyphicon-edit"></i></a>
-											<a class="btn btn-danger" title="Eliminar" onclick="eliminarEspecialidad({{ especialidad.id }})"><i class="glyphicon glyphicon-trash"></i></a>
-										</div>
-									</td>
-								</tr>
-							{% endfor %}
-						</tbody>
-					{% else %}
-						<tfoot align="center">
-							<tr>
-								<td colspan="5">No hay especialidades cargadas.</td>
-							</tr>
-						</tfoot>
-					{% endif %}
-				</table>
-				<nav>
-					<ul class="pager">
-						{% if especialidades.has_previous %}
-							<li class="previous"><a href="{% url 'calendario:especialidad_all' especialidades.previous_page_number %} "><span class="glyphicon glyphicon-arrow-left"></span> Anterior</a></li>
-						{% endif %}
-						
-						{% if especialidades.has_next %}
-							<li class="next"><a href="{% url 'calendario:especialidad_all' especialidades.next_page_number %} ">Siguiente <span class="glyphicon glyphicon-arrow-right"></span></a>
-						{% endif %}
-					</ul>
-				</nav>
-			</div>
-		</div>
+{% endblock %}
+{% block article %}
+	<div class="page-header">
+		<h1>
+			Especialidades<small>.</small>
+		</h1>
 	</div>
+	<table class="table table-hover">
+		<thead>
+			<tr>
+				<th>
+					Nombre
+				</th>
+				<th>
+					Carga horaria semanal
+				</th>
+				<th>
+					Carga máxima diaria
+				</th>
+				<th>
+					Acciones
+				</th>
+			</tr>
+		</thead>
+		{% if especialidades %}
+			<tbody>
+				{% for especialidad in especialidades %}
+					<tr>
+						<td class="vert-align">
+							{{ especialidad.nombre }}
+						</td>
+						<td class="vert-align">
+							{{ especialidad.carga_horaria_semanal }}
+						</td>
+						<td class="vert-align">
+							{{ especialidad.max_horas_diaria }}
+						</td>
+						<td class="vert-align">
+							<div class="btn btn-group btn-block">
+								<a class="btn btn-default" title="Editar" href="{% url 'calendario:especialidad_detail' especialidad.id %}#especialidad"><i class="glyphicon glyphicon-edit"></i></a>
+								<a class="btn btn-danger" title="Eliminar" onclick="eliminarEspecialidad({{ especialidad.id }})"><i class="glyphicon glyphicon-trash"></i></a>
+							</div>
+						</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		{% else %}
+			<tfoot align="center">
+				<tr>
+					<td colspan="5">No hay especialidades cargadas.</td>
+				</tr>
+			</tfoot>
+		{% endif %}
+	</table>
+	<nav>
+		<ul class="pager">
+			{% if especialidades.has_previous %}
+				<li class="previous"><a href="{% url 'calendario:especialidad_all' especialidades.previous_page_number %} "><span class="glyphicon glyphicon-arrow-left"></span> Anterior</a></li>
+			{% endif %}
+			
+			{% if especialidades.has_next %}
+				<li class="next"><a href="{% url 'calendario:especialidad_all' especialidades.next_page_number %} ">Siguiente <span class="glyphicon glyphicon-arrow-right"></span></a>
+			{% endif %}
+		</ul>
+	</nav>
 {% endblock %}

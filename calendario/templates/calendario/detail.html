@@ -2,7 +2,7 @@
 
 {% block title %}Detalles del calendario {{ calendario.id }} {% endblock %}
 
-{% block article %}
+{% block head %}
 	<script>
 		
 		$(document).ready(function (){
@@ -31,62 +31,58 @@
 		}
 		
 	</script>
-	<div class="container-fluid">
-		<div class="row clearfix">
-			<div class="col-xs-12">
-				<h3 class="text-center">
-					Detalles del calendario #{{ calendario.id }}
-				</h3>
-				<dl>
-					<dt>
-						Espacio: <span>{{ calendario.espacio }}</span>
-					</dt>
-					<dt>
-						Puntaje: <span>{{ calendario.puntaje }}</span>
-					</dt>
-				</dl>
-				<table class="table">
-					<thead>
-						<tr class="bg-primary">
-							<th class="text-center">
-							</th>
-							{% for dia in dias %}
-								<th class="text-center">
-									<h4><strong>{{ dia }}</strong></h4>
-								</th>
-							{% endfor %}
-						</tr>
-					</thead>
-					<tbody>
-					{% for franja_horaria in calendario.horarios %}
-						<tr>
-							<td class="text-center bg-primary">
-								<h4>
-									<strong>{{ franja_horaria.1.hora_desde }}</strong>
-								</h4>
-								<h4>
-									<strong>{{ franja_horaria.1.hora_hasta }}</strong>
-								</h4>
-							</td>
-						{% for horario in franja_horaria %}
-							<td name="{{ horario.especialidad|cut:" " }}" class="text-center active">
-								<h4>
-									<strong>{{ horario.especialidad }}</strong>
-								</h4>
-								{{ horario.profesional }}
-							</td>
-						{% endfor %}
-						</tr>
-					{% endfor %}
-					</tbody>
-				</table>
-				{% if anterior %}
-					<a href="{% url 'calendario:detail' anterior.id %}" class="btn btn-info btn-sm pull-left">&lt;&lt; Anterior</a>
-				{% endif %}
-				{% if siguiente %}
-					<a href="{% url 'calendario:detail' siguiente.id %}" class="btn btn-info btn-sm pull-right">Siguiente &gt;&gt;</a>
-				{% endif %}
-			</div>
-		</div>
-	</div>
+{% endblock %}
+{% block article %}
+	<h3 class="text-center">
+		Detalles del calendario #{{ calendario.id }}
+	</h3>
+	<dl>
+		<dt>
+			Espacio: <span>{{ calendario.espacio }}</span>
+		</dt>
+		<dt>
+			Puntaje: <span>{{ calendario.puntaje }}</span>
+		</dt>
+	</dl>
+	<table class="table">
+		<thead>
+			<tr class="bg-primary">
+				<th class="text-center">
+				</th>
+				{% for dia in dias %}
+					<th class="text-center">
+						<h4><strong>{{ dia }}</strong></h4>
+					</th>
+				{% endfor %}
+			</tr>
+		</thead>
+		<tbody>
+		{% for franja_horaria in calendario.horarios %}
+			<tr>
+				<td class="text-center bg-primary">
+					<h4>
+						<strong>{{ franja_horaria.1.hora_desde }}</strong>
+					</h4>
+					<h4>
+						<strong>{{ franja_horaria.1.hora_hasta }}</strong>
+					</h4>
+				</td>
+			{% for horario in franja_horaria %}
+				<td name="{{ horario.especialidad|cut:" " }}" class="text-center active">
+					<h4>
+						<strong>{{ horario.especialidad }}</strong>
+					</h4>
+					{{ horario.profesional }}
+				</td>
+			{% endfor %}
+			</tr>
+		{% endfor %}
+		</tbody>
+	</table>
+	{% if anterior %}
+		<a href="{% url 'calendario:detail' anterior.id %}" class="btn btn-info btn-sm pull-left">&lt;&lt; Anterior</a>
+	{% endif %}
+	{% if siguiente %}
+		<a href="{% url 'calendario:detail' siguiente.id %}" class="btn btn-info btn-sm pull-right">Siguiente &gt;&gt;</a>
+	{% endif %}
 {% endblock %}

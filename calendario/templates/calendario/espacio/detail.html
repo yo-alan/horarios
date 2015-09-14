@@ -2,7 +2,7 @@
 
 {% block title %}Detalles del espacio {{ espacio }}.{% endblock %}
 
-{% block article %}
+{% block head %}
 	<script>
 		$(function (){
 			
@@ -202,283 +202,279 @@
 		}
 		
 	</script>
-	<div class="container-fluid">
-		<div class="row">
-			<div class="col-xs-12">
-				<h3 class="text-center">
-					Detalles del espacio {{ espacio }}.
-				</h3>
-				<div class="tabbable" id="tabs-776256">
-					<ul class="nav nav-tabs">
-						<li class="active">
-							<a href="#espacio" data-toggle="tab"><i class="glyphicon glyphicon-paperclip"> Espacio</i></a>
-						</li>
-						<li>
-							<a href="#especialidades" data-toggle="tab"><i class="glyphicon glyphicon-th-list"> Especialidades</i></a>
-						</li>
-						<li>
-							{% if espacio.especialidades.all %}
-								<a href="#profesionales" data-toggle="tab"><i class="glyphicon glyphicon-user"> Profesionales</i></a>
-							{% else %}
-								<a href="#profesionales"><i class="glyphicon glyphicon-user"> Profesionales</i></a>
-							{% endif %}
-						</li>
-						<li>
-							<a href="#horas" data-toggle="tab"><i class="glyphicon glyphicon-th"> Horas</i></a>
-						</li>
-						<li>
-							<a href="#calendarios" data-toggle="tab"><i class="glyphicon glyphicon-calendar"> Calendarios</i></a>
-						</li>
-					</ul>
-					<div class="tab-content">
-						<div class="tab-pane active" id="espacio">
-							<div class="col-xs-6">
-								<table class="table table-bordered overflow">
-									<thead>
-										<tr class="bg-primary">
-											<th>Profesional</th>
-											<th>Especialidad</th>
-										</tr>
-									</thead>
-									<tbody>
-										{% for coordinador in espacio.coordinadores %}
-											<tr class="">
-												<td class="">
-													{{ coordinador.profesional }}
-												</td>
-												<td class="">
-													{{ coordinador.especialidad }}
-												</td>
-											</tr>
-										{% endfor %}
-									</tbody>
-								</table>
-							</div>
-							<div class="col-xs-6">
-								<form class="form-inline" id="editForm" method="POST" action="{% url 'calendario:espacio_edit' %}">
-									<div class="alert alert-dismissable alert-danger hidden">
-										<button type="button" class="close" data-hide="alert" aria-hidden="true">
-											×
-										</button>
-										<h4>
-											Error al guardar el espacio.
-										</h4>
-										<strong>Ojo!</strong> Un campo no es válido:
-										<p>
-										</p>
-									</div>
-									{% csrf_token %}
-									<input id="espacio_id" name="espacio_id" type="hidden" value="{{ espacio.id }}">
-									<div class="form-group">
-										<label class="control-label" for="nombre">Nombre del espacio:</label>
-										<input type="text" id="nombre" name="nombre" class="form-control" value="{{ espacio.nombre }}">
-									</div>
-									<button type="submit" id="btnGuardar" data-loading-text="Guardando..." class="btn btn-primary pull-right" autocomplete="off">
-										Guardar
-									</button>
-								</form>
-							</div>
-						</div>
-						<div class="tab-pane" id="especialidades">
-							<div class="alert alert-info" role="alert">
-								<p><span class="glyphicon glyphicon-info-sign"></span> Para asignar una especialidad hazle clic. Lo mismo para quitarla.</p>
-							</div>
-							<div class="col-xs-12">
-								<div class="row">
-									<div class="col-xs-5 col-xs-offset-1">
-										<div class="panel panel-primary">
-											<div class="panel-heading">
-												<h3 class="panel-title"><b>Disponibles</b></h3>
-											</div>
-											<ul id="eDisponibles" class="list-group especialidades overflow">
-												{% for especialidad in especialidades %}
-													{% if not especialidad in espacio.especialidades.all %}
-														<li id="{{ especialidad.id }}" class="btn list-group-item" onclick="agregar(this)">
-															<p class="text-left">
-																{{ especialidad }}
-															</p>
-														</li>
-													{% endif %}
-												{% endfor %}
-											</ul>
-										</div>
-									</div>
-									<div class="col-xs-5">
-										<div class=" panel panel-primary">
-											<div class="panel-heading">
-												<h3 class="panel-title"><b>Asignadas</b></h3>
-											</div>
-											<ul id="eAsignadas" class="list-group especialidades overflow">
-												{% for especialidad in espacio.especialidades.all %}
-													<li id="{{ especialidad.id }}" class="btn list-group-item" onclick="eliminar(this)">
-														<p class="text-left">
-															{{ especialidad }}
-														</p>
-													</li>
-												{% endfor %}
-											</ul>
-										</div>
-									</div>
-								</div>
-							</div>
-							<button class="btn btn-primary col-xs-offset-10" onclick="guardarEspecialidades()">
-								Guardar cambios
+{% endblock %}
+{% block article %}
+	<h3 class="text-center">
+		Detalles del espacio {{ espacio }}.
+	</h3>
+	<div class="tabbable" id="tabs-776256">
+		<ul class="nav nav-tabs">
+			<li class="active">
+				<a href="#espacio" data-toggle="tab"><i class="glyphicon glyphicon-paperclip"> Espacio</i></a>
+			</li>
+			<li>
+				<a href="#especialidades" data-toggle="tab"><i class="glyphicon glyphicon-th-list"> Especialidades</i></a>
+			</li>
+			<li>
+				{% if espacio.especialidades.all %}
+					<a href="#profesionales" data-toggle="tab"><i class="glyphicon glyphicon-user"> Profesionales</i></a>
+				{% else %}
+					<a href="#profesionales"><i class="glyphicon glyphicon-user"> Profesionales</i></a>
+				{% endif %}
+			</li>
+			<li>
+				<a href="#horas" data-toggle="tab"><i class="glyphicon glyphicon-th"> Horas</i></a>
+			</li>
+			<li>
+				<a href="#calendarios" data-toggle="tab"><i class="glyphicon glyphicon-calendar"> Calendarios</i></a>
+			</li>
+		</ul>
+		<div class="tab-content">
+			<div class="tab-pane active" id="espacio">
+				<div class="col-xs-6">
+					<table class="table table-bordered overflow">
+						<thead>
+							<tr class="bg-primary">
+								<th>Profesional</th>
+								<th>Especialidad</th>
+							</tr>
+						</thead>
+						<tbody>
+							{% for coordinador in espacio.coordinadores %}
+								<tr class="">
+									<td class="">
+										{{ coordinador.profesional }}
+									</td>
+									<td class="">
+										{{ coordinador.especialidad }}
+									</td>
+								</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+				<div class="col-xs-6">
+					<form class="form-inline" id="editForm" method="POST" action="{% url 'calendario:espacio_edit' %}">
+						<div class="alert alert-dismissable alert-danger hidden">
+							<button type="button" class="close" data-hide="alert" aria-hidden="true">
+								×
 							</button>
+							<h4>
+								Error al guardar el espacio.
+							</h4>
+							<strong>Ojo!</strong> Un campo no es válido:
+							<p>
+							</p>
 						</div>
-						<div class="tab-pane" id="profesionales">
-							<div class="alert alert-info" role="alert">
-								<p><span class="glyphicon glyphicon-info-sign"></span> Para asignar un profesional hazle clic. Lo mismo para quitarlo.</p>
-							</div>
-							<div class="col-xs-12">
-								<div class="row">
-									<div class="col-xs-5 col-xs-offset-1">
-										<div class="panel panel-primary">
-											<div class="panel-heading">
-												<h3 class="panel-title"><b>Disponibles</b></h3>
-											</div>
-											<ul id="pDisponibles" class="list-group profesionales overflow">
-												{% for profesional in profesionales %}
-													{% if not profesional in espacio.profesionales.all %}
-														<li id="{{ profesional.id }}" class="btn list-group-item" onclick="agregarProfesional(this)">
-															<p class="text-left">
-																{{ profesional }}
-															</p>
-														</li>
-													{% endif %}
-												{% endfor %}
-											</ul>
-										</div>
-									</div>
-									<div class="col-xs-5">
-										<div class=" panel panel-primary">
-											<div class="panel-heading">
-												<h3 class="panel-title"><b>Asignados</b></h3>
-											</div>
-											<ul id="pAsignados" class="list-group profesionales overflow">
-												{% for profesional in espacio.profesionales.all %}
-													<li id="{{ profesional.id }}" class="btn list-group-item" onclick="eliminarProfesional(this)">
-														<p class="text-left">
-															{{ profesional }}
-														</p>
-													</li>
-												{% endfor %}
-											</ul>
-										</div>
-									</div>
+						{% csrf_token %}
+						<input id="espacio_id" name="espacio_id" type="hidden" value="{{ espacio.id }}">
+						<div class="form-group">
+							<label class="control-label" for="nombre">Nombre del espacio:</label>
+							<input type="text" id="nombre" name="nombre" class="form-control" value="{{ espacio.nombre }}">
+						</div>
+						<button type="submit" id="btnGuardar" data-loading-text="Guardando..." class="btn btn-primary pull-right" autocomplete="off">
+							Guardar
+						</button>
+					</form>
+				</div>
+			</div>
+			<div class="tab-pane" id="especialidades">
+				<div class="alert alert-info" role="alert">
+					<p><span class="glyphicon glyphicon-info-sign"></span> Para asignar una especialidad hazle clic. Lo mismo para quitarla.</p>
+				</div>
+				<div class="col-xs-12">
+					<div class="row">
+						<div class="col-xs-5 col-xs-offset-1">
+							<div class="panel panel-primary">
+								<div class="panel-heading">
+									<h3 class="panel-title"><b>Disponibles</b></h3>
 								</div>
-							</div>
-							<button class="btn btn-primary col-xs-offset-10" onclick="guardarProfesionales()">
-								Guardar cambios
-							</button>
-						</div>
-						<div class="tab-pane" id="horas">
-							<div class="col-xs-8 col-xs-offset-2">
-								{% if error_message %}
-									<div class="alert alert-danger">
-										<a href="#" class="close" data-dismiss="alert">&times;</a>
-										<h3 class="text-center text-danger"><b>Ocurrió el siguiente error:</b></h3>
-										<p class="text-danger">
-											<b>{{ error_message }}</b>
-										</p>
-									</div>
-								{% endif %}
-								<form class="form-horizontal col-xs-offset-3" id="addHoraForm" method="POST" action="{% url 'calendario:espacio_add_hora' %}">
-									{% csrf_token %}
-									<input type="hidden" id="espacio_id" name="espacio_id" value="{{ espacio.id }}">
-									<div class="form-group">
-										<div class="row">
-											<label class="col-xs-3 control-label" for="desde">Hora desde:</label>
-											<div class="col-xs-2">
-												<input id="hora_desde" name="hora_desde" type="number" class="form-control" min="00" max="23" value="00" onchange="onValChange(this)">
-											</div>
-											<div class="col-xs-2">
-												<input id="min_desde" name="min_desde" type="number" class="form-control" min="00" max="59" value="00" onchange="onValChange(this)">
-											</div>
-										</div>
-									</div>
-									<div class="form-group">
-										<div class="row">
-											<label class="col-xs-3 control-label" for="hasta">Hora hasta:</label>
-											<div class="col-xs-2">
-												<input id="hora_hasta" name="hora_hasta" type="number" class="form-control" min="00" max="23" value="00" onchange="onValChange(this)">
-											</div>
-											<div class="col-xs-2">
-												<input id="min_hasta" name="min_hasta" type="number" class="form-control" min="00" max="59" value="00" onchange="onValChange(this)">
-											</div>
-										</div>
-									</div>
-									<div class="form-group">
-										<div class="col-xs-offset-10">
-											<button type="submit" id="btnHoraGuardar" data-loading-text="Guardando..." class="btn btn-primary pull-right" autocomplete="off">
-												Agregar
-											</button>
-										</div>
-									</div>
-								</form>
-							</div>
-						</div>
-						<div class="tab-pane" id="calendarios">
-							<div class="col-xs-5">
-								<div class="panel panel-default">
-									<div class="panel-heading">
-										<h3 class="panel-title"><b>{{ espacio.calendarios|length }} calendarios en total.</b></h3>
-									</div>
-									<ul id="ulCalendarios" class="list-group calendarios overflow">
-										{% for calendario in espacio.calendarios %}
-											<li id="{{ calendario.id }}" class="btn list-group-item" onclick="verCalendario('{% url 'calendario:detail' calendario.id %}')">
+								<ul id="eDisponibles" class="list-group especialidades overflow">
+									{% for especialidad in especialidades %}
+										{% if not especialidad in espacio.especialidades.all %}
+											<li id="{{ especialidad.id }}" class="btn list-group-item" onclick="agregar(this)">
 												<p class="text-left">
-													{{ calendario.id }}
+													{{ especialidad }}
 												</p>
 											</li>
-										{% endfor %}
-									</ul>
-								</div>
-							</div>
-							<!--
-								Mini-calendario.
-							-->
-							<table class="table mini-calendario">
-								<thead>
-									<tr class="bg-primary">
-										<th class="text-center">
-										</th>
-										{% for dia in dias %}
-											<th class="text-center">
-												<h4><strong>{{ dia }}</strong></h4>
-											</th>
-										{% endfor %}
-									</tr>
-								</thead>
-								<tbody>
-									{% for hora in espacio.horas %}
-										<tr>
-											<td class="text-center bg-primary">
-												<h4>
-													<strong>{{ hora.hora_desde }}</strong>
-												</h4>
-											</td>
-											{% for dia in espacio.dias_habiles %}
-												<td class="text-center active">
-												</td>
-											{% endfor %}
-										</tr>
+										{% endif %}
 									{% endfor %}
-								</tbody>
-							</table>
-							<form class="form-horizontal" id="" method="POST" action="{% url 'calendario:generar' %}">
-								{% csrf_token %}
-								<input type="hidden" id="espacio_id" name="espacio_id" value="{{ espacio.id }}">
-								{% if listo %}
-									<button type="submit" class="btn btn-success pull-right"  data-loading-text="Generando..." onclick="$(this).button('loading')">
-								{% else %}
-									<button type="submit" class="btn btn-success pull-right" disabled  data-loading-text="Generando..." onclick="$(this).button('loading')">
-								{% endif %}
-									Generar
-								</button>
-							</form>
+								</ul>
+							</div>
+						</div>
+						<div class="col-xs-5">
+							<div class=" panel panel-primary">
+								<div class="panel-heading">
+									<h3 class="panel-title"><b>Asignadas</b></h3>
+								</div>
+								<ul id="eAsignadas" class="list-group especialidades overflow">
+									{% for especialidad in espacio.especialidades.all %}
+										<li id="{{ especialidad.id }}" class="btn list-group-item" onclick="eliminar(this)">
+											<p class="text-left">
+												{{ especialidad }}
+											</p>
+										</li>
+									{% endfor %}
+								</ul>
+							</div>
 						</div>
 					</div>
 				</div>
+				<button class="btn btn-primary col-xs-offset-10" onclick="guardarEspecialidades()">
+					Guardar cambios
+				</button>
+			</div>
+			<div class="tab-pane" id="profesionales">
+				<div class="alert alert-info" role="alert">
+					<p><span class="glyphicon glyphicon-info-sign"></span> Para asignar un profesional hazle clic. Lo mismo para quitarlo.</p>
+				</div>
+				<div class="col-xs-12">
+					<div class="row">
+						<div class="col-xs-5 col-xs-offset-1">
+							<div class="panel panel-primary">
+								<div class="panel-heading">
+									<h3 class="panel-title"><b>Disponibles</b></h3>
+								</div>
+								<ul id="pDisponibles" class="list-group profesionales overflow">
+									{% for profesional in profesionales %}
+										{% if not profesional in espacio.profesionales.all %}
+											<li id="{{ profesional.id }}" class="btn list-group-item" onclick="agregarProfesional(this)">
+												<p class="text-left">
+													{{ profesional }}
+												</p>
+											</li>
+										{% endif %}
+									{% endfor %}
+								</ul>
+							</div>
+						</div>
+						<div class="col-xs-5">
+							<div class=" panel panel-primary">
+								<div class="panel-heading">
+									<h3 class="panel-title"><b>Asignados</b></h3>
+								</div>
+								<ul id="pAsignados" class="list-group profesionales overflow">
+									{% for profesional in espacio.profesionales.all %}
+										<li id="{{ profesional.id }}" class="btn list-group-item" onclick="eliminarProfesional(this)">
+											<p class="text-left">
+												{{ profesional }}
+											</p>
+										</li>
+									{% endfor %}
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+				<button class="btn btn-primary col-xs-offset-10" onclick="guardarProfesionales()">
+					Guardar cambios
+				</button>
+			</div>
+			<div class="tab-pane" id="horas">
+				<div class="col-xs-8 col-xs-offset-2">
+					{% if error_message %}
+						<div class="alert alert-danger">
+							<a href="#" class="close" data-dismiss="alert">&times;</a>
+							<h3 class="text-center text-danger"><b>Ocurrió el siguiente error:</b></h3>
+							<p class="text-danger">
+								<b>{{ error_message }}</b>
+							</p>
+						</div>
+					{% endif %}
+					<form class="form-horizontal col-xs-offset-3" id="addHoraForm" method="POST" action="{% url 'calendario:espacio_add_hora' %}">
+						{% csrf_token %}
+						<input type="hidden" id="espacio_id" name="espacio_id" value="{{ espacio.id }}">
+						<div class="form-group">
+							<div class="row">
+								<label class="col-xs-3 control-label" for="desde">Hora desde:</label>
+								<div class="col-xs-2">
+									<input id="hora_desde" name="hora_desde" type="number" class="form-control" min="00" max="23" value="00" onchange="onValChange(this)">
+								</div>
+								<div class="col-xs-2">
+									<input id="min_desde" name="min_desde" type="number" class="form-control" min="00" max="59" value="00" onchange="onValChange(this)">
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="row">
+								<label class="col-xs-3 control-label" for="hasta">Hora hasta:</label>
+								<div class="col-xs-2">
+									<input id="hora_hasta" name="hora_hasta" type="number" class="form-control" min="00" max="23" value="00" onchange="onValChange(this)">
+								</div>
+								<div class="col-xs-2">
+									<input id="min_hasta" name="min_hasta" type="number" class="form-control" min="00" max="59" value="00" onchange="onValChange(this)">
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-xs-offset-10">
+								<button type="submit" id="btnHoraGuardar" data-loading-text="Guardando..." class="btn btn-primary pull-right" autocomplete="off">
+									Agregar
+								</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+			<div class="tab-pane" id="calendarios">
+				<div class="col-xs-5">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h3 class="panel-title"><b>{{ espacio.calendarios|length }} calendarios en total.</b></h3>
+						</div>
+						<ul id="ulCalendarios" class="list-group calendarios overflow">
+							{% for calendario in espacio.calendarios %}
+								<li id="{{ calendario.id }}" class="btn list-group-item" onclick="verCalendario('{% url 'calendario:detail' calendario.id %}')">
+									<p class="text-left">
+										{{ calendario.id }}
+									</p>
+								</li>
+							{% endfor %}
+						</ul>
+					</div>
+				</div>
+				<!--
+					Mini-calendario.
+				-->
+				<table class="table mini-calendario">
+					<thead>
+						<tr class="bg-primary">
+							<th class="text-center">
+							</th>
+							{% for dia in dias %}
+								<th class="text-center">
+									<h4><strong>{{ dia }}</strong></h4>
+								</th>
+							{% endfor %}
+						</tr>
+					</thead>
+					<tbody>
+						{% for hora in espacio.horas %}
+							<tr>
+								<td class="text-center bg-primary">
+									<h4>
+										<strong>{{ hora.hora_desde }}</strong>
+									</h4>
+								</td>
+								{% for dia in espacio.dias_habiles %}
+									<td class="text-center active">
+									</td>
+								{% endfor %}
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+				<form class="form-horizontal" id="" method="POST" action="{% url 'calendario:generar' %}">
+					{% csrf_token %}
+					<input type="hidden" id="espacio_id" name="espacio_id" value="{{ espacio.id }}">
+					{% if listo %}
+						<button type="submit" class="btn btn-success pull-right"  data-loading-text="Generando..." onclick="$(this).button('loading')">
+					{% else %}
+						<button type="submit" class="btn btn-success pull-right" disabled  data-loading-text="Generando..." onclick="$(this).button('loading')">
+					{% endif %}
+						Generar
+					</button>
+				</form>
 			</div>
 		</div>
 	</div>

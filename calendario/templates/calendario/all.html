@@ -3,33 +3,27 @@
 {% block title %}Listado de calendarios.{% endblock %}
 
 {% block article %}
-	<div class="container-fluid">
-		<div class="row">
-			<div class="col-xs-12">
-				<div class="panel panel-primary">
-					<div class="panel-heading">
-						<h3 class="panel-title"><b>
-							{% if tiempo %}
-								Listado de calendarios generados en {{ tiempo }} segundos.
-							{% else %}
-								Listado de calendarios generados.
-							{% endif %}
-						</b></h3>
-					</div>
-					{% if calendarios %}
-						<ul class="list-group">
-							{% for calendario in calendarios %}
-								<li class="list-group-item"><a href="{% url 'calendario:detail' calendario.id %}">{{ calendario.id }}</a></li>
-							{% endfor %}
-						</ul>
-					{% else %}
-						<div class="panel-body">No hay calendarios disponibles.</div>
-					{% endif %}
-				</div>
-				{% if calendarios %}
-					<p class="text-right">{{ calendarios|length }} calendarios.</p>
+	<div class="panel panel-primary">
+		<div class="panel-heading">
+			<h3 class="panel-title"><b>
+				{% if tiempo %}
+					Listado de calendarios generados en {{ tiempo }} segundos.
+				{% else %}
+					Listado de calendarios generados.
 				{% endif %}
-			</div>
+			</b></h3>
 		</div>
+		{% if calendarios %}
+			<ul class="list-group">
+				{% for calendario in calendarios %}
+					<li class="list-group-item"><a href="{% url 'calendario:detail' calendario.id %}">{{ calendario.id }}</a></li>
+				{% endfor %}
+			</ul>
+		{% else %}
+			<div class="panel-body">No hay calendarios disponibles.</div>
+		{% endif %}
 	</div>
+	{% if calendarios %}
+		<p class="text-right">{{ calendarios|length }} calendarios.</p>
+	{% endif %}
 {% endblock %}

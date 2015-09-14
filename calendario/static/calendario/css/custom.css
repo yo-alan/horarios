@@ -2,12 +2,10 @@ body {
 	background-color: #313131;
 }
 
-article {
+div.article {
 	background-color: white;
 	margin: auto;
 	margin-top: 50px;
-    min-height: 600px;
-	width: 1000px;
 	border: 3px solid;
 	padding: 5px;
 	vertical-align: middle;
@@ -77,4 +75,11 @@ table.mini-calendario tbody > tr > td {
 img.user {
 	width: 20px;
 	height: 20px;
+}
+
+@media only screen and (max-width: 760px),
+(min-device-width: 768px) and (max-device-width: 1024px)  {
+	
+	
+	
 }

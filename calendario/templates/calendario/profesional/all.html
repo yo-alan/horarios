@@ -2,7 +2,7 @@
 
 {% block title %}Listado de profesionales{% endblock %}
 
-{% block article %}
+{% block head %}
 	<script>
 		function eliminarProfesional(profesional_id){
 			
@@ -22,77 +22,73 @@
 			});
 		}
 	</script>
-	<div class="container-fluid">
-		<div class="row clearfix">
-			<div class="col-xs-12">
-				<div class="page-header">
-					<h1>
-						Profesionales<small>.</small>
-					</h1>
-				</div>
-				<table class="table table-hover">
-					<thead>
-						<tr>
-							<th>
-								Apellido, Nombre
-							</th>
-							<th>
-								Cuil
-							</th>
-							<th>
-								Especialidades
-							</th>
-							<th>
-								Acciones
-							</th>
-						</tr>
-					</thead>
-					{% if profesionales %}
-						<tbody>
-							{% for profesional in profesionales %}
-								<tr>
-									<td class="vert-align">
-										{{ profesional.apellido }}, {{ profesional.nombre }}
-									</td>
-									<td class="vert-align">
-										{{ profesional.cuil }}
-									</td>
-									<td class="vert-align">
-										{% for especialidad in profesional.especialidades.all %}
-											{{ especialidad }}, 
-										{% endfor %}
-									</td>
-									<td class="vert-align">
-										<div class="btn btn-group btn-block">
-											<a class="btn btn-default" title="Editar" href="{% url 'calendario:profesional_detail' profesional.id %}#profesional"><i class="glyphicon glyphicon-edit"></i></a>
-											<a class="btn btn-default" title="Restricciones" href="{% url 'calendario:profesional_detail' profesional.id %}#restricciones"><i class="glyphicon glyphicon-list-alt"></i></a>
-											<a class="btn btn-default" title="Especialidades" href="{% url 'calendario:profesional_detail' profesional.id %}#especialidades"><i class="glyphicon glyphicon-th-list"></i></a>
-											<a class="btn btn-danger" title="Eliminar" onclick="eliminarProfesional({{ profesional.id }})"><i class="glyphicon glyphicon-trash"></i></a>
-										</div>
-									</td>
-								</tr>
-							{% endfor %}
-						</tbody>
-					{% else %}
-						<tfoot align="center">
-							<tr>
-								<td colspan="5">No hay profesionales cargados.</td>
-							</tr>
-						</tfoot>
-					{% endif %}
-				</table>
-				<nav>
-					<ul class="pager">
-						{% if profesionales.has_previous %}
-							<li class="previous"><a href="{% url 'calendario:profesional_all' profesionales.previous_page_number %} "><span class="glyphicon glyphicon-arrow-left"></span> Anterior</a></li>
-						{% endif %}
-						
-						{% if profesionales.has_next %}
-							<li class="next"><a href="{% url 'calendario:profesional_all' profesionales.next_page_number %} ">Siguiente <span class="glyphicon glyphicon-arrow-right"></span></a>
-						{% endif %}
-					</ul>
-				</nav>
-			</div>
-		</div>
+{% endblock %}
+{% block article %}
+	<div class="page-header">
+		<h1>
+			Profesionales<small>.</small>
+		</h1>
 	</div>
+	<table class="table table-hover">
+		<thead>
+			<tr>
+				<th>
+					Apellido, Nombre
+				</th>
+				<th>
+					Cuil
+				</th>
+				<th>
+					Especialidades
+				</th>
+				<th>
+					Acciones
+				</th>
+			</tr>
+		</thead>
+		{% if profesionales %}
+			<tbody>
+				{% for profesional in profesionales %}
+					<tr>
+						<td class="vert-align">
+							{{ profesional.apellido }}, {{ profesional.nombre }}
+						</td>
+						<td class="vert-align">
+							{{ profesional.cuil }}
+						</td>
+						<td class="vert-align">
+							{% for especialidad in profesional.especialidades.all %}
+								{{ especialidad }}, 
+							{% endfor %}
+						</td>
+						<td class="vert-align">
+							<div class="btn btn-group btn-block">
+								<a class="btn btn-default" title="Editar" href="{% url 'calendario:profesional_detail' profesional.id %}#profesional"><i class="glyphicon glyphicon-edit"></i></a>
+								<a class="btn btn-default" title="Restricciones" href="{% url 'calendario:profesional_detail' profesional.id %}#restricciones"><i class="glyphicon glyphicon-list-alt"></i></a>
+								<a class="btn btn-default" title="Especialidades" href="{% url 'calendario:profesional_detail' profesional.id %}#especialidades"><i class="glyphicon glyphicon-th-list"></i></a>
+								<a class="btn btn-danger" title="Eliminar" onclick="eliminarProfesional({{ profesional.id }})"><i class="glyphicon glyphicon-trash"></i></a>
+							</div>
+						</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		{% else %}
+			<tfoot align="center">
+				<tr>
+					<td colspan="5">No hay profesionales cargados.</td>
+				</tr>
+			</tfoot>
+		{% endif %}
+	</table>
+	<nav>
+		<ul class="pager">
+			{% if profesionales.has_previous %}
+				<li class="previous"><a href="{% url 'calendario:profesional_all' profesionales.previous_page_number %} "><span class="glyphicon glyphicon-arrow-left"></span> Anterior</a></li>
+			{% endif %}
+			
+			{% if profesionales.has_next %}
+				<li class="next"><a href="{% url 'calendario:profesional_all' profesionales.next_page_number %} ">Siguiente <span class="glyphicon glyphicon-arrow-right"></span></a>
+			{% endif %}
+		</ul>
+	</nav>
 {% endblock %}
