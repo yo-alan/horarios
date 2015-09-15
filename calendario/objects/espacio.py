@@ -175,20 +175,23 @@ class Espacio(models.Model):
 		
 		self.generarpoblacioninicial()
 		
-		print "Población inicial generada en %7.3f seg." %  (time.time() - operation_time)
+		print "Población inicial generada en %7.3f seg." % (time.time() - operation_time)
+		
+		#Descomentar para evaluaciones
+		#~ self.poblacion = self.poblacion[:1]
 		
 		operation_time = time.time()
 		
 		self.fitness()
 		
-		print "Evaluación realizada en %7.3f seg." %  (time.time() - operation_time)
+		print "Evaluación realizada en %7.3f seg." % (time.time() - operation_time)
 		
 		operation_time = time.time()
 		
 		#Ordenamos la lista ubicando los individuos más aptos de principio a fin.
 		self.poblacion.sort()
 		
-		print "El ordenamiento de %d calendarios tardó %7.3f seg." %  (len(self.poblacion), time.time() - operation_time)
+		print "El ordenamiento de %d calendarios tardó %7.3f seg." % (len(self.poblacion), time.time() - operation_time)
 		
 		#Cortamos la lista, quedándonos con los 100 individuos más aptos.
 		self.poblacion = self.poblacion[:100]
@@ -198,10 +201,10 @@ class Espacio(models.Model):
 		for calendario in self.poblacion:
 			calendario.full_save()
 		
-		print "Guardar %d calendarios llevó %7.3f seg." %  (len(self.poblacion), time.time() - operation_time)
+		print "Guardar %d calendarios llevó %7.3f seg." % (len(self.poblacion), time.time() - operation_time)
 		
 		print
-		print "La evolución tardó %7.3f seg." %  (time.time() - global_time)
+		print "La evolución tardó %7.3f seg." % (time.time() - global_time)
 	
 	def fitness(self, ):
 		"""
@@ -291,25 +294,37 @@ class Espacio(models.Model):
 					
 					horas_diarias = 1
 					
+					#Obtenemos el horario a evaluar.
+					horario = calendario.horarios[j][i]
+					
 					for k in range(len(self.dias_habiles)):
 						
+						#Si el dia no es el mismo, lo salteamos.
 						if i != k:
 							continue
 						
 						for l in range(len(self.horas)):
 							
-							if calendario.horarios[j][i] == calendario.horarios[l][k]:
+							#Si el horario es el mismo, lo salteamos.
+							if j <= l:
 								continue
 							
-							if calendario.horarios[j][i].especialidad == calendario.horarios[l][k].especialidad:
+							#Obtenemos el horario a comparar.
+							horario_comp = calendario.horarios[l][k]
+							
+							#Si la especialidad es la misma, contamos.
+							if horario.especialidad == horario_comp.especialidad:
 								horas_diarias += 1
 						
-						if calendario.horarios[j][i].especialidad.max_horas_diaria < horas_diarias:
-							calendario.puntaje += (horas_diarias - calendario.horarios[j][i].especialidad.max_horas_diaria) * PUNTOS_HORAS_DIARIAS
+						#Si la cantidad máxima de horas diarias
+						#se excedieron, penalizamos.
+						if horas_diarias > horario.especialidad.max_horas_diaria:
+							calendario.puntaje += (horas_diarias - horario.especialidad.max_horas_diaria) * PUNTOS_HORAS_DIARIAS
+						
 						break
 					
 			
-			#Cuarta evaluacion: En esta instancia se desea comprobar
+			#Cuarta evaluación: En esta instancia se desea comprobar
 			#la distribución horaria de las especialidades.
 			#Horas semanales: cada hora extra o faltante es
 			#penalizada con la suma de puntos.
@@ -344,8 +359,6 @@ class Espacio(models.Model):
 							
 							#ACA HAY QUE EVALUAR QUE ESTA PASANDO REALMENTE.
 							calendario.puntaje += PUNTOS_DISTRIBUCION_HORARIA
-			#~ 
-			#~ calendario.save()
 			
 	
 	def seleccionar(self, ):
