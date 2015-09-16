@@ -20,6 +20,12 @@ def index(request):
 	
 	return render(request, 'calendario/index.html', context)
 
+def acerca(request):
+	
+	context = {}
+	
+	return render(request, 'calendario/acerca.html', context)
+
 def all(request):
 	
 	calendarios = Calendario.objects.filter(estado='ON')

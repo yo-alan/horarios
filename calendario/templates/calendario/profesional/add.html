@@ -58,7 +58,7 @@
 			Agregar profesional<small>.</small>
 		</h1>
 	</div>
-	<form class="form-horizontal" id="addForm" name="addForm" method="POST" action="{% url 'calendario:profesional_add' %}">
+	<form class="form-horizontal responsive center col-xs-10" id="addForm" name="addForm" method="POST" action="{% url 'calendario:profesional_add' %}">
 		<div class="alert alert-dismissable alert-danger hidden">
 			<button type="button" class="close" data-hide="alert" aria-hidden="true">
 				×
@@ -72,20 +72,20 @@
 		</div>
 		{% csrf_token %}
 		<div class="form-group">
-			<label class="col-xs-3 control-label" for="nombre">Nombre:</label>
-			<div class="col-xs-9">
+			<label class="col-xs-4 control-label" for="nombre">Nombre:</label>
+			<div class="col-xs-8">
 				<input type="text" id="nombre" name="nombre" class="form-control" autofocus placeholder="Nombre del profesional">
 			</div>
 		</div>
 		<div class="form-group">
-			<label class="col-xs-3 control-label" for="apellido">Apellido:</label>
-			<div class="col-xs-9">
+			<label class="col-xs-4 control-label" for="apellido">Apellido:</label>
+			<div class="col-xs-8">
 				<input type="text" id="apellido" name="apellido" class="form-control" placeholder="Apellido del profesional">
 			</div>
 		</div>
 		<div class="form-group">
-			<label class="col-xs-3 control-label" for="cuil">Cuil:</label>
-			<div class="col-xs-9">
+			<label class="col-xs-4 control-label" for="cuil">Cuil:</label>
+			<div class="col-xs-8">
 				<input type="text" id="cuil" name="cuil" class="form-control" placeholder="Número de cuil del profesional">
 			</div>
 		</div>

@@ -223,7 +223,7 @@
 				{% endif %}
 			</li>
 			<li>
-				<a href="#horas" data-toggle="tab"><i class="glyphicon glyphicon-th"> Horas</i></a>
+				<a href="#horas" data-toggle="tab"><i class="glyphicon glyphicon-time"> Horas</i></a>
 			</li>
 			<li>
 				<a href="#calendarios" data-toggle="tab"><i class="glyphicon glyphicon-calendar"> Calendarios</i></a>
@@ -269,7 +269,7 @@
 						{% csrf_token %}
 						<input id="espacio_id" name="espacio_id" type="hidden" value="{{ espacio.id }}">
 						<div class="form-group">
-							<label class="control-label" for="nombre">Nombre del espacio:</label>
+							<label class="control-label" for="nombre">Nombre:</label>
 							<input type="text" id="nombre" name="nombre" class="form-control" value="{{ espacio.nombre }}">
 						</div>
 						<button type="submit" id="btnGuardar" data-loading-text="Guardando..." class="btn btn-primary pull-right" autocomplete="off">

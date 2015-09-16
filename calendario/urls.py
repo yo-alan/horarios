@@ -14,6 +14,9 @@ urlpatterns = [
     # ex: /calendario/generar/
     url(r'^generar/$', views.generar, name='generar'),
     
+    # ex: /calendario/acerca
+    url(r'^acerca/$', views.acerca, name='acerca'),
+    
     # ex: /calendario/espacio/
     url(r'^espacio/$', views.espacio_all, name='espacio_all'),
     # ex: /calendario/espacio/all/

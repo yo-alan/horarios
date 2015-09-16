@@ -58,7 +58,7 @@
 			Agregar especialidad<small>.</small>
 		</h1>
 	</div>
-	<form class="form-horizontal" id="addForm" name="addForm" method="POST" action="{% url 'calendario:especialidad_add' %}">
+	<form class="form-horizontal responsive center col-xs-10" id="addForm" name="addForm" method="POST" action="{% url 'calendario:especialidad_add' %}">
 		<div class="alert alert-dismissable alert-danger hidden">
 			<button type="button" class="close" data-hide="alert" aria-hidden="true">
 				×
@@ -68,7 +68,6 @@
 			</h4>
 			<strong>Ojo!</strong> Un campo no es válido:
 			<p>
-				
 			</p>
 		</div>
 		{% csrf_token %}
