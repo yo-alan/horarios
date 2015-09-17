@@ -1,5 +1,7 @@
 {% extends "admin/base.html" %}
 
+{% load static %}
+
 {% block title %}Listado de profesionales{% endblock %}
 
 {% block head %}
@@ -22,6 +24,7 @@
 			});
 		}
 	</script>
+	<script type="text/javascript" src="{% static 'calendario/js/profesional/all.js' %}"></script>
 {% endblock %}
 {% block article %}
 	<div class="page-header">
@@ -83,11 +86,11 @@
 	<nav>
 		<ul class="pager">
 			{% if profesionales.has_previous %}
-				<li class="previous"><a href="{% url 'calendario:profesional_all' profesionales.previous_page_number %} "><span class="glyphicon glyphicon-arrow-left"></span> Anterior</a></li>
+				<li class="previous"><a href="{% url 'calendario:profesional_all' profesionales.previous_page_number %}"><span class="glyphicon glyphicon-arrow-left"></span> Anterior</a></li>
 			{% endif %}
 			
 			{% if profesionales.has_next %}
-				<li class="next"><a href="{% url 'calendario:profesional_all' profesionales.next_page_number %} ">Siguiente <span class="glyphicon glyphicon-arrow-right"></span></a>
+				<li class="next"><a href="{% url 'calendario:profesional_all' profesionales.next_page_number %}">Siguiente <span class="glyphicon glyphicon-arrow-right"></span></a>
 			{% endif %}
 		</ul>
 	</nav>

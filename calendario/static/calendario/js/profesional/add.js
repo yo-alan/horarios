@@ -25,7 +25,7 @@ $(function(){
 						$("#"+ response.campo).focus();
 					}
 					
-					$("#" + form.attr('id') + " .alert").attr('class', "alert alert-dismissable alert-danger col-xs-offset-4 text-left");
+					$("#" + form.attr('id') + " .alert").attr('class', "alert alert-dismissable alert-danger");
 					$("#" + form.attr('id') + " .alert p").html(response.error);
 					return;
 				}

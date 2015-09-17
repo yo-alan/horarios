@@ -37,6 +37,7 @@
 		Detalles del calendario #{{ calendario.id }}
 	</h3>
 	<dl>
+		<a href="" class="btn btn-primary pull-right disabled" disabled>Editar</a>
 		<dt>
 			Espacio: <span><a href="{% url 'calendario:espacio_detail' calendario.espacio.id %}">{{ calendario.espacio }}</a></span>
 		</dt>
@@ -68,7 +69,7 @@
 					</h4>
 				</td>
 			{% for horario in franja_horaria %}
-				<td name="{{ horario.especialidad|cut:" " }}" class="text-center active">
+				<td name="{{ horario.especialidad|cut:" " }}" class="text-center">
 					<h4>
 						<strong>{{ horario.especialidad }}</strong>
 					</h4>
@@ -79,10 +80,15 @@
 		{% endfor %}
 		</tbody>
 	</table>
-	{% if anterior %}
-		<a href="{% url 'calendario:detail' anterior.id %}" class="btn btn-info btn-sm pull-left">&lt;&lt; Anterior</a>
-	{% endif %}
-	{% if siguiente %}
-		<a href="{% url 'calendario:detail' siguiente.id %}" class="btn btn-info btn-sm pull-right">Siguiente &gt;&gt;</a>
-	{% endif %}
+	<nav>
+		<ul class="pager">
+			{% if anterior %}
+				<li class="previous"><a href="{% url 'calendario:detail' anterior.id %}"><span class="glyphicon glyphicon-arrow-left"></span> Anterior</a></li>
+			{% endif %}
+			
+			{% if siguiente %}
+				<li class="next"><a href="{% url 'calendario:detail' siguiente.id %}">Siguiente <span class="glyphicon glyphicon-arrow-right"></span></a>
+			{% endif %}
+		</ul>
+	</nav>
 {% endblock %}

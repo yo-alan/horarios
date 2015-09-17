@@ -79,11 +79,11 @@
 	<nav>
 		<ul class="pager">
 			{% if especialidades.has_previous %}
-				<li class="previous"><a href="{% url 'calendario:especialidad_all' especialidades.previous_page_number %} "><span class="glyphicon glyphicon-arrow-left"></span> Anterior</a></li>
+				<li class="previous"><a href="{% url 'calendario:especialidad_all' especialidades.previous_page_number %}"><span class="glyphicon glyphicon-arrow-left"></span> Anterior</a></li>
 			{% endif %}
 			
 			{% if especialidades.has_next %}
-				<li class="next"><a href="{% url 'calendario:especialidad_all' especialidades.next_page_number %} ">Siguiente <span class="glyphicon glyphicon-arrow-right"></span></a>
+				<li class="next"><a href="{% url 'calendario:especialidad_all' especialidades.next_page_number %}">Siguiente <span class="glyphicon glyphicon-arrow-right"></span></a>
 			{% endif %}
 		</ul>
 	</nav>

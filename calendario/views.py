@@ -8,8 +8,8 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import Calendario, Profesional, Horario,\
 					ProfesionalRestriccion, Especialidad, Espacio, Hora
 
-DIAS = {0 : 'Domingo', 1 : 'Lunes', 2 : 'Martes', 3 : 'Miércoles',
-		4 : 'Jueves', 5 : 'Viernes', 6 : 'Sábado'}
+DIAS = {0: 'Domingo', 1: 'Lunes', 2: 'Martes', 3: 'Miércoles',
+		4: 'Jueves', 5: 'Viernes', 6: 'Sábado', 7: "Todos los días"}
 
 COLORES = ['#FE2E2E', '#FF8000', '#01DF3A', '#0080FF', '#F78181',
 			'#F7BE81', '#2EFE64', '#58ACFA', '#FA5882', '#FFBF00']
@@ -429,9 +429,18 @@ def profesional_detail(request, profesional_id):
 	especialidades = Especialidad.objects.filter(estado='ON')\
 											.order_by('nombre')
 	
+	restricciones = []
+	for restriccion in profesional.restricciones:
+		
+		restriccion.nombre_dia_semana = DIAS[restriccion.dia_semana]
+		
+		restricciones.append(restriccion)
+		
+	
 	#TODO DIAS
 	context = {'profesional': profesional,
-				'especialidades': especialidades, 'dias': DIAS}
+				'especialidades': especialidades,
+				'restricciones': restricciones}
 	
 	return render(request, 'calendario/profesional/detail.html', context)
 
@@ -546,14 +555,14 @@ def profesional_add_restriccion(request):
 		
 		data = {'error': str(ex).decode('utf-8')}
 		
-		if 'dia_semana' in str(ex):
-			data['campo'] = 'dia_semana'
+		if 'hora_hasta' in str(ex) or request.POST['hora_hasta'] in str(ex):
+			data['campo'] = 'hora_hasta'
 		
-		if 'hora_desde' in str(ex):
+		if 'hora_desde' in str(ex) or request.POST['hora_desde'] in str(ex):
 			data['campo'] = 'hora_desde'
 		
-		if 'hora_hasta' in str(ex):
-			data['campo'] = 'hora_hasta'
+		if 'dia_semana' in str(ex):
+			data['campo'] = 'dia_semana'
 	
 	return JsonResponse(data)
 

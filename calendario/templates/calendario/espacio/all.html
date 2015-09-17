@@ -75,11 +75,11 @@
 	<nav>
 		<ul class="pager">
 			{% if espacios.has_previous %}
-				<li class="previous"><a href="{% url 'calendario:espacio_all' espacios.previous_page_number %} "><span class="glyphicon glyphicon-arrow-left"></span> Anterior</a></li>
+				<li class="previous"><a href="{% url 'calendario:espacio_all' espacios.previous_page_number %}"><span class="glyphicon glyphicon-arrow-left"></span> Anterior</a></li>
 			{% endif %}
 			
 			{% if espacios.has_next %}
-				<li class="next"><a href="{% url 'calendario:espacio_all' espacios.next_page_number %} ">Siguiente <span class="glyphicon glyphicon-arrow-right"></span></a>
+				<li class="next"><a href="{% url 'calendario:espacio_all' espacios.next_page_number %}">Siguiente <span class="glyphicon glyphicon-arrow-right"></span></a>
 			{% endif %}
 		</ul>
 	</nav>
