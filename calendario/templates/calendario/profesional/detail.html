@@ -1,8 +1,11 @@
 {% extends "admin/base.html" %}
 
+{% load static %}
+
 {% block title %}Detalles de {{ profesional }}.{% endblock %}
 
 {% block head %}
+	<script type="text/javascript" src="{% static 'calendario/js/custom.js' %}"></script>
 	<script>
 		$(function (){
 			
@@ -14,10 +17,6 @@
 			$('.nav-tabs a').on('shown.bs.tab', function (e){
 				window.location.hash = e.target.hash;
 				window.scrollTo(0, 0);
-			});
-			
-			$("[data-hide]").click(function(){
-				$(".alert-danger").attr('class', "alert alert-dismissable alert-danger hidden");
 			});
 			
 			var form = $("#editForm");
@@ -110,7 +109,7 @@
 				});
 			});
 		});
-		
+
 		function agregar(item){
 			var texto = item.children[0].innerHTML;
 			
@@ -120,7 +119,7 @@
 			
 			eAsignadas.appendChild(item);
 		}
-		
+
 		function eliminar(item){
 			var texto = item.children[0].innerHTML;
 			
@@ -130,7 +129,7 @@
 			
 			eDisponibles.appendChild(item);
 		}
-		
+
 		function guardarEspecialidades(){
 			
 			var eAsignadas = document.getElementById('eAsignadas');
@@ -161,7 +160,9 @@
 			});
 			
 		}
+		
 	</script>
+	<script type="text/javascript" src="{% static 'calendario/js/profesional/detail.js' %}"></script>
 {% endblock %}
 {% block article %}
 	<h3 class="text-center">
@@ -182,7 +183,7 @@
 		<div class="tab-content">
 			<div class="tab-pane active" id="profesional">
 				<div class="col-xs-6 col-xs-offset-3">
-					<form class="form-horizontal" id="editForm" method="POST" action="{% url 'calendario:profesional_edit' %}">
+					<form class="form-horizontal" id="editForm" name="editForm" method="POST" action="{% url 'calendario:profesional_edit' %}">
 						<div class="alert alert-dismissable alert-danger hidden">
 							<button type="button" class="close" data-hide="alert" aria-hidden="true">
 								×
@@ -192,7 +193,6 @@
 							</h4>
 							<strong>Ojo!</strong> Un campo no es válido:
 							<p>
-								
 							</p>
 						</div>
 						{% csrf_token %}
@@ -257,7 +257,6 @@
 										</h4>
 										<strong>Ojo!</strong> Un campo no es válido:
 										<p>
-											
 										</p>
 									</div>
 									{% csrf_token %}
