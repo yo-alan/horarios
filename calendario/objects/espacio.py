@@ -165,7 +165,7 @@ class Espacio(models.Model):
 					
 					#Y lo agregamos a la lista de horarios del Calendario
 					calendario.agregar_horario(horario)
-		
+				
 	
 	def ejecutar(self, ):
 		
@@ -262,77 +262,73 @@ class Espacio(models.Model):
 							#~ calendario.puntaje += PUNTOS_RESTRICCION_PROFESIONAL
 			
 			
-			#~ #Segunda evaluacion: Que se cumplan las horas semanales de la especialidad.
-			#~ #Horas semanales: cada hora extra o faltante es penalizada con la suma de puntos.
+			#Segunda evaluacion: Que se cumplan las horas semanales de la especialidad.
+			#Horas semanales: cada hora extra o faltante es penalizada con la suma de puntos.
 			
-			#~ #Por cada especialidad
+			#Por cada especialidad
 			#~ for especialidad in self.especialidades.all():
-				
+				#~ 
 				#~ #Contador de horas semanales.
 				#~ horas_semanales = 0
 				#~ #Por cada franja de horarios.
 				#~ for franja_horaria in calendario.horarios:
-					
+					#~ 
 					#~ #Por cada horario en la franja horaria.
 					#~ for horario in franja_horaria:
-						
+						#~ 
 						#~ #Si la especialidad es igual, contamos.
 						#~ if horario.especialidad == especialidad:
 							#~ horas_semanales += 1
-					
+					#~ 
 				#~ calendario.puntaje += abs(especialidad.carga_horaria_semanal - horas_semanales) * PUNTOS_HORAS_SEMANALES
 			
-			#~ #Tercera evaluacion: Se busca que las especialidades
-			#~ #cumplan con la horas maximas por dia.
-			#~ #Horas maxima por dia: Cada especialidad tiene un
-			#~ #atributo max_horas_diaria, en el caso que un calendario
-			#~ #exceda este valor recibira una penalizacion.
+			#Tercera evaluacion: Se busca que las especialidades
+			#cumplan con la horas maximas por dia.
+			#Horas maxima por dia: Cada especialidad tiene un
+			#atributo max_horas_diaria, en el caso que un calendario
+			#exceda este valor recibira una penalizacion.
 			
 			#~ for i in range(len(self.dias_habiles)):
-				
+				#~ 
 				#~ for j in range(len(self.horas)):
-					
+					#~ 
 					#~ horas_diarias = 1
-					
+					#~ 
 					#~ #Obtenemos el horario a evaluar.
 					#~ horario = calendario.horarios[j][i]
-					
+					#~ 
 					#~ for k in range(len(self.dias_habiles)):
-						
+						#~ 
 						#~ #Si el dia no es el mismo, lo salteamos.
 						#~ if i != k:
 							#~ continue
-						
+						#~ 
 						#~ for l in range(len(self.horas)):
-							
+							#~ 
 							#~ if j >= l:
 								#~ continue
-							
+							#~ 
 							#~ #Obtenemos el horario a comparar.
 							#~ horario_comp = calendario.horarios[l][k]
-							
+							#~ 
 							#~ #Si la especialidad es la misma, contamos.
 							#~ if horario.especialidad == horario_comp.especialidad:
 								#~ horas_diarias += 1
-						
+						#~ 
 						#~ #Si la cantidad máxima de horas diarias
 						#~ #se excedieron, penalizamos.
 						#~ if horas_diarias > horario.especialidad.max_horas_diaria:
 							#~ calendario.puntaje += (horas_diarias - horario.especialidad.max_horas_diaria) * PUNTOS_HORAS_DIARIAS
-						
+						#~ 
 						#~ break
 					
 			
 			#Cuarta evaluación: En esta instancia se desea comprobar
 			#la distribución horaria de las especialidades.
-			#Horas semanales: cada hora extra o faltante es
-			#penalizada con la suma de puntos.
 			
 			for i in range(len(self.dias_habiles)):
 				
 				for j in range(len(self.horas)):
-					
-					horas_diarias = 1
 					
 					#Obtenemos el horario a evaluar.
 					horario = calendario.horarios[j][i]
@@ -373,13 +369,15 @@ class Espacio(models.Model):
 							
 							#~ if not penalizable:
 								#~ continue
-							
+							#~ 
 							#~ if self.poblacion[0] == calendario:
 								#~ print horario.especialidad
-								#~ print "%d - %d" % (j, l)
+								#~ print horario.hora_desde
+								#~ print horario.hora_hasta
 								#~ print horario.dia_semana
-							
+							#~ 
 							calendario.puntaje += PUNTOS_DISTRIBUCION_HORARIA
+							horario_comp.penalizado += 1
 							
 							#La asignación se realiza si queremos que
 							#no se penalice esto M L L M M.

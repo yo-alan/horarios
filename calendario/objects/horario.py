@@ -11,6 +11,7 @@ class Horario(models.Model):
 	hora_desde = models.TimeField('desde', null=False)
 	hora_hasta = models.TimeField('hasta', null=False)
 	dia_semana = models.IntegerField(default=0, null=False)
+	penalizado = models.IntegerField(default=0)
 	calendario = models.ForeignKey(Calendario)
 	profesional = models.ForeignKey(Profesional)
 	especialidad = models.ForeignKey(Especialidad)

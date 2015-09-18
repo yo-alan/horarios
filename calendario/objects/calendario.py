@@ -61,13 +61,17 @@ class Calendario(models.Model):
 		Agrega un Horario a la lista de horarios del Calendario.
 		"""
 		
-		#Por cada dia.
+		#Por cada franja horaria.
 		for franja_horaria in self._horarios:
 			
 			#Si contiene un Horario con mismo dia_desde lo agrega a la lista
 			if franja_horaria[0].hora_desde == horario.hora_desde:
 				franja_horaria.append(horario)
-				return
+				
+				franja_horaria.sort()
+				
+				if 
+					return
 		
 		#Sino crea una nueva lista con el Horario
 		self._horarios.append([horario])
