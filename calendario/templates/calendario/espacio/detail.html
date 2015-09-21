@@ -371,7 +371,7 @@
 				</button>
 			</div>
 			<div class="tab-pane" id="horas">
-				<div class="col-xs-8 col-xs-offset-2">
+				<div class="col-xs-10 col-xs-offset-2">
 					{% if error_message %}
 						<div class="alert alert-danger">
 							<a href="#" class="close" data-dismiss="alert">&times;</a>
@@ -381,28 +381,91 @@
 							</p>
 						</div>
 					{% endif %}
-					<form class="form-horizontal col-xs-offset-3" id="addHoraForm" method="POST" action="{% url 'calendario:espacio_add_hora' %}">
+					<form class="form-horizontal" id="addHoraForm" method="POST" action="{% url 'calendario:espacio_add_hora' %}">
 						{% csrf_token %}
 						<input type="hidden" id="espacio_id" name="espacio_id" value="{{ espacio.id }}">
 						<div class="form-group">
 							<div class="row">
 								<label class="col-xs-3 control-label" for="desde">Hora desde:</label>
-								<div class="col-xs-2">
-									<input id="hora_desde" name="hora_desde" type="number" class="form-control" min="00" max="23" value="00" onchange="onValChange(this)">
+								<div class="col-xs-3 col-sm-3 col-md-2 col-lg-2">
+									<select id="hora_desde" name="hora_desde" class="form-control">
+										<option value="00">00</option>
+										<option value="01">01</option>
+										<option value="02">02</option>
+										<option value="03">03</option>
+										<option value="04">04</option>
+										<option value="05">05</option>
+										<option value="06">06</option>
+										<option value="07">07</option>
+										<option value="08">08</option>
+										<option value="09">09</option>
+										<option value="10">10</option>
+										<option value="11">11</option>
+										<option value="12">12</option>
+										<option value="13">13</option>
+										<option value="14">14</option>
+										<option value="15">15</option>
+										<option value="16">16</option>
+										<option value="17">17</option>
+										<option value="18">18</option>
+										<option value="19">19</option>
+										<option value="20">20</option>
+										<option value="21">21</option>
+										<option value="22">22</option>
+										<option value="23">23</option>
+									</select>
 								</div>
-								<div class="col-xs-2">
-									<input id="min_desde" name="min_desde" type="number" class="form-control" min="00" max="59" value="00" onchange="onValChange(this)">
+								<div class="col-xs-3 col-sm-3 col-md-2 col-lg-2">
+									<select id="min_desde" name="min_desde" class="form-control">
+										<option value="00">00</option>
+										<option value="10">10</option>
+										<option value="20">20</option>
+										<option value="30">30</option>
+										<option value="40">40</option>
+										<option value="50">50</option>
+									</select>
 								</div>
 							</div>
 						</div>
 						<div class="form-group">
 							<div class="row">
 								<label class="col-xs-3 control-label" for="hasta">Hora hasta:</label>
-								<div class="col-xs-2">
-									<input id="hora_hasta" name="hora_hasta" type="number" class="form-control" min="00" max="23" value="00" onchange="onValChange(this)">
+								<div class="col-xs-3 col-sm-3 col-md-2 col-lg-2">
+									<select id="hora_hasta" name="hora_hasta" class="form-control">
+										<option value="01">01</option>
+										<option value="02">02</option>
+										<option value="03">03</option>
+										<option value="04">04</option>
+										<option value="05">05</option>
+										<option value="06">06</option>
+										<option value="07">07</option>
+										<option value="08">08</option>
+										<option value="09">09</option>
+										<option value="10">10</option>
+										<option value="11">11</option>
+										<option value="12">12</option>
+										<option value="13">13</option>
+										<option value="14">14</option>
+										<option value="15">15</option>
+										<option value="16">16</option>
+										<option value="17">17</option>
+										<option value="18">18</option>
+										<option value="19">19</option>
+										<option value="20">20</option>
+										<option value="21">21</option>
+										<option value="22">22</option>
+										<option value="23">23</option>
+									</select>
 								</div>
-								<div class="col-xs-2">
-									<input id="min_hasta" name="min_hasta" type="number" class="form-control" min="00" max="59" value="00" onchange="onValChange(this)">
+								<div class="col-xs-3 col-sm-3 col-md-2 col-lg-2">
+									<select id="min_hasta" name="min_hasta" class="form-control">
+										<option value="00">00</option>
+										<option value="10">10</option>
+										<option value="20">20</option>
+										<option value="30">30</option>
+										<option value="40">40</option>
+										<option value="50">50</option>
+									</select>
 								</div>
 							</div>
 						</div>

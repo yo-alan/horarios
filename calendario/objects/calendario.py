@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import copy
+
 from django.db import models
 
 from espacio import Espacio
@@ -39,7 +41,7 @@ class Calendario(models.Model):
 		@Parametros:
 		madre - individuo con quien realizar la cruza.
 		prob_mutacion - probabilidad de mutacion para
-						los hijos resultantes. Valor: 0.01.
+						los hijos resultantes. Valor por defecto: 0.01.
 		
 		@Return:
 		
@@ -66,14 +68,21 @@ class Calendario(models.Model):
 			
 			#Si contiene un Horario con mismo dia_desde lo agrega a la lista
 			if franja_horaria[0].hora_desde == horario.hora_desde:
+				
+				#~ if isinstance(franja_horaria[0], Hora):
+					#~ franja_horaria.remove(franja_horaria[0])
+				
 				franja_horaria.append(horario)
 				
 				franja_horaria.sort()
-				
-				if 
-					return
+				return None
 		
-		#Sino crea una nueva lista con el Horario
+		#Sino crea una nueva lista con el Horario.
+		for franja_horaria in copy.copy(self._horarios):
+			if horario.hora_desde < franja_horaria[0].hora_desde:
+				self._horarios.insert(self._horarios.index(franja_horaria), [horario])
+				return None
+		
 		self._horarios.append([horario])
 	
 	def full_save(self, ):
@@ -101,7 +110,8 @@ class Calendario(models.Model):
 		
 		return self._horarios
 	
-	
+	#TODO dos calendarios con el mismo puntaje no necesariamente
+	#tienen que ser iguales. El igual que __ne__.
 	def __eq__(self, o):
 		return self.puntaje == o.puntaje
 	

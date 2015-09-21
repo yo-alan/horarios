@@ -69,6 +69,44 @@ class Espacio(models.Model):
 	
 	# GENETIC ALGORITHMS
 	
+	def ejecutar(self, ):
+		
+		global_time = time.time()
+		
+		operation_time = time.time()
+		
+		self.generarpoblacioninicial()
+		
+		print "Población inicial generada en %7.3f seg." % (time.time() - operation_time)
+		
+		#Descomentar para evaluaciones
+		#~ self.poblacion = self.poblacion[:1]
+		
+		operation_time = time.time()
+		
+		self.fitness()
+		
+		print "Evaluación realizada en %7.3f seg." % (time.time() - operation_time)
+		
+		operation_time = time.time()
+		
+		#Ordenamos la lista ubicando los individuos más aptos de principio a fin.
+		self.poblacion.sort()
+		
+		print "El ordenamiento de %d calendarios tardó %7.3f seg." % (len(self.poblacion), time.time() - operation_time)
+		
+		#Cortamos la lista, quedándonos con los 100 individuos más aptos.
+		self.poblacion = self.poblacion[:100]
+		
+		operation_time = time.time()
+		
+		for calendario in self.poblacion:
+			calendario.full_save()
+		
+		print "Guardar %d calendarios llevó %7.3f seg." % (len(self.poblacion), time.time() - operation_time)
+		print
+		print "La evolución tardó %7.3f seg." % (time.time() - global_time)
+	
 	def generarpoblacioninicial(self, ):
 		"""
 		Genera individuos desde cero y
@@ -167,45 +205,6 @@ class Espacio(models.Model):
 					calendario.agregar_horario(horario)
 				
 	
-	def ejecutar(self, ):
-		
-		global_time = time.time()
-		
-		operation_time = time.time()
-		
-		self.generarpoblacioninicial()
-		
-		print "Población inicial generada en %7.3f seg." % (time.time() - operation_time)
-		
-		#Descomentar para evaluaciones
-		#~ self.poblacion = self.poblacion[:1]
-		
-		operation_time = time.time()
-		
-		self.fitness()
-		
-		print "Evaluación realizada en %7.3f seg." % (time.time() - operation_time)
-		
-		operation_time = time.time()
-		
-		#Ordenamos la lista ubicando los individuos más aptos de principio a fin.
-		#~ self.poblacion.sort()
-		
-		print "El ordenamiento de %d calendarios tardó %7.3f seg." % (len(self.poblacion), time.time() - operation_time)
-		
-		#Cortamos la lista, quedándonos con los 100 individuos más aptos.
-		self.poblacion = self.poblacion[:100]
-		
-		operation_time = time.time()
-		
-		for calendario in self.poblacion:
-			calendario.full_save()
-		
-		print "Guardar %d calendarios llevó %7.3f seg." % (len(self.poblacion), time.time() - operation_time)
-		
-		print
-		print "La evolución tardó %7.3f seg." % (time.time() - global_time)
-	
 	def fitness(self, ):
 		"""
 		Asigna un puntaje a los calendarios.
@@ -234,53 +233,53 @@ class Espacio(models.Model):
 			#mientras mas alto sea el puntaje, menos apto es el individuo.
 			
 			#Por cada franja de horarios.
-			#~ for franja_horaria in calendario.horarios:
+			for franja_horaria in calendario.horarios:
 				
-				#~ #Por cada horario dentro de la franja.
-				#~ for horario in franja_horaria:
+				#Por cada horario dentro de la franja.
+				for horario in franja_horaria:
 					
-					#~ #Por cada restriccion del profesional.
-					#~ for restriccion in horario.profesional.restricciones.all():
+					#Por cada restriccion del profesional.
+					for restriccion in horario.profesional.restricciones.all():
 						
-						#~ #Si no es el mismo dia de la semana del horario continuamos.
-						#~ if restriccion.dia_semana != 7 and horario.dia_semana != restriccion.dia_semana:
-							#~ continue
+						#Si no es el mismo dia de la semana del horario continuamos.
+						if restriccion.dia_semana != 7 and horario.dia_semana != restriccion.dia_semana:
+							continue
 						
-						#~ if (horario.hora_desde >= restriccion.hora_desde and horario.hora_desde < restriccion.hora_hasta):
-							#~ calendario.puntaje += PUNTOS_RESTRICCION_PROFESIONAL
-							#~ break
-						#~ if (horario.hora_hasta > restriccion.hora_desde and horario.hora_hasta <= restriccion.hora_hasta):
-							#~ calendario.puntaje += PUNTOS_RESTRICCION_PROFESIONAL
-							#~ break
-						#~ if (horario.hora_desde <= restriccion.hora_desde and horario.hora_hasta >= restriccion.hora_hasta):
-							#~ calendario.puntaje += PUNTOS_RESTRICCION_PROFESIONAL
-							#~ break
-						#~ if (horario.hora_desde > restriccion.hora_desde and horario.hora_hasta < restriccion.hora_hasta):
-							#~ calendario.puntaje += PUNTOS_RESTRICCION_PROFESIONAL
-							#~ break
-						#~ if (horario.hora_desde == restriccion.hora_desde and horario.hora_hasta == restriccion.hora_hasta):
-							#~ calendario.puntaje += PUNTOS_RESTRICCION_PROFESIONAL
+						if (horario.hora_desde >= restriccion.hora_desde and horario.hora_desde < restriccion.hora_hasta):
+							calendario.puntaje += PUNTOS_RESTRICCION_PROFESIONAL
+							break
+						if (horario.hora_hasta > restriccion.hora_desde and horario.hora_hasta <= restriccion.hora_hasta):
+							calendario.puntaje += PUNTOS_RESTRICCION_PROFESIONAL
+							break
+						if (horario.hora_desde <= restriccion.hora_desde and horario.hora_hasta >= restriccion.hora_hasta):
+							calendario.puntaje += PUNTOS_RESTRICCION_PROFESIONAL
+							break
+						if (horario.hora_desde > restriccion.hora_desde and horario.hora_hasta < restriccion.hora_hasta):
+							calendario.puntaje += PUNTOS_RESTRICCION_PROFESIONAL
+							break
+						if (horario.hora_desde == restriccion.hora_desde and horario.hora_hasta == restriccion.hora_hasta):
+							calendario.puntaje += PUNTOS_RESTRICCION_PROFESIONAL
 			
 			
 			#Segunda evaluacion: Que se cumplan las horas semanales de la especialidad.
 			#Horas semanales: cada hora extra o faltante es penalizada con la suma de puntos.
 			
 			#Por cada especialidad
-			#~ for especialidad in self.especialidades.all():
-				#~ 
-				#~ #Contador de horas semanales.
-				#~ horas_semanales = 0
-				#~ #Por cada franja de horarios.
-				#~ for franja_horaria in calendario.horarios:
-					#~ 
-					#~ #Por cada horario en la franja horaria.
-					#~ for horario in franja_horaria:
-						#~ 
-						#~ #Si la especialidad es igual, contamos.
-						#~ if horario.especialidad == especialidad:
-							#~ horas_semanales += 1
-					#~ 
-				#~ calendario.puntaje += abs(especialidad.carga_horaria_semanal - horas_semanales) * PUNTOS_HORAS_SEMANALES
+			for especialidad in self.especialidades.all():
+				
+				#Contador de horas semanales.
+				horas_semanales = 0
+				#Por cada franja de horarios.
+				for franja_horaria in calendario.horarios:
+					
+					#Por cada horario en la franja horaria.
+					for horario in franja_horaria:
+						
+						#Si la especialidad es igual, contamos.
+						if horario.especialidad == especialidad:
+							horas_semanales += 1
+					
+				calendario.puntaje += abs(especialidad.carga_horaria_semanal - horas_semanales) * PUNTOS_HORAS_SEMANALES
 			
 			#Tercera evaluacion: Se busca que las especialidades
 			#cumplan con la horas maximas por dia.
@@ -288,39 +287,39 @@ class Espacio(models.Model):
 			#atributo max_horas_diaria, en el caso que un calendario
 			#exceda este valor recibira una penalizacion.
 			
-			#~ for i in range(len(self.dias_habiles)):
-				#~ 
-				#~ for j in range(len(self.horas)):
-					#~ 
-					#~ horas_diarias = 1
-					#~ 
-					#~ #Obtenemos el horario a evaluar.
-					#~ horario = calendario.horarios[j][i]
-					#~ 
-					#~ for k in range(len(self.dias_habiles)):
-						#~ 
-						#~ #Si el dia no es el mismo, lo salteamos.
-						#~ if i != k:
-							#~ continue
-						#~ 
-						#~ for l in range(len(self.horas)):
-							#~ 
-							#~ if j >= l:
-								#~ continue
-							#~ 
-							#~ #Obtenemos el horario a comparar.
-							#~ horario_comp = calendario.horarios[l][k]
-							#~ 
-							#~ #Si la especialidad es la misma, contamos.
-							#~ if horario.especialidad == horario_comp.especialidad:
-								#~ horas_diarias += 1
-						#~ 
-						#~ #Si la cantidad máxima de horas diarias
-						#~ #se excedieron, penalizamos.
-						#~ if horas_diarias > horario.especialidad.max_horas_diaria:
-							#~ calendario.puntaje += (horas_diarias - horario.especialidad.max_horas_diaria) * PUNTOS_HORAS_DIARIAS
-						#~ 
-						#~ break
+			for i in range(len(self.dias_habiles)):
+				
+				for j in range(len(self.horas)):
+					
+					horas_diarias = 1
+					
+					#Obtenemos el horario a evaluar.
+					horario = calendario.horarios[j][i]
+					
+					for k in range(len(self.dias_habiles)):
+						
+						#Si el dia no es el mismo, lo salteamos.
+						if i != k:
+							continue
+						
+						for l in range(len(self.horas)):
+							
+							if j >= l:
+								continue
+							
+							#Obtenemos el horario a comparar.
+							horario_comp = calendario.horarios[l][k]
+							
+							#Si la especialidad es la misma, contamos.
+							if horario.especialidad == horario_comp.especialidad:
+								horas_diarias += 1
+						
+						#Si la cantidad máxima de horas diarias
+						#se excedieron, penalizamos.
+						if horas_diarias > horario.especialidad.max_horas_diaria:
+							calendario.puntaje += (horas_diarias - horario.especialidad.max_horas_diaria) * PUNTOS_HORAS_DIARIAS
+						
+						break
 					
 			
 			#Cuarta evaluación: En esta instancia se desea comprobar
@@ -357,25 +356,19 @@ class Espacio(models.Model):
 							
 							#Esta comprobación se hace para que no se
 							#penalice M M M.
-							#~ penalizable = False
-							#~ m = l - 1
-							#~ while j != m:
+							penalizable = False
+							m = l - 1
+							while j != m:
 								
-								#~ if horario.especialidad != calendario.horarios[m][k].especialidad:
-									#~ penalizable = True
-									#~ break
+								if horario.especialidad != calendario.horarios[m][k].especialidad:
+									penalizable = True
+									break
 								
-								#~ m -= 1
+								m -= 1
 							
-							#~ if not penalizable:
-								#~ continue
-							#~ 
-							#~ if self.poblacion[0] == calendario:
-								#~ print horario.especialidad
-								#~ print horario.hora_desde
-								#~ print horario.hora_hasta
-								#~ print horario.dia_semana
-							#~ 
+							if not penalizable:
+								continue
+							
 							calendario.puntaje += PUNTOS_DISTRIBUCION_HORARIA
 							horario_comp.penalizado += 1
 							

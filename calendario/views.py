@@ -100,19 +100,6 @@ def detail(request, calendario_id):
 	
 	espacio = Espacio.create(espacio_id=calendario.espacio.id)
 	
-	for i in range(len(espacio.dias_habiles)):
-		
-		for j in range(len(espacio.horas)):
-			
-			print calendario.horarios[j]
-			continue
-			print
-			print calendario.horarios[j][i].especialidad
-			print calendario.horarios[j][i].hora_desde
-			print calendario.horarios[j][i].dia_semana
-			print
-	
-	
 	anterior = None
 	siguiente = None
 	
