@@ -66,23 +66,32 @@ class Calendario(models.Model):
 		#Por cada franja horaria.
 		for franja_horaria in self._horarios:
 			
-			#Si contiene un Horario con mismo dia_desde lo agrega a la lista
+			#Si contiene un Horario con misma
+			#hora_desde lo agrega a la lista.
 			if franja_horaria[0].hora_desde == horario.hora_desde:
 				
-				#~ if isinstance(franja_horaria[0], Hora):
-					#~ franja_horaria.remove(franja_horaria[0])
-				
+				#Lo agregamos al final.
 				franja_horaria.append(horario)
 				
+				#Ordenamos la lista.
 				franja_horaria.sort()
+				
 				return None
 		
-		#Sino crea una nueva lista con el Horario.
+		#Por cada franja horaria.
 		for franja_horaria in copy.copy(self._horarios):
+			
+			#Ubicamos la nueva franja horaria donde corresponda.
 			if horario.hora_desde < franja_horaria[0].hora_desde:
-				self._horarios.insert(self._horarios.index(franja_horaria), [horario])
+				
+				indice = self._horarios.index(franja_horaria)
+				
+				#Insertamoe el horario creando una nueva franja horaria.
+				self._horarios.insert(indice, [horario])
+				
 				return None
 		
+		#Si horarios esta vacio se agrega el horario sin problemas.
 		self._horarios.append([horario])
 	
 	def full_save(self, ):
@@ -101,6 +110,7 @@ class Calendario(models.Model):
 	@property
 	def horarios(self, ):
 		from horario import Horario
+		
 		if not self._horarios:
 			horarios = Horario.objects.filter(calendario=self)\
 										.order_by('hora_desde', 'dia_semana')

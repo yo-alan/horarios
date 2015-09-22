@@ -30,7 +30,8 @@ class Espacio(models.Model):
 								default='ON')
 	usuario_creador = models.CharField(max_length=30, default='admin')
 	fecha_creacion = models.DateField(auto_now_add=True)
-	usuario_modificador = models.CharField(max_length=30, default='admin')
+	usuario_modificador = models.CharField(max_length=30,
+											default='admin')
 	fecha_modificacion = models.DateField(auto_now=True)
 	
 	especialidades = models.ManyToManyField(Especialidad)
@@ -77,7 +78,8 @@ class Espacio(models.Model):
 		
 		self.generarpoblacioninicial()
 		
-		print "Población inicial generada en %7.3f seg." % (time.time() - operation_time)
+		print "Población inicial (%d individuos) generada en %7.3f seg."\
+				% (len(self.poblacion), time.time() - operation_time)
 		
 		#Descomentar para evaluaciones
 		#~ self.poblacion = self.poblacion[:1]
@@ -86,14 +88,16 @@ class Espacio(models.Model):
 		
 		self.fitness()
 		
-		print "Evaluación realizada en %7.3f seg." % (time.time() - operation_time)
+		print "Evaluación realizada en %7.3f seg."\
+				% (time.time() - operation_time)
 		
 		operation_time = time.time()
 		
 		#Ordenamos la lista ubicando los individuos más aptos de principio a fin.
 		self.poblacion.sort()
 		
-		print "El ordenamiento de %d calendarios tardó %7.3f seg." % (len(self.poblacion), time.time() - operation_time)
+		print "El ordenamiento de %d calendarios tardó %7.3f seg."\
+				% (len(self.poblacion), time.time() - operation_time)
 		
 		#Cortamos la lista, quedándonos con los 100 individuos más aptos.
 		self.poblacion = self.poblacion[:100]
@@ -103,9 +107,11 @@ class Espacio(models.Model):
 		for calendario in self.poblacion:
 			calendario.full_save()
 		
-		print "Guardar %d calendarios llevó %7.3f seg." % (len(self.poblacion), time.time() - operation_time)
+		print "Guardar %d calendarios llevó %7.3f seg."\
+				% (len(self.poblacion), time.time() - operation_time)
 		print
-		print "La evolución tardó %7.3f seg." % (time.time() - global_time)
+		print "La evolución tardó %7.3f seg."\
+				% (time.time() - global_time)
 	
 	def generarpoblacioninicial(self, ):
 		"""
@@ -120,10 +126,14 @@ class Espacio(models.Model):
 		"""
 		from calendario import Calendario
 		from horario import Horario
-		#Iteramos generando todas las combinaciones posibles de horarios.
-		#Y agregamos cada uno a un calendario.
-		for dia in range(0, 7): #Cantidad de iteraciones por los dias.
+		
+		#Iteramos generando todas las combinaciones
+		#posibles de horarios. Y agregamos cada uno a un calendario.
+		
+		#Cantidad de iteraciones por los dias.
+		for dia in range(0, 7):
 			
+			#Si el dia no es un dia habil del espacio, lo salteamos.
 			if dia not in self.dias_habiles:
 				continue
 			
@@ -238,28 +248,10 @@ class Espacio(models.Model):
 				#Por cada horario dentro de la franja.
 				for horario in franja_horaria:
 					
-					#Por cada restriccion del profesional.
-					for restriccion in horario.profesional.restricciones.all():
-						
-						#Si no es el mismo dia de la semana del horario continuamos.
-						if restriccion.dia_semana != 7 and horario.dia_semana != restriccion.dia_semana:
-							continue
-						
-						if (horario.hora_desde >= restriccion.hora_desde and horario.hora_desde < restriccion.hora_hasta):
-							calendario.puntaje += PUNTOS_RESTRICCION_PROFESIONAL
-							break
-						if (horario.hora_hasta > restriccion.hora_desde and horario.hora_hasta <= restriccion.hora_hasta):
-							calendario.puntaje += PUNTOS_RESTRICCION_PROFESIONAL
-							break
-						if (horario.hora_desde <= restriccion.hora_desde and horario.hora_hasta >= restriccion.hora_hasta):
-							calendario.puntaje += PUNTOS_RESTRICCION_PROFESIONAL
-							break
-						if (horario.hora_desde > restriccion.hora_desde and horario.hora_hasta < restriccion.hora_hasta):
-							calendario.puntaje += PUNTOS_RESTRICCION_PROFESIONAL
-							break
-						if (horario.hora_desde == restriccion.hora_desde and horario.hora_hasta == restriccion.hora_hasta):
-							calendario.puntaje += PUNTOS_RESTRICCION_PROFESIONAL
-			
+					#Si el horario no está bien asignado es penalizado.
+					if not self.itswellassigned(horario):
+						calendario.puntaje += PUNTOS_RESTRICCION_PROFESIONAL
+						horario.penalizado += 1
 			
 			#Segunda evaluacion: Que se cumplan las horas semanales de la especialidad.
 			#Horas semanales: cada hora extra o faltante es penalizada con la suma de puntos.
@@ -269,6 +261,7 @@ class Espacio(models.Model):
 				
 				#Contador de horas semanales.
 				horas_semanales = 0
+				
 				#Por cada franja de horarios.
 				for franja_horaria in calendario.horarios:
 					
@@ -318,6 +311,7 @@ class Espacio(models.Model):
 						#se excedieron, penalizamos.
 						if horas_diarias > horario.especialidad.max_horas_diaria:
 							calendario.puntaje += (horas_diarias - horario.especialidad.max_horas_diaria) * PUNTOS_HORAS_DIARIAS
+							horario_comp.penalizado += 1
 						
 						break
 					
@@ -380,6 +374,44 @@ class Espacio(models.Model):
 	
 	def seleccionar(self, ):
 		pass
+	
+	def itswellassigned(self, horario):
+		"""
+		Verifica que la posición del horario dentro de el
+		calendario no se superponga con ninguna restriccion
+		del profesional dueño de dicho horario.
+		
+		@Return:
+		True o False.
+		"""
+		
+		#Validar que se reciba un Horario por parámetro.
+		#~ if not isinstance(horario, Horario):
+			#~ raise Exception("Se esperaba un Horario.")
+		
+		#Por cada restriccion del profesional.
+		for restriccion in horario.profesional.restricciones.all():
+			
+			#Si no es el mismo dia de la semana del horario continuamos.
+			if restriccion.dia_semana != 7:
+				continue
+			
+			if horario.dia_semana != restriccion.dia_semana:
+				continue
+			
+			if (horario.hora_desde >= restriccion.hora_desde and horario.hora_desde < restriccion.hora_hasta):
+				return False
+			
+			if (horario.hora_hasta > restriccion.hora_desde and horario.hora_hasta <= restriccion.hora_hasta):
+				return False
+			
+			if (horario.hora_desde <= restriccion.hora_desde and horario.hora_hasta >= restriccion.hora_hasta):
+				return False
+			
+			if (horario.hora_desde >= restriccion.hora_desde and horario.hora_hasta <= restriccion.hora_hasta):
+				return False
+		
+		return True
 	
 	@property
 	def generaciones(self, ):
