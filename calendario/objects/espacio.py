@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import time
-from random import random, randrange
+from random import randrange
 
 from django.db import models
 
@@ -100,7 +100,15 @@ class Espacio(models.Model):
 				% (len(self.poblacion), time.time() - operation_time)
 		
 		#Cortamos la lista, quedándonos con los 100 individuos más aptos.
-		self.poblacion = self.poblacion[:100]
+		#~ self.poblacion = self.poblacion[:100]
+		
+		operation_time = time.time()
+		
+		#.
+		self.seleccionar()
+		
+		print "El ordenamiento de %d calendarios tardó %7.3f seg."\
+				% (len(self.poblacion), time.time() - operation_time)
 		
 		operation_time = time.time()
 		
@@ -119,10 +127,10 @@ class Espacio(models.Model):
 		los guarda en el atributo 'poblacion'.
 		
 		@Parametros:
-		None
+		None.
 		
 		@Return:
-		None
+		None.
 		"""
 		from calendario import Calendario
 		from horario import Horario
@@ -181,7 +189,7 @@ class Espacio(models.Model):
 				for hora in self.horas:
 					
 					#Obtenemos un indice aleatorio.
-					indice = randrange(0, len(self.coordinadores))
+					indice = randrange(len(self.coordinadores))
 					
 					#Obtenemos un coordinador aleatoriamente.
 					coordinador = self.coordinadores[indice]
@@ -218,14 +226,15 @@ class Espacio(models.Model):
 	def fitness(self, ):
 		"""
 		Asigna un puntaje a los calendarios.
-		Utiliza las restricciones de los profesionales para
-		determinar el valor de aptitud de los individuos.
+		Utiliza las restricciones de los profesionales, de las
+		especialidades y la distribucion horaria para determinar
+		el valor de aptitud de los individuos.
 		
 		@Parametros:
-		None
+		None.
 		
 		@Return:
-		None
+		None.
 		"""
 		
 		#Por cada individuo en la poblacion.
@@ -253,7 +262,47 @@ class Espacio(models.Model):
 		
 	
 	def seleccionar(self, ):
-		pass
+		"""
+		Selección por torneo.
+		
+		@Parametros:
+		None.
+		
+		@Return:
+		Tuple(Calendario, Calendario).
+		"""
+		
+		padre = None
+		madre = None
+		
+		#Los elegidos para competir.
+		elegidos = []
+		
+		for i in randrange(len(self.poblacion)):
+			
+			indice = randrange(len(self.poblacion))
+			
+			calendario = self.poblacion[indice]
+			
+			if calendario not in elegidos:
+				elegidos.append(calendario)
+		
+		padre = winneroftournament(elegidos)
+		
+		elegidos = []
+		
+		for i in randrange(len(self.poblacion)):
+			
+			indice = randrange(len(self.poblacion))
+			
+			calendario = self.poblacion[indice]
+			
+			if calendario not in elegidos:
+				elegidos.append(calendario)
+		
+		madre = winneroftournament(elegidos)
+		
+		return (padre, madre)
 	
 	def asignacion_horaria(self, calendario):
 		"""
@@ -506,6 +555,32 @@ class Espacio(models.Model):
 					horas_semanales += 1
 		
 		return abs(especialidad.carga_horaria_semanal - horas_semanales)
+	
+	def winneroftournament(self, elegidos):
+		"""
+		Funcion que retorna al ganador de un torneo entre los
+		individuos elegidos.
+		
+		@Parametros:
+		elegidos: Calendario[].
+		
+		@Return:
+		calendario: Calendario.
+		"""
+		
+		while len(elegidos) != 1:
+			
+			calendario1 = elegidos[randrange(len(elegidos))]
+			calendario2 = elegidos[randrange(len(elegidos))]
+			
+			if calendario1 < calendario2:
+				elegidos.remove(calendario1)
+			elif calendario1 > calendario2:
+				elegidos.remove(calendario2)
+			else:
+				elegidos.remove(calendario2)
+			
+		return elegidos[0]
 	
 	@property
 	def generaciones(self, ):

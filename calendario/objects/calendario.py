@@ -36,24 +36,50 @@ class Calendario(models.Model):
 	
 	def cruce(self, madre, prob_mutacion=0.01):
 		"""
-		Cruza el individuo con otro madre.
+		Cruza este individuo con otro del mismo tipo y retorna la
+		cantidad de hijos resultantes.
 		
 		@Parametros:
-		madre - individuo con quien realizar la cruza.
-		prob_mutacion - probabilidad de mutacion para
-						los hijos resultantes. Valor por defecto: 0.01.
+		madre: Calendario.
+		prob_mutacion: float.
 		
 		@Return:
-		
+		Calendario[].
 		"""
+		
 		if not isinstance(madre, Calendario):
-			raise Exception("El objeto no es de tipo Calendario.")
+			raise Exception("Se esperaba un Calendario.")
 		
 		if self == madre:
 			raise Exception("Un Calendario no puede cruzarse consigo mismo.")
 		
+		hijos = []
 		
+		#Obtenemos el punto de corte dividiendo en 2 la cantidad
+		#de horarios.
+		punto_corte = len(self.horarios) / 2
 		
+		hijo1 = Calendario.create()
+		
+		#Tomamos del padre la primer mitad y de la madre la segunda
+		#mitad y creamos el primer hijo.
+		hijo1.horarios = padre[:punto_corte] + madre[punto_corte:]
+		
+		hijo1.mutar()
+		
+		hijos.append(hijo1)
+		
+		hijo2 = Calendario.create()
+		
+		#Tomamos de la madre la primer mitad y del padre la segunda
+		#mitad y creamos el segundo hijo.
+		hijo2.horarios = madre[:punto_corte] + padre[punto_corte:]
+		
+		hijo2.mutar()
+		
+		hijos.append(hijo2)
+		
+		return hijos
 	
 	def mutar(self, ):
 		pass
@@ -99,7 +125,7 @@ class Calendario(models.Model):
 		#Se guarda el mismo para obtener una ID de la BBDD.
 		self.save()
 		
-		#Por cada dia.
+		#Por cada franja horaria.
 		for franja_horaria in self.horarios:
 			
 			#Guarda todos y cada uno de los horarios que posee.
@@ -121,7 +147,7 @@ class Calendario(models.Model):
 		return self._horarios
 	
 	#TODO dos calendarios con el mismo puntaje no necesariamente
-	#tienen que ser iguales. El igual que __ne__.
+	#tienen que ser iguales. Al igual que __ne__.
 	def __eq__(self, o):
 		return self.puntaje == o.puntaje
 	
