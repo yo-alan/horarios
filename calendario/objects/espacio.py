@@ -93,7 +93,7 @@ class Espacio(models.Model):
 		
 		operation_time = time.time()
 		
-		#Ordenamos la lista ubicando los individuos más aptos de principio a fin.
+		#Ordenamos la lista de individuos (más aptos al principio).
 		self.poblacion.sort()
 		
 		print "El ordenamiento de %d calendarios tardó %7.3f seg."\
@@ -237,143 +237,196 @@ class Espacio(models.Model):
 			
 			#Primera evaluacion: Se evalua que los horarios asignados
 			#cumplan las restricciones del profesional que contienen.
+			calendario.puntaje += self.asignacion_horaria(calendario)
 			
-			#Comparamos los horarios con las restricciones de los
-			#profesionales. Cada superposicion es penalizada,
-			#mientras mas alto sea el puntaje, menos apto es el individuo.
-			
-			#Por cada franja de horarios.
-			for franja_horaria in calendario.horarios:
-				
-				#Por cada horario dentro de la franja.
-				for horario in franja_horaria:
-					
-					#Si el horario no está bien asignado es penalizado.
-					if not self.itswellassigned(horario):
-						calendario.puntaje += PUNTOS_RESTRICCION_PROFESIONAL
-						horario.penalizado += 1
-			
-			#Segunda evaluacion: Que se cumplan las horas semanales de la especialidad.
-			#Horas semanales: cada hora extra o faltante es penalizada con la suma de puntos.
-			
-			#Por cada especialidad
-			for especialidad in self.especialidades.all():
-				
-				#Contador de horas semanales.
-				horas_semanales = 0
-				
-				#Por cada franja de horarios.
-				for franja_horaria in calendario.horarios:
-					
-					#Por cada horario en la franja horaria.
-					for horario in franja_horaria:
-						
-						#Si la especialidad es igual, contamos.
-						if horario.especialidad == especialidad:
-							horas_semanales += 1
-					
-				calendario.puntaje += abs(especialidad.carga_horaria_semanal - horas_semanales) * PUNTOS_HORAS_SEMANALES
+			#Segunda evaluacion: Que se cumplan las horas semanales
+			#de la especialidad.
+			calendario.puntaje += self.asignacion_semanal(calendario)
 			
 			#Tercera evaluacion: Se busca que las especialidades
 			#cumplan con la horas maximas por dia.
-			#Horas maxima por dia: Cada especialidad tiene un
-			#atributo max_horas_diaria, en el caso que un calendario
-			#exceda este valor recibira una penalizacion.
-			
-			for i in range(len(self.dias_habiles)):
-				
-				for j in range(len(self.horas)):
-					
-					horas_diarias = 1
-					
-					#Obtenemos el horario a evaluar.
-					horario = calendario.horarios[j][i]
-					
-					for k in range(len(self.dias_habiles)):
-						
-						#Si el dia no es el mismo, lo salteamos.
-						if i != k:
-							continue
-						
-						for l in range(len(self.horas)):
-							
-							if j >= l:
-								continue
-							
-							#Obtenemos el horario a comparar.
-							horario_comp = calendario.horarios[l][k]
-							
-							#Si la especialidad es la misma, contamos.
-							if horario.especialidad == horario_comp.especialidad:
-								horas_diarias += 1
-						
-						#Si la cantidad máxima de horas diarias
-						#se excedieron, penalizamos.
-						if horas_diarias > horario.especialidad.max_horas_diaria:
-							calendario.puntaje += (horas_diarias - horario.especialidad.max_horas_diaria) * PUNTOS_HORAS_DIARIAS
-							horario_comp.penalizado += 1
-						
-						break
-					
+			calendario.puntaje += self.asignacion_diaria(calendario)
 			
 			#Cuarta evaluación: En esta instancia se desea comprobar
 			#la distribución horaria de las especialidades.
-			
-			for i in range(len(self.dias_habiles)):
-				
-				for j in range(len(self.horas)):
-					
-					#Obtenemos el horario a evaluar.
-					horario = calendario.horarios[j][i]
-					
-					for k in range(len(self.dias_habiles)):
-						
-						#Si el dia no es el mismo, lo salteamos.
-						if i != k:
-							continue
-						
-						for l in range(len(self.horas)):
-							
-							if j >= l:
-								continue
-							
-							#Obtenemos el horario a comparar.
-							horario_comp = calendario.horarios[l][k]
-							
-							#Si las especialidades son distintas no
-							#tenemos que evaluarlo, por ende lo salteamos.
-							if horario.especialidad != horario_comp.especialidad:
-								continue
-							
-							if j + 1 == l:
-								continue
-							
-							#Esta comprobación se hace para que no se
-							#penalice M M M.
-							penalizable = False
-							m = l - 1
-							while j != m:
-								
-								if horario.especialidad != calendario.horarios[m][k].especialidad:
-									penalizable = True
-									break
-								
-								m -= 1
-							
-							if not penalizable:
-								continue
-							
-							calendario.puntaje += PUNTOS_DISTRIBUCION_HORARIA
-							horario_comp.penalizado += 1
-							
-							#La asignación se realiza si queremos que
-							#no se penalice esto M L L M M.
-							#~ horario = horario_comparacion
-							
-			
+			calendario.puntaje += self.distribucion_horaria(calendario)
+		
 	
 	def seleccionar(self, ):
 		pass
+	
+	def asignacion_horaria(self, calendario):
+		"""
+		Recorre el calendario contando los horarios mal asignados,
+		este valor final se retorna.
+		
+		@Parametros:
+		calendario: Calendario.
+		
+		@Return:
+		int.
+		"""
+		
+		puntos = 0
+		
+		#Por cada franja de horarios.
+		for franja_horaria in calendario.horarios:
+			
+			#Por cada horario dentro de la franja.
+			for horario in franja_horaria:
+				
+				#Si el horario no está bien asignado es penalizado.
+				if not self.itswellassigned(horario):
+					puntos += PUNTOS_RESTRICCION_PROFESIONAL
+					horario.penalizado += 1
+		
+		return puntos
+	
+	def asignacion_semanal(self, calendario):
+		"""
+		Calcula los puntos del calendario comprobando que tanto
+		se respetan las restricciones de horas semanales de las
+		especialidades del espacio.
+		
+		@Parametros:
+		calendario: Calendario.
+		
+		@Return:
+		int.
+		"""
+		
+		puntos = 0
+		
+		#Por cada especialidad en el espacio.
+		for especialidad in self.especialidades.all():
+			
+			#Obtenemos la cantidad de horas semanales de la especialidad.
+			horas_semanales = self.horas_semanales_de(especialidad, calendario)
+			
+			puntos += horas_semanales * PUNTOS_HORAS_SEMANALES
+		
+		return puntos
+	
+	def asignacion_diaria(self, calendario):
+		"""
+		Cuenta la cantidad de excesos de horas diaria de cada
+		especialidad y se retorna el total.
+		
+		@Parametros:
+		calendario: Calendario.
+		
+		@Return:
+		int.
+		"""
+		
+		puntos = 0
+		
+		for i in range(len(self.dias_habiles)):
+			
+			for j in range(len(self.horas)):
+				
+				horas_diarias = 1
+				
+				#Obtenemos el horario a evaluar.
+				horario = calendario.horarios[j][i]
+				
+				for k in range(len(self.dias_habiles)):
+					
+					#Si el dia no es el mismo, lo salteamos.
+					if i != k:
+						continue
+					
+					for l in range(len(self.horas)):
+						
+						if j >= l:
+							continue
+						
+						#Obtenemos el horario a comparar.
+						horario_comp = calendario.horarios[l][k]
+						
+						#Si la especialidad es la misma, contamos.
+						if horario.especialidad == horario_comp.especialidad:
+							horas_diarias += 1
+					
+					#Si la cantidad máxima de horas diarias
+					#se excedieron, penalizamos.
+					if horas_diarias > horario.especialidad.max_horas_diaria:
+						
+						horas_excedidas = horas_diarias - horario.especialidad.max_horas_diaria
+						
+						puntos += horas_excedidas * PUNTOS_HORAS_DIARIAS
+						
+						horario_comp.penalizado += 1
+					
+					break
+		
+		
+		return puntos
+	
+	def distribucion_horaria(self, calendario):
+		"""
+		
+		@Parametros:
+		calendario: Calendario.
+		
+		@Return:
+		int.
+		"""
+		
+		puntos = 0
+		
+		for i in range(len(self.dias_habiles)):
+			
+			for j in range(len(self.horas)):
+				
+				#Obtenemos el horario a evaluar.
+				horario = calendario.horarios[j][i]
+				
+				for k in range(len(self.dias_habiles)):
+					
+					#Si el dia no es el mismo, lo salteamos.
+					if i != k:
+						continue
+					
+					for l in range(len(self.horas)):
+						
+						if j >= l:
+							continue
+						
+						#Obtenemos el horario a comparar.
+						horario_comp = calendario.horarios[l][k]
+						
+						#Si las especialidades son distintas no
+						#tenemos que evaluarlo, por ende lo salteamos.
+						if horario.especialidad != horario_comp.especialidad:
+							continue
+						
+						if j + 1 == l:
+							continue
+						
+						#Esta comprobación se hace para que no se
+						#penalice M M M.
+						penalizable = False
+						m = l - 1
+						while j != m:
+							
+							if horario.especialidad != calendario.horarios[m][k].especialidad:
+								penalizable = True
+								break
+							
+							m -= 1
+						
+						if not penalizable:
+							continue
+						
+						puntos += PUNTOS_DISTRIBUCION_HORARIA
+						horario_comp.penalizado += 1
+						
+						#La asignación se realiza si queremos que
+						#no se penalice esto M L L M M.
+						#~ horario = horario_comparacion
+					
+		return puntos
 	
 	def itswellassigned(self, horario):
 		"""
@@ -381,8 +434,11 @@ class Espacio(models.Model):
 		calendario no se superponga con ninguna restriccion
 		del profesional dueño de dicho horario.
 		
+		@Parametros:
+		horario: Horario.
+		
 		@Return:
-		True o False.
+		boolean.
 		"""
 		
 		#Validar que se reciba un Horario por parámetro.
@@ -412,6 +468,44 @@ class Espacio(models.Model):
 				return False
 		
 		return True
+	
+	def horas_semanales_de(self, especialidad, calendario):
+		"""
+		Cuenta la cantidad de horarios en el calendario que
+		estén asignados a la especialidad que se recibe.
+		Retorna un entero positivo que indica la cantidad de
+		horas excedidas o faltantes de la especialidad semanalmente.
+		
+		@Parametros:
+		calendario: Calendario.
+		especialidad: Especialidad.
+		
+		@Return:
+		Int.
+		"""
+		
+		#Validar que se reciba una Especialidad por parámetro.
+		#~ if not isinstance(especialidad, Especialidad):
+			#~ raise Exception("Se esperaba una Especialidad.")
+		
+		#Validar que se reciba un Calendario por parámetro.
+		#~ if not isinstance(calendario, Calendario):
+			#~ raise Exception("Se esperaba un Calendario.")
+		
+		#Contador de horas semanales.
+		horas_semanales = 0
+		
+		#Por cada franja de horarios.
+		for franja_horaria in calendario.horarios:
+			
+			#Por cada horario en la franja horaria.
+			for horario in franja_horaria:
+				
+				#Si la especialidad es igual, contamos.
+				if horario.especialidad == especialidad:
+					horas_semanales += 1
+		
+		return abs(especialidad.carga_horaria_semanal - horas_semanales)
 	
 	@property
 	def generaciones(self, ):
