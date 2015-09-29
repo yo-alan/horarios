@@ -102,13 +102,24 @@ class Espacio(models.Model):
 		#Cortamos la lista, quedándonos con los 100 individuos más aptos.
 		#~ self.poblacion = self.poblacion[:100]
 		
+		#Hacemos la seleccion de individuos.
+		seleccionados = self.seleccion()
+		
 		operation_time = time.time()
 		
-		#.
-		self.seleccionar()
+		#Hacemos la seleccion de individuos.
+		self.poblacion = self.cruzar(seleccionados)
 		
-		print "El ordenamiento de %d calendarios tardó %7.3f seg."\
+		print "El cruce de %d calendarios tardó %7.3f seg."\
 				% (len(self.poblacion), time.time() - operation_time)
+		
+		operation_time = time.time()
+		
+		#Evaluamos la nueva población.
+		self.fitness()
+		
+		print "Evaluación realizada en %7.3f seg."\
+				% (time.time() - operation_time)
 		
 		operation_time = time.time()
 		
@@ -259,50 +270,44 @@ class Espacio(models.Model):
 			#Cuarta evaluación: En esta instancia se desea comprobar
 			#la distribución horaria de las especialidades.
 			calendario.puntaje += self.distribucion_horaria(calendario)
-		
+			
 	
-	def seleccionar(self, ):
+	def seleccion(self, ):
 		"""
-		Selección por torneo.
+		Retorna el 50% de individuos de la población
+		total para el cruce.
 		
 		@Parametros:
 		None.
 		
 		@Return:
-		Tuple(Calendario, Calendario).
+		list.
 		"""
 		
-		padre = None
-		madre = None
+		parejas = []
 		
-		#Los elegidos para competir.
-		elegidos = []
-		
-		for i in randrange(len(self.poblacion)):
+		#La division por 4 representa el número de parejas para cruzar.
+		for i in range(len(self.poblacion)/4):
 			
-			indice = randrange(len(self.poblacion))
+			pareja = self.seleccionar()
 			
-			calendario = self.poblacion[indice]
+			parejas.append(pareja)
+		
+		return parejas
+	
+	def cruzar(self, parejas):
+		"""
+		
+		
+		"""
+		
+		poblacion_nueva = []
+		
+		for padre, madre in parejas:
 			
-			if calendario not in elegidos:
-				elegidos.append(calendario)
+			poblacion_nueva += padre.cruce(madre)
 		
-		padre = winneroftournament(elegidos)
-		
-		elegidos = []
-		
-		for i in randrange(len(self.poblacion)):
-			
-			indice = randrange(len(self.poblacion))
-			
-			calendario = self.poblacion[indice]
-			
-			if calendario not in elegidos:
-				elegidos.append(calendario)
-		
-		madre = winneroftournament(elegidos)
-		
-		return (padre, madre)
+		return poblacion_nueva
 	
 	def asignacion_horaria(self, calendario):
 		"""
@@ -370,45 +375,19 @@ class Espacio(models.Model):
 		
 		puntos = 0
 		
-		for i in range(len(self.dias_habiles)):
+		for especialidad in self.especialidades.all():
 			
-			for j in range(len(self.horas)):
+			for j in range(len(self.dias_habiles)):
 				
-				horas_diarias = 1
+				horas_diarias = 0
 				
-				#Obtenemos el horario a evaluar.
-				horario = calendario.horarios[j][i]
+				for i in range(len(self.horas)):
+					
+					if especialidad == calendario.horarios[i][j].especialidad:
+						horas_diarias += 1
 				
-				for k in range(len(self.dias_habiles)):
-					
-					#Si el dia no es el mismo, lo salteamos.
-					if i != k:
-						continue
-					
-					for l in range(len(self.horas)):
-						
-						if j >= l:
-							continue
-						
-						#Obtenemos el horario a comparar.
-						horario_comp = calendario.horarios[l][k]
-						
-						#Si la especialidad es la misma, contamos.
-						if horario.especialidad == horario_comp.especialidad:
-							horas_diarias += 1
-					
-					#Si la cantidad máxima de horas diarias
-					#se excedieron, penalizamos.
-					if horas_diarias > horario.especialidad.max_horas_diaria:
-						
-						horas_excedidas = horas_diarias - horario.especialidad.max_horas_diaria
-						
-						puntos += horas_excedidas * PUNTOS_HORAS_DIARIAS
-						
-						horario_comp.penalizado += 1
-					
-					break
-		
+				if especialidad.max_horas_diaria < horas_diarias:
+					puntos += (horas_diarias - especialidad.max_horas_diaria) * PUNTOS_HORAS_DIARIAS			
 		
 		return puntos
 	
@@ -424,57 +403,34 @@ class Espacio(models.Model):
 		
 		puntos = 0
 		
-		for i in range(len(self.dias_habiles)):
+		#El ciclo mas grande es el de los dias
+		for j in range(len(self.dias_habiles)):
 			
-			for j in range(len(self.horas)):
+			#Se toma el nodo que se encuentra en el medio de
+			#la posicion de i y dos mas atras. O sea, de tres
+			#nodos se evalua el primero con el segundo y el
+			#segundo con el tercero.
+			#Esto se hace ya que un nodo que no sea vecino de uno igual, SIEMPRE ES UN NODO MAL UBICADO
+			#Recordar que esta funcion busca agrupar los nodos iguales
 				
-				#Obtenemos el horario a evaluar.
-				horario = calendario.horarios[j][i]
+			#Si el nodo no tiene como vecino a uno igual, entoces se penaliza
+			#El segundo ciclo recorre hora x hora. Se descuentan dos
+			#posiciones ya que en la evaluacion del if se compara
+			#con dos posiciones por delante. De esta manera no se sale de rango
+			for i in range(len(self.horas)-2):
 				
-				for k in range(len(self.dias_habiles)):
-					
-					#Si el dia no es el mismo, lo salteamos.
-					if i != k:
-						continue
-					
-					for l in range(len(self.horas)):
-						
-						if j >= l:
-							continue
-						
-						#Obtenemos el horario a comparar.
-						horario_comp = calendario.horarios[l][k]
-						
-						#Si las especialidades son distintas no
-						#tenemos que evaluarlo, por ende lo salteamos.
-						if horario.especialidad != horario_comp.especialidad:
-							continue
-						
-						if j + 1 == l:
-							continue
-						
-						#Esta comprobación se hace para que no se
-						#penalice M M M.
-						penalizable = False
-						m = l - 1
-						while j != m:
-							
-							if horario.especialidad != calendario.horarios[m][k].especialidad:
-								penalizable = True
-								break
-							
-							m -= 1
-						
-						if not penalizable:
-							continue
-						
-						puntos += PUNTOS_DISTRIBUCION_HORARIA
-						horario_comp.penalizado += 1
-						
-						#La asignación se realiza si queremos que
-						#no se penalice esto M L L M M.
-						#~ horario = horario_comparacion
-					
+				if calendario.horarios[i][j].especialidad != calendario.horarios[i+1][j].especialidad\
+				and calendario.horarios[i+1][j].especialidad != calendario.horarios[i+2][j].especialidad:
+					puntos += PUNTOS_DISTRIBUCION_HORARIA
+			
+			#En el caso del primer nodo de la lista, el cual solo puede tener UN SOLO NODO igual, solo se lo penaliza si el que le sigue es distinto a este
+			if calendario.horarios[0][j].especialidad != calendario.horarios[1][j].especialidad:
+				puntos += PUNTOS_DISTRIBUCION_HORARIA
+				
+				#Con el ultimo nodo de la lista, pasa lo mismo que el primero, solo se lo penaliza, si su unico vecino es diferente a este.
+			if calendario.horarios[i+2][j].especialidad != calendario.horarios[i+1][j].especialidad:
+				puntos += PUNTOS_DISTRIBUCION_HORARIA
+		
 		return puntos
 	
 	def itswellassigned(self, horario):
@@ -498,11 +454,9 @@ class Espacio(models.Model):
 		for restriccion in horario.profesional.restricciones.all():
 			
 			#Si no es el mismo dia de la semana del horario continuamos.
-			if restriccion.dia_semana != 7:
-				continue
-			
 			if horario.dia_semana != restriccion.dia_semana:
-				continue
+				if restriccion.dia_semana != 7:
+					continue
 			
 			if (horario.hora_desde >= restriccion.hora_desde and horario.hora_desde < restriccion.hora_hasta):
 				return False
@@ -513,9 +467,12 @@ class Espacio(models.Model):
 			if (horario.hora_desde <= restriccion.hora_desde and horario.hora_hasta >= restriccion.hora_hasta):
 				return False
 			
-			if (horario.hora_desde >= restriccion.hora_desde and horario.hora_hasta <= restriccion.hora_hasta):
+			if (horario.hora_desde > restriccion.hora_desde and horario.hora_hasta < restriccion.hora_hasta):
 				return False
-		
+			
+			if (horario.hora_desde == restriccion.hora_desde and horario.hora_hasta == restriccion.hora_hasta):
+				return False
+			
 		return True
 	
 	def horas_semanales_de(self, especialidad, calendario):
@@ -555,6 +512,47 @@ class Espacio(models.Model):
 					horas_semanales += 1
 		
 		return abs(especialidad.carga_horaria_semanal - horas_semanales)
+	
+	def seleccionar(self, ):
+		"""
+		
+		
+		@Return:
+		tuple(Calendario, Calendario).
+		"""
+		
+		padre = None
+		madre = None
+		
+		#Los elegidos para competir.
+		elegidos = []
+		
+		#Hacemos un torneo de 20 individuos.
+		for i in range(20):
+			
+			indice = randrange(len(self.poblacion))
+			
+			calendario = self.poblacion[indice]
+			
+			if calendario not in elegidos:
+				elegidos.append(calendario)
+		
+		padre = self.winneroftournament(elegidos)
+		
+		elegidos = []
+		
+		for i in range(20):
+			
+			indice = randrange(len(self.poblacion))
+			
+			calendario = self.poblacion[indice]
+			
+			if calendario not in elegidos:
+				elegidos.append(calendario)
+		
+		madre = self.winneroftournament(elegidos)
+		
+		return (padre, madre)
 	
 	def winneroftournament(self, elegidos):
 		"""

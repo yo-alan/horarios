@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import copy
+import random
 
 from django.db import models
 
@@ -63,9 +64,10 @@ class Calendario(models.Model):
 		
 		#Tomamos del padre la primer mitad y de la madre la segunda
 		#mitad y creamos el primer hijo.
-		hijo1.horarios = padre[:punto_corte] + madre[punto_corte:]
+		hijo1.horarios = self.horarios[:punto_corte] + madre.horarios[punto_corte:]
 		
-		hijo1.mutar()
+		if prob_mutacion < random.random():
+			hijo1.mutar()
 		
 		hijos.append(hijo1)
 		
@@ -73,9 +75,10 @@ class Calendario(models.Model):
 		
 		#Tomamos de la madre la primer mitad y del padre la segunda
 		#mitad y creamos el segundo hijo.
-		hijo2.horarios = madre[:punto_corte] + padre[punto_corte:]
+		hijo2.horarios = madre.horarios[:punto_corte] + self.horarios[punto_corte:]
 		
-		hijo2.mutar()
+		if prob_mutacion < random.random():
+			hijo2.mutar()
 		
 		hijos.append(hijo2)
 		
@@ -87,6 +90,12 @@ class Calendario(models.Model):
 	def agregar_horario(self, horario):
 		"""
 		Agrega un Horario a la lista de horarios del Calendario.
+		
+		@Parametros:
+		horario: Horario.
+		
+		@Return:
+		None.
 		"""
 		
 		#Por cada franja horaria.
