@@ -52,7 +52,8 @@ class Calendario(models.Model):
 			raise Exception("Se esperaba un Calendario.")
 		
 		if self == madre:
-			raise Exception("Un Calendario no puede cruzarse consigo mismo.")
+			return []
+			#~ raise Exception("Un Calendario no puede cruzarse consigo mismo.")
 		
 		hijos = []
 		
@@ -155,10 +156,12 @@ class Calendario(models.Model):
 		
 		return self._horarios
 	
+	@horarios.setter
+	def horarios(self, horarios):
+		self._horarios = horarios
+	
 	#TODO dos calendarios con el mismo puntaje no necesariamente
 	#tienen que ser iguales. Al igual que __ne__.
-	def __eq__(self, o):
-		return self.puntaje == o.puntaje
 	
 	def __ne__(self, o):
 		return self.puntaje != o.puntaje

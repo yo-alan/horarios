@@ -102,6 +102,14 @@ class Espacio(models.Model):
 		#Cortamos la lista, quedándonos con los 100 individuos más aptos.
 		#~ self.poblacion = self.poblacion[:100]
 		
+		operation_time = time.time()
+		
+		for calendario in self.poblacion:
+			calendario.full_save()
+		
+		print "Guardar %d calendarios llevó %7.3f seg."\
+				% (len(self.poblacion), time.time() - operation_time)
+		
 		#Hacemos la seleccion de individuos.
 		seleccionados = self.seleccion()
 		
@@ -120,6 +128,14 @@ class Espacio(models.Model):
 		
 		print "Evaluación realizada en %7.3f seg."\
 				% (time.time() - operation_time)
+		
+		operation_time = time.time()
+		
+		#Ordenamos la lista de individuos (más aptos al principio).
+		self.poblacion.sort()
+		
+		print "El ordenamiento de %d calendarios tardó %7.3f seg."\
+				% (len(self.poblacion), time.time() - operation_time)
 		
 		operation_time = time.time()
 		
@@ -297,14 +313,22 @@ class Espacio(models.Model):
 	
 	def cruzar(self, parejas):
 		"""
+		Genera una nueva población cruzando las parejas
+		que recibe por parametros.
 		
+		@Parametros:
+		parejas: list[tuple]
 		
+		@Return:
+		list[Calendario].
 		"""
 		
 		poblacion_nueva = []
 		
+		#Obtenemos cada pareja (padre y madre) del listado.
 		for padre, madre in parejas:
 			
+			#Y los cruzamos. Almacenamos los hijos resultantes.
 			poblacion_nueva += padre.cruce(madre)
 		
 		return poblacion_nueva
@@ -383,11 +407,17 @@ class Espacio(models.Model):
 				
 				for i in range(len(self.horas)):
 					
-					if especialidad == calendario.horarios[i][j].especialidad:
+					#Obtenemos el horario a evaluar.
+					horario = calendario.horarios[i][j]
+					
+					if especialidad == horario.especialidad:
 						horas_diarias += 1
 				
 				if especialidad.max_horas_diaria < horas_diarias:
-					puntos += (horas_diarias - especialidad.max_horas_diaria) * PUNTOS_HORAS_DIARIAS			
+					
+					horas_penalizar = (horas_diarias - especialidad.max_horas_diaria)
+					
+					puntos += horas_penalizar * PUNTOS_HORAS_DIARIAS			
 		
 		return puntos
 	
@@ -403,32 +433,31 @@ class Espacio(models.Model):
 		
 		puntos = 0
 		
-		#El ciclo mas grande es el de los dias
 		for j in range(len(self.dias_habiles)):
 			
-			#Se toma el nodo que se encuentra en el medio de
-			#la posicion de i y dos mas atras. O sea, de tres
-			#nodos se evalua el primero con el segundo y el
-			#segundo con el tercero.
-			#Esto se hace ya que un nodo que no sea vecino de uno igual, SIEMPRE ES UN NODO MAL UBICADO
-			#Recordar que esta funcion busca agrupar los nodos iguales
-				
-			#Si el nodo no tiene como vecino a uno igual, entoces se penaliza
-			#El segundo ciclo recorre hora x hora. Se descuentan dos
-			#posiciones ya que en la evaluacion del if se compara
-			#con dos posiciones por delante. De esta manera no se sale de rango
 			for i in range(len(self.horas)-2):
 				
-				if calendario.horarios[i][j].especialidad != calendario.horarios[i+1][j].especialidad\
-				and calendario.horarios[i+1][j].especialidad != calendario.horarios[i+2][j].especialidad:
-					puntos += PUNTOS_DISTRIBUCION_HORARIA
-			
-			#En el caso del primer nodo de la lista, el cual solo puede tener UN SOLO NODO igual, solo se lo penaliza si el que le sigue es distinto a este
-			if calendario.horarios[0][j].especialidad != calendario.horarios[1][j].especialidad:
-				puntos += PUNTOS_DISTRIBUCION_HORARIA
+				#Obtenemos los 3 horarios a comparar.
+				horario_anterior = calendario.horarios[i][j]
+				horario = calendario.horarios[i+1][j]
+				horario_siguiente = calendario.horarios[i+2][j]
 				
-				#Con el ultimo nodo de la lista, pasa lo mismo que el primero, solo se lo penaliza, si su unico vecino es diferente a este.
-			if calendario.horarios[i+2][j].especialidad != calendario.horarios[i+1][j].especialidad:
+				if horario_anterior.especialidad != horario.especialidad:
+					if horario.especialidad != horario_siguiente.especialidad:
+						puntos += PUNTOS_DISTRIBUCION_HORARIA
+			
+			horario_1 = calendario.horarios[0][j]
+			horario_2 = calendario.horarios[1][j]
+			
+			#Evaluamos el extremo inicial.
+			if horario_1.especialidad != horario_2.especialidad:
+				puntos += PUNTOS_DISTRIBUCION_HORARIA
+			
+			horario_1 = calendario.horarios[i+1][j]
+			horario_2 = calendario.horarios[i+2][j]
+			
+			#Evaluamos el extremo final.
+			if horario_1.especialidad != horario_2.especialidad:
 				puntos += PUNTOS_DISTRIBUCION_HORARIA
 		
 		return puntos
