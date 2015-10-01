@@ -111,7 +111,7 @@ class Espacio(models.Model):
 				% (len(self.poblacion), time.time() - operation_time)
 		
 		#Hacemos la seleccion de individuos.
-		seleccionados = self.seleccion()
+		seleccionados = self.seleccion()[:6]
 		
 		operation_time = time.time()
 		
