@@ -88,11 +88,11 @@ class Calendario(models.Model):
 		#mitad y creamos el segundo hijo.
 		#~ hijo2.horarios = madre.horarios[:punto_corte] + self.horarios[punto_corte:]
 		
-		for franja_horaria in self.horarios[:punto_corte]:
+		for franja_horaria in madre.horarios[:punto_corte]:
 			for horario in franja_horaria:
 				hijo2.agregar_horario(copy.copy(horario))
 		
-		for franja_horaria in madre.horarios[punto_corte:]:
+		for franja_horaria in self.horarios[punto_corte:]:
 			for horario in franja_horaria:
 				hijo2.agregar_horario(copy.copy(horario))
 		

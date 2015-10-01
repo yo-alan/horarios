@@ -102,16 +102,8 @@ class Espacio(models.Model):
 		#Cortamos la lista, quedándonos con los 100 individuos más aptos.
 		#~ self.poblacion = self.poblacion[:100]
 		
-		operation_time = time.time()
-		
-		for calendario in self.poblacion:
-			calendario.full_save()
-		
-		print "Guardar %d calendarios llevó %7.3f seg."\
-				% (len(self.poblacion), time.time() - operation_time)
-		
 		#Hacemos la seleccion de individuos.
-		seleccionados = self.seleccion()[:6]
+		seleccionados = self.seleccion()
 		
 		operation_time = time.time()
 		
