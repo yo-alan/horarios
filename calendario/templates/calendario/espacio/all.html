@@ -3,84 +3,84 @@
 {% block title %}Listado de espacios{% endblock %}
 
 {% block head %}
-	<script>
-		function eliminarEspacio(espacio_id){
-			
-			if(!confirm("¿Está seguro que desea eliminar a este espacio?"))
-				return;
-			
-			$.ajax({
-				url: "{% url 'calendario:espacio_delete' %}",
-				type: 'POST',
-				data: {
-					csrfmiddlewaretoken: '{{ csrf_token }}',
-					espacio_id: espacio_id
-				},
-				success: function(response) {
-					window.location.href = "{% url 'calendario:espacio_all' %}";
-				}
-			});
-		}
-	</script>
+    <script>
+        function eliminarEspacio(espacio_id){
+            
+            if(!confirm("¿Está seguro que desea eliminar a este espacio?"))
+                return;
+            
+            $.ajax({
+                url: "{% url 'calendario:espacio_delete' %}",
+                type: 'POST',
+                data: {
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                    espacio_id: espacio_id
+                },
+                success: function(response) {
+                    window.location.href = "{% url 'calendario:espacio_all' %}";
+                }
+            });
+        }
+    </script>
 {% endblock %}
 {% block article %}
-	<div class="page-header">
-		<h1>
-			Espacios<small>.</small>
-		</h1>
-	</div>
-	<table class="table table-hover">
-		<thead>
-			<tr>
-				<th>
-					Nombre
-				</th>
-				<th>
-					Acciones
-				</th>
-			</tr>
-		</thead>
-		{% if espacios %}
-			<tbody>
-				{% for espacio in espacios %}
-					<tr>
-						<td class="vert-align col-md-6">
-							{{ espacio.nombre }}
-						</td>
-						<td class="vert-align">
-							<div class="btn btn-group btn-block">
-								<a class="btn btn-default" title="Editar" href="{% url 'calendario:espacio_detail' espacio.id %}#espacio"><i class="glyphicon glyphicon-edit"></i></a>
-								<a class="btn btn-default" title="Especialidades" href="{% url 'calendario:espacio_detail' espacio.id %}#especialidades"><i class="glyphicon glyphicon-th-list"></i></a>
-								{% if espacio.especialidades.all %}
-									<a class="btn btn-default" title="Profesionales" href="{% url 'calendario:espacio_detail' espacio.id %}#profesionales"><i class="glyphicon glyphicon-user"></i></a>
-								{% else %}
-									<a class="btn btn-default disabled" title="Profesionales" href="{% url 'calendario:espacio_detail' espacio.id %}#profesionales"><i class="glyphicon glyphicon-user"></i></a>
-								{% endif %}
-								<a class="btn btn-default" title="Horas" href="{% url 'calendario:espacio_detail' espacio.id %}#horas"><i class="glyphicon glyphicon-time"></i></a>
-								<a class="btn btn-default" title="Calendarios" href="{% url 'calendario:espacio_detail' espacio.id %}#calendarios"><i class="glyphicon glyphicon-calendar"></i></a>
-								<a class="btn btn-danger" title="Eliminar" onclick="eliminarEspacio({{ espacio.id }})"><i class="glyphicon glyphicon-trash"></i></a>
-							</div>
-						</td>
-					</tr>
-				{% endfor %}
-			</tbody>
-		{% else %}
-			<tfoot align="center">
-				<tr>
-					<td colspan="5">No hay espacios cargados.</td>
-				</tr>
-			</tfoot>
-		{% endif %}
-	</table>
-	<nav>
-		<ul class="pager">
-			{% if espacios.has_previous %}
-				<li class="previous"><a href="{% url 'calendario:espacio_all' espacios.previous_page_number %}"><span class="glyphicon glyphicon-arrow-left"></span> Anterior</a></li>
-			{% endif %}
-			
-			{% if espacios.has_next %}
-				<li class="next"><a href="{% url 'calendario:espacio_all' espacios.next_page_number %}">Siguiente <span class="glyphicon glyphicon-arrow-right"></span></a>
-			{% endif %}
-		</ul>
-	</nav>
+    <div class="page-header">
+        <h1>
+            Espacios<small>.</small>
+        </h1>
+    </div>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>
+                    Nombre
+                </th>
+                <th>
+                    Acciones
+                </th>
+            </tr>
+        </thead>
+        {% if espacios %}
+            <tbody>
+                {% for espacio in espacios %}
+                    <tr>
+                        <td class="vert-align col-md-6">
+                            {{ espacio.nombre }}
+                        </td>
+                        <td class="vert-align">
+                            <div class="btn btn-group btn-block">
+                                <a class="btn btn-default" title="Editar" href="{% url 'calendario:espacio_detail' espacio.id %}#espacio"><i class="glyphicon glyphicon-edit"></i></a>
+                                <a class="btn btn-default" title="Especialidades" href="{% url 'calendario:espacio_detail' espacio.id %}#especialidades"><i class="glyphicon glyphicon-th-list"></i></a>
+                                {% if espacio.especialidades.all %}
+                                    <a class="btn btn-default" title="Profesionales" href="{% url 'calendario:espacio_detail' espacio.id %}#profesionales"><i class="glyphicon glyphicon-user"></i></a>
+                                {% else %}
+                                    <a class="btn btn-default disabled" title="Profesionales" href="{% url 'calendario:espacio_detail' espacio.id %}#profesionales"><i class="glyphicon glyphicon-user"></i></a>
+                                {% endif %}
+                                <a class="btn btn-default" title="Horas" href="{% url 'calendario:espacio_detail' espacio.id %}#horas"><i class="glyphicon glyphicon-time"></i></a>
+                                <a class="btn btn-default" title="Calendarios" href="{% url 'calendario:espacio_detail' espacio.id %}#calendarios"><i class="glyphicon glyphicon-calendar"></i></a>
+                                <a class="btn btn-danger" title="Eliminar" onclick="eliminarEspacio({{ espacio.id }})"><i class="glyphicon glyphicon-trash"></i></a>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        {% else %}
+            <tfoot align="center">
+                <tr>
+                    <td colspan="5">No hay espacios cargados.</td>
+                </tr>
+            </tfoot>
+        {% endif %}
+    </table>
+    <nav>
+        <ul class="pager">
+            {% if espacios.has_previous %}
+                <li class="previous"><a href="{% url 'calendario:espacio_all' espacios.previous_page_number %}"><span class="glyphicon glyphicon-arrow-left"></span> Anterior</a></li>
+            {% endif %}
+            
+            {% if espacios.has_next %}
+                <li class="next"><a href="{% url 'calendario:espacio_all' espacios.next_page_number %}">Siguiente <span class="glyphicon glyphicon-arrow-right"></span></a>
+            {% endif %}
+        </ul>
+    </nav>
 {% endblock %}

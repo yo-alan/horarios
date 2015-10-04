@@ -3,7 +3,7 @@ from django.conf.urls import url
 from . import views
 
 urlpatterns = [
-	# ex: /calendario/
+    # ex: /calendario/
     url(r'^$', views.all, name='all'),
     # ex: /calendario/all/
     url(r'^all/$', views.all, name='all'),

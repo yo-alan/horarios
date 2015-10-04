@@ -5,56 +5,56 @@
 {% block title %}Agregar un profesional{% endblock %}
 
 {% block head %}
-	<script>
-		var onsuccess = "{% url 'calendario:profesional_all' %}";
-	</script>
-	<script type="text/javascript" src="{% static 'calendario/js/profesional/add.js' %}"></script>
+    <script>
+        var onsuccess = "{% url 'calendario:profesional_all' %}";
+    </script>
+    <script type="text/javascript" src="{% static 'calendario/js/profesional/add.js' %}"></script>
 {% endblock %}
 {% block article %}
-	<ol class="breadcrumb">
-		<li><a href="{% url 'calendario:profesional_all' %}">Profesionales</a></li>
-		<li class="active">Agregar profesional</li>
-	</ol>
-	<div class="page-header text-center">
-		<h1>
-			Agregar profesional<small>.</small>
-		</h1>
-	</div>
-	<div class="col-xs-8 col-xs-offset-2">
-		<form class="form-horizontal responsive" id="addForm" name="addForm" method="POST" action="{% url 'calendario:profesional_add' %}">
-			<div class="alert alert-dismissable alert-danger hidden">
-				<button type="button" class="close" data-hide="alert" aria-hidden="true">
-					×
-				</button>
-				<h4>
-					Error al guardar el profesional.
-				</h4>
-				<strong>Ojo!</strong> Un campo no es válido:
-				<p>
-				</p>
-			</div>
-			{% csrf_token %}
-			<div class="form-group">
-				<label class="col-xs-3 control-label" for="nombre">Nombre:</label>
-				<div class="col-xs-9">
-					<input type="text" id="nombre" name="nombre" class="form-control" autofocus placeholder="Nombre del profesional">
-				</div>
-			</div>
-			<div class="form-group">
-				<label class="col-xs-3 control-label" for="apellido">Apellido:</label>
-				<div class="col-xs-9">
-					<input type="text" id="apellido" name="apellido" class="form-control" placeholder="Apellido del profesional">
-				</div>
-			</div>
-			<div class="form-group">
-				<label class="col-xs-3 control-label" for="cuil">Cuil:</label>
-				<div class="col-xs-9">
-					<input type="text" id="cuil" name="cuil" class="form-control" placeholder="Número de cuil del profesional">
-				</div>
-			</div>
-			<button type="submit" id="btnGuardar" data-loading-text="Guardando..." class="btn btn-primary pull-right" autocomplete="off">
-				Guardar
-			</button>
-		</form>
-	</div>
+    <ol class="breadcrumb">
+        <li><a href="{% url 'calendario:profesional_all' %}">Profesionales</a></li>
+        <li class="active">Agregar profesional</li>
+    </ol>
+    <div class="page-header text-center">
+        <h1>
+            Agregar profesional<small>.</small>
+        </h1>
+    </div>
+    <div class="col-xs-8 col-xs-offset-2">
+        <form class="form-horizontal responsive" id="addForm" name="addForm" method="POST" action="{% url 'calendario:profesional_add' %}">
+            <div class="alert alert-dismissable alert-danger hidden">
+                <button type="button" class="close" data-hide="alert" aria-hidden="true">
+                    ×
+                </button>
+                <h4>
+                    Error al guardar el profesional.
+                </h4>
+                <strong>Ojo!</strong> Un campo no es válido:
+                <p>
+                </p>
+            </div>
+            {% csrf_token %}
+            <div class="form-group">
+                <label class="col-xs-3 control-label" for="nombre">Nombre:</label>
+                <div class="col-xs-9">
+                    <input type="text" id="nombre" name="nombre" class="form-control" autofocus placeholder="Nombre del profesional">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-xs-3 control-label" for="apellido">Apellido:</label>
+                <div class="col-xs-9">
+                    <input type="text" id="apellido" name="apellido" class="form-control" placeholder="Apellido del profesional">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-xs-3 control-label" for="cuil">Cuil:</label>
+                <div class="col-xs-9">
+                    <input type="text" id="cuil" name="cuil" class="form-control" placeholder="Número de cuil del profesional">
+                </div>
+            </div>
+            <button type="submit" id="btnGuardar" data-loading-text="Guardando..." class="btn btn-primary pull-right" autocomplete="off">
+                Guardar
+            </button>
+        </form>
+    </div>
 {% endblock %}

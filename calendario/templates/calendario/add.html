@@ -3,183 +3,183 @@
 {% block title %}Crear un calendario a medida.{% endblock %}
 
 {% block head %}
-	<script>
-		
-		$(document).ready(function (){
-			{% for especialidad in especialidades %}
-				$("#{{ especialidad|cut:" " }}").css('background-color', "{{ especialidad.color }}");
-			{% endfor %}
-		});
-		
-		function allowDrop(ev) {
-			ev.preventDefault();
-		}
-		
-		function drag(ev) {
-			ev.dataTransfer.setData("text", ev.target.id);
-		}
-		
-		function drop(ev) {
-			ev.preventDefault();
-			var especialidadId = ev.dataTransfer.getData("text");
-			var especialidad = document.getElementById(especialidadId);
-			
-			if(especialidad == null)
-				return;
-			
-			if(ev.target.nodeName == 'STRONG' && especialidad.parentNode.nodeName != 'LI'){
-				
-				var especialidadDestino = ev.target.parentNode;
-				var divDestino = especialidadDestino.parentNode;
-				var divOrigen = especialidad.parentNode;
-				
-				divDestino.appendChild(especialidad);
-				divOrigen.appendChild(especialidadDestino);
-				
-			}
-			else if(ev.target.children.length == 0){
-				
-				if(ev.target.nodeName == 'STRONG')
-					return;
-				
-				if(especialidad.parentNode.nodeName != 'DIV')
-					especialidad = especialidad.cloneNode(true);
-				
-				//PARA ASIGNAR UN ID HAY QUE COMPROBAR SU UBICACION.
-				especialidad.setAttribute('id', parseInt(ev.target.getAttribute("horario"))*{{ espacio.dias_habiles|length }}+parseInt(ev.target.getAttribute("dia")));
-				especialidad.setAttribute('desde', ev.target.getAttribute('desde'));
-				especialidad.setAttribute('dia', ev.target.getAttribute('dia'));
-				
-				ev.target.appendChild(especialidad);
-				
-				ev.target.parentNode.style.backgroundColor = especialidad.style.backgroundColor;
-			}
-			
-		}
-		
-		function guardar(){
-			
-			var datos = {csrfmiddlewaretoken: "{{ csrf_token }}"};
-			for(i = 1; i < {{ espacio.dias_habiles|length }}*{{ espacio.horas|length }}+1; i++){
-				
-				var espacio_horario = document.getElementById(i);
-				
-				if(espacio_horario == null){
-					alert("El calendario no se puede guardar por que no está completo:" + i);
-					return;
-				}
-				
-				datos[i] = {};
-				datos[i].especialidad = espacio_horario.getAttribute('name');
-				datos[i].desde = espacio_horario.getAttribute('desde');
-				datos[i].dia = espacio_horario.getAttribute('dia');
-			}
-			
-			$.ajax({
-				url: "/calendario/add/{{ espacio.id }}/",
-				type: 'POST',
-				dataType: 'json',
-				data: datos,
-				success: function(response){
-					
-					alert(response.mensaje);
-					
-				},
-				error: function(response){
-					
-					alert(response.responseText);
-					
-				}
-			});
-		}
-		
-		function imprimir(){
-			alert("Imprimiendo...");
-		}
-		
-		function eliminar(ev){
-			var especialidadId = ev.dataTransfer.getData("text");
-			var especialidad = document.getElementById(especialidadId);
-			
-			if(especialidad == null)
-				return;
-			
-			var nodePadre = especialidad.parentNode;
-			
-			if(nodePadre.nodeName == 'DIV'){
-				nodePadre.removeChild(especialidad);
-				nodePadre.parentNode.style.backgroundColor = "white";
-			}
-		}
-		
-		function nuevo(){
-			location.reload();
-		}
-	</script>
+    <script>
+        
+        $(document).ready(function (){
+            {% for especialidad in especialidades %}
+                $("#{{ especialidad|cut:" " }}").css('background-color', "{{ especialidad.color }}");
+            {% endfor %}
+        });
+        
+        function allowDrop(ev) {
+            ev.preventDefault();
+        }
+        
+        function drag(ev) {
+            ev.dataTransfer.setData("text", ev.target.id);
+        }
+        
+        function drop(ev) {
+            ev.preventDefault();
+            var especialidadId = ev.dataTransfer.getData("text");
+            var especialidad = document.getElementById(especialidadId);
+            
+            if(especialidad == null)
+                return;
+            
+            if(ev.target.nodeName == 'STRONG' && especialidad.parentNode.nodeName != 'LI'){
+                
+                var especialidadDestino = ev.target.parentNode;
+                var divDestino = especialidadDestino.parentNode;
+                var divOrigen = especialidad.parentNode;
+                
+                divDestino.appendChild(especialidad);
+                divOrigen.appendChild(especialidadDestino);
+                
+            }
+            else if(ev.target.children.length == 0){
+                
+                if(ev.target.nodeName == 'STRONG')
+                    return;
+                
+                if(especialidad.parentNode.nodeName != 'DIV')
+                    especialidad = especialidad.cloneNode(true);
+                
+                //PARA ASIGNAR UN ID HAY QUE COMPROBAR SU UBICACION.
+                especialidad.setAttribute('id', parseInt(ev.target.getAttribute("horario"))*{{ espacio.dias_habiles|length }}+parseInt(ev.target.getAttribute("dia")));
+                especialidad.setAttribute('desde', ev.target.getAttribute('desde'));
+                especialidad.setAttribute('dia', ev.target.getAttribute('dia'));
+                
+                ev.target.appendChild(especialidad);
+                
+                ev.target.parentNode.style.backgroundColor = especialidad.style.backgroundColor;
+            }
+            
+        }
+        
+        function guardar(){
+            
+            var datos = {csrfmiddlewaretoken: "{{ csrf_token }}"};
+            for(i = 1; i < {{ espacio.dias_habiles|length }}*{{ espacio.horas|length }}+1; i++){
+                
+                var espacio_horario = document.getElementById(i);
+                
+                if(espacio_horario == null){
+                    alert("El calendario no se puede guardar por que no está completo:" + i);
+                    return;
+                }
+                
+                datos[i] = {};
+                datos[i].especialidad = espacio_horario.getAttribute('name');
+                datos[i].desde = espacio_horario.getAttribute('desde');
+                datos[i].dia = espacio_horario.getAttribute('dia');
+            }
+            
+            $.ajax({
+                url: "/calendario/add/{{ espacio.id }}/",
+                type: 'POST',
+                dataType: 'json',
+                data: datos,
+                success: function(response){
+                    
+                    alert(response.mensaje);
+                    
+                },
+                error: function(response){
+                    
+                    alert(response.responseText);
+                    
+                }
+            });
+        }
+        
+        function imprimir(){
+            alert("Imprimiendo...");
+        }
+        
+        function eliminar(ev){
+            var especialidadId = ev.dataTransfer.getData("text");
+            var especialidad = document.getElementById(especialidadId);
+            
+            if(especialidad == null)
+                return;
+            
+            var nodePadre = especialidad.parentNode;
+            
+            if(nodePadre.nodeName == 'DIV'){
+                nodePadre.removeChild(especialidad);
+                nodePadre.parentNode.style.backgroundColor = "white";
+            }
+        }
+        
+        function nuevo(){
+            location.reload();
+        }
+    </script>
 {% endblock %}
 {% block article %}
-	<h3 class="text-center">
-		Calendario para "{{ espacio }}".
-	</h3>
-	<ul class="list-inline">
-		<li>
-			<img class="btn" src="/static/calendario/images/new.png" onclick="nuevo()" title="Nuevo calendario...">
-		</li>
-		<li>
-			<img class="btn" src="/static/calendario/images/save.png" onclick="guardar()" title="Guardar calendario...">
-		</li>
-		<li>
-			<img class="btn" src="/static/calendario/images/print.png" onclick="imprimir()" title="Imprimir calendario...">
-		</li>
-		<li>
-			<img src="/static/calendario/images/trash.png" id="trash" ondrop="eliminar(event)" ondragover="allowDrop(event)">
-		</li>
-	</ul>
-	<div class="col-xs-8 pull-left center-block">
-		<table class="table center-block">
-			<thead>
-				<tr class="bg-primary">
-					<th class="text-center">
-					</th>
-					{% for dia in dias %}
-						<th class="text-center">
-							<h4><strong>{{ dia }}</strong></h4>
-						</th>
-					{% endfor %}
-				</tr>
-			</thead>
-			<tbody>
-				{% for hora in espacio.horas %}
-					<tr>
-						<td class="text-center bg-primary">
-							<h4>
-								<strong>{{ hora.hora_desde }}</strong>
-							</h4>
-							<h4>
-								<strong>{{ hora.hora_hasta }}</strong>
-							</h4>
-						</td>
-						{% for dia in espacio.dias_habiles %}
-							<td class="text-center">
-								<div id="{{ hora }}{{ dia }}" dia="{{ dia }}" desde="{{ hora }}" horario="{{ forloop.parentloop.counter0 }}" ondrop="drop(event)" ondragover="allowDrop(event)" class="horario-container">
-									
-								</div>
-							</td>
-						{% endfor %}
-					</tr>
-				{% endfor %}
-			</tbody>
-		</table>
-	</div>
-	<div class="col-xs-2 pull-right">
-		<ul class="list-unstyled">
-			{% for coordinador in espacio.coordinadores %}
-				<li>
-					<p id="{{ coordinador.especialidad|cut:" " }}" name="{{ coordinador.especialidad.id }}" draggable="true" ondragstart="drag(event)" class="lead especialidad text-center">
-						<strong>{{ coordinador.especialidad }}</strong>
-					</p>
-				</li>
-			{% endfor %}
-		</ul>
-	</div>
+    <h3 class="text-center">
+        Calendario para "{{ espacio }}".
+    </h3>
+    <ul class="list-inline">
+        <li>
+            <img class="btn" src="/static/calendario/images/new.png" onclick="nuevo()" title="Nuevo calendario...">
+        </li>
+        <li>
+            <img class="btn" src="/static/calendario/images/save.png" onclick="guardar()" title="Guardar calendario...">
+        </li>
+        <li>
+            <img class="btn" src="/static/calendario/images/print.png" onclick="imprimir()" title="Imprimir calendario...">
+        </li>
+        <li>
+            <img src="/static/calendario/images/trash.png" id="trash" ondrop="eliminar(event)" ondragover="allowDrop(event)">
+        </li>
+    </ul>
+    <div class="col-xs-8 pull-left center-block">
+        <table class="table center-block">
+            <thead>
+                <tr class="bg-primary">
+                    <th class="text-center">
+                    </th>
+                    {% for dia in dias %}
+                        <th class="text-center">
+                            <h4><strong>{{ dia }}</strong></h4>
+                        </th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for hora in espacio.horas %}
+                    <tr>
+                        <td class="text-center bg-primary">
+                            <h4>
+                                <strong>{{ hora.hora_desde }}</strong>
+                            </h4>
+                            <h4>
+                                <strong>{{ hora.hora_hasta }}</strong>
+                            </h4>
+                        </td>
+                        {% for dia in espacio.dias_habiles %}
+                            <td class="text-center">
+                                <div id="{{ hora }}{{ dia }}" dia="{{ dia }}" desde="{{ hora }}" horario="{{ forloop.parentloop.counter0 }}" ondrop="drop(event)" ondragover="allowDrop(event)" class="horario-container">
+                                    
+                                </div>
+                            </td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="col-xs-2 pull-right">
+        <ul class="list-unstyled">
+            {% for coordinador in espacio.coordinadores %}
+                <li>
+                    <p id="{{ coordinador.especialidad|cut:" " }}" name="{{ coordinador.especialidad.id }}" draggable="true" ondragstart="drag(event)" class="lead especialidad text-center">
+                        <strong>{{ coordinador.especialidad }}</strong>
+                    </p>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
 {% endblock %}

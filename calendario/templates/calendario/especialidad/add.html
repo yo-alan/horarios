@@ -3,94 +3,94 @@
 {% block title %}Agregar una especialidad{% endblock %}
 
 {% block head %}
-	<script>
-		$(function(){
-			
-			$("[data-hide]").click(function(){
-				$(".alert-danger").attr('class', "alert alert-dismissable alert-danger hidden");
-			});
-			
-			var form = $("#addForm");
-			
-			form.submit(function (ev){
-				
-				ev.preventDefault();
-				
-				$("#" + form.attr('id') + " button[type=submit]").button('loading');
-				
-				$.ajax({
-					url: form.attr('action'),
-					type: form.attr('method'),
-					data: form.serialize(),
-					success: function (response){
-						
-						$("#" + form.attr('id') + " button[type=submit]").button('reset');
-						
-						$(".form-group").attr('class', "form-group");
-						
-						if(response.error){
-							
-							if(response.campo){
-								$("#"+ response.campo).parent().parent().attr('class', "form-group has-error");
-								$("#"+ response.campo).focus();
-							}
-							
-							$("#" + form.attr('id') + " .alert").attr('class', "alert alert-dismissable alert-danger");
-							$("#" + form.attr('id') + " .alert p").html(response.error);
-							return;
-						}
-						
-						alert(response.mensaje);
-						window.location.href = "{% url 'calendario:especialidad_all' %}";
-					}
-				});
-			});
-		});
-	</script>
+    <script>
+        $(function(){
+            
+            $("[data-hide]").click(function(){
+                $(".alert-danger").attr('class', "alert alert-dismissable alert-danger hidden");
+            });
+            
+            var form = $("#addForm");
+            
+            form.submit(function (ev){
+                
+                ev.preventDefault();
+                
+                $("#" + form.attr('id') + " button[type=submit]").button('loading');
+                
+                $.ajax({
+                    url: form.attr('action'),
+                    type: form.attr('method'),
+                    data: form.serialize(),
+                    success: function (response){
+                        
+                        $("#" + form.attr('id') + " button[type=submit]").button('reset');
+                        
+                        $(".form-group").attr('class', "form-group");
+                        
+                        if(response.error){
+                            
+                            if(response.campo){
+                                $("#"+ response.campo).parent().parent().attr('class', "form-group has-error");
+                                $("#"+ response.campo).focus();
+                            }
+                            
+                            $("#" + form.attr('id') + " .alert").attr('class', "alert alert-dismissable alert-danger");
+                            $("#" + form.attr('id') + " .alert p").html(response.error);
+                            return;
+                        }
+                        
+                        alert(response.mensaje);
+                        window.location.href = "{% url 'calendario:especialidad_all' %}";
+                    }
+                });
+            });
+        });
+    </script>
 {% endblock %}
 {% block article %}
-	<ol class="breadcrumb">
-		<li><a href="{% url 'calendario:especialidad_all' %}">Especialidades</a></li>
-		<li class="active">Agregar especialidad</li>
-	</ol>
-	<div class="page-header text-center">
-		<h1>
-			Agregar especialidad<small>.</small>
-		</h1>
-	</div>
-	<form class="form-horizontal responsive center col-xs-10" id="addForm" name="addForm" method="POST" action="{% url 'calendario:especialidad_add' %}">
-		<div class="alert alert-dismissable alert-danger hidden">
-			<button type="button" class="close" data-hide="alert" aria-hidden="true">
-				×
-			</button>
-			<h4>
-				Error al guardar la especialidad.
-			</h4>
-			<strong>Ojo!</strong> Un campo no es válido:
-			<p>
-			</p>
-		</div>
-		{% csrf_token %}
-		<div class="form-group">
-			<label class="col-xs-5 control-label" for="nombre">Nombre:</label>
-			<div class="col-xs-7">
-				<input type="text" id="nombre" name="nombre" class="form-control" autofocus placeholder="Nombre de la especialidad">
-			</div>
-		</div>
-		<div class="form-group">
-			<label class="col-xs-5 control-label" for="carga_horaria_semanal">Carga horaria semanal:</label>
-			<div class="col-xs-7">
-				<input type="number" id="carga_horaria_semanal" name="carga_horaria_semanal" class="form-control" min="1" placeholder="Carga horaria semanal" value="0">
-			</div>
-		</div>
-		<div class="form-group">
-			<label class="col-xs-5 control-label" for="max_horas_diaria">Carga máxima diaria:</label>
-			<div class="col-xs-7">
-				<input type="number" id="max_horas_diaria" name="max_horas_diaria" class="form-control" min="1" placeholder="Carga máxima diaria" value="0">
-			</div>
-		</div>
-		<button type="submit" id="btnGuardar" data-loading-text="Guardando..." class="btn btn-primary pull-right" autocomplete="off">
-			Agregar
-		</button>
-	</form>
+    <ol class="breadcrumb">
+        <li><a href="{% url 'calendario:especialidad_all' %}">Especialidades</a></li>
+        <li class="active">Agregar especialidad</li>
+    </ol>
+    <div class="page-header text-center">
+        <h1>
+            Agregar especialidad<small>.</small>
+        </h1>
+    </div>
+    <form class="form-horizontal responsive center col-xs-10" id="addForm" name="addForm" method="POST" action="{% url 'calendario:especialidad_add' %}">
+        <div class="alert alert-dismissable alert-danger hidden">
+            <button type="button" class="close" data-hide="alert" aria-hidden="true">
+                ×
+            </button>
+            <h4>
+                Error al guardar la especialidad.
+            </h4>
+            <strong>Ojo!</strong> Un campo no es válido:
+            <p>
+            </p>
+        </div>
+        {% csrf_token %}
+        <div class="form-group">
+            <label class="col-xs-5 control-label" for="nombre">Nombre:</label>
+            <div class="col-xs-7">
+                <input type="text" id="nombre" name="nombre" class="form-control" autofocus placeholder="Nombre de la especialidad">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-xs-5 control-label" for="carga_horaria_semanal">Carga horaria semanal:</label>
+            <div class="col-xs-7">
+                <input type="number" id="carga_horaria_semanal" name="carga_horaria_semanal" class="form-control" min="1" placeholder="Carga horaria semanal" value="0">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-xs-5 control-label" for="max_horas_diaria">Carga máxima diaria:</label>
+            <div class="col-xs-7">
+                <input type="number" id="max_horas_diaria" name="max_horas_diaria" class="form-control" min="1" placeholder="Carga máxima diaria" value="0">
+            </div>
+        </div>
+        <button type="submit" id="btnGuardar" data-loading-text="Guardando..." class="btn btn-primary pull-right" autocomplete="off">
+            Agregar
+        </button>
+    </form>
 {% endblock %}

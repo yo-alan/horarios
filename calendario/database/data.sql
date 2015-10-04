@@ -518,7 +518,8 @@ CREATE TABLE calendario_horario (
     dia_semana integer NOT NULL,
     calendario_id integer NOT NULL,
     especialidad_id integer NOT NULL,
-    profesional_id integer NOT NULL
+    profesional_id integer NOT NULL,
+    penalizado integer NOT NULL
 );
 
 
@@ -1098,7 +1099,7 @@ COPY calendario_calendario (id, puntaje, espacio_id, estado, fecha_creacion, fec
 -- Name: calendario_calendario_id_seq; Type: SEQUENCE SET; Schema: public; Owner: django
 --
 
-SELECT pg_catalog.setval('calendario_calendario_id_seq', 12365, true);
+SELECT pg_catalog.setval('calendario_calendario_id_seq', 20331, true);
 
 
 --
@@ -1137,6 +1138,9 @@ COPY calendario_espacio (id, nombre, estado, fecha_creacion, fecha_modificacion,
 10	2do 3ra	OFF	2015-08-19	2015-09-05	admin	admin
 9	2do 2da	OFF	2015-08-19	2015-09-05	admin	admin
 4	1ro 1ra	ON	2015-08-19	2015-09-11	admin	admin
+15	kajsdhakdhakjdhakdhaksdjasd	OFF	2015-09-15	2015-09-15	admin	admin
+16	Hola como estas?	OFF	2015-09-15	2015-09-15	admin	admin
+17	Este es el nombre de un espacio demasiado largo	OFF	2015-09-17	2015-09-18	admin	admin
 \.
 
 
@@ -1179,7 +1183,7 @@ SELECT pg_catalog.setval('calendario_espacio_especialidades_id_seq', 73, true);
 -- Name: calendario_espacio_id_seq; Type: SEQUENCE SET; Schema: public; Owner: django
 --
 
-SELECT pg_catalog.setval('calendario_espacio_id_seq', 14, true);
+SELECT pg_catalog.setval('calendario_espacio_id_seq', 17, true);
 
 
 --
@@ -1220,32 +1224,32 @@ COPY calendario_espaciorestriccion (restriccion_ptr_id, espacio_id) FROM stdin;
 --
 
 COPY calendario_especialidad (id, nombre, carga_horaria_semanal, max_horas_diaria, estado, fecha_creacion, fecha_modificacion, usuario_creador, usuario_modificador) FROM stdin;
-14	Lengua	5	2	ON	2015-08-19	2015-08-19	admin	admin
-16	Sociales	5	2	ON	2015-08-19	2015-08-19	admin	admin
-17	Naturales	5	2	ON	2015-08-19	2015-08-19	admin	admin
-22	Educación Fisica	2	2	ON	2015-08-19	2015-08-19	admin	admin
-23	Taller Ocupacional	2	2	ON	2015-08-19	2015-08-19	admin	admin
-24	Espacio Integrador	2	2	ON	2015-08-19	2015-08-19	admin	admin
-26	Historia	5	2	ON	2015-08-19	2015-08-19	admin	admin
-32	Derecho	5	2	ON	2015-08-19	2015-08-19	admin	admin
-36	Cultura	2	2	ON	2015-08-19	2015-08-19	admin	admin
-34	Administración Pública	2	2	ON	2015-08-19	2015-08-20	admin	admin
-37	Educación Cívica	6	2	ON	2015-08-19	2015-09-06	admin	admin
-25	Biología	5	2	ON	2015-08-19	2015-09-06	admin	admin
-33	Economía	5	2	ON	2015-08-19	2015-09-06	admin	admin
-30	Espacio y Reflexión Curricular	2	2	ON	2015-08-19	2015-09-06	admin	admin
-28	Física	5	2	ON	2015-08-19	2015-09-06	admin	admin
-27	Geografía	5	2	ON	2015-08-19	2015-09-06	admin	admin
-21	Inglés	3	2	ON	2015-08-19	2015-09-06	admin	admin
-40	Inglés II	3	4	ON	2015-08-19	2015-09-06	admin	admin
-39	Introducción al Estado Sociedad y Cultura	4	2	ON	2015-08-19	2015-09-06	admin	admin
-15	Matemática	5	2	ON	2015-08-19	2015-09-06	admin	admin
-29	Psicología	3	2	ON	2015-08-19	2015-09-06	admin	admin
-35	Química	5	2	ON	2015-08-19	2015-09-06	admin	admin
-18	Tecnología	3	2	ON	2015-08-19	2015-09-06	admin	admin
-38	Teoría y Finanzas Públicas	4	2	ON	2015-08-19	2015-09-06	admin	admin
-31	Teoría y Técnica de la Organización Contable	5	2	ON	2015-08-19	2015-09-06	admin	admin
-43	Construcción Ciudadana	5	2	ON	2015-09-06	2015-09-06	admin	admin
+14	Lengua	5	3	ON	2015-08-19	2015-08-19	admin	admin
+16	Sociales	5	3	ON	2015-08-19	2015-08-19	admin	admin
+17	Naturales	5	3	ON	2015-08-19	2015-08-19	admin	admin
+22	Educación Fisica	2	3	ON	2015-08-19	2015-08-19	admin	admin
+23	Taller Ocupacional	2	3	ON	2015-08-19	2015-08-19	admin	admin
+24	Espacio Integrador	2	3	ON	2015-08-19	2015-08-19	admin	admin
+26	Historia	5	3	ON	2015-08-19	2015-08-19	admin	admin
+32	Derecho	5	3	ON	2015-08-19	2015-08-19	admin	admin
+36	Cultura	2	3	ON	2015-08-19	2015-08-19	admin	admin
+34	Administración Pública	2	3	ON	2015-08-19	2015-08-20	admin	admin
+37	Educación Cívica	6	3	ON	2015-08-19	2015-09-06	admin	admin
+25	Biología	5	3	ON	2015-08-19	2015-09-06	admin	admin
+33	Economía	5	3	ON	2015-08-19	2015-09-06	admin	admin
+30	Espacio y Reflexión Curricular	2	3	ON	2015-08-19	2015-09-06	admin	admin
+28	Física	5	3	ON	2015-08-19	2015-09-06	admin	admin
+27	Geografía	5	3	ON	2015-08-19	2015-09-06	admin	admin
+21	Inglés	3	3	ON	2015-08-19	2015-09-06	admin	admin
+40	Inglés II	3	3	ON	2015-08-19	2015-09-06	admin	admin
+39	Introducción al Estado Sociedad y Cultura	4	3	ON	2015-08-19	2015-09-06	admin	admin
+15	Matemática	5	3	ON	2015-08-19	2015-09-06	admin	admin
+29	Psicología	3	3	ON	2015-08-19	2015-09-06	admin	admin
+35	Química	5	3	ON	2015-08-19	2015-09-06	admin	admin
+18	Tecnología	3	3	ON	2015-08-19	2015-09-06	admin	admin
+38	Teoría y Finanzas Públicas	4	3	ON	2015-08-19	2015-09-06	admin	admin
+31	Teoría y Técnica de la Organización Contable	5	3	ON	2015-08-19	2015-09-06	admin	admin
+43	Construcción Ciudadana	5	3	ON	2015-09-06	2015-09-06	admin	admin
 \.
 
 
@@ -1269,6 +1273,10 @@ COPY calendario_hora (id, hora_desde, hora_hasta, espacio_id) FROM stdin;
 22	01:00:00	02:00:00	5
 16	20:25:00	21:05:00	4
 17	21:05:00	21:45:00	4
+23	00:00:00	01:00:00	7
+24	00:00:00	01:00:00	7
+25	00:00:00	01:00:00	7
+26	00:00:00	01:00:00	7
 \.
 
 
@@ -1276,14 +1284,14 @@ COPY calendario_hora (id, hora_desde, hora_hasta, espacio_id) FROM stdin;
 -- Name: calendario_hora_id_seq; Type: SEQUENCE SET; Schema: public; Owner: django
 --
 
-SELECT pg_catalog.setval('calendario_hora_id_seq', 22, true);
+SELECT pg_catalog.setval('calendario_hora_id_seq', 26, true);
 
 
 --
 -- Data for Name: calendario_horario; Type: TABLE DATA; Schema: public; Owner: django
 --
 
-COPY calendario_horario (id, hora_desde, hora_hasta, dia_semana, calendario_id, especialidad_id, profesional_id) FROM stdin;
+COPY calendario_horario (id, hora_desde, hora_hasta, dia_semana, calendario_id, especialidad_id, profesional_id, penalizado) FROM stdin;
 \.
 
 
@@ -1291,7 +1299,7 @@ COPY calendario_horario (id, hora_desde, hora_hasta, dia_semana, calendario_id, 
 -- Name: calendario_horario_id_seq; Type: SEQUENCE SET; Schema: public; Owner: django
 --
 
-SELECT pg_catalog.setval('calendario_horario_id_seq', 322842, true);
+SELECT pg_catalog.setval('calendario_horario_id_seq', 601127, true);
 
 
 --
@@ -1355,10 +1363,18 @@ COPY calendario_persona (id, nombre, apellido, cuil, estado, fecha_creacion, fec
 148	Raul	Huerga	73094130480	ON	2015-08-19	2015-08-19	admin	admin
 149	Esteban	Jones	80510916615	ON	2015-08-19	2015-08-19	admin	admin
 98	Julio	Bartels	70752666159	ON	2015-08-19	2015-08-19	admin	admin
-150	Rodrigo	Rodriguez	30000000	ON	2015-08-19	2015-08-19	admin	admin
 161	Alan Franco	Marchán	23380460459	ON	2015-08-19	2015-08-19	admin	admin
-88	Guillermina	Abril	47144474185	ON	2015-08-19	2015-09-05	admin	admin
+177	Aaaaaaaaa	Aaaaaaaa	22222222	OFF	2015-09-17	2015-09-17	admin	admin
+176	Aaaaaaaaaaaa	Aaaaaaaaaaaaaa	222222222	OFF	2015-09-17	2015-09-17	admin	admin
+178	Aaaaaaaa	Aaaaaaaa	2222222	OFF	2015-09-17	2015-09-17	admin	admin
 174	A	A	--	OFF	2015-09-11	2015-09-11	admin	admin
+175	Jhgjhg	Aaaaaaaaaaaaaaaaaaaaaaa	465465435	OFF	2015-09-14	2015-09-14	admin	admin
+182	Aaaaaaa	Aaaaaa	2222	OFF	2015-09-17	2015-09-17	admin	admin
+183	Aaaaaaaa	Aaaaaaaa	33333333	OFF	2015-09-17	2015-09-17	admin	admin
+184	Aa	Aa	11	OFF	2015-09-17	2015-09-17	admin	admin
+88	Guillermina	Abril	47144474185	ON	2015-08-19	2015-09-17	admin	admin
+150	Rodrigo	Rodriguez	30000000	OFF	2015-08-19	2015-09-17	admin	admin
+185	Aaaaa	Aaaaa	ddddd	OFF	2015-09-17	2015-09-17	admin	admin
 \.
 
 
@@ -1366,7 +1382,7 @@ COPY calendario_persona (id, nombre, apellido, cuil, estado, fecha_creacion, fec
 -- Name: calendario_persona_id_seq; Type: SEQUENCE SET; Schema: public; Owner: django
 --
 
-SELECT pg_catalog.setval('calendario_persona_id_seq', 174, true);
+SELECT pg_catalog.setval('calendario_persona_id_seq', 185, true);
 
 
 --
@@ -1418,6 +1434,14 @@ COPY calendario_profesional (persona_ptr_id) FROM stdin;
 150
 161
 174
+175
+176
+177
+178
+182
+183
+184
+185
 \.
 
 
@@ -1465,6 +1489,9 @@ COPY calendario_profesionalrestriccion (restriccion_ptr_id, profesional_id) FROM
 19	93
 20	91
 21	92
+22	109
+23	109
+24	109
 \.
 
 
@@ -1478,6 +1505,9 @@ COPY calendario_restriccion (id, hora_desde, hora_hasta, dia_semana, estado, fec
 19	19:00:00	20:00:00	2	ON	2015-09-12	2015-09-12	admin	admin
 20	00:00:00	23:59:00	7	ON	2015-09-12	2015-09-12	admin	admin
 21	18:00:00	21:00:00	4	ON	2015-09-12	2015-09-12	admin	admin
+22	12:00:00	13:00:00	7	ON	2015-09-17	2015-09-17	admin	admin
+23	23:00:00	23:59:00	4	ON	2015-09-17	2015-09-17	admin	admin
+24	10:20:00	13:00:00	3	ON	2015-09-17	2015-09-17	admin	admin
 \.
 
 
@@ -1485,7 +1515,7 @@ COPY calendario_restriccion (id, hora_desde, hora_hasta, dia_semana, estado, fec
 -- Name: calendario_restriccion_id_seq; Type: SEQUENCE SET; Schema: public; Owner: django
 --
 
-SELECT pg_catalog.setval('calendario_restriccion_id_seq', 21, true);
+SELECT pg_catalog.setval('calendario_restriccion_id_seq', 24, true);
 
 
 --
@@ -1575,6 +1605,7 @@ COPY django_migrations (id, app, name, applied) FROM stdin;
 27	calendario	0015_auto_20150904_1638	2015-09-04 13:39:14.03392-03
 28	calendario	0016_auto_20150905_1824	2015-09-05 15:24:52.248092-03
 29	calendario	0017_coordinador	2015-09-08 19:13:52.969544-03
+30	calendario	0018_horario_penalizado	2015-09-20 17:07:47.196475-03
 \.
 
 
@@ -1582,7 +1613,7 @@ COPY django_migrations (id, app, name, applied) FROM stdin;
 -- Name: django_migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: django
 --
 
-SELECT pg_catalog.setval('django_migrations_id_seq', 29, true);
+SELECT pg_catalog.setval('django_migrations_id_seq', 30, true);
 
 
 --

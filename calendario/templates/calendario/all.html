@@ -3,21 +3,21 @@
 {% block title %}Listado de calendarios.{% endblock %}
 
 {% block article %}
-	<div class="panel panel-primary">
-		<div class="panel-heading">
-			<h3 class="panel-title"><b>
-				Listado de calendarios generados.
-			</b></h3>
-		</div>
-		{% if calendarios %}
-			<ul class="list-group">
-				{% for calendario in calendarios %}
-					<li class="list-group-item"><a href="{% url 'calendario:detail' calendario.id %}">{{ calendario.id }}</a></li>
-				{% endfor %}
-			</ul>
-		{% endif %}
-	</div>
-	{% if calendarios %}
-		<p class="text-right">{{ calendarios|length }} calendarios.</p>
-	{% endif %}
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h3 class="panel-title"><b>
+                Listado de calendarios generados.
+            </b></h3>
+        </div>
+        {% if calendarios %}
+            <ul class="list-group">
+                {% for calendario in calendarios %}
+                    <li class="list-group-item"><a href="{% url 'calendario:detail' calendario.id %}">{{ calendario.id }}</a></li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+    {% if calendarios %}
+        <p class="text-right">{{ calendarios|length }} calendarios.</p>
+    {% endif %}
 {% endblock %}

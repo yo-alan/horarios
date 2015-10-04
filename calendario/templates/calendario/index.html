@@ -1,75 +1,75 @@
 {% load staticfiles %}
 <!DOCTYPE html>
 <html>
-	<head>
-		<title>Bienvenido a Horarios</title>		
-		<link rel="stylesheet" type="text/css" href="{% static 'calendario/css/bootstrap.css' %}" />
-		<link rel="shortcut icon" type="image/png" href="{% static 'calendario/images/favicon.png' %}"/>
-		<script type="text/javascript" src="{% static 'calendario/js/jquery-1.11.3.js' %}"></script>
-		<script type="text/javascript" src="{% static 'calendario/js/bootstrap.js' %}"></script>
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-	</head>
-	<body>
-		<header>
-			<div class="container">
-				<div class="row clearfix">
-					<div class="col-xs-12 column">
-						<div class="modal fade" id="modal-container-695421" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-							<div class="modal-dialog">
-								<div class="modal-content">
-									<div class="modal-header bg-info">
-										<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-										<h4 class="modal-title text-center" id="myModalLabel">
-											<span class="glyphicon glyphicon-lock"></span> Inicio de sesión
-										</h4>
-									</div>
-									<div class="modal-body" style="padding:40px 50px;">
-										<form class="form" role="form" method="POST" action="#">
-											{% csrf_token %}
-											<div class="form-group">
-												<label for="usuario" class="control-label"><span class="glyphicon glyphicon-user"></span> Usuario</label>
-												<input type="text" class="form-control" id="usuario" name="usuario" />
-											</div>
-											<div class="form-group">
-												<label for="contrasena" class="control-label"><span class="glyphicon glyphicon-eye-open"></span> Contraseña</label>
-												<input type="password" class="form-control" id="contrasena" name="contrasena" />
-											</div>
-											<div class="form-group">
-												<div class="checkbox">
-													 <label><input type="checkbox" /> Recordarme</label>
-												</div>
-											</div>
-											<div class="form-group">
-												<button type="submit" class="btn btn-block btn-primary">Entrar</button>
-											</div>
-										</form>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="jumbotron">
-							<h1>
-								<i class="glyphicon glyphicon-calendar">¡Bienvenido!</i>
-							</h1>
-							<p>
-								Horarios es una aplicación desarrollada para que usted deje de romperse la cabeza tratando de acomodar a los profesionales de su institución en un calendario semanal. Nosotros nos encargamos de esto utilizando inteligencia artificial, más especificamente algoritmos géneticos. De esta manera lo único que necesitamos es que usted nos provea de ciertos datos y ¡del resto nos encargamos nosotros!
-							</p>
-							<p>
-								<a id="modal-695421" href="{% url 'calendario:espacio_all' %}" role="button" class="btn btn-link pull-right"><i class="glyphicon glyphicon-log-in"></i> Iniciar sesión</a>
+    <head>
+        <title>Bienvenido a Horarios</title>        
+        <link rel="stylesheet" type="text/css" href="{% static 'calendario/css/bootstrap.css' %}" />
+        <link rel="shortcut icon" type="image/png" href="{% static 'calendario/images/favicon.png' %}"/>
+        <script type="text/javascript" src="{% static 'calendario/js/jquery-1.11.3.js' %}"></script>
+        <script type="text/javascript" src="{% static 'calendario/js/bootstrap.js' %}"></script>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body>
+        <header>
+            <div class="container">
+                <div class="row clearfix">
+                    <div class="col-xs-12 column">
+                        <div class="modal fade" id="modal-container-695421" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header bg-info">
+                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                        <h4 class="modal-title text-center" id="myModalLabel">
+                                            <span class="glyphicon glyphicon-lock"></span> Inicio de sesión
+                                        </h4>
+                                    </div>
+                                    <div class="modal-body" style="padding:40px 50px;">
+                                        <form class="form" role="form" method="POST" action="#">
+                                            {% csrf_token %}
+                                            <div class="form-group">
+                                                <label for="usuario" class="control-label"><span class="glyphicon glyphicon-user"></span> Usuario</label>
+                                                <input type="text" class="form-control" id="usuario" name="usuario" />
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="contrasena" class="control-label"><span class="glyphicon glyphicon-eye-open"></span> Contraseña</label>
+                                                <input type="password" class="form-control" id="contrasena" name="contrasena" />
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="checkbox">
+                                                     <label><input type="checkbox" /> Recordarme</label>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <button type="submit" class="btn btn-block btn-primary">Entrar</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="jumbotron">
+                            <h1>
+                                <i class="glyphicon glyphicon-calendar">¡Bienvenido!</i>
+                            </h1>
+                            <p>
+                                Horarios es una aplicación desarrollada para que usted deje de romperse la cabeza tratando de acomodar a los profesionales de su institución en un calendario semanal. Nosotros nos encargamos de esto utilizando inteligencia artificial, más especificamente algoritmos géneticos. De esta manera lo único que necesitamos es que usted nos provea de ciertos datos y ¡del resto nos encargamos nosotros!
+                            </p>
+                            <p>
+                                <a id="modal-695421" href="{% url 'calendario:espacio_all' %}" role="button" class="btn btn-link pull-right"><i class="glyphicon glyphicon-log-in"></i> Iniciar sesión</a>
 <!--
-								<a id="modal-695421" href="#modal-container-695421" role="button" class="btn btn-link" data-toggle="modal">Iniciar sesión</a>
+                                <a id="modal-695421" href="#modal-container-695421" role="button" class="btn btn-link" data-toggle="modal">Iniciar sesión</a>
 -->
-							</p>
-						</div>
-					</div>
-				</div>
-			</div>
-		<article>
-			
-		</article>
-		<footer>
-			
-		</footer>
-	</body>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <article>
+            
+        </article>
+        <footer>
+            
+        </footer>
+    </body>
 </html>
 

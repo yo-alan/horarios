@@ -5,6 +5,6 @@ from restriccion import Restriccion
 from espacio import Espacio
 
 class EspacioRestriccion(Restriccion):
-	
-	espacio = models.ForeignKey(Espacio)
+    
+    espacio = models.ForeignKey(Espacio)
 
