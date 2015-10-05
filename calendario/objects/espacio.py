@@ -107,9 +107,6 @@ class Espacio(models.Model):
         
         print " %7.3f seg." % (time.time() - operation_time)
         
-        #Cortamos la lista, quedándonos con los 100 individuos más aptos.
-        #~ self.poblacion = self.poblacion[:100]
-        
         print "Selecionando induviduos para el cruce... ",
         sys.stdout.flush()
         
@@ -178,8 +175,8 @@ class Espacio(models.Model):
         from calendario import Calendario
         from horario import Horario
         
-        #Iteramos generando todas las combinaciones
-        #posibles de horarios. Y agregamos cada uno a un calendario.
+        #Iteramos generando todas las combinaciones de horarios
+        #posibles. Y agregamos cada uno a un calendario.
         
         #Cantidad de iteraciones por los dias.
         for dia in range(0, 7):
@@ -262,7 +259,7 @@ class Espacio(models.Model):
                     if existe:
                         continue
                     
-                    #Y lo agregamos a la lista de horarios del Calendario
+                    #Lo agregamos a la lista de horarios del Calendario.
                     calendario.agregar_horario(horario)
                 
     
@@ -515,6 +512,7 @@ class Espacio(models.Model):
             if (horario.hora_desde > restriccion.hora_desde and horario.hora_hasta < restriccion.hora_hasta):
                 return False
             
+            #Este if esta de mas?
             if (horario.hora_desde == restriccion.hora_desde and horario.hora_hasta == restriccion.hora_hasta):
                 return False
             
