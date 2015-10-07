@@ -2,94 +2,107 @@
 
 <!DOCTYPE html>
 <html>
-	<head>
-		<title>{% block title %}{% endblock %}</title>
-		<link rel="stylesheet" type="text/css" href="{% static 'calendario/css/bootstrap.css' %}" />
-		<link rel="stylesheet" type="text/css" href="{% static 'calendario/css/custom.css' %}" />
-		<link rel="shortcut icon" type="image/png" href="{% static 'calendario/images/favicon.png' %}"/>
-		<script type="text/javascript" src="{% static 'calendario/js/jquery-1.11.3.js' %}"></script>
-		<script type="text/javascript" src="{% static 'calendario/js/bootstrap.js' %}"></script>
-		<script type="text/javascript" src="{% static 'calendario/js/custom.js' %}"></script>
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		{% block head %}{% endblock %}
-	</head>
-	<body>
-		<header>
-			<div class="container">
-				<div class="row clearfix">
-					<div class="col-xs-12 column">
-						<nav class="navbar navbar-default navbar-fixed-top navbar-inverse" role="navigation">
-							<div class="navbar-header">
-								<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"> <span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button> <a class="navbar-brand" href="/"><i class="glyphicon glyphicon-calendar"></i> Inicio</a>
-							</div>
-							<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-								<ul class="nav navbar-nav">
-									<li class="dropdown">
-										<a href="#" class="dropdown-toggle" data-toggle="dropdown">Espacio<strong class="caret"></strong></a>
-										<ul class="dropdown-menu inverse">
-											<li>
-												<a href="{% url 'calendario:espacio_add' %}">Agregar nuevo...</a>
-											</li>
-											<li class="divider">
-											</li>
-											<li>
-												<a href="{% url 'calendario:espacio_all' %}">Ver todos</a>
-											</li>
-										</ul>
-									</li>
-									<li class="dropdown">
-										<a href="#" class="dropdown-toggle" data-toggle="dropdown">Profesional<strong class="caret"></strong></a>
-										<ul class="dropdown-menu inverse">
-											<li>
-												<a href="{% url 'calendario:profesional_add' %}">Agregar nuevo...</a>
-											</li>
-											<li class="divider">
-											</li>
-											<li>
-												<a href="{% url 'calendario:profesional_all' %}">Ver todos</a>
-											</li>
-										</ul>
-									</li>
-									<li class="dropdown">
-										<a href="#" class="dropdown-toggle" data-toggle="dropdown">Especialidad<strong class="caret"></strong></a>
-										<ul class="dropdown-menu">
-											<li>
-												<a href="{% url 'calendario:especialidad_add' %}">Agregar nueva...</a>
-											</li>
-											<li class="divider">
-											</li>
-											<li>
-												<a href="{% url 'calendario:especialidad_all' %}">Ver todas</a>
-											</li>
-										</ul>
-									</li>
-									<li>
-										<a href="{% url 'calendario:acerca' %}" class="">Acerca de Horarios</a>
-									</li>
-								</ul>
-								<ul class="nav navbar-nav navbar-right">
-									<li class="dropdown">
-										<a href="#" class="dropdown-toggle" data-toggle="dropdown"><img src="{% static 'calendario/images/default-user.png' %}" alt="usuario" class="img-circle user"><strong> Admin</strong><strong class="caret logout"></strong></a>
-										<ul class="dropdown-menu">
-											<li>
-												<a class="logout" href="/"><i class="glyphicon glyphicon-log-out"></i> Cerrar sesión</a>
-											</li>
-										</ul>
-									</li>
-								</ul>
-							</div>
-						</nav>
-					</div>
-				</div>
-			</div>
-		</header>
-		<div class="container-fluid article">
-			<div class="col-xs-8 col-xs-offset-2">
-				{% block article %}{% endblock %}
-			</div>
-		</div>
-		<footer>
-			
-		</footer>
-	</body>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <title>{% block title %}{% endblock %}</title>
+        <link rel="stylesheet" type="text/css" href="{% static 'calendario/css/bootstrap.min.css' %}" />
+        <link rel="stylesheet" type="text/css" href="{% static 'calendario/css/sb-admin.css' %}" />
+        <link rel="stylesheet" type="text/css" href="{% static 'calendario/css/plugins/morris.css' %}" />
+        <link rel="stylesheet" type="text/css" href="{% static 'calendario/font-awesome/css/font-awesome.min.css' %}" />
+        <link rel="stylesheet" type="text/css" href="{% static 'calendario/css/custom.css' %}" />
+        <link rel="shortcut icon" type="image/png" href="{% static 'calendario/img/favicon.png' %}"/>
+        <script type="text/javascript" src="{% static 'calendario/js/jquery-1.11.3.js' %}"></script>
+        <script type="text/javascript" src="{% static 'calendario/js/bootstrap.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'calendario/js/custom.js' %}"></script>
+        {% block head %}{% endblock %}
+    </head>
+    <body>
+        <div id="wrapper">
+            <!-- Navigation -->
+            <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="/"><strong>HORARIOS!</strong></a>
+                </div>
+                <!-- Top Menu Items -->
+                <ul class="nav navbar-right top-nav">
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> Admin <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="#"><i class="fa fa-fw fa-user"></i> Perfil</a>
+                            </li>
+                            <li>
+                                <a href="#"><i class="fa fa-fw fa-thumb-tack"></i> Recordatorios</a>
+                            </li>
+                            <li>
+                                <a href="#"><i class="fa fa-fw fa-gear"></i> Configuración</a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a href="/"><i class="fa fa-fw fa-power-off"></i> Cerrar sesión</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+                <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
+                <div class="collapse navbar-collapse navbar-ex1-collapse">
+                    <ul class="nav navbar-nav side-nav">
+                        <li>
+                            <a href="javascript:;" data-toggle="collapse" data-target="#espacio"><i class="fa fa-fw fa-paperclip"></i> Espacio <i class="fa fa-fw fa-caret-down"></i></a>
+                            <ul id="espacio" class="collapse">
+                                <li>
+                                    <a href="{% url 'calendario:espacio_add' %}">Agregar nuevo...</a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'calendario:espacio_all' %}">Ver todos</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="javascript:;" data-toggle="collapse" data-target="#profesional"><i class="fa fa-fw fa-user"></i> Profesional <i class="fa fa-fw fa-caret-down"></i></a>
+                            <ul id="profesional" class="collapse">
+                                <li>
+                                    <a href="{% url 'calendario:profesional_add' %}">Agregar nuevo...</a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'calendario:profesional_all' %}">Ver todos</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="javascript:;" data-toggle="collapse" data-target="#especialidad"><i class="fa fa-fw fa-th-list"></i> Especialidad <i class="fa fa-fw fa-caret-down"></i></a>
+                            <ul id="especialidad" class="collapse">
+                                <li>
+                                    <a href="{% url 'calendario:especialidad_add' %}">Agregar nueva...</a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'calendario:especialidad_all' %}">Ver todas</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="{% url 'calendario:acerca' %}"><i class="fa fa-fw fa-dashboard"></i> Acerca de Horarios</a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.navbar-collapse -->
+            </nav>
+            <div id="page-wrapper">
+                <div class="container-fluid">
+                    {% block article %}{% endblock %}
+                </div>
+            </div>
+        </div>
+    </body>
 </html>

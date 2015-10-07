@@ -1,10 +1,11 @@
 {% extends "admin/base.html" %}
+{% load staticfiles %}
 
 {% block title %}Acerca de Horarios.{% endblock %}
 
 {% block head %}
-    
 {% endblock %}
+
 {% block article %}
     <div class="page-header">
         <h1>
@@ -22,7 +23,7 @@
             menú <strong>Espacio</strong>.
             <br>
             <br>
-            <img src="/static/calendario/images/img1.png">
+            <img src="{% static 'calendario/img/acerca/img1.png' %}">
             <br>
             <br>
             Al hacerle clic serás redireccionado al formulario de carga
@@ -30,7 +31,7 @@
             <strong>Agregar</strong>.
             <br>
             <br>
-            <img src="/static/calendario/images/img2.png">
+            <img src="{% static 'calendario/img/acerca/img2.png' %}">
         </dd>
         <dt>
             <h3><strong>Agregar especialidades al espacio.</strong></h3>
@@ -43,7 +44,7 @@
             <strong>Especialidades</strong>.
             <br>
             <br>
-            <img src="/static/calendario/images/img3.png">
+            <img src="{% static 'calendario/img/acerca/img3.png' %}">
             <br>
             <br>
             Lo cual no abrirá la
@@ -55,7 +56,7 @@
             Al terminar <strong>Guarda los cambios</strong>.
             <br>
             <br>
-            <img src="/static/calendario/images/img4.png">
+            <img src="{% static 'calendario/img/acerca/img4.png' %}">
             <br>
             <br>
             Si no ves ninguna especialidad en la lista de la izquierda
@@ -74,18 +75,18 @@
             espacio.
             <br>
             <br>
-            <img src="/static/calendario/images/img5.png">
+            <img src="{% static 'calendario/img/acerca/img5.png' %}">
             <br>
             <br>
             Para agregar un profesional haz lo mismo que con
             las especialidades, clickealos.
             <br>
             <br>
-            <strong>*NOTA*</strong> La cantidad de profesionales está limitada a la
-            cantidad de especialidades que existan en el espacio, esto
-            es, no se pueden agregar 11 profesionales cuando el espacio
-            cuenta con 10 especialidades. Pero si es posible agregar 9
-            profesionales teniendo 10 especialidades.
+            <strong>*NOTA*</strong> La cantidad de profesionales está
+            limitada a la cantidad de especialidades que existan en el
+            espacio, esto es, no se pueden agregar 11 profesionales
+            cuando el espacio cuenta con 10 especialidades. Pero si es
+            posible agregar 9 profesionales teniendo 10 especialidades.
         </dd>
         <dt>
             <h3><strong>Establecer las horas.</strong></h3>
