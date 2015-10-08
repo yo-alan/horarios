@@ -5,8 +5,13 @@ from django.core import serializers
 from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
-from .models import Calendario, Profesional, Horario,\
-                    ProfesionalRestriccion, Especialidad, Espacio, Hora
+from .models import Calendario
+from .models import Profesional
+from .models import Horario
+from .models import ProfesionalRestriccion
+from .models import Especialidad
+from .models import Espacio
+from .models import Hora
 
 DIAS = {0: 'Domingo', 1: 'Lunes', 2: 'Martes', 3: 'Miércoles',
         4: 'Jueves', 5: 'Viernes', 6: 'Sábado', 7: "Todos los días"}

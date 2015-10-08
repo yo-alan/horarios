@@ -10,8 +10,8 @@
             
             var url = document.location.toString();
             if(url.match('#')) {
-                $('.nav-tabs a[href=#'+url.split('#')[1]+']').tab('show') ;
-            } 
+                $('.nav-tabs a[href="#'+url.split('#')[1]+'"]').tab('show');
+            }
             
             $('.nav-tabs a').on('shown.bs.tab', function (e){
                 window.location.hash = e.target.hash;
@@ -338,5 +338,14 @@
                 </div>
             </div>
         </div>
+    </div>
+{% endblock %}
+{% block alert %}
+    <div class="alert alert-info" role="alert">
+        <p>
+            <span class="glyphicon glyphicon-info-sign"></span>
+            <strong>Nota:</strong> Para asignar una especialidad
+            disponible clickeala. Haz lo mismo para quitarla.
+        </p>
     </div>
 {% endblock %}

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import time
 import sys
-from random import randrange
+from random import randrange, randint
 
 from django.db import models
 
@@ -85,67 +85,53 @@ class Espacio(models.Model):
         print " %d individuos en %7.3f seg."\
                 % (len(self.poblacion), time.time() - operation_time)
         
-        #Descomentar para evaluaciones
-        #~ self.poblacion = self.poblacion[:1]
-        
         print "Evaluando la población... ",
         sys.stdout.flush()
         
         operation_time = time.time()
         
-        self.fitness()
+        self.fitness(self.poblacion)
         
         print " %7.3f seg." % (time.time() - operation_time)
         
-        print "Ordenando la población... ",
-        sys.stdout.flush()
-        
-        operation_time = time.time()
-        
-        #Ordenamos la lista de individuos (más aptos al principio).
-        self.poblacion.sort()
-        
-        print " %7.3f seg." % (time.time() - operation_time)
-        
-        print "Selecionando induviduos para el cruce... ",
-        sys.stdout.flush()
-        
-        operation_time = time.time()
-        
-        #Hacemos la seleccion de individuos.
-        seleccionados = self.seleccion()
-        
-        print " %7.3f seg." % (time.time() - operation_time)
-        
-        print "Cruzando los individuos... ",
-        sys.stdout.flush()
-        
-        operation_time = time.time()
-        
-        #Hacemos la seleccion de individuos.
-        self.poblacion = self.cruzar(seleccionados)
-        
-        print " %7.3f seg." % (time.time() - operation_time)
-        
-        print "Evaluando la población... ",
-        sys.stdout.flush()
-        
-        operation_time = time.time()
-        
-        #Evaluamos la nueva población.
-        self.fitness()
-        
-        print " %7.3f seg." % (time.time() - operation_time)
-        
-        print "Ordenando los individuos... ",
-        sys.stdout.flush()
-        
-        operation_time = time.time()
-        
-        #Ordenamos la lista de individuos (más aptos al principio).
-        self.poblacion.sort()
-        
-        print " %7.3f seg." % (time.time() - operation_time)
+        for i in range(400):
+            print i
+            print "Seleccionando individuos para el cruce... ",
+            sys.stdout.flush()
+            
+            operation_time = time.time()
+            
+            #Hacemos la seleccion de individuos.
+            seleccionados = self.seleccion()
+            
+            print " %7.3f seg." % (time.time() - operation_time)
+            
+            print "Cruzando los individuos... ",
+            sys.stdout.flush()
+            
+            operation_time = time.time()
+            
+            #Hacemos la seleccion de individuos.
+            hijos = self.cruzar(seleccionados)
+            
+            print " %7.3f seg." % (time.time() - operation_time)
+            
+            print "Evaluando la nueva población... ",
+            sys.stdout.flush()
+            
+            operation_time = time.time()
+            
+            #Evaluamos la nueva población.
+            self.fitness(hijos)
+            
+            print " %7.3f seg." % (time.time() - operation_time)
+            
+            print "Actualizando la población... ",
+            sys.stdout.flush()
+            
+            self.actualizarpoblacion(hijos)
+            
+            print " %7.3f seg." % (time.time() - operation_time)
         
         print "Guardando los individuos... ",
         sys.stdout.flush()
@@ -263,7 +249,7 @@ class Espacio(models.Model):
                     calendario.agregar_horario(horario)
                 
     
-    def fitness(self, ):
+    def fitness(self, poblacion):
         """
         Asigna un puntaje a los calendarios.
         Utiliza las restricciones de los profesionales, de las
@@ -278,11 +264,7 @@ class Espacio(models.Model):
         """
         
         #Por cada individuo en la poblacion.
-        for calendario in self.poblacion:
-            
-            #Si el individuo ya fue evaluado seguimos con otro.
-            if calendario.puntaje != 0:
-                continue
+        for calendario in poblacion:
             
             #Primera evaluacion: Se evalua que los horarios asignados
             #cumplan las restricciones del profesional que contienen.
@@ -299,7 +281,6 @@ class Espacio(models.Model):
             #Cuarta evaluación: En esta instancia se desea comprobar
             #la distribución horaria de las especialidades.
             calendario.puntaje += self.distribucion_horaria(calendario)
-            
     
     def seleccion(self, ):
         """
@@ -345,6 +326,30 @@ class Espacio(models.Model):
             poblacion_nueva += padre.cruce(madre)
         
         return poblacion_nueva
+    
+    def actualizarpoblacion(self, hijos):
+        """
+        
+        
+        """
+        
+        punto_corte = len(self.poblacion) / 2
+        
+        irreemplazables = self.poblacion[:punto_corte]
+        reemplazables = self.poblacion[punto_corte:]
+        asignables = []
+        
+        for calendario in hijos:
+            
+            i = randint(0, len(reemplazables)-1)
+            
+            reemplazables.remove(reemplazables[i])
+            
+            asignables.append(calendario)
+        
+        self.poblacion = irreemplazables + reemplazables + asignables
+        
+        self.poblacion.sort()
     
     def asignacion_horaria(self, calendario):
         """

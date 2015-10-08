@@ -75,7 +75,7 @@ class Calendario(models.Model):
             for horario in franja_horaria:
                 hijo1.agregar_horario(copy.copy(horario))
         
-        if prob_mutacion < random.random():
+        if prob_mutacion > random.random():
             hijo1.mutar()
         
         hijo2 = Calendario.create()
@@ -93,7 +93,7 @@ class Calendario(models.Model):
             for horario in franja_horaria:
                 hijo2.agregar_horario(copy.copy(horario))
         
-        if prob_mutacion < random.random():
+        if prob_mutacion > random.random():
             hijo2.mutar()
         
         hijos.append(hijo1)
@@ -102,7 +102,30 @@ class Calendario(models.Model):
         return hijos
     
     def mutar(self, ):
-        pass
+        
+        i = random.randint(0, len(self.horarios)-1)
+        j = random.randint(0, len(self.horarios[0])-1)
+        
+        k = random.randint(0, len(self.horarios)-1)
+        l = random.randint(0, len(self.horarios[0])-1)
+        
+        primero = self.horarios[i][j]
+        segundo = self.horarios[k][l]
+        
+        print primero.especialidad
+        print segundo.especialidad
+        
+        especialidad_aux = primero.especialidad
+        profesional_aux = primero.profesional
+        
+        primero.especialidad = segundo.especialidad
+        primero.profesional = segundo.profesional
+        
+        segundo.especialidad = especialidad_aux
+        segundo.profesional = profesional_aux
+        
+        print primero.especialidad
+        print segundo.especialidad
     
     def agregar_horario(self, horario):
         """
