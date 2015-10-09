@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import time
 import sys
+import copy
 from random import randrange, randint
 
 from django.db import models
@@ -94,7 +95,7 @@ class Espacio(models.Model):
         
         print " %7.3f seg." % (time.time() - operation_time)
         
-        for i in range(400):
+        for i in range(500):
             print i
             print "Seleccionando individuos para el cruce... ",
             sys.stdout.flush()
@@ -116,6 +117,37 @@ class Espacio(models.Model):
             
             print " %7.3f seg." % (time.time() - operation_time)
             
+            #~ capos = []
+            #~ 
+            #~ for hijo in hijos:
+                #~ 
+                #~ es_valido = True
+                #~ 
+                #~ for especialidad in self.especialidades.all():
+                    #~ 
+                    #~ #Contador de horas semanales.
+                    #~ horas_semanales = 0
+                    #~ 
+                    #~ #Por cada franja de horarios.
+                    #~ for franja_horaria in hijo.horarios:
+                        #~ 
+                        #~ #Por cada horario en la franja horaria.
+                        #~ for horario in franja_horaria:
+                            #~ 
+                            #~ #Si la especialidad es igual, contamos.
+                            #~ if horario.especialidad == especialidad:
+                                #~ horas_semanales += 1
+                    #~ 
+                    #~ if horas_semanales != especialidad.carga_horaria_semanal:
+                        #~ es_valido = False
+                #~ 
+                #~ if es_valido:
+                    #~ capos.append(hijo)
+            #~ 
+            #~ hijos = capos
+            
+            print len(hijos)
+            
             print "Evaluando la nueva población... ",
             sys.stdout.flush()
             
@@ -128,6 +160,8 @@ class Espacio(models.Model):
             
             print "Actualizando la población... ",
             sys.stdout.flush()
+            
+            operation_time = time.time()
             
             self.actualizarpoblacion(hijos)
             

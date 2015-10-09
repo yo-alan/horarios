@@ -112,9 +112,6 @@ class Calendario(models.Model):
         primero = self.horarios[i][j]
         segundo = self.horarios[k][l]
         
-        print primero.especialidad
-        print segundo.especialidad
-        
         especialidad_aux = primero.especialidad
         profesional_aux = primero.profesional
         
@@ -123,9 +120,6 @@ class Calendario(models.Model):
         
         segundo.especialidad = especialidad_aux
         segundo.profesional = profesional_aux
-        
-        print primero.especialidad
-        print segundo.especialidad
     
     def agregar_horario(self, horario):
         """

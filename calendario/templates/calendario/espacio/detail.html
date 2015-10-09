@@ -367,15 +367,6 @@
             </div>
             <div class="tab-pane" id="horas">
                 <div class="col-xs-10 col-xs-offset-2">
-                    {% if error_message %}
-                        <div class="alert alert-danger">
-                            <a href="#" class="close" data-dismiss="alert">&times;</a>
-                            <h3 class="text-center text-danger"><b>Ocurrió el siguiente error:</b></h3>
-                            <p class="text-danger">
-                                <b>{{ error_message }}</b>
-                            </p>
-                        </div>
-                    {% endif %}
                     <form class="form-horizontal" id="addHoraForm" method="POST" action="{% url 'calendario:espacio_add_hora' %}">
                         {% csrf_token %}
                         <input type="hidden" id="espacio_id" name="espacio_id" value="{{ espacio.id }}">
@@ -413,11 +404,17 @@
                                 <div class="col-xs-3 col-sm-3 col-md-2 col-lg-2">
                                     <select id="min_desde" name="min_desde" class="form-control">
                                         <option value="00">00</option>
+                                        <option value="05">05</option>
                                         <option value="10">10</option>
+                                        <option value="15">15</option>
                                         <option value="20">20</option>
+                                        <option value="25">25</option>
                                         <option value="30">30</option>
+                                        <option value="35">35</option>
                                         <option value="40">40</option>
+                                        <option value="45">45</option>
                                         <option value="50">50</option>
+                                        <option value="55">55</option>
                                     </select>
                                 </div>
                             </div>
@@ -455,11 +452,17 @@
                                 <div class="col-xs-3 col-sm-3 col-md-2 col-lg-2">
                                     <select id="min_hasta" name="min_hasta" class="form-control">
                                         <option value="00">00</option>
+                                        <option value="05">05</option>
                                         <option value="10">10</option>
+                                        <option value="15">15</option>
                                         <option value="20">20</option>
+                                        <option value="25">25</option>
                                         <option value="30">30</option>
+                                        <option value="35">35</option>
                                         <option value="40">40</option>
+                                        <option value="45">45</option>
                                         <option value="50">50</option>
+                                        <option value="55">55</option>
                                     </select>
                                 </div>
                             </div>
