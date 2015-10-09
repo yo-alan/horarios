@@ -10,15 +10,15 @@
         <meta name="author" content="">
         <link rel="shortcut icon" type="image/png" href="{% static 'calendario/images/favicon.png' %}"/>
         <title>{% block title %}{% endblock %}</title>
+        <script src="{% static 'calendario/js/jquery-1.11.3.js' %}"></script>
+        <script src="{% static 'calendario/js/bootstrap.min.js' %}"></script>
+        <script src="{% static 'calendario/js/custom.js' %}"></script>
         <link rel="stylesheet" type="text/css" href="{% static 'calendario/css/bootstrap.min.css' %}" />
         <link rel="stylesheet" type="text/css" href="{% static 'calendario/css/sb-admin.css' %}" />
         <link rel="stylesheet" type="text/css" href="{% static 'calendario/css/plugins/morris.css' %}" />
         <link rel="stylesheet" type="text/css" href="{% static 'calendario/font-awesome/css/font-awesome.min.css' %}" />
         <link rel="stylesheet" type="text/css" href="{% static 'calendario/css/custom.css' %}" />
         <link rel="shortcut icon" type="image/png" href="{% static 'calendario/img/favicon.png' %}"/>
-        <script type="text/javascript" src="{% static 'calendario/js/jquery-1.11.3.js' %}"></script>
-        <script type="text/javascript" src="{% static 'calendario/js/bootstrap.min.js' %}"></script>
-        <script type="text/javascript" src="{% static 'calendario/js/custom.js' %}"></script>
         {% block head %}{% endblock %}
     </head>
     <body>
