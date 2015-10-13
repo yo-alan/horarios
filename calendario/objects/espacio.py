@@ -10,9 +10,9 @@ from especialidad import Especialidad
 from profesional import Profesional
 
 PUNTOS_RESTRICCION_PROFESIONAL = 3
-PUNTOS_HORAS_SEMANALES = 2
+PUNTOS_HORAS_SEMANALES = 10
 PUNTOS_HORAS_DIARIAS = 1
-PUNTOS_DISTRIBUCION_HORARIA = 1
+PUNTOS_DISTRIBUCION_HORARIA = 3
 
 class Espacio(models.Model):
     """
@@ -95,7 +95,7 @@ class Espacio(models.Model):
         
         print " %7.3f seg." % (time.time() - operation_time)
         
-        for i in range(500):
+        for i in range(10):
             print i
             print "Seleccionando individuos para el cruce... ",
             sys.stdout.flush()
@@ -116,35 +116,6 @@ class Espacio(models.Model):
             hijos = self.cruzar(seleccionados)
             
             print " %7.3f seg." % (time.time() - operation_time)
-            
-            #~ capos = []
-            #~ 
-            #~ for hijo in hijos:
-                #~ 
-                #~ es_valido = True
-                #~ 
-                #~ for especialidad in self.especialidades.all():
-                    #~ 
-                    #~ #Contador de horas semanales.
-                    #~ horas_semanales = 0
-                    #~ 
-                    #~ #Por cada franja de horarios.
-                    #~ for franja_horaria in hijo.horarios:
-                        #~ 
-                        #~ #Por cada horario en la franja horaria.
-                        #~ for horario in franja_horaria:
-                            #~ 
-                            #~ #Si la especialidad es igual, contamos.
-                            #~ if horario.especialidad == especialidad:
-                                #~ horas_semanales += 1
-                    #~ 
-                    #~ if horas_semanales != especialidad.carga_horaria_semanal:
-                        #~ es_valido = False
-                #~ 
-                #~ if es_valido:
-                    #~ capos.append(hijo)
-            #~ 
-            #~ hijos = capos
             
             print len(hijos)
             
@@ -198,12 +169,10 @@ class Espacio(models.Model):
         #Iteramos generando todas las combinaciones de horarios
         #posibles. Y agregamos cada uno a un calendario.
         
+        individuos = []
+        
         #Cantidad de iteraciones por los dias.
-        for dia in range(0, 7):
-            
-            #Si el dia no es un dia habil del espacio, lo salteamos.
-            if dia not in self.dias_habiles:
-                continue
+        for dia in self.dias_habiles:
             
             #Cantidad de iteraciones por los horarios.
             for hora in self.horas:
@@ -216,7 +185,7 @@ class Espacio(models.Model):
                     #Se le asigna este espacio.
                     calendario.espacio = self
                     #A su vez el Calendario es agregado a la poblacion.
-                    self.poblacion.append(calendario)
+                    individuos.append(calendario)
                     
                     #Se crea un Horario.
                     horario = Horario()
@@ -236,52 +205,55 @@ class Espacio(models.Model):
         
         #Rellenamos el Calendario generando Horarios aleatorios.
         
-        #Por cada Calendario en la poblacion.
-        for calendario in self.poblacion:
+        for individuo in individuos:
             
-            #Iteramos por la cantidad de dias.
-            for dia in range(0, 7):
+            for coordinador in self.coordinadores.all():
                 
-                if dia not in self.dias_habiles:
-                    continue
+                rango = range(coordinador.especialidad.carga_horaria_semanal)
                 
-                #Tambien por la cantidad de horarios.
-                for hora in self.horas:
-                    
-                    #Obtenemos un indice aleatorio.
-                    indice = randrange(len(self.coordinadores))
-                    
-                    #Obtenemos un coordinador aleatoriamente.
-                    coordinador = self.coordinadores[indice]
-                    
-                    #Se crea un Horario.
-                    horario = Horario()
-                    #Se le asigna una Especialidad.
-                    horario.especialidad = coordinador.especialidad
-                    #Se le asigna una Profesional.
-                    horario.profesional = coordinador.profesional
-                    #Se le asigna una hora desde.
-                    horario.hora_desde = hora.hora_desde
-                    #Se le asigna una hora hasta.
-                    horario.hora_hasta = hora.hora_hasta
-                    #Se le asigna un dia de la semana.
-                    horario.dia_semana = dia
-                    
-                    #Comprobamos que el Horario generado
-                    #no exista en el Calendario.
-                    existe = False
-                    for franja_horaria in calendario.horarios:
-                        for horario_comp in franja_horaria:
-                            if horario == horario_comp:
-                                existe = True
-                    
-                    #Si ya existe continuamos generando.
-                    if existe:
-                        continue
-                    
-                    #Lo agregamos a la lista de horarios del Calendario.
-                    calendario.agregar_horario(horario)
+                if coordinador.especialidad == individuo.horarios[0][0].especialidad:
+                    rango = range(coordinador.especialidad.carga_horaria_semanal-1)
                 
+                for i in rango:
+                    
+                    #Iteramos por la cantidad de dias.
+                    for dia in self.dias_habiles:
+                        
+                        #Tambien por la cantidad de horarios.
+                        for hora in self.horas:
+                            
+                            #Se crea un Horario.
+                            horario = Horario()
+                            #Se le asigna una Especialidad.
+                            horario.especialidad = coordinador.especialidad
+                            #Se le asigna una Profesional.
+                            horario.profesional = coordinador.profesional
+                            #Se le asigna una hora desde.
+                            horario.hora_desde = hora.hora_desde
+                            #Se le asigna una hora hasta.
+                            horario.hora_hasta = hora.hora_hasta
+                            #Se le asigna un dia de la semana.
+                            horario.dia_semana = dia
+                            
+                            #Comprobamos que el Horario generado
+                            #no exista en el Calendario.
+                            existe = False
+                            for franja_horaria in individuo.horarios:
+                                for horario_comp in franja_horaria:
+                                    if horario == horario_comp:
+                                        existe = True
+                            
+                            #Si ya existe continuamos generando.
+                            if existe:
+                                continue
+                            
+                            #Lo agregamos a la lista de horarios del Calendario.
+                            individuo.agregar_horario(horario)
+            
+            if self.asignacion_semanal(individuo) != 0:
+                print "Esta todo mal con vos"
+            
+            self.poblacion.append(individuo)
     
     def fitness(self, poblacion):
         """
