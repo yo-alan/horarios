@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import time
+
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.core import serializers
@@ -93,7 +95,83 @@ def generar(request):
     
     espacio = Espacio.create(request.POST['espacio_id'])
     
-    espacio.ejecutar()
+    print "Generando población inicial... ",
+    sys.stdout.flush()
+    
+    global_time = time.time()
+    
+    operation_time = time.time()
+    
+    espacio.generarpoblacioninicial()
+    
+    print " %d individuos en %7.3f seg."\
+            % (len(espacio.poblacion), time.time() - operation_time)
+    
+    print "Evaluando la población... ",
+    sys.stdout.flush()
+    
+    operation_time = time.time()
+    
+    espacio.fitness(espacio.poblacion)
+    
+    print " %7.3f seg." % (time.time() - operation_time)
+    
+    for i in range(10):
+        
+        print "Seleccionando individuos para el cruce... ",
+        sys.stdout.flush()
+        
+        operation_time = time.time()
+        
+        #Hacemos la seleccion de individuos.
+        seleccionados = espacio.seleccion()
+        
+        print " %7.3f seg." % (time.time() - operation_time)
+        
+        print "Cruzando los individuos... ",
+        sys.stdout.flush()
+        
+        operation_time = time.time()
+        
+        #Hacemos la seleccion de individuos.
+        hijos = espacio.cruzar(seleccionados)
+        
+        print " %7.3f seg." % (time.time() - operation_time)
+        
+        print len(hijos)
+        
+        print "Evaluando la nueva población... ",
+        sys.stdout.flush()
+        
+        operation_time = time.time()
+        
+        #Evaluamos la nueva población.
+        espacio.fitness(hijos)
+        
+        print " %7.3f seg." % (time.time() - operation_time)
+        
+        print "Actualizando la población... ",
+        sys.stdout.flush()
+        
+        operation_time = time.time()
+        
+        espacio.actualizarpoblacion(hijos)
+        
+        print " %7.3f seg." % (time.time() - operation_time)
+    
+    print "Guardando los individuos... ",
+    sys.stdout.flush()
+    
+    operation_time = time.time()
+    
+    for calendario in espacio.poblacion:
+        calendario.full_save()
+    
+    print " %d individuos en %7.3f seg."\
+            % (len(espacio.poblacion), time.time() - operation_time)
+    print
+    print "La evolución tardó %7.3f seg."\
+            % (time.time() - global_time)
     
     context = {'calendarios': espacio.poblacion}
     

@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-import time
 import sys
-import copy
 from random import randrange, randint
 
 from django.db import models
@@ -71,86 +69,6 @@ class Espacio(models.Model):
         self.nombre = nombre
     
     # GENETIC ALGORITHMS
-    
-    def ejecutar(self, ):
-        
-        print "Generando población inicial... ",
-        sys.stdout.flush()
-        
-        global_time = time.time()
-        
-        operation_time = time.time()
-        
-        self.generarpoblacioninicial()
-        
-        print " %d individuos en %7.3f seg."\
-                % (len(self.poblacion), time.time() - operation_time)
-        
-        print "Evaluando la población... ",
-        sys.stdout.flush()
-        
-        operation_time = time.time()
-        
-        self.fitness(self.poblacion)
-        
-        print " %7.3f seg." % (time.time() - operation_time)
-        
-        for i in range(10):
-            print i
-            print "Seleccionando individuos para el cruce... ",
-            sys.stdout.flush()
-            
-            operation_time = time.time()
-            
-            #Hacemos la seleccion de individuos.
-            seleccionados = self.seleccion()
-            
-            print " %7.3f seg." % (time.time() - operation_time)
-            
-            print "Cruzando los individuos... ",
-            sys.stdout.flush()
-            
-            operation_time = time.time()
-            
-            #Hacemos la seleccion de individuos.
-            hijos = self.cruzar(seleccionados)
-            
-            print " %7.3f seg." % (time.time() - operation_time)
-            
-            print len(hijos)
-            
-            print "Evaluando la nueva población... ",
-            sys.stdout.flush()
-            
-            operation_time = time.time()
-            
-            #Evaluamos la nueva población.
-            self.fitness(hijos)
-            
-            print " %7.3f seg." % (time.time() - operation_time)
-            
-            print "Actualizando la población... ",
-            sys.stdout.flush()
-            
-            operation_time = time.time()
-            
-            self.actualizarpoblacion(hijos)
-            
-            print " %7.3f seg." % (time.time() - operation_time)
-        
-        print "Guardando los individuos... ",
-        sys.stdout.flush()
-        
-        operation_time = time.time()
-        
-        for calendario in self.poblacion:
-            calendario.full_save()
-        
-        print " %d individuos en %7.3f seg."\
-                % (len(self.poblacion), time.time() - operation_time)
-        print
-        print "La evolución tardó %7.3f seg."\
-                % (time.time() - global_time)
     
     def generarpoblacioninicial(self, ):
         """

@@ -58,6 +58,10 @@
     </script>
 {% endblock %}
 {% block article %}
+    <ol class="breadcrumb">
+        <li><a href="{% url 'calendario:especialidad_all' %}"><i class="fa fa-fw fa-th-list"></i> Especialidades</a></li>
+        <li class="active">Detalles</li>
+    </ol>
     <h3 class="text-center">
         {{ especialidad }}.
     </h3>

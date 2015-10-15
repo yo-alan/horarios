@@ -204,6 +204,10 @@
     </script>
 {% endblock %}
 {% block article %}
+    <ol class="breadcrumb">
+        <li><a href="{% url 'calendario:espacio_all' %}"><i class="fa fa-fw fa-paperclip"></i> Espacios</a></li>
+        <li class="active">Detalles</li>
+    </ol>
     <h3 class="text-center">
         Detalles del espacio {{ espacio }}.
     </h3>

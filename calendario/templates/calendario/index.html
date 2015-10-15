@@ -8,32 +8,26 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="description" content="">
         <meta name="author" content="">
+        <link rel="shortcut icon" type="image/png" href="{% static 'calendario/img/favicon.png' %}"/>
         <title>Bienvenido a Horarios!</title>
         <!-- Bootstrap Core CSS -->
         <link rel="stylesheet" type="text/css" href="{% static 'calendario/css/bootstrap.min.css' %}" />
-
         <!-- Custom Fonts -->
         <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
         <link href='http://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic,900,900italic' rel='stylesheet' type='text/css'>
         <link rel="stylesheet" type="text/css" href="{% static 'calendario/font-awesome/css/font-awesome.min.css' %}" />
-        
         <!-- Plugin CSS -->
         <link rel="stylesheet" type="text/css" href="{% static 'calendario/css/animate.min.css' %}" />
-
         <!-- Custom CSS -->
         <link rel="stylesheet" type="text/css" href="{% static 'calendario/css/creative.css' %}" />
-        
         <!-- jQuery -->
         <script type="text/javascript" src="{% static 'calendario/js/jquery-1.11.3.js' %}"></script>
-
         <!-- Bootstrap Core JavaScript -->
         <script type="text/javascript" src="{% static 'calendario/js/bootstrap.min.js' %}"></script>
-
         <!-- Plugin JavaScript -->
         <script type="text/javascript" src="{% static 'calendario/js/jquery.easing.min.js' %}"></script>
         <script type="text/javascript" src="{% static 'calendario/js/jquery.fittext.js' %}"></script>
         <script type="text/javascript" src="{% static 'calendario/js/wow.min.js' %}"></script>
-        
         <!-- Custom Theme JavaScript -->
         <script type="text/javascript" src="{% static 'calendario/js/creative.js' %}"></script>
     </head>
@@ -77,7 +71,7 @@
                         necesitamos es que usted nos provea de ciertos
                         datos y ¡del resto nos encargamos nosotros!
                     </p>
-                    <a href="{% url 'calendario:espacio_all' %}" class="btn btn-primary btn-xl page-scroll">Find Out More</a>
+                    <a href="{% url 'calendario:espacio_all' %}" class="btn btn-primary btn-xl">Find Out More</a>
                 </div>
             </div>
         </header>
