@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import sys
+import copy
 from random import randrange, randint
 
 from django.db import models
@@ -123,51 +124,75 @@ class Espacio(models.Model):
         
         #Rellenamos el Calendario generando Horarios aleatorios.
         
+        coordinadores_asig_global = []
+        
+        for coordinador in self.coordinadores.all():
+            
+            carga_horaria = coordinador.especialidad.carga_horaria_semanal
+            
+            for i in range(carga_horaria):
+                
+                coordinadores_asig_global.append(copy.copy(coordinador))
+        
         for individuo in individuos:
             
-            for coordinador in self.coordinadores.all():
-                
-                rango = range(coordinador.especialidad.carga_horaria_semanal)
-                
-                if coordinador.especialidad == individuo.horarios[0][0].especialidad:
-                    rango = range(coordinador.especialidad.carga_horaria_semanal-1)
-                
-                for i in rango:
-                    
-                    #Iteramos por la cantidad de dias.
-                    for dia in self.dias_habiles:
-                        
-                        #Tambien por la cantidad de horarios.
-                        for hora in self.horas:
-                            
-                            #Se crea un Horario.
-                            horario = Horario()
-                            #Se le asigna una Especialidad.
-                            horario.especialidad = coordinador.especialidad
-                            #Se le asigna una Profesional.
-                            horario.profesional = coordinador.profesional
-                            #Se le asigna una hora desde.
-                            horario.hora_desde = hora.hora_desde
-                            #Se le asigna una hora hasta.
-                            horario.hora_hasta = hora.hora_hasta
-                            #Se le asigna un dia de la semana.
-                            horario.dia_semana = dia
-                            
-                            #Comprobamos que el Horario generado
-                            #no exista en el Calendario.
-                            existe = False
-                            for franja_horaria in individuo.horarios:
-                                for horario_comp in franja_horaria:
-                                    if horario == horario_comp:
-                                        existe = True
-                            
-                            #Si ya existe continuamos generando.
-                            if existe:
-                                continue
-                            
-                            #Lo agregamos a la lista de horarios del Calendario.
-                            individuo.agregar_horario(horario)
+            coordinadores_asig = copy.copy(coordinadores_asig_global)
             
+            for coordinador in coordinadores_asig_global:
+                
+                especialidad = individuo.horarios[0][0].especialidad
+                
+                if coordinador.especialidad == especialidad:
+                    coordinadores_asig.remove(coordinador)
+                    break
+            
+            conta = 0
+            #Iteramos por la cantidad de dias.
+            for dia in self.dias_habiles:
+                
+                #Tambien por la cantidad de horarios.
+                for hora in self.horas:
+                    
+                    if len(coordinadores_asig) == 0:
+                        break
+                    
+                    indice = randint(0, len(coordinadores_asig)-1)
+                    
+                    coordinador = coordinadores_asig[indice]
+                    
+                    #Se crea un Horario.
+                    horario = Horario()
+                    #Se le asigna una Especialidad.
+                    horario.especialidad = coordinador.especialidad
+                    #Se le asigna una Profesional.
+                    horario.profesional = coordinador.profesional
+                    #Se le asigna una hora desde.
+                    horario.hora_desde = hora.hora_desde
+                    #Se le asigna una hora hasta.
+                    horario.hora_hasta = hora.hora_hasta
+                    #Se le asigna un dia de la semana.
+                    horario.dia_semana = dia
+                    
+                    #Comprobamos que el Horario generado
+                    #no exista en el Calendario.
+                    existe = False
+                    for franja_horaria in individuo.horarios:
+                        for horario_comp in franja_horaria:
+                            if horario == horario_comp:
+                                existe = True
+                    
+                    #Si ya existia continuamos generando.
+                    if existe:
+                        #~ print len(self.poblacion), ": Lo encontre"
+                        continue
+                    
+                    coordinadores_asig.remove(coordinador)
+                    
+                    #Lo agregamos a la lista de horarios del Calendario.
+                    individuo.agregar_horario(horario)
+                    
+                    conta += 1
+                
             if self.asignacion_semanal(individuo) != 0:
                 print "Esta todo mal con vos"
             
@@ -188,15 +213,16 @@ class Espacio(models.Model):
         """
         
         #Por cada individuo en la poblacion.
-        for calendario in poblacion:
+        for calendario in poblacion[:]:
+            
+            
+            if self.asignacion_semanal(calendario) != 0:
+                poblacion.remove(calendario)
+                continue
             
             #Primera evaluacion: Se evalua que los horarios asignados
             #cumplan las restricciones del profesional que contienen.
             calendario.puntaje += self.asignacion_horaria(calendario)
-            
-            #Segunda evaluacion: Que se cumplan las horas semanales
-            #de la especialidad.
-            calendario.puntaje += self.asignacion_semanal(calendario)
             
             #Tercera evaluacion: Se busca que las especialidades
             #cumplan con la horas maximas por dia.
@@ -298,7 +324,7 @@ class Espacio(models.Model):
                 #Si el horario no está bien asignado es penalizado.
                 if not self.itswellassigned(horario):
                     puntos += PUNTOS_RESTRICCION_PROFESIONAL
-                    horario.penalizado += 1
+                    #~ horario.penalizado += 1
         
         return puntos
     

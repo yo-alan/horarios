@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import sys
 import time
 
 from django.shortcuts import render, get_object_or_404
@@ -116,7 +117,9 @@ def generar(request):
     
     print " %7.3f seg." % (time.time() - operation_time)
     
-    for i in range(10):
+    for i in range(200):
+        
+        print i
         
         print "Seleccionando individuos para el cruce... ",
         sys.stdout.flush()
@@ -138,8 +141,6 @@ def generar(request):
         
         print " %7.3f seg." % (time.time() - operation_time)
         
-        print len(hijos)
-        
         print "Evaluando la nueva población... ",
         sys.stdout.flush()
         
@@ -147,6 +148,8 @@ def generar(request):
         
         #Evaluamos la nueva población.
         espacio.fitness(hijos)
+        
+        print len(hijos)
         
         print " %7.3f seg." % (time.time() - operation_time)
         
@@ -158,6 +161,7 @@ def generar(request):
         espacio.actualizarpoblacion(hijos)
         
         print " %7.3f seg." % (time.time() - operation_time)
+    
     
     print "Guardando los individuos... ",
     sys.stdout.flush()
