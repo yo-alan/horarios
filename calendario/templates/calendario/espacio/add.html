@@ -1,10 +1,21 @@
 {% extends "admin/base.html" %}
 
-{% block title %}Agregar un espacio{% endblock %}
+{% block title %}Agregar espacio nuevo.{% endblock %}
 
 {% block head %}
     <script>
         $(function(){
+            
+            var url = document.location.toString();
+            
+            if(url.match('#')) {
+                $('.nav-tabs a[href=#'+url.split('#')[1]+']').tab('show') ;
+            } 
+            
+            $('.nav-tabs a').on('shown.bs.tab', function (e){
+                window.location.hash = e.target.hash;
+                window.scrollTo(0, 0);
+            });
             
             $("[data-hide]").click(function(){
                 $(".alert-danger").attr('class', "alert alert-dismissable alert-danger hidden");
@@ -41,7 +52,7 @@
                         }
                         
                         alert(response.mensaje);
-                        window.location.href = "{% url 'calendario:espacio_all' %}";
+                        $('.nav-tabs a[href="#especialidades"]').tab('show')
                     }
                 });
             });
@@ -50,35 +61,80 @@
 {% endblock %}
 {% block article %}
     <ol class="breadcrumb">
-        <li><a href="{% url 'calendario:espacio_all' %}"><i class="fa fa-fw fa-paperclip"></i> Espacios</a></li>
+        <li><a href="{% url 'calendario:espacio_all' %}"><i class="glyphicon glyphicon-paperclip"></i> Espacios</a></li>
         <li class="active">Agregar</li>
     </ol>
-    <div class="page-header text-center">
-        <h1>
-            Agregar espacio<small>.</small>
-        </h1>
-    </div>
-    <form class="form-horizontal responsive center col-xs-10" id="addForm" name="addForm" method="POST" action="{% url 'calendario:espacio_add' %}">
-        <div class="alert alert-dismissable alert-danger hidden">
-            <button type="button" class="close" data-hide="alert" aria-hidden="true">
-                ×
-            </button>
-            <h4>
-                Error al guardar el espacio.
-            </h4>
-            <strong>Ojo!</strong> Un campo no es válido:
-            <p>
-            </p>
-        </div>
-        {% csrf_token %}
-        <div class="form-group">
-            <label class="col-xs-4 control-label" for="nombre">Nombre:</label>
-            <div class="col-xs-8">
-                <input type="text" id="nombre" name="nombre" class="form-control" autofocus placeholder="Nombre del espacio">
+    <div class="tabbable" id="tabs-776256">
+        <ul class="nav nav-tabs">
+            <li class="active">
+                <a href="#espacio"><i class="glyphicon glyphicon-paperclip"> Espacio</i></a>
+            </li>
+            <li>
+                <a href="#especialidades"><i class="glyphicon glyphicon-th-list"> Especialidades</i></a>
+            </li>
+            <li>
+                <a href="#profesionales"><i class="glyphicon glyphicon-user"> Profesionales</i></a>
+            </li>
+            <li>
+                <a href="#horas"><i class="glyphicon glyphicon-time"> Horas</i></a>
+            </li>
+            <li>
+                <a href="#calendarios"><i class="glyphicon glyphicon-calendar"> Calendarios</i></a>
+            </li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane active" id="espacio">
+                <h2 class="text-center">
+                    Agregar espacio nuevo
+                </h2>
+                <br>
+                <div class="col-xs-7 col-xs-offset-2">
+                    <form class="form-horizontal responsive" id="addForm" name="addForm" method="POST" action="{% url 'calendario:espacio_add' %}">
+                        <div class="alert alert-dismissable alert-danger hidden">
+                            <button type="button" class="close" data-hide="alert" aria-hidden="true">
+                                ×
+                            </button>
+                            <h4>
+                                Error al guardar el espacio.
+                            </h4>
+                            <strong>Ojo!</strong> Un campo no es válido:
+                            <p>
+                            </p>
+                        </div>
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label class="col-xs-4 control-label" for="nombre">Nombre:</label>
+                            <div class="col-xs-8">
+                                <input type="text" id="nombre" name="nombre" class="form-control" autofocus placeholder="Nombre del espacio">
+                            </div>
+                        </div>
+                        <button type="submit" id="btnGuardar" data-loading-text="Guardando..." class="btn btn-primary pull-right" autocomplete="off">
+                            Guardar
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <div class="tab-pane" id="especialidades">
+                
+            </div>
+            <div class="tab-pane" id="profesionales">
+                
+            </div>
+            <div class="tab-pane" id="horas">
+                
+            </div>
+            <div class="tab-pane" id="calendarios">
+                
             </div>
         </div>
-        <button type="submit" id="btnGuardar" data-loading-text="Guardando..." class="btn btn-primary pull-right" autocomplete="off">
-            Agregar
-        </button>
-    </form>
+    </div>
+{% endblock %}
+{% block alert %}
+    <div class="alert alert-info" role="alert">
+        <p>
+            <span class="glyphicon glyphicon-info-sign"></span>
+            <strong>Nota:</strong> Para asignar una especialidad
+            disponible clickeala. Haz lo mismo para quitarla.
+        </p>
+    </div>
 {% endblock %}

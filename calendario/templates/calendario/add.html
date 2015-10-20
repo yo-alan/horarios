@@ -123,16 +123,24 @@
     </h3>
     <ul class="list-inline">
         <li>
-            <img class="btn" src="/static/calendario/images/new.png" onclick="nuevo()" title="Nuevo calendario...">
+            <button class="btn btn-lg btn-default" onclick="nuevo()" title="Nuevo calendario...">
+                <span class="glyphicon glyphicon-file"></span>
+            </button>
         </li>
         <li>
-            <img class="btn" src="/static/calendario/images/save.png" onclick="guardar()" title="Guardar calendario...">
+            <button class="btn btn-lg btn-default" onclick="guardar()" title="Guardar calendario...">
+                <span class="glyphicon glyphicon-floppy-save"></span>
+            </button>
         </li>
         <li>
-            <img class="btn" src="/static/calendario/images/print.png" onclick="imprimir()" title="Imprimir calendario...">
+            <button class="btn btn-lg btn-default" onclick="imprimir()" title="Imprimir calendario...">
+                <span class="glyphicon glyphicon-print"></span>
+            </button>
         </li>
         <li>
-            <img src="/static/calendario/images/trash.png" id="trash" ondrop="eliminar(event)" ondragover="allowDrop(event)">
+            <button class="btn btn-lg btn-default" id="trash" ondrop="eliminar(event)" ondragover="allowDrop(event)">
+                <span class="glyphicon glyphicon-trash"></span>
+            </button>
         </li>
     </ul>
     <div class="col-xs-8 pull-left center-block">
@@ -154,9 +162,6 @@
                         <td class="text-center bg-primary">
                             <h4>
                                 <strong>{{ hora.hora_desde }}</strong>
-                            </h4>
-                            <h4>
-                                <strong>{{ hora.hora_hasta }}</strong>
                             </h4>
                         </td>
                         {% for dia in espacio.dias_habiles %}
