@@ -117,7 +117,7 @@ def generar(request):
     
     print " %7.3f seg." % (time.time() - operation_time)
     
-    for i in range(20):
+    for i in range(1000):
         
         print i
         

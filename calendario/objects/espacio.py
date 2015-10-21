@@ -9,9 +9,9 @@ from especialidad import Especialidad
 from profesional import Profesional
 
 PUNTOS_RESTRICCION_PROFESIONAL = 3
-PUNTOS_HORAS_SEMANALES = 10
-PUNTOS_HORAS_DIARIAS = 1
-PUNTOS_DISTRIBUCION_HORARIA = 3
+PUNTOS_HORAS_SEMANALES = 1
+PUNTOS_HORAS_DIARIAS = 4
+PUNTOS_DISTRIBUCION_HORARIA = 4
 
 class Espacio(models.Model):
     """
@@ -247,11 +247,14 @@ class Espacio(models.Model):
         parejas = []
         
         #La division por 4 representa el número de parejas para cruzar.
-        for i in range(len(self.poblacion)/4):
+        cantidad_parejas = len(self.poblacion)/4
+        
+        while cantidad_parejas > len(parejas):
             
             pareja = self.seleccionar()
             
-            parejas.append(pareja)
+            if pareja not in parejas:
+                parejas.append(pareja)
         
         return parejas
     
@@ -324,7 +327,7 @@ class Espacio(models.Model):
                 #Si el horario no está bien asignado es penalizado.
                 if not self.itswellassigned(horario):
                     puntos += PUNTOS_RESTRICCION_PROFESIONAL
-                    #~ horario.penalizado += 1
+                    horario.penalizado += 1
         
         return puntos
     
