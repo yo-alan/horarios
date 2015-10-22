@@ -59,6 +59,7 @@ class Calendario(models.Model):
         #Obtenemos el punto de corte dividiendo en 2 la cantidad
         #de horarios.
         punto_corte = len(self.horarios) / 2
+        punto_corte2 = punto_corte * 2
         
         hijo1 = Calendario.create()
         
@@ -71,7 +72,11 @@ class Calendario(models.Model):
             for horario in franja_horaria:
                 hijo1.agregar_horario(copy.copy(horario))
         
-        for franja_horaria in madre.horarios[punto_corte:]:
+        for franja_horaria in madre.horarios[punto_corte:punto_corte2]:
+            for horario in franja_horaria:
+                hijo1.agregar_horario(copy.copy(horario))
+        
+        for franja_horaria in self.horarios[punto_corte2:]:
             for horario in franja_horaria:
                 hijo1.agregar_horario(copy.copy(horario))
         
@@ -90,6 +95,10 @@ class Calendario(models.Model):
                 hijo2.agregar_horario(copy.copy(horario))
         
         for franja_horaria in self.horarios[punto_corte:]:
+            for horario in franja_horaria:
+                hijo2.agregar_horario(copy.copy(horario))
+        
+        for franja_horaria in madre.horarios[punto_corte2:]:
             for horario in franja_horaria:
                 hijo2.agregar_horario(copy.copy(horario))
         
