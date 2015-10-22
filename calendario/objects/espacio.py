@@ -8,10 +8,10 @@ from django.db import models
 from especialidad import Especialidad
 from profesional import Profesional
 
-PUNTOS_RESTRICCION_PROFESIONAL = 3
+PUNTOS_RESTRICCION_PROFESIONAL = 0
 PUNTOS_HORAS_SEMANALES = 1
-PUNTOS_HORAS_DIARIAS = 4
-PUNTOS_DISTRIBUCION_HORARIA = 4
+PUNTOS_HORAS_DIARIAS = 1
+PUNTOS_DISTRIBUCION_HORARIA = 1
 
 class Espacio(models.Model):
     """
@@ -122,7 +122,7 @@ class Espacio(models.Model):
                     calendario.agregar_horario(horario)
                     
         
-        #Rellenamos el Calendario generando Horarios aleatorios.
+        #Rellenamos el Calendario generando Horarios.
         
         coordinadores_asig_global = []
         

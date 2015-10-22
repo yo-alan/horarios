@@ -117,9 +117,9 @@ def generar(request):
     
     print " %7.3f seg." % (time.time() - operation_time)
     
-    for i in range(2000):
+    for i in range(200):
         
-        print i
+        print "Generación", i+1, "--------------------------------------"
         
         print "Seleccionando individuos para el cruce... ",
         sys.stdout.flush()
@@ -149,9 +149,9 @@ def generar(request):
         #Evaluamos la nueva población.
         espacio.fitness(hijos)
         
-        print len(hijos)
-        
         print " %7.3f seg." % (time.time() - operation_time)
+        
+        print "Hijos generados", len(hijos)
         
         print "Actualizando la población... ",
         sys.stdout.flush()
@@ -161,6 +161,9 @@ def generar(request):
         espacio.actualizarpoblacion(hijos)
         
         print " %7.3f seg." % (time.time() - operation_time)
+        
+        print "--------------------------------------------------------"
+        
     
     
     print "Guardando los individuos... ",
