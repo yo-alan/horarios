@@ -11,7 +11,7 @@ from profesional import Profesional
 PUNTOS_RESTRICCION_PROFESIONAL = 0
 PUNTOS_HORAS_SEMANALES = 1
 PUNTOS_HORAS_DIARIAS = 1
-PUNTOS_DISTRIBUCION_HORARIA = 1
+PUNTOS_DISTRIBUCION_HORARIA = 2
 
 class Espacio(models.Model):
     """
@@ -146,7 +146,6 @@ class Espacio(models.Model):
                     coordinadores_asig.remove(coordinador)
                     break
             
-            conta = 0
             #Iteramos por la cantidad de dias.
             for dia in self.dias_habiles:
                 
@@ -183,18 +182,12 @@ class Espacio(models.Model):
                     
                     #Si ya existia continuamos generando.
                     if existe:
-                        #~ print len(self.poblacion), ": Lo encontre"
                         continue
                     
                     coordinadores_asig.remove(coordinador)
                     
                     #Lo agregamos a la lista de horarios del Calendario.
                     individuo.agregar_horario(horario)
-                    
-                    conta += 1
-                
-            if self.asignacion_semanal(individuo) != 0:
-                print "Esta todo mal con vos"
             
             self.poblacion.append(individuo)
     
@@ -215,7 +208,8 @@ class Espacio(models.Model):
         #Por cada individuo en la poblacion.
         for calendario in poblacion[:]:
             
-            
+            #Si el individuo no cumple la asignacion de horas semanales
+            #es abortado.
             if self.asignacion_semanal(calendario) != 0:
                 poblacion.remove(calendario)
                 continue
@@ -224,11 +218,11 @@ class Espacio(models.Model):
             #cumplan las restricciones del profesional que contienen.
             calendario.puntaje += self.asignacion_horaria(calendario)
             
-            #Tercera evaluacion: Se busca que las especialidades
+            #Segunda evaluacion: Se busca que las especialidades
             #cumplan con la horas maximas por dia.
             calendario.puntaje += self.asignacion_diaria(calendario)
             
-            #Cuarta evaluación: En esta instancia se desea comprobar
+            #Tercera evaluación: En esta instancia se desea comprobar
             #la distribución horaria de las especialidades.
             calendario.puntaje += self.distribucion_horaria(calendario)
     

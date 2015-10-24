@@ -5,6 +5,7 @@
 {% block head %}
     <script>
         $(function (){
+            
             var url = document.location.toString();
             
             if(url.match('#')) {
@@ -86,6 +87,25 @@
                         }
                         
                         alert(response.mensaje);
+                    }
+                });
+            });
+            
+            var formGenerar = $("#formGenerar");
+            
+            formGenerar.submit(function (ev){
+                
+                ev.preventDefault();
+                
+                $("#" + formGenerar.attr('id') + " button[type=submit]").button('loading');
+                
+                $.ajax({
+                    url: formGenerar.attr('action'),
+                    type: formGenerar.attr('method'),
+                    data: formGenerar.serialize(),
+                    success: function (response){
+                        
+                        alert("Generando...");
                     }
                 });
             });
@@ -529,16 +549,22 @@
                         {% endfor %}
                     </tbody>
                 </table>
-                <form class="form-horizontal" id="" method="POST" action="{% url 'calendario:generar' %}">
+                <form class="form-horizontal" id="formGenerar" name="formGenerar" method="POST" action="{% url 'calendario:generar' %}">
                     {% csrf_token %}
                     <input type="hidden" id="espacio_id" name="espacio_id" value="{{ espacio.id }}">
-                    {% if listo %}
-                        <button type="submit" class="btn btn-success pull-right"  data-loading-text="Generando..." onclick="$(this).button('loading')">
+                    {% if GENERANDO %}
+                        <button class="btn btn-success pull-right disabled" disabled>
+                            Generando...
+                        </button>
                     {% else %}
-                        <button type="submit" class="btn btn-success pull-right" disabled  data-loading-text="Generando..." onclick="$(this).button('loading')">
+                        {% if listo %}
+                            <button type="submit" class="btn btn-success pull-right" data-loading-text="Generando..." onclick="$(this).button('loading')">
+                        {% else %}
+                            <button type="submit" class="btn btn-success pull-right" disabled  data-loading-text="Generando..." onclick="$(this).button('loading')">
+                        {% endif %}
+                            Generar
+                        </button>
                     {% endif %}
-                        Generar
-                    </button>
                 </form>
             </div>
         </div>

@@ -10,6 +10,8 @@
                 $(".alert-danger").attr('class', "alert alert-dismissable alert-danger hidden");
             });
             
+            $('.input-group').colorpicker();
+            
             var form = $("#addForm");
             
             form.submit(function (ev){
@@ -45,6 +47,7 @@
                     }
                 });
             });
+            
         });
     </script>
 {% endblock %}
@@ -90,9 +93,19 @@
                     <input type="number" id="max_horas_diaria" name="max_horas_diaria" class="form-control" min="1" placeholder="Carga máxima diaria" value="0">
                 </div>
             </div>
+            <div class="form-group">
+                <label class="col-xs-4 control-label" for="color">Color:</label>
+                <div class="col-xs-8">
+                    <div class="input-group">
+                        <input type="text" id="color" name="color" class="form-control" />
+                        <span class="input-group-addon"><i></i></span>
+                    </div>
+                </div>
+            </div>
             <button type="submit" id="btnGuardar" data-loading-text="Guardando..." class="btn btn-primary pull-right" autocomplete="off">
                 Agregar
             </button>
         </form>
     </div>
+    
 {% endblock %}

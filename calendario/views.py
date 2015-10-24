@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import sys
 import time
+from threading import Thread
 
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
@@ -19,8 +20,7 @@ from .models import Hora
 DIAS = {0: 'Domingo', 1: 'Lunes', 2: 'Martes', 3: 'Miércoles',
         4: 'Jueves', 5: 'Viernes', 6: 'Sábado', 7: "Todos los días"}
 
-COLORES = ['#FE2E2E', '#FF8000', '#01DF3A', '#0080FF', '#F78181',
-            '#F7BE81', '#2EFE64', '#58ACFA', '#FA5882', '#FFBF00']
+GENERANDO = False
 
 def index(request):
     
@@ -51,7 +51,8 @@ def add(request, espacio_id):
         calendario.espacio = Espacio.create(espacio_id)
         calendario.save()
         
-        #Dividimos por 3, esa es la cantidad de atributos. Mas 1 por que el primero es el csrf.
+        #Dividimos por 3, esa es la cantidad de atributos.
+        #Mas 1 por que el primero es el csrf.
         for i in range(1, len(request.POST)/3+1):
             
             #Creamos un horario y los completamos.
@@ -74,25 +75,21 @@ def add(request, espacio_id):
         if num in espacio.dias_habiles:
             dias.append(DIAS[num])
     
-    especialidades = []
-    i = 0
-    for especialidad in espacio.especialidades.all():
-        
-        especialidad.color = COLORES[i]
-        
-        especialidades.append(especialidad)
-        
-        i += 1
-    
-    context = {'espacio': espacio, 'dias': dias,
-                'especialidades': especialidades}
+    context = {'espacio': espacio, 'dias': dias}
     
     return render(request, 'calendario/add.html', context)
 
 def generar(request):
     
+    global GENERANDO
+    
+    if GENERANDO:
+        return HttpResponseRedirect(reverse('calendario:espacio_all'))
+    
     if request.method != 'POST':
-        return HttpResponseRedirect(reverse('calendario:all'))
+        return HttpResponseRedirect(reverse('calendario:espacio_all'))
+    
+    GENERANDO = True
     
     espacio = Espacio.create(request.POST['espacio_id'])
     
@@ -117,9 +114,9 @@ def generar(request):
     
     print " %7.3f seg." % (time.time() - operation_time)
     
-    for i in range(200):
+    for i in range(1000):
         
-        print "Generación", i+1, "--------------------------------------"
+        print "Generación", i+1, "-------------------------------------"
         
         print "Seleccionando individuos para el cruce... ",
         sys.stdout.flush()
@@ -165,7 +162,6 @@ def generar(request):
         print "--------------------------------------------------------"
         
     
-    
     print "Guardando los individuos... ",
     sys.stdout.flush()
     
@@ -180,9 +176,7 @@ def generar(request):
     print "La evolución tardó %7.3f seg."\
             % (time.time() - global_time)
     
-    context = {'calendarios': espacio.poblacion}
-    
-    return render(request, 'calendario/all.html', context)
+    GENERANDO = False
 
 def detail(request, calendario_id):
     
@@ -211,19 +205,8 @@ def detail(request, calendario_id):
         if num in espacio.dias_habiles:
             dias.append(DIAS[num])
     
-    especialidades = []
-    i = 0
-    for especialidad in espacio.especialidades.all():
-        
-        especialidad.color = COLORES[i]
-        
-        especialidades.append(especialidad)
-        
-        i += 1
-    
     context = {'calendario': calendario, 'anterior': anterior,
-                'siguiente': siguiente, 'dias': dias,
-                'especialidades': especialidades}
+                'siguiente': siguiente, 'dias': dias}
     
     return render(request, 'calendario/detail.html', context)
 
@@ -245,6 +228,8 @@ def espacio_all(request, pagina=1):
 
 def espacio_detail(request, espacio_id):
     
+    global GENERANDO
+    
     espacio = Espacio.create(espacio_id)
     
     especialidades = Especialidad.objects.filter(estado='ON')\
@@ -253,7 +238,8 @@ def espacio_detail(request, espacio_id):
     todas_profesionales = Profesional.objects.filter(estado='ON')\
                                                 .order_by('apellido', 'nombre')
     
-    #Muestro solo los profesionales que ejercen las especialidades asignadas al espacio.
+    #Muestro solo los profesionales que ejercen
+    #las especialidades asignadas al espacio.
     profesionales = []
     
     for profesional in todas_profesionales:
@@ -278,13 +264,13 @@ def espacio_detail(request, espacio_id):
     calendario_valido = total_horas_calculadas == total_horas_especialidades
     
     listo = False
-    #~ if espacio.coordinadores and espacio.horas and dias and calendario_valido:
+    
     if espacio.coordinadores and espacio.horas and dias:
         listo = True
     
     context = {'espacio': espacio, 'especialidades': especialidades,
                 'profesionales': profesionales, 'dias': dias,
-                'listo': listo}
+                'listo': listo, 'GENERANDO': GENERANDO}
     
     return render(request, 'calendario/espacio/detail.html', context)
 
@@ -690,6 +676,7 @@ def especialidad_add(request):
         especialidad.setnombre(request.POST["nombre"])
         especialidad.setcarga_horaria_semanal(request.POST["carga_horaria_semanal"])
         especialidad.setmax_horas_diaria(request.POST["max_horas_diaria"])
+        especialidad.color = request.POST["color"]
         
         if especialidad.carga_horaria_semanal < especialidad.max_horas_diaria:
             raise Exception("La carga horaria semanal no puede ser menor que la cantidad de horas.")
@@ -737,6 +724,7 @@ def especialidad_edit(request):
         especialidad.setnombre(request.POST["nombre"])
         especialidad.setcarga_horaria_semanal(request.POST["carga_horaria_semanal"])
         especialidad.setmax_horas_diaria(request.POST["max_horas_diaria"])
+        especialidad.color = request.POST["color"]
         
         especialidad.save()
         
