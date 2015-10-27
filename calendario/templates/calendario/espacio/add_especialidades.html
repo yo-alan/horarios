@@ -1,0 +1,126 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Agregar especialidades a {{ espacio.nombre }}.{% endblock %}
+
+{% block head %}
+    <script>
+        $(function(){
+            
+            $("[data-hide]").click(function(){
+                $(".alert-danger").attr('class', "alert alert-dismissable alert-danger hidden");
+            });
+            
+        });
+        
+        function agregar(item){
+            var texto = item.children[0].innerHTML;
+            
+            var eAsignadas = document.getElementById('eAsignadas');
+            
+            item.setAttribute('onclick', 'eliminar(this)');
+            
+            eAsignadas.appendChild(item);
+        }
+        
+        function eliminar(item){
+            var texto = item.children[0].innerHTML;
+            
+            var eDisponibles = document.getElementById('eDisponibles');
+            
+            item.setAttribute('onclick', 'agregar(this)');
+            
+            eDisponibles.appendChild(item);
+        }
+        
+        function guardarEspecialidades(){
+            
+            var eAsignadas = document.getElementById('eAsignadas');
+            
+            var especialidades = []
+            
+            for(i = 0; i < eAsignadas.children.length; i++){
+                especialidades.push(eAsignadas.children[i].id);
+            }
+            
+            $.ajax({
+                url: "{% url 'calendario:espacio_add_especialidades' espacio.id %}",
+                type: 'POST',
+                data: {
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                    especialidades: especialidades
+                },
+                success: function(response) {
+                    
+                    if(response.error){
+                        alert(response.error);
+                        return;
+                    }
+                    
+                    alert(response.mensaje);
+                    
+                    window.location.href = "{% url 'calendario:espacio_add_profesionales' espacio.id %}";
+                }
+            });
+        }
+    </script>
+{% endblock %}
+{% block article %}
+    <ol class="breadcrumb">
+        <li><a href="{% url 'calendario:espacio_all' %}"><i class="glyphicon glyphicon-paperclip"></i> Espacios</a></li>
+        <li class="active">Agregar especialidades</li>
+    </ol>
+    <h2 class="text-center">
+        Agregar especialidades a {{ espacio.nombre }}.
+    </h2>
+    <br>
+    <div class="col-xs-12">
+        <div class="row">
+            <div class="col-xs-5 col-xs-offset-1">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h3 class="panel-title"><b>Disponibles</b></h3>
+                    </div>
+                    <ul id="eDisponibles" class="list-group especialidades overflow">
+                        {% for especialidad in especialidades %}
+                            {% if not especialidad in espacio.especialidades.all %}
+                                <li id="{{ especialidad.id }}" class="btn list-group-item" onclick="agregar(this)">
+                                    <p class="text-left">
+                                        {{ especialidad }}
+                                    </p>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            <div class="col-xs-5">
+                <div class=" panel panel-primary">
+                    <div class="panel-heading">
+                        <h3 class="panel-title"><b>Asignadas</b></h3>
+                    </div>
+                    <ul id="eAsignadas" class="list-group especialidades overflow">
+                        {% for especialidad in espacio.especialidades.all %}
+                            <li id="{{ especialidad.id }}" class="btn list-group-item" onclick="eliminar(this)">
+                                <p class="text-left">
+                                    {{ especialidad }}
+                                </p>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <button class="btn btn-primary col-xs-offset-10" onclick="guardarEspecialidades()">
+        Guardar cambios
+    </button>
+{% endblock %}
+{% block alert %}
+    <div class="alert alert-info" role="alert">
+        <p>
+            <span class="glyphicon glyphicon-info-sign"></span>
+            <strong>Nota:</strong> Para asignar una especialidad
+            disponible clickeala. Haz lo mismo para quitarla.
+        </p>
+    </div>
+{% endblock %}

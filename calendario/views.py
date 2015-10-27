@@ -71,9 +71,8 @@ def add(request, espacio_id):
     
     dias = []
     
-    for num in DIAS:
-        if num in espacio.dias_habiles:
-            dias.append(DIAS[num])
+    for dia in espacio.dias_habiles:
+        dias.append(DIAS[dia])
     
     context = {'espacio': espacio, 'dias': dias}
     
@@ -201,9 +200,8 @@ def detail(request, calendario_id):
     
     dias = []
     
-    for num in DIAS:
-        if num in espacio.dias_habiles:
-            dias.append(DIAS[num])
+    for dia in espacio.dias_habiles:
+        dias.append(DIAS[dia])
     
     context = {'calendario': calendario, 'anterior': anterior,
                 'siguiente': siguiente, 'dias': dias}
@@ -251,21 +249,20 @@ def espacio_detail(request, espacio_id):
     
     dias = []
     
-    for num in DIAS:
-        if num in espacio.dias_habiles:
-            dias.append(DIAS[num])
+    for dia in espacio.dias_habiles:
+        dias.append(DIAS[dia])
     
     total_horas_especialidades = 0
     for especialidad in especialidades:
         total_horas_especialidades += especialidad.carga_horaria_semanal
     
-    total_horas_calculadas = len(espacio.dias_habiles) * len(espacio.horas)
+    total_horas = len(espacio.dias_habiles) * len(espacio.horas)
     
-    calendario_valido = total_horas_calculadas == total_horas_especialidades
+    calendario_valido = total_horas == total_horas_especialidades
     
     listo = False
     
-    if espacio.coordinadores and espacio.horas and dias:
+    if espacio.coordinadores and calendario_valido:
         listo = True
     
     context = {'espacio': espacio, 'especialidades': especialidades,
@@ -290,7 +287,8 @@ def espacio_add(request):
         
         espacio.save()
         
-        data = {'mensaje': "El espacio ha sido guardado exitosamente."}
+        data = {'mensaje': "El espacio ha sido guardado exitosamente.",
+                'espacio_id': espacio.id}
         
     except Exception as ex:
         
@@ -361,14 +359,22 @@ def espacio_add_hora(request):
     if request.method != 'POST':
         return HttpResponseRedirect(reverse('calendario:espacio_all'))
     
+    data = {}
+    
     try:
         
         espacio = Espacio.create(request.POST['espacio_id'])
         
         hora = Hora()
         
-        hora.hora_desde = request.POST['hora_desde'] + ":" + request.POST['min_desde']
-        hora.hora_hasta = request.POST['hora_hasta'] + ":" + request.POST['min_hasta']
+        hora_desde = request.POST['hora_desde']
+        min_desde = request.POST['min_desde']
+        
+        hora_hasta = request.POST['min_hasta']
+        min_hasta = request.POST['min_hasta']
+        
+        hora.hora_desde = hora_desde + ":" + min_desde
+        hora.hora_hasta = hora_hasta + ":" + min_hasta
         
         if hora.hora_desde == hora.hora_hasta:
             raise Exception("Las horas no pueden ser iguales.")
@@ -377,20 +383,27 @@ def espacio_add_hora(request):
         
         hora.save()
         
-        return JsonResponse({'mensaje': "La hora fue agregada exitosamente."})
+        data = {'mensaje': "La hora fue agregada exitosamente."}
         
     except Exception as ex:
-        return JsonResponse({'error': str(ex).decode('utf-8')})
-
-def espacio_add_especialidades(request):
+        data = {'error': str(ex).decode('utf-8')}
     
-    if request.method != 'POST':
-        return HttpResponseRedirect(reverse('calendario:espacio_all'))
+    return JsonResponse(data)
+
+def espacio_add_especialidades(request, espacio_id=0):
+    
+    espacio = Espacio.create(espacio_id)
+    
+    if request.method == 'GET':
+        
+        especialidades = Especialidad.objects.filter(estado='ON')\
+                                                .order_by('nombre')
+        
+        context = {'espacio': espacio, 'especialidades': especialidades}
+        
+        return render(request, 'calendario/espacio/add_especialidades.html', context)
     
     data = {}
-    
-    espacio_id = dict(request.POST.iterlists())['espacio_id'][0]
-    espacio = Espacio.create(espacio_id)
     
     try:
         
@@ -416,18 +429,32 @@ def espacio_add_especialidades(request):
     
     return JsonResponse(data)
 
-def espacio_add_profesionales(request):
+def espacio_add_profesionales(request, espacio_id=0):
     
-    if request.method != 'POST':
-        return HttpResponseRedirect(reverse('calendario:espacio_all'))
+    espacio = Espacio.create(espacio_id)
+    
+    if request.method == 'GET':
+        
+        todos_profesionales = Profesional.objects.filter(estado='ON')\
+                                                    .order_by('apellido', 'nombre')
+        
+        profesionales = []
+        
+        for profesional in todos_profesionales:
+            
+            for especialidad in espacio.especialidades.all():
+                
+                if especialidad in profesional.especialidades.all():
+                    profesionales.append(profesional)
+        
+        context = {'espacio': espacio, 'profesionales': profesionales}
+        
+        return render(request, 'calendario/espacio/add_profesionales.html', context)
     
     data = {}
     
     try:
-        espacio_id = dict(request.POST.iterlists())['espacio_id'][0]
         profesionales = dict(request.POST.iterlists())['profesionales[]']
-        
-        espacio = Espacio.create(espacio_id)
         
         for profesional in espacio.profesionales.filter(estado='ON'):
             espacio.profesionales.remove(profesional)
