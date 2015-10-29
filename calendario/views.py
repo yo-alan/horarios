@@ -113,7 +113,7 @@ def generar(request):
     
     print " %7.3f seg." % (time.time() - operation_time)
     
-    for i in range(1000):
+    for i in range(150):
         
         print "Generación", i+1, "-------------------------------------"
         
@@ -260,7 +260,7 @@ def espacio_detail(request, espacio_id):
     
     calendario_valido = total_horas == total_horas_especialidades
     
-    listo = False
+    listo = True
     
     if espacio.coordinadores and calendario_valido:
         listo = True

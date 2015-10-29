@@ -58,66 +58,32 @@ class Calendario(models.Model):
         
         #Obtenemos el punto de corte dividiendo en 2 la cantidad
         #de horarios.
-        puntos_corte = len(self.horarios)
         
         hijo1 = Calendario.create()
+        hijo2 = Calendario.create()
         
         hijo1.espacio = self.espacio
+        hijo2.espacio = self.espacio
         
-        for i in range(puntos_corte):
+        for j in range(len(self.espacio.dias_habiles)):
             
-            if i % 2 == 0:
-                for horario in self.horarios[i:i+1][0]:
-                    hijo1.agregar_horario(copy.copy(horario))
+            if j % 2 == 0:
+                for i in range(len(self.espacio.horas)):
+                    hijo1.agregar_horario(copy.copy(self.horarios[i][j]))
+                    hijo2.agregar_horario(copy.copy(madre.horarios[i][j]))
             else:
-                for horario in madre.horarios[i:i+1][0]:
-                    hijo1.agregar_horario(copy.copy(horario))
+                for i in range(len(self.espacio.horas)):
+                    hijo1.agregar_horario(copy.copy(madre.horarios[i][j]))
+                    hijo2.agregar_horario(copy.copy(madre.horarios[i][j]))
         
         if prob_mutacion > random.random():
             hijo1.mutar()
         
-        #Segundo hijo.
-        
-        hijo2 = Calendario.create()
-        
-        hijo2.espacio = self.espacio
-        
-        for i in range(puntos_corte):
-            
-            if i % 2 != 0:
-                for horario in self.horarios[i:i+1][0]:
-                    hijo2.agregar_horario(copy.copy(horario))
-            else:
-                for horario in madre.horarios[i:i+1][0]:
-                    hijo2.agregar_horario(copy.copy(horario))
-        
         if prob_mutacion > random.random():
             hijo2.mutar()
         
-        #Tercer hijo.
-        
-        #~ hijo3 = Calendario.create()
-        #~ 
-        #~ hijo3.espacio = self.espacio
-        #~ 
-        #~ for franja_horaria in madre.horarios[:punto_corte]:
-            #~ for horario in franja_horaria:
-                #~ hijo3.agregar_horario(copy.copy(horario))
-        #~ 
-        #~ for franja_horaria in self.horarios[punto_corte:]:
-            #~ for horario in franja_horaria:
-                #~ hijo3.agregar_horario(copy.copy(horario))
-        #~ 
-        #~ for franja_horaria in madre.horarios[punto_corte2:]:
-            #~ for horario in franja_horaria:
-                #~ hijo3.agregar_horario(copy.copy(horario))
-        #~ 
-        #~ if prob_mutacion > random.random():
-            #~ hijo2.mutar()
-        
         hijos.append(hijo1)
         hijos.append(hijo2)
-        #~ hijos.append(hijo3)
         
         return hijos
     

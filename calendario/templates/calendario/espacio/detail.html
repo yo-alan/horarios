@@ -166,7 +166,7 @@
             }
             
             $.ajax({
-                url: "{% url 'calendario:espacio_add_especialidades' %}",
+                url: "",
                 type: 'POST',
                 data: {
                     csrfmiddlewaretoken: '{{ csrf_token }}',
@@ -196,7 +196,7 @@
             }
             
             $.ajax({
-                url: "{% url 'calendario:espacio_add_profesionales' %}",
+                url: "",
                 type: 'POST',
                 data: {
                     csrfmiddlewaretoken: '{{ csrf_token }}',
