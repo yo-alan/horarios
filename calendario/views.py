@@ -8,6 +8,9 @@ from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.core import serializers
 from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
 
 from .models import Calendario
 from .models import Profesional
@@ -24,16 +27,40 @@ GENERANDO = False
 
 def index(request):
     
-    context = {}
+    if request.user.is_authenticated():
+        return HttpResponseRedirect(reverse('calendario:espacio_all'))
     
-    return render(request, 'calendario/index.html', context)
+    return render(request, 'calendario/index.html')
 
 def acerca(request):
     
-    context = {}
-    
-    return render(request, 'calendario/acerca.html', context)
+    return render(request, 'calendario/acerca.html')
 
+def log_in(request):
+    
+    if request.method != 'POST':
+        return HttpResponseRedirect(reverse('index'))
+    
+    username = request.POST['username']
+    password = request.POST['password']
+    
+    user = authenticate(username=username, password=password)
+    
+    if user is not None:
+        login(request, user)
+        
+        return HttpResponseRedirect(reverse('calendario:espacio_all'))
+    else:
+        return HttpResponseRedirect(reverse('index'))
+
+@login_required(login_url='/index/')
+def log_out(request):
+    
+    logout(request)
+    
+    return HttpResponseRedirect(reverse('index'))
+
+@login_required(login_url='/index/')
 def all(request):
     
     calendarios = Calendario.objects.filter(estado='ON')
@@ -42,6 +69,7 @@ def all(request):
     
     return render(request, 'calendario/all.html', context)
 
+@login_required(login_url='/index/')
 def add(request, espacio_id):
     
     if request.method == 'POST':
@@ -78,6 +106,7 @@ def add(request, espacio_id):
     
     return render(request, 'calendario/add.html', context)
 
+@login_required(login_url='/index/')
 def generar(request):
     
     global GENERANDO
@@ -113,7 +142,7 @@ def generar(request):
     
     print " %7.3f seg." % (time.time() - operation_time)
     
-    for i in range(150):
+    for i in range(1000):
         
         print "Generación", i+1, "-------------------------------------"
         
@@ -177,6 +206,7 @@ def generar(request):
     
     GENERANDO = False
 
+@login_required(login_url='/index/')
 def detail(request, calendario_id):
     
     calendario = Calendario.create(calendario_id)
@@ -208,6 +238,7 @@ def detail(request, calendario_id):
     
     return render(request, 'calendario/detail.html', context)
 
+@login_required(login_url='/index/')
 def espacio_all(request, pagina=1):
     
     total_espacios = Espacio.objects.filter(estado='ON').order_by('nombre')
@@ -224,6 +255,7 @@ def espacio_all(request, pagina=1):
     
     return render(request, 'calendario/espacio/all.html', context)
 
+@login_required(login_url='/index/')
 def espacio_detail(request, espacio_id):
     
     global GENERANDO
@@ -260,7 +292,7 @@ def espacio_detail(request, espacio_id):
     
     calendario_valido = total_horas == total_horas_especialidades
     
-    listo = True
+    listo = False
     
     if espacio.coordinadores and calendario_valido:
         listo = True
@@ -271,12 +303,11 @@ def espacio_detail(request, espacio_id):
     
     return render(request, 'calendario/espacio/detail.html', context)
 
+@login_required(login_url='/index/')
 def espacio_add(request):
     
     if request.method == 'GET':
-        context = {}
-        
-        return render(request, 'calendario/espacio/add.html', context)
+        return render(request, 'calendario/espacio/add.html')
     
     data = {}
     
@@ -299,7 +330,8 @@ def espacio_add(request):
         
     finally:
         return JsonResponse(data)
-    
+
+@login_required(login_url='/index/')
 def espacio_edit(request):
     
     if request.method != 'POST':
@@ -325,6 +357,7 @@ def espacio_edit(request):
     
     return JsonResponse(data)
 
+@login_required(login_url='/index/')
 def espacio_delete(request):
     
     if request.method != 'POST':
@@ -346,15 +379,17 @@ def espacio_delete(request):
     
     return JsonResponse(data)
 
+@login_required(login_url='/index/')
 def espacio_horas(request, espacio_id):
     
     espacio = Espacio.create(espacio_id)
     
     context = {'espacio': espacio}
     
-    return render(request, 'calendario/espacio/horas.html', context)
+    return render(request, 'calendario/espacio/add_horas.html', context)
 
-def espacio_add_hora(request):
+@login_required(login_url='/index/')
+def espacio_add_hora(request, espacio_id=0):
     
     if request.method != 'POST':
         return HttpResponseRedirect(reverse('calendario:espacio_all'))
@@ -390,6 +425,7 @@ def espacio_add_hora(request):
     
     return JsonResponse(data)
 
+@login_required(login_url='/index/')
 def espacio_add_especialidades(request, espacio_id=0):
     
     espacio = Espacio.create(espacio_id)
@@ -429,6 +465,7 @@ def espacio_add_especialidades(request, espacio_id=0):
     
     return JsonResponse(data)
 
+@login_required(login_url='/index/')
 def espacio_add_profesionales(request, espacio_id=0):
     
     espacio = Espacio.create(espacio_id)
@@ -474,6 +511,7 @@ def espacio_add_profesionales(request, espacio_id=0):
     
     return JsonResponse(data)
 
+@login_required(login_url='/index/')
 def profesional_all(request, pagina=1):
     
     total_profesionales = Profesional.objects.filter(estado='ON')\
@@ -491,12 +529,11 @@ def profesional_all(request, pagina=1):
     
     return render(request, 'calendario/profesional/all.html', context)
 
+@login_required(login_url='/index/')
 def profesional_add(request):
     
     if request.method == 'GET':
-        context = {}
-    
-        return render(request, 'calendario/profesional/add.html', context)
+        return render(request, 'calendario/profesional/add.html')
     
     data = {}
     
@@ -527,6 +564,7 @@ def profesional_add(request):
     finally:
         return JsonResponse(data)
 
+@login_required(login_url='/index/')
 def profesional_detail(request, profesional_id):
     
     profesional = Profesional.create(profesional_id)
@@ -540,7 +578,6 @@ def profesional_detail(request, profesional_id):
         restriccion.nombre_dia_semana = DIAS[restriccion.dia_semana]
         
         restricciones.append(restriccion)
-        
     
     #TODO DIAS
     context = {'profesional': profesional,
@@ -549,6 +586,7 @@ def profesional_detail(request, profesional_id):
     
     return render(request, 'calendario/profesional/detail.html', context)
 
+@login_required(login_url='/index/')
 def profesional_edit(request):
     
     if request.method != 'POST':
@@ -581,6 +619,7 @@ def profesional_edit(request):
     
     return JsonResponse(data)
 
+@login_required(login_url='/index/')
 def profesional_delete(request):
     
     if request.method != 'POST':
@@ -602,6 +641,7 @@ def profesional_delete(request):
     
     return JsonResponse(data)
 
+@login_required(login_url='/index/')
 def profesional_add_especialidades(request, ):
     
     if request.method != 'POST':
@@ -633,6 +673,7 @@ def profesional_add_especialidades(request, ):
     
     return JsonResponse(data)
 
+@login_required(login_url='/index/')
 def profesional_add_restriccion(request):
     
     if request.method != 'POST':
@@ -671,6 +712,7 @@ def profesional_add_restriccion(request):
     
     return JsonResponse(data)
 
+@login_required(login_url='/index/')
 def especialidad_all(request, pagina=1):
     
     total_especialidades = Especialidad.objects.filter(estado='ON')\
@@ -688,12 +730,11 @@ def especialidad_all(request, pagina=1):
     
     return render(request, 'calendario/especialidad/all.html', context)
 
+@login_required(login_url='/index/')
 def especialidad_add(request):
     
     if request.method == 'GET':
-        context = {}
-        
-        return render(request, 'calendario/especialidad/add.html', context)
+        return render(request, 'calendario/especialidad/add.html')
         
     data = {}
     
@@ -728,6 +769,7 @@ def especialidad_add(request):
     finally:
         return JsonResponse(data)
 
+@login_required(login_url='/index/')
 def especialidad_detail(request, especialidad_id):
     
     especialidad = Especialidad.create(especialidad_id)
@@ -736,12 +778,11 @@ def especialidad_detail(request, especialidad_id):
     
     return render(request, 'calendario/especialidad/detail.html', context)
 
+@login_required(login_url='/index/')
 def especialidad_edit(request):
     
     if request.method != 'POST':
-        context = {}
-        
-        return render(request, 'calendario/especialidad/all.html', context)
+        return render(request, 'calendario/especialidad/all.html')
     
     data = {}
     
@@ -772,6 +813,7 @@ def especialidad_edit(request):
     
     return JsonResponse(data)
 
+@login_required(login_url='/index/')
 def especialidad_delete(request):
     
     if request.method != 'POST':
@@ -793,6 +835,7 @@ def especialidad_delete(request):
     
     return JsonResponse(data)
 
+@login_required(login_url='/index/')
 def restriccion_add(request):
     
     if request.method != 'POST':
@@ -830,6 +873,7 @@ def restriccion_add(request):
     finally:
         return JsonResponse(data)
 
+@login_required(login_url='/index/')
 def restriccion_edit(request):
     
     if request.method != 'POST':
@@ -854,6 +898,7 @@ def restriccion_edit(request):
     
     return JsonResponse(data)
 
+@login_required(login_url='/index/')
 def restriccion_delete(request):
     
     if request.method != 'POST':
@@ -875,6 +920,7 @@ def restriccion_delete(request):
     
     return JsonResponse(data)
 
+@login_required(login_url='/index/')
 def getrestriccionesof(request):
     
     if request.method != 'GET':
