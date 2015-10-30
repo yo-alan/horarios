@@ -142,7 +142,7 @@ def generar(request):
     
     print " %7.3f seg." % (time.time() - operation_time)
     
-    for i in range(1000):
+    for i in range(100):
         
         print "Generación", i+1, "-------------------------------------"
         
@@ -285,8 +285,11 @@ def espacio_detail(request, espacio_id):
         dias.append(DIAS[dia])
     
     total_horas_especialidades = 0
-    for especialidad in especialidades:
-        total_horas_especialidades += especialidad.carga_horaria_semanal
+    for coordinador in espacio.coordinadores.all():
+        
+        carga = coordinador.especialidad.carga_horaria_semanal
+        
+        total_horas_especialidades += carga
     
     total_horas = len(espacio.dias_habiles) * len(espacio.horas)
     

@@ -8,10 +8,10 @@ from django.db import models
 from especialidad import Especialidad
 from profesional import Profesional
 
-PUNTOS_RESTRICCION_PROFESIONAL = 0
+PUNTOS_RESTRICCION_PROFESIONAL = 1
 PUNTOS_HORAS_SEMANALES = 1
-PUNTOS_HORAS_DIARIAS = 1
-PUNTOS_DISTRIBUCION_HORARIA = 4
+PUNTOS_HORAS_DIARIAS = 2
+PUNTOS_DISTRIBUCION_HORARIA = 2
 
 class Espacio(models.Model):
     """
@@ -523,7 +523,7 @@ class Espacio(models.Model):
         elegidos = []
         
         #Hacemos un torneo de 20 individuos.
-        for i in range(20):
+        for i in range(2):
             
             indice = randrange(len(self.poblacion))
             
@@ -538,7 +538,7 @@ class Espacio(models.Model):
         
         elegidos = []
         
-        for i in range(20):
+        for i in range(2):
             
             indice = randrange(len(self.poblacion))
             

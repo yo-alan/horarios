@@ -35,7 +35,7 @@ class Calendario(models.Model):
     def __str__(self, ):
         return str(self.espacio) + "(" + str(self.id) + ")"
     
-    def cruce(self, madre, prob_mutacion=0.01):
+    def cruce(self, madre, prob_mutacion=0.05):
         """
         Cruza este individuo con otro del mismo tipo y retorna la
         cantidad de hijos resultantes.
