@@ -8,7 +8,7 @@ from django.db import models
 from especialidad import Especialidad
 from profesional import Profesional
 
-PUNTOS_RESTRICCION_PROFESIONAL = 1
+PUNTOS_RESTRICCION_PROFESIONAL = 2
 PUNTOS_HORAS_SEMANALES = 1
 PUNTOS_HORAS_DIARIAS = 2
 PUNTOS_DISTRIBUCION_HORARIA = 2

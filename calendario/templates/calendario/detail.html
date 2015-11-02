@@ -60,7 +60,11 @@
                     </h4>
                 </td>
             {% for horario in franja_horaria %}
+                {% if horario.penalizado > 0 %}
+                <td penalizado="{{ horario.penalizado }}" class="text-center">
+                {% else %}
                 <td penalizado="{{ horario.penalizado }}" class="text-center" style="background-color: {{ horario.especialidad.color }}">
+                {% endif %}
                     <h4>
                         <strong>{{ horario.especialidad }}</strong>
                     </h4>

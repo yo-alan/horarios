@@ -106,6 +106,9 @@ class Calendario(models.Model):
         
         segundo.especialidad = especialidad_aux
         segundo.profesional = profesional_aux
+        
+        primero.penalizado = 0
+        segundo.penalizado = 0
     
     def agregar_horario(self, horario):
         """

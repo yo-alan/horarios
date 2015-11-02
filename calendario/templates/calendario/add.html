@@ -5,12 +5,6 @@
 {% block head %}
     <script>
         
-        $(document).ready(function (){
-            {% for especialidad in especialidades %}
-                $("#{{ especialidad|cut:" " }}").css('background-color', "{{ especialidad.color }}");
-            {% endfor %}
-        });
-        
         function allowDrop(ev) {
             ev.preventDefault();
         }
@@ -180,7 +174,7 @@
         <ul class="list-unstyled">
             {% for coordinador in espacio.coordinadores %}
                 <li>
-                    <p id="{{ coordinador.especialidad|cut:" " }}" name="{{ coordinador.especialidad.id }}" draggable="true" ondragstart="drag(event)" class="lead especialidad text-center">
+                    <p id="{{ coordinador.especialidad|cut:" " }}" name="{{ coordinador.especialidad.id }}" draggable="true" ondragstart="drag(event)" class="lead especialidad text-center" style="background-color: {{ coordinador.especialidad.color }}">
                         <strong>{{ coordinador.especialidad }}</strong>
                     </p>
                 </li>
