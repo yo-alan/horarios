@@ -2,6 +2,7 @@
 import sys
 import time
 from threading import Thread
+from itertools import groupby
 
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
@@ -142,9 +143,7 @@ def generar(request):
     
     print " %7.3f seg." % (time.time() - operation_time)
     
-    for i in range(100):
-        
-        print "Generación", i+1, "-------------------------------------"
+    while no_convergencia(espacio.poblacion):
         
         print "Seleccionando individuos para el cruce... ",
         sys.stdout.flush()
@@ -943,3 +942,14 @@ def getrestriccionesof(request):
         data = {'error': str(ex).decode('utf-8')}
     
     return JsonResponse(data)
+
+
+def no_convergencia(poblacion, porc=0.8):
+    
+    corte = len(poblacion) * porc
+    
+    for key, group in groupby(poblacion, lambda x: x.puntaje):
+        if len(list(group)) == corte:
+            return False
+    
+    return True
