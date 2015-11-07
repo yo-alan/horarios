@@ -120,88 +120,93 @@ def generar(request):
     
     GENERANDO = True
     
-    espacio = Espacio.create(request.POST['espacio_id'])
-    
-    print "Generando población inicial... ",
-    sys.stdout.flush()
-    
-    global_time = time.time()
-    
-    operation_time = time.time()
-    
-    espacio.generarpoblacioninicial()
-    
-    print " %d individuos en %7.3f seg."\
-            % (len(espacio.poblacion), time.time() - operation_time)
-    
-    print "Evaluando la población... ",
-    sys.stdout.flush()
-    
-    operation_time = time.time()
-    
-    espacio.fitness(espacio.poblacion)
-    
-    print " %7.3f seg." % (time.time() - operation_time)
-    
-    while no_convergencia(espacio.poblacion):
+    try:
         
-        print "Seleccionando individuos para el cruce... ",
+        espacio = Espacio.create(request.POST['espacio_id'])
+        
+        print "Generando población inicial... ",
+        sys.stdout.flush()
+        
+        global_time = time.time()
+        
+        operation_time = time.time()
+        
+        espacio.generarpoblacioninicial()
+        
+        print " %d individuos en %7.3f seg."\
+                % (len(espacio.poblacion), time.time() - operation_time)
+        
+        print "Evaluando la población... ",
         sys.stdout.flush()
         
         operation_time = time.time()
         
-        #Hacemos la seleccion de individuos.
-        seleccionados = espacio.seleccion()
+        espacio.fitness(espacio.poblacion)
         
         print " %7.3f seg." % (time.time() - operation_time)
         
-        print "Cruzando los individuos... ",
+        while no_convergencia(espacio.poblacion):
+            
+            print "Seleccionando individuos para el cruce... ",
+            sys.stdout.flush()
+            
+            operation_time = time.time()
+            
+            #Hacemos la seleccion de individuos.
+            seleccionados = espacio.seleccion()
+            
+            print " %7.3f seg." % (time.time() - operation_time)
+            
+            print "Cruzando los individuos... ",
+            sys.stdout.flush()
+            
+            operation_time = time.time()
+            
+            #Hacemos la seleccion de individuos.
+            hijos = espacio.cruzar(seleccionados)
+            
+            print " %7.3f seg." % (time.time() - operation_time)
+            
+            print "Evaluando la nueva población... ",
+            sys.stdout.flush()
+            
+            operation_time = time.time()
+            
+            #Evaluamos la nueva población.
+            espacio.fitness(hijos)
+            
+            print " %7.3f seg." % (time.time() - operation_time)
+            
+            print "Hijos generados", len(hijos)
+            
+            print "Actualizando la población... ",
+            sys.stdout.flush()
+            
+            operation_time = time.time()
+            
+            espacio.actualizarpoblacion(hijos)
+            
+            print " %7.3f seg." % (time.time() - operation_time)
+            
+            print "--------------------------------------------------------"
+            
+        
+        print "Guardando los individuos... ",
         sys.stdout.flush()
         
         operation_time = time.time()
         
-        #Hacemos la seleccion de individuos.
-        hijos = espacio.cruzar(seleccionados)
+        for calendario in espacio.poblacion:
+            calendario.full_save()
         
-        print " %7.3f seg." % (time.time() - operation_time)
+        print " %d individuos en %7.3f seg."\
+                % (len(espacio.poblacion), time.time() - operation_time)
+        print
+        print "La evolución tardó %7.3f seg."\
+                % (time.time() - global_time)
         
-        print "Evaluando la nueva población... ",
-        sys.stdout.flush()
-        
-        operation_time = time.time()
-        
-        #Evaluamos la nueva población.
-        espacio.fitness(hijos)
-        
-        print " %7.3f seg." % (time.time() - operation_time)
-        
-        print "Hijos generados", len(hijos)
-        
-        print "Actualizando la población... ",
-        sys.stdout.flush()
-        
-        operation_time = time.time()
-        
-        espacio.actualizarpoblacion(hijos)
-        
-        print " %7.3f seg." % (time.time() - operation_time)
-        
-        print "--------------------------------------------------------"
-        
-    
-    print "Guardando los individuos... ",
-    sys.stdout.flush()
-    
-    operation_time = time.time()
-    
-    for calendario in espacio.poblacion:
-        calendario.full_save()
-    
-    print " %d individuos en %7.3f seg."\
-            % (len(espacio.poblacion), time.time() - operation_time)
-    print
-    print "La evolución tardó %7.3f seg."\
-            % (time.time() - global_time)
+    except Exception as ex:
+        print ex
     
     GENERANDO = False
 
@@ -334,15 +339,21 @@ def espacio_add(request):
         return JsonResponse(data)
 
 @login_required(login_url='/index/')
-def espacio_edit(request):
+def espacio_edit(request, espacio_id=0):
     
-    if request.method != 'POST':
-        return HttpResponseRedirect(reverse('calendario:espacio_all'))
+    if request.method == 'GET':
+        
+        espacio = Espacio.create(espacio_id=espacio_id)
+        
+        context = {'espacio': espacio}
+        
+        return render(request, 'calendario/espacio/edit.html', context)
     
     data = {}
     
     try:
-        espacio = Espacio.create(request.POST['espacio_id'])
+        #~ espacio = Espacio.create(request.POST['espacio_id'])
+        espacio = Espacio.create(espacio_id)
         
         espacio.setnombre(request.POST['nombre'])
         
@@ -382,19 +393,15 @@ def espacio_delete(request):
     return JsonResponse(data)
 
 @login_required(login_url='/index/')
-def espacio_horas(request, espacio_id):
+def espacio_add_horas(request, espacio_id=0):
     
-    espacio = Espacio.create(espacio_id)
-    
-    context = {'espacio': espacio}
-    
-    return render(request, 'calendario/espacio/add_horas.html', context)
-
-@login_required(login_url='/index/')
-def espacio_add_hora(request, espacio_id=0):
-    
-    if request.method != 'POST':
-        return HttpResponseRedirect(reverse('calendario:espacio_all'))
+    if request.method == 'GET':
+        
+        espacio = Espacio.create(espacio_id)
+        
+        context = {'espacio': espacio}
+        
+        return render(request, 'calendario/espacio/add_horas.html', context)
     
     data = {}
     
@@ -944,7 +951,7 @@ def getrestriccionesof(request):
     return JsonResponse(data)
 
 
-def no_convergencia(poblacion, porc=0.8):
+def no_convergencia(poblacion, porc=0.99):
     
     corte = len(poblacion) * porc
     

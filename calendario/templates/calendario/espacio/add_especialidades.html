@@ -67,53 +67,54 @@
 {% block article %}
     <ol class="breadcrumb">
         <li><a href="{% url 'calendario:espacio_all' %}"><i class="glyphicon glyphicon-paperclip"></i> Espacios</a></li>
-        <li class="active">Agregar especialidades</li>
+        <li class="active">{{ espacio.nombre }}</li>
     </ol>
     <h2 class="text-center">
-        Agregar especialidades a {{ espacio.nombre }}.
+        Asignar especialidades a {{ espacio.nombre }}.
     </h2>
     <br>
     <div class="col-xs-12">
-        <div class="row">
-            <div class="col-xs-5 col-xs-offset-1">
-                <div class="panel panel-primary">
-                    <div class="panel-heading">
-                        <h3 class="panel-title"><b>Disponibles</b></h3>
-                    </div>
-                    <ul id="eDisponibles" class="list-group especialidades overflow">
-                        {% for especialidad in especialidades %}
-                            {% if not especialidad in espacio.especialidades.all %}
-                                <li id="{{ especialidad.id }}" class="btn list-group-item" onclick="agregar(this)">
-                                    <p class="text-left">
-                                        {{ especialidad }}
-                                    </p>
-                                </li>
-                            {% endif %}
-                        {% endfor %}
-                    </ul>
+        <div class="col-xs-6">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><b>Disponibles</b></h3>
                 </div>
-            </div>
-            <div class="col-xs-5">
-                <div class=" panel panel-primary">
-                    <div class="panel-heading">
-                        <h3 class="panel-title"><b>Asignadas</b></h3>
-                    </div>
-                    <ul id="eAsignadas" class="list-group especialidades overflow">
-                        {% for especialidad in espacio.especialidades.all %}
-                            <li id="{{ especialidad.id }}" class="btn list-group-item" onclick="eliminar(this)">
+                <ul id="eDisponibles" class="list-group especialidades overflow">
+                    {% for especialidad in especialidades %}
+                        {% if not especialidad in espacio.especialidades.all %}
+                            <li id="{{ especialidad.id }}" class="btn list-group-item" onclick="agregar(this)">
                                 <p class="text-left">
                                     {{ especialidad }}
                                 </p>
                             </li>
-                        {% endfor %}
-                    </ul>
-                </div>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
             </div>
         </div>
+        <div class="col-xs-6">
+            <div class=" panel panel-primary">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><b>Asignadas</b></h3>
+                </div>
+                <ul id="eAsignadas" class="list-group especialidades overflow">
+                    {% for especialidad in espacio.especialidades.all %}
+                        <li id="{{ especialidad.id }}" class="btn list-group-item" onclick="eliminar(this)">
+                            <p class="text-left">
+                                {{ especialidad }}
+                            </p>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <a href="{% url 'calendario:espacio_edit' espacio.id %}" class="btn btn-default">
+            <i class="glyphicon glyphicon-chevron-left"></i> Volver a espacio
+        </a>
+        <button class="btn btn-primary pull-right" onclick="guardarEspecialidades()">
+            <i class="glyphicon glyphicon-floppy-save"></i> Guardar cambios
+        </button>
     </div>
-    <button class="btn btn-primary col-xs-offset-10" onclick="guardarEspecialidades()">
-        Guardar cambios
-    </button>
 {% endblock %}
 {% block alert %}
     <div class="alert alert-info" role="alert">

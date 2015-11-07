@@ -58,7 +58,7 @@
                     
                     alert(response.mensaje);
                     
-                    window.location.href = "{% url 'calendario:espacio_horas' espacio.id %}";
+                    window.location.href = "{% url 'calendario:espacio_add_horas' espacio.id %}";
                 }
             });
         }
@@ -68,53 +68,54 @@
 {% block article %}
     <ol class="breadcrumb">
         <li><a href="{% url 'calendario:espacio_all' %}"><i class="glyphicon glyphicon-paperclip"></i> Espacios</a></li>
-        <li class="active">Agregar profesionales</li>
+        <li class="active">{{ espacio.nombre }}</li>
     </ol>
     <h2 class="text-center">
         Agregar profesionales a {{ espacio.nombre }}.
     </h2>
     <br>
     <div class="col-xs-12">
-        <div class="row">
-            <div class="col-xs-5 col-xs-offset-1">
-                <div class="panel panel-primary">
-                    <div class="panel-heading">
-                        <h3 class="panel-title"><b>Disponibles</b></h3>
-                    </div>
-                    <ul id="pDisponibles" class="list-group profesionales overflow">
-                        {% for profesional in profesionales %}
-                            {% if profesional not in espacio.profesionales.all %}
-                                <li id="{{ profesional.id }}" class="btn list-group-item" onclick="agregarProfesional(this)">
-                                    <p class="text-left">
-                                        {{ profesional }}
-                                    </p>
-                                </li>
-                            {% endif %}
-                        {% endfor %}
-                    </ul>
+        <div class="col-xs-6">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><b>Disponibles</b></h3>
                 </div>
-            </div>
-            <div class="col-xs-5">
-                <div class=" panel panel-primary">
-                    <div class="panel-heading">
-                        <h3 class="panel-title"><b>Asignados</b></h3>
-                    </div>
-                    <ul id="pAsignados" class="list-group profesionales overflow">
-                        {% for profesional in espacio.profesionales.all %}
-                            <li id="{{ profesional.id }}" class="btn list-group-item" onclick="eliminarProfesional(this)">
+                <ul id="pDisponibles" class="list-group profesionales overflow">
+                    {% for profesional in profesionales %}
+                        {% if profesional not in espacio.profesionales.all %}
+                            <li id="{{ profesional.id }}" class="btn list-group-item" onclick="agregarProfesional(this)">
                                 <p class="text-left">
                                     {{ profesional }}
                                 </p>
                             </li>
-                        {% endfor %}
-                    </ul>
-                </div>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
             </div>
         </div>
+        <div class="col-xs-6">
+            <div class=" panel panel-primary">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><b>Asignados</b></h3>
+                </div>
+                <ul id="pAsignados" class="list-group profesionales overflow">
+                    {% for profesional in espacio.profesionales.all %}
+                        <li id="{{ profesional.id }}" class="btn list-group-item" onclick="eliminarProfesional(this)">
+                            <p class="text-left">
+                                {{ profesional }}
+                            </p>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <a href="{% url 'calendario:espacio_add_especialidades' espacio.id %}" class="btn btn-default">
+            <i class="glyphicon glyphicon-chevron-left"></i> Volver a especialidades
+        </a>
+        <button class="btn btn-primary pull-right" onclick="guardarProfesionales()">
+            <i class="glyphicon glyphicon-floppy-save"></i> Guardar cambios
+        </button>
     </div>
-    <button class="btn btn-primary col-xs-offset-10" onclick="guardarProfesionales()">
-        Guardar cambios
-    </button>
 {% endblock %}
 {% block alert %}
     <div class="alert alert-info" role="alert">

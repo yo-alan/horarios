@@ -10,4 +10,5 @@ from objects.calendario import Calendario
 from objects.horario import Horario
 from objects.espacioRestriccion import EspacioRestriccion
 from objects.profesionalRestriccion import ProfesionalRestriccion
+from objects.penalidad import Penalidad
 

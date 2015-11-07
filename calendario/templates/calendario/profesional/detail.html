@@ -219,127 +219,121 @@
                             </div>
                         </div>
                         <button type="submit" id="btnGuardar" data-loading-text="Guardando..." class="btn btn-primary pull-right" autocomplete="off">
-                            Editar
+                            <i class="glyphicon glyphicon-floppy-save"></i> Guardar
                         </button>
                     </form>
                 </div>
             </div>
             <div class="tab-pane" id="restricciones">
-                <div class="row">
-                    <div class="col-xs-5">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <h3 class="panel-title"><b>Restricciones</b></h3>
-                            </div>
-                            <ul id="ulRestricciones" class="list-group restricciones overflow">
-                                {% for restriccion in restricciones %}
-                                    <li id="{{ restriccion.id }}" class="btn list-group-item" onclick="">
-                                        <p class="text-left">
-                                            {% if restriccion.nombre_dia_semana|length > 10 %}
-                                                {{ restriccion.nombre_dia_semana }} de {{ restriccion.hora_desde }} a {{ restriccion.hora_hasta }}.
-                                            {% else %}
-                                                El {{ restriccion.nombre_dia_semana }} de {{ restriccion.hora_desde }} a {{ restriccion.hora_hasta }}.
-                                            {% endif %}
-                                        </p>
-                                    </li>
-                                {% endfor %}
-                            </ul>
+                <div class="col-xs-6">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title"><b>Restricciones</b></h3>
                         </div>
+                        <ul id="ulRestricciones" class="list-group restricciones overflow">
+                            {% for restriccion in restricciones %}
+                                <li id="{{ restriccion.id }}" class="btn list-group-item" onclick="">
+                                    <p class="text-left">
+                                        {% if restriccion.nombre_dia_semana|length > 10 %}
+                                            {{ restriccion.nombre_dia_semana }} de {{ restriccion.hora_desde }} a {{ restriccion.hora_hasta }}.
+                                        {% else %}
+                                            El {{ restriccion.nombre_dia_semana }} de {{ restriccion.hora_desde }} a {{ restriccion.hora_hasta }}.
+                                        {% endif %}
+                                    </p>
+                                </li>
+                            {% endfor %}
+                        </ul>
                     </div>
-                    <div class="col-xs-5 col-xs-offset-1">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <h3 class="panel-title text-center">
-                                    Agregar restricción a {{ profesional }}
-                                </h3>
-                            </div>
-                            <div class="panel-body">
-                                <form class="form" id="addRestriccionForm" method="POST" action="{% url 'calendario:profesional_add_restriccion' %}">
-                                    <div class="alert alert-dismissable alert-danger hidden">
-                                        <button type="button" class="close" data-hide="alert" aria-hidden="true">
-                                            ×
-                                        </button>
-                                        <h4>
-                                            Error al guardar la restricción.
-                                        </h4>
-                                        <strong>Ojo!</strong> Un campo no es válido:
-                                        <p>
-                                        </p>
-                                    </div>
-                                    {% csrf_token %}
-                                    <input id="profesional_id" name="profesional_id" type="hidden" value="{{ profesional.id }}">
-                                    <div class="form-group">
-                                        <label class="control-label" for="dia_semana">Día de la semana:</label>
-                                        <select class="form-control" id="dia_semana" name="dia_semana">
-                                            <option value="7">Todos los días</option>
-                                            <option value="0">Domingo</option>
-                                            <option value="1">Lunes</option>
-                                            <option value="2">Martes</option>
-                                            <option value="3">Miércoles</option>
-                                            <option value="4">Jueves</option>
-                                            <option value="5">Viernes</option>
-                                            <option value="6">Sábado</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="control-label" for="hora_desde">Hora desde:</label>
-                                        <input type="text" class="form-control" id="hora_desde" name="hora_desde" placeholder="HH:mm"/>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="control-label" for="hora_hasta">Hora hasta:</label>
-                                        <input type="text" class="form-control" id="hora_hasta" name="hora_hasta" placeholder="HH:mm"/>
-                                    </div>
-                                    <button type="submit" id="btnRestriccionGuardar" data-loading-text="Guardando..." class="btn btn-primary pull-right" autocomplete="off">
-                                        Agregar
+                </div>
+                <div class="col-xs-6">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title text-center">
+                                Agregar restricción a {{ profesional }}
+                            </h3>
+                        </div>
+                        <div class="panel-body">
+                            <form class="form" id="addRestriccionForm" method="POST" action="{% url 'calendario:profesional_add_restriccion' %}">
+                                <div class="alert alert-dismissable alert-danger hidden">
+                                    <button type="button" class="close" data-hide="alert" aria-hidden="true">
+                                        ×
                                     </button>
-                                </form>
-                            </div>
+                                    <h4>
+                                        Error al guardar la restricción.
+                                    </h4>
+                                    <strong>Ojo!</strong> Un campo no es válido:
+                                    <p>
+                                    </p>
+                                </div>
+                                {% csrf_token %}
+                                <input id="profesional_id" name="profesional_id" type="hidden" value="{{ profesional.id }}">
+                                <div class="form-group">
+                                    <label class="control-label" for="dia_semana">Día de la semana:</label>
+                                    <select class="form-control" id="dia_semana" name="dia_semana">
+                                        <option value="7">Todos los días</option>
+                                        <option value="0">Domingo</option>
+                                        <option value="1">Lunes</option>
+                                        <option value="2">Martes</option>
+                                        <option value="3">Miércoles</option>
+                                        <option value="4">Jueves</option>
+                                        <option value="5">Viernes</option>
+                                        <option value="6">Sábado</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label" for="hora_desde">Hora desde:</label>
+                                    <input type="text" class="form-control" id="hora_desde" name="hora_desde" placeholder="HH:mm"/>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label" for="hora_hasta">Hora hasta:</label>
+                                    <input type="text" class="form-control" id="hora_hasta" name="hora_hasta" placeholder="HH:mm"/>
+                                </div>
+                                <button type="submit" id="btnRestriccionGuardar" data-loading-text="Guardando..." class="btn btn-primary pull-right" autocomplete="off">
+                                    <i class="glyphicon glyphicon-floppy-save"></i> Agregar
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="tab-pane" id="especialidades">
-                <div class="col-xs-12">
-                    <div class="row">
-                        <div class="col-xs-5 col-xs-offset-1">
-                            <div class="panel panel-primary">
-                                <div class="panel-heading">
-                                    <h3 class="panel-title"><b>Disponibles</b></h3>
-                                </div>
-                                <ul id="eDisponibles" class="list-group especialidades overflow">
-                                    {% for especialidad in especialidades %}
-                                        {% if not especialidad in profesional.especialidades.all %}
-                                            <li id="{{ especialidad.id }}" class="btn list-group-item" onclick="agregar(this)">
-                                                <p class="text-left">
-                                                    {{ especialidad }}
-                                                </p>
-                                            </li>
-                                        {% endif %}
-                                    {% endfor %}
-                                </ul>
-                            </div>
+                <div class="col-xs-6">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h3 class="panel-title"><b>Disponibles</b></h3>
                         </div>
-                        <div class="col-xs-5">
-                            <div class=" panel panel-primary">
-                                <div class="panel-heading">
-                                    <h3 class="panel-title"><b>Asignadas</b></h3>
-                                </div>
-                                <ul id="eAsignadas" class="list-group especialidades overflow">
-                                    {% for especialidad in profesional.especialidades.all %}
-                                        <li id="{{ especialidad.id }}" class="btn list-group-item" onclick="eliminar(this)">
-                                            <p class="text-left">
-                                                {{ especialidad }}
-                                            </p>
-                                        </li>
-                                    {% endfor %}
-                                </ul>
-                            </div>
-                        </div>
-                        <button class="btn btn-primary pull-right" onclick="guardarEspecialidades()">
-                            Guardar cambios
-                        </button>
+                        <ul id="eDisponibles" class="list-group especialidades overflow">
+                            {% for especialidad in especialidades %}
+                                {% if not especialidad in profesional.especialidades.all %}
+                                    <li id="{{ especialidad.id }}" class="btn list-group-item" onclick="agregar(this)">
+                                        <p class="text-left">
+                                            {{ especialidad }}
+                                        </p>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
                     </div>
                 </div>
+                <div class="col-xs-6">
+                    <div class=" panel panel-primary">
+                        <div class="panel-heading">
+                            <h3 class="panel-title"><b>Asignadas</b></h3>
+                        </div>
+                        <ul id="eAsignadas" class="list-group especialidades overflow">
+                            {% for especialidad in profesional.especialidades.all %}
+                                <li id="{{ especialidad.id }}" class="btn list-group-item" onclick="eliminar(this)">
+                                    <p class="text-left">
+                                        {{ especialidad }}
+                                    </p>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                <button class="btn btn-primary pull-right" onclick="guardarEspecialidades()">
+                    <i class="glyphicon glyphicon-floppy-save"></i> Guardar cambios
+                </button>
             </div>
         </div>
     </div>

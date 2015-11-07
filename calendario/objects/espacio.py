@@ -7,11 +7,9 @@ from django.db import models
 
 from especialidad import Especialidad
 from profesional import Profesional
+from penalidad import Penalidad
 
-PUNTOS_RESTRICCION_PROFESIONAL = 2
 PUNTOS_HORAS_SEMANALES = 1
-PUNTOS_HORAS_DIARIAS = 2
-PUNTOS_DISTRIBUCION_HORARIA = 2
 
 class Espacio(models.Model):
     """
@@ -53,6 +51,15 @@ class Espacio(models.Model):
         espacio._coordinadores = []
         espacio._poblacion = []
         espacio._generaciones = generaciones
+        
+        puntos = Penalidad.create('RESTRICCION PROFESIONAL').puntos
+        espacio.PUNTOS_RESTRICCION_PROFESIONAL = puntos
+        
+        puntos = Penalidad.create('HORAS DIARIAS').puntos
+        espacio.PUNTOS_HORAS_DIARIAS = puntos
+        
+        puntos = Penalidad.create('DISTRIBUCION HORARIA').puntos
+        espacio.PUNTOS_DISTRIBUCION_HORARIA = puntos
         
         #HARDCODED
         espacio._dias_habiles = [1, 2, 3, 4, 5]
@@ -320,7 +327,7 @@ class Espacio(models.Model):
                 
                 #Si el horario no está bien asignado es penalizado.
                 if not self.itswellassigned(horario):
-                    puntos += PUNTOS_RESTRICCION_PROFESIONAL
+                    puntos += self.PUNTOS_RESTRICCION_PROFESIONAL
                     horario.penalizado += 1
         
         return puntos
@@ -382,7 +389,7 @@ class Espacio(models.Model):
                     
                     horas_penalizar = (horas_diarias - especialidad.max_horas_diaria)
                     
-                    puntos += horas_penalizar * PUNTOS_HORAS_DIARIAS            
+                    puntos += horas_penalizar * self.PUNTOS_HORAS_DIARIAS            
         
         return puntos
     
@@ -409,21 +416,21 @@ class Espacio(models.Model):
                 
                 if horario_anterior.especialidad != horario.especialidad:
                     if horario.especialidad != horario_siguiente.especialidad:
-                        puntos += PUNTOS_DISTRIBUCION_HORARIA
+                        puntos += self.PUNTOS_DISTRIBUCION_HORARIA
             
             horario_1 = calendario.horarios[0][j]
             horario_2 = calendario.horarios[1][j]
             
             #Evaluamos el extremo inicial.
             if horario_1.especialidad != horario_2.especialidad:
-                puntos += PUNTOS_DISTRIBUCION_HORARIA
+                puntos += self.PUNTOS_DISTRIBUCION_HORARIA
             
             horario_1 = calendario.horarios[i+1][j]
             horario_2 = calendario.horarios[i+2][j]
             
             #Evaluamos el extremo final.
             if horario_1.especialidad != horario_2.especialidad:
-                puntos += PUNTOS_DISTRIBUCION_HORARIA
+                puntos += self.PUNTOS_DISTRIBUCION_HORARIA
         
         return puntos
     

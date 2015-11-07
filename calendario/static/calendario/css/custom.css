@@ -42,8 +42,8 @@ ul.profesionales, ul.especialidades, ul.calendarios, ul.restricciones {
 .panel-default > .panel-heading {
   background-color: #ddd;
   color: #000;
-
 }
+
 .table tbody > tr > td, .table thead > tr > th {
 	border-top: none;
 	border-bottom: none;
