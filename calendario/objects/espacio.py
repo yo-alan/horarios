@@ -20,7 +20,7 @@ class Espacio(models.Model):
     .dias_habiles - lista con los dias a cubrir. Valor: {}.
     .horarios - diccionario con los horarios a cubrir. Valor: {}.
     .poblacion - lista de individuos. Valor: [].
-    .generaciones - cantidad de generaciones a generar. Valor: 0.
+    .tamanio_poblacion - tamaño de la población. Valor: 0.
     """
     
     nombre = models.CharField(max_length=100, null=False, blank=False)
@@ -37,7 +37,7 @@ class Espacio(models.Model):
     profesionales = models.ManyToManyField(Profesional)
     
     @classmethod
-    def create(cls, espacio_id=0, generaciones=0):
+    def create(cls, espacio_id=0, tamanio_poblacion=0):
         
         espacio = None
         
@@ -50,7 +50,7 @@ class Espacio(models.Model):
         espacio._horas = []
         espacio._coordinadores = []
         espacio._poblacion = []
-        espacio._generaciones = generaciones
+        espacio._tamanio_poblacion = tamanio_poblacion
         
         puntos = Penalidad.create('RESTRICCION PROFESIONAL').puntos
         espacio.PUNTOS_RESTRICCION_PROFESIONAL = puntos
@@ -585,12 +585,12 @@ class Espacio(models.Model):
         return elegidos[0]
     
     @property
-    def generaciones(self, ):
-        return self._generaciones
+    def tamanio_poblacion(self, ):
+        return self._tamanio_poblacion
     
-    @generaciones.setter
-    def generaciones(self, generaciones):
-        self._generaciones = generaciones
+    @tamanio_poblacion.setter
+    def tamanio_poblacion(self, tamanio_poblacion):
+        self._tamanio_poblacion = tamanio_poblacion
     
     @property
     def poblacion(self, ):

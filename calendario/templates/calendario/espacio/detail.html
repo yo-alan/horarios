@@ -511,51 +511,65 @@
                 <!--
                     Mini-calendario.
                 -->
-                <table class="table mini-calendario">
-                    <thead>
-                        <tr class="bg-primary">
-                            <th class="text-center">
-                            </th>
-                            {% for dia in dias %}
+                <div class="col-xs-7">
+                    <table class="table mini-calendario">
+                        <thead>
+                            <tr class="bg-primary">
                                 <th class="text-center">
-                                    <h4><strong>{{ dia }}</strong></h4>
                                 </th>
-                            {% endfor %}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for hora in espacio.horas %}
-                            <tr>
-                                <td class="text-center bg-primary">
-                                    <h4>
-                                        <strong>{{ hora.hora_desde }}</strong>
-                                    </h4>
-                                </td>
-                                {% for dia in espacio.dias_habiles %}
-                                    <td class="text-center active">
-                                    </td>
+                                {% for dia in dias %}
+                                    <th class="text-center">
+                                        <h4><strong>{{ dia }}</strong></h4>
+                                    </th>
                                 {% endfor %}
                             </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-                <form class="form-horizontal" id="formGenerar" name="formGenerar" method="POST" action="{% url 'calendario:generar' %}">
-                    {% csrf_token %}
-                    <input type="hidden" id="espacio_id" name="espacio_id" value="{{ espacio.id }}">
-                    {% if GENERANDO %}
-                        <button class="btn btn-success pull-right disabled" disabled>
-                            Generando...
-                        </button>
-                    {% else %}
-                        {% if listo %}
-                            <button type="submit" class="btn btn-success pull-right" data-loading-text="Generando..." onclick="$(this).button('loading')">
+                        </thead>
+                        <tbody>
+                            {% for hora in espacio.horas %}
+                                <tr>
+                                    <td class="text-center bg-primary">
+                                        <h4>
+                                            <strong>{{ hora.hora_desde }}</strong>
+                                        </h4>
+                                    </td>
+                                    {% for dia in espacio.dias_habiles %}
+                                        <td class="text-center active">
+                                        </td>
+                                    {% endfor %}
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <form class="form-horizontal" id="formGenerar" name="formGenerar" method="POST" action="{% url 'calendario:generar' %}">
+                        {% csrf_token %}
+                        <input type="hidden" id="espacio_id" name="espacio_id" value="{{ espacio.id }}">
+                        <div class="form-group">
+                            <label class="col-xs-6 control-label" for="tamanio_poblacion">Long. población inicial:</label>
+                            <div class="input-group col-xs-5">
+                                <input type="range" id="tamanio_poblacion" name="tamanio_poblacion" min="1" max="3" value="2">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-6 control-label" for="generaciones">Cantidad de generaciones:</label>
+                            <div class="input-group col-xs-5">
+                                <input type="range" id="generaciones" name="generaciones" min="1" max="3" value="2">
+                            </div>
+                        </div>
+                        {% if GENERANDO %}
+                            <button class="btn btn-success pull-right disabled" disabled>
+                                Generando...
+                            </button>
                         {% else %}
-                            <button type="submit" class="btn btn-success pull-right" disabled  data-loading-text="Generando..." onclick="$(this).button('loading')">
+                            {% if listo %}
+                                <button type="submit" class="btn btn-success pull-right" data-loading-text="Generando..." onclick="$(this).button('loading')">
+                            {% else %}
+                                <button type="submit" class="btn btn-success pull-right" disabled  data-loading-text="Generando..." onclick="$(this).button('loading')">
+                            {% endif %}
+                                Generar
+                            </button>
                         {% endif %}
-                            Generar
-                        </button>
-                    {% endif %}
-                </form>
+                    </form>
+                </div>
             </div>
         </div>
     </div>

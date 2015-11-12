@@ -20,6 +20,7 @@ from .models import ProfesionalRestriccion
 from .models import Especialidad
 from .models import Espacio
 from .models import Hora
+from .models import Coordinador
 
 DIAS = {0: 'Domingo', 1: 'Lunes', 2: 'Martes', 3: 'Miércoles',
         4: 'Jueves', 5: 'Viernes', 6: 'Sábado', 7: "Todos los días"}
@@ -78,29 +79,88 @@ def add(request, espacio_id):
         calendario = Calendario.create()
         
         calendario.espacio = Espacio.create(espacio_id)
-        calendario.save()
         
         #Dividimos por 3, esa es la cantidad de atributos.
         #Mas 1 por que el primero es el csrf.
         for i in range(1, len(request.POST)/3+1):
             
+            coordinador_id = request.POST[str(i) + '[coordinador]']
+            desde = request.POST[str(i) + '[desde]']
+            
+            coordinador = Coordinador.objects.get(pk=coordinador_id)
+            hora = Hora.objects.filter(hora_desde=desde)
+            hora = hora.filter(espacio=calendario.espacio.id)
+            
+            dia_semana = request.POST[str(i) + '[dia]']
+            
             #Creamos un horario y los completamos.
             horario = Horario()
             
-            horario.calendario = calendario
-            horario.profesional = request.POST[str(i) + '[especialidad]']
-            horario.desde = request.POST[str(i) + '[desde]']
-            horario.dia_semana = request.POST[str(i) + '[dia]']
+            horario.profesional = coordinador.profesional
+            horario.especialidad = coordinador.especialidad
+            horario.hora_desde = hora[0].hora_desde
+            horario.hora_hasta = hora[0].hora_hasta
+            horario.dia_semana = dia_semana
             
-            horario.save()
+            calendario.agregar_horario(horario)
         
-        return HttpResponseRedirect(reverse('calendario:all'))
+        calendario.full_save()
+        
+        data = {'mensaje': "El calendario fue creado exitosamente."}
+        
+        return JsonResponse(data)
     
     espacio = Espacio.create(espacio_id)
     
     dias = []
     
     for dia in espacio.dias_habiles:
+        dias.append(DIAS[dia])
+    
+    context = {'espacio': espacio, 'dias': dias}
+    
+    return render(request, 'calendario/add.html', context)
+
+@login_required(login_url='/index/')
+def edit(request, calendario_id):
+    
+    if request.method == 'POST':
+        
+        calendario = Calendario.create(calendario_id)
+        
+        #Dividimos por 3, esa es la cantidad de atributos.
+        #Mas 1 por que el primero es el csrf.
+        for i in range(1, len(request.POST)/3+1):
+            
+            coordinador_id = request.POST[str(i) + '[coordinador]']
+            desde = request.POST[str(i) + '[desde]']
+            
+            coordinador = Coordinador.objects.get(pk=coordinador_id)
+            hora = Hora.objects.filter(hora_desde=desde)
+            hora = hora.filter(espacio=calendario.espacio.id)
+            
+            dia_semana = request.POST[str(i) + '[dia]']
+            
+            #Creamos un horario y los completamos.
+            horario = Horario()
+            
+            horario.profesional = coordinador.profesional
+            horario.especialidad = coordinador.especialidad
+            horario.hora_desde = hora[0].hora_desde
+            horario.hora_hasta = hora[0].hora_hasta
+            horario.dia_semana = dia_semana
+            
+            calendario.agregar_horario(horario)
+        
+        calendario.full_save()
+        
+        return HttpResponseRedirect(reverse('calendario:espacio_all'))
+    
+    calendario = Calendario.create(calendario_id)
+    
+    dias = []
+    
+    for dia in calendario.espacio.dias_habiles:
         dias.append(DIAS[dia])
     
     context = {'espacio': espacio, 'dias': dias}
@@ -120,9 +180,13 @@ def generar(request):
     
     GENERANDO = True
     
+    espacio_id = request.POST['espacio_id']
+    tamanio_poblacion = int(request.POST['tamanio_poblacion']) * 100
+    generaciones = int(request.POST['generaciones']) * 500
+    
     try:
         
-        espacio = Espacio.create(request.POST['espacio_id'])
+        espacio = Espacio.create(espacio_id, tamanio_poblacion)
         
         print "Generando población inicial... ",
         sys.stdout.flush()
@@ -145,7 +209,13 @@ def generar(request):
         
         print " %7.3f seg." % (time.time() - operation_time)
         
-        while no_convergencia(espacio.poblacion):
+        generacion = 0
+        
+        while generacion != generaciones:
+            
+            generacion += 1
+            
+            print "Generación %d/%d" % (generacion, generaciones)
             
             print "Seleccionando individuos para el cruce... ",
             sys.stdout.flush()
@@ -949,14 +1019,3 @@ def getrestriccionesof(request):
         data = {'error': str(ex).decode('utf-8')}
     
     return JsonResponse(data)
-
-
-def no_convergencia(poblacion, porc=0.99):
-    
-    corte = len(poblacion) * porc
-    
-    for key, group in groupby(poblacion, lambda x: x.puntaje):
-        if len(list(group)) == corte:
-            return False
-    
-    return True
