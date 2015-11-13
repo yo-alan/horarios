@@ -4,6 +4,9 @@
 
 {% block head %}
     <script>
+        $(function () {
+            $('[data-toggle="popover"]').popover();
+        });
         
         function allowDrop(ev) {
             ev.preventDefault();
@@ -88,10 +91,6 @@
             });
         }
         
-        function imprimir(){
-            alert("Imprimiendo...");
-        }
-        
         function eliminar(ev){
             var coordinadorId = ev.dataTransfer.getData("text");
             var coordinador = document.getElementById(coordinadorId);
@@ -128,14 +127,14 @@
             </button>
         </li>
         <li>
-            <button class="btn btn-lg btn-default" onclick="imprimir()" title="Imprimir calendario...">
+            <a class="btn btn-lg btn-default" href="{% url 'calendario:some_view' %}" target="_blank" title="Imprimir calendario...">
                 <span class="glyphicon glyphicon-print"></span>
-            </button>
+            </a>
         </li>
         <li>
-            <button class="btn btn-lg btn-default" id="trash" ondrop="eliminar(event)" ondragover="allowDrop(event)">
+            <a class="btn btn-lg btn-default" id="trash" ondrop="eliminar(event)" ondragover="allowDrop(event)" data-toggle="popover" data-trigger="focus" title="Dismissible popover" data-content="iiiiiiiiiiiiiiiiiiiiih">
                 <span class="glyphicon glyphicon-trash"></span>
-            </button>
+            </a>
         </li>
     </ul>
     <div class="col-xs-8 pull-left center-block">

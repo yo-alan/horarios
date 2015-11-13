@@ -12,6 +12,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
+from reportlab.pdfgen import canvas
 
 from .models import Calendario
 from .models import Profesional
@@ -1019,3 +1020,20 @@ def getrestriccionesof(request):
         data = {'error': str(ex).decode('utf-8')}
     
     return JsonResponse(data)
+
+def some_view(request):
+    # Create the HttpResponse object with the appropriate PDF headers.
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'filename="somefilename.pdf"'
+
+    # Create the PDF object, using the response object as its "file."
+    p = canvas.Canvas(response)
+
+    # Draw things on the PDF. Here's where the PDF generation happens.
+    # See the ReportLab documentation for the full list of functionality.
+    p.drawString(100, 100, "Hello world.")
+
+    # Close the PDF object cleanly, and we're done.
+    p.showPage()
+    p.save()
+    return response
