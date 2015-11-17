@@ -248,13 +248,15 @@ class Espacio(models.Model):
         parejas = []
         
         #La division por 4 representa el número de parejas para cruzar.
-        cantidad_parejas = len(self.poblacion)/4
+        cantidad_parejas = len(self.poblacion) / 4
         
         while cantidad_parejas > len(parejas):
             
             pareja = self.seleccionar()
             
-            if pareja not in parejas:
+            jarepa = (pareja[1], pareja[0])
+            
+            if pareja not in parejas and jarepa not in parejas:
                 parejas.append(pareja)
         
         return parejas
@@ -541,20 +543,20 @@ class Espacio(models.Model):
         
         padre = self.winneroftournament(elegidos)
         
-        #~ while madre != padre:
-        
-        elegidos = []
-        
-        for i in range(2):
+        while madre != padre:
             
-            indice = randrange(len(self.poblacion))
+            elegidos = []
             
-            calendario = self.poblacion[indice]
+            for i in range(2):
+                
+                indice = randrange(len(self.poblacion))
+                
+                calendario = self.poblacion[indice]
+                
+                if calendario not in elegidos:
+                    elegidos.append(calendario)
             
-            if calendario not in elegidos:
-                elegidos.append(calendario)
-        
-        madre = self.winneroftournament(elegidos)
+            madre = self.winneroftournament(elegidos)
         
         return (padre, madre)
     
