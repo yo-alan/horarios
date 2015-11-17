@@ -39,6 +39,8 @@ urlpatterns = [
     url(r'^espacio/profesionales/(?P<espacio_id>[0-9]+)/$', views.espacio_add_profesionales, name='espacio_add_profesionales'),
     # ex: /calendario/espacio/horas/add/
     url(r'^espacio/horas/add/(?P<espacio_id>[0-9]+)/$', views.espacio_add_horas, name='espacio_add_horas'),
+    # ex: /calendario/espacio/dias/add/
+    url(r'^espacio/dias/add/$', views.espacio_add_dias, name='espacio_add_dias'),
     
     # ex: /calendario/profesional/
     url(r'^profesional/$', views.profesional_all, name='profesional_all'),

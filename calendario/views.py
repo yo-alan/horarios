@@ -164,19 +164,16 @@ def edit(request, calendario_id):
     for dia in calendario.espacio.dias_habiles:
         dias.append(DIAS[dia])
     
-    context = {'espacio': espacio, 'dias': dias}
+    context = {'calendario': calendario, 'dias': dias}
     
-    return render(request, 'calendario/add.html', context)
+    return render(request, 'calendario/edit.html', context)
 
 @login_required(login_url='/index/')
 def generar(request):
     
     global GENERANDO
     
-    if GENERANDO:
-        return HttpResponseRedirect(reverse('calendario:espacio_all'))
-    
-    if request.method != 'POST':
+    if GENERANDO or request.method != 'POST':
         return HttpResponseRedirect(reverse('calendario:espacio_all'))
     
     GENERANDO = True
@@ -505,6 +502,48 @@ def espacio_add_horas(request, espacio_id=0):
     
     return JsonResponse(data)
 
+def espacio_add_dias(request):
+    
+    if request.method != 'POST':
+        return HttpResponseRedirect(reverse('calendario:espacio_all'))
+    
+    data = {}
+    
+    try:
+        espacio = Espacio.create(request.POST['espacio_id'])
+        
+        for i in range(7):
+            if request.POST.get('dia_' + str(i), False):
+                print "Venia el", i
+                espacio.dias_habiles.append(i)
+        print espacio.dias_habiles
+        #~ if(request.POST.get('dia_1', False)):
+            #~ espacio.dias_habiles.append(1)
+        
+        #~ if(request.POST.get('dia_2', False)):
+            #~ espacio.dias_habiles.append(2)
+        
+        #~ if(request.POST.get('dia_3', False)):
+            #~ espacio.dias_habiles.append(3)
+        
+        #~ if(request.POST.get('dia_4', False)):
+            #~ espacio.dias_habiles.append(4)
+        
+        #~ if(request.POST.get('dia_5', False)):
+            #~ espacio.dias_habiles.append(5)
+        
+        #~ if(request.POST.get('dia_6', False)):
+            #~ espacio.dias_habiles.append(6)
+        
+        #~ espacio.save()
+        
+        data = {'mensaje': "La hora fue agregada exitosamente."}
+        
+    except Exception as ex:
+        data = {'error': str(ex).decode('utf-8')}
+    
+    return JsonResponse(data)
+
 @login_required(login_url='/index/')
 def espacio_add_especialidades(request, espacio_id=0):
     
@@ -670,7 +709,7 @@ def profesional_detail(request, profesional_id):
 def profesional_edit(request):
     
     if request.method != 'POST':
-        return HttpResponseRedirect(reverse('calendario:profesional_all'))
+        return HttpResponseRedirect(reverse('calendario:espacio_all'))
     
     try:
         
@@ -703,7 +742,7 @@ def profesional_edit(request):
 def profesional_delete(request):
     
     if request.method != 'POST':
-        return HttpResponseRedirect(reverse('calendario:profesional_all'))
+        return HttpResponseRedirect(reverse('calendario:espacio_all'))
     
     data = {}
     
@@ -725,7 +764,7 @@ def profesional_delete(request):
 def profesional_add_especialidades(request, ):
     
     if request.method != 'POST':
-        return HttpResponseRedirect(reverse('calendario:profesional_all'))
+        return HttpResponseRedirect(reverse('calendario:espacio_all'))
     
     data = {}
     
@@ -757,7 +796,7 @@ def profesional_add_especialidades(request, ):
 def profesional_add_restriccion(request):
     
     if request.method != 'POST':
-        return HttpResponseRedirect(reverse('calendario:profesional_all'))
+        return HttpResponseRedirect(reverse('calendario:espacio_all'))
     
     data = {}
     
@@ -897,7 +936,7 @@ def especialidad_edit(request):
 def especialidad_delete(request):
     
     if request.method != 'POST':
-        return HttpResponseRedirect(reverse('calendario:especialidad_all'))
+        return HttpResponseRedirect(reverse('calendario:espacio_all'))
         
     data = {}
     
@@ -919,7 +958,7 @@ def especialidad_delete(request):
 def restriccion_add(request):
     
     if request.method != 'POST':
-        return HttpResponseRedirect(reverse('calendario:profesional_all'))
+        return HttpResponseRedirect(reverse('calendario:espacio_all'))
     
     data = {}
     
@@ -957,7 +996,7 @@ def restriccion_add(request):
 def restriccion_edit(request):
     
     if request.method != 'POST':
-        return HttpResponseRedirect(reverse('calendario:profesional_all'))
+        return HttpResponseRedirect(reverse('calendario:espacio_all'))
     
     data = {}
     
@@ -982,7 +1021,7 @@ def restriccion_edit(request):
 def restriccion_delete(request):
     
     if request.method != 'POST':
-        return HttpResponseRedirect(reverse('calendario:profesional_all'))
+        return HttpResponseRedirect(reverse('calendario:espacio_all'))
     
     data = {}
     
@@ -1004,7 +1043,7 @@ def restriccion_delete(request):
 def getrestriccionesof(request):
     
     if request.method != 'GET':
-        return HttpResponseRedirect(reverse('calendario:profesional_all'))
+        return HttpResponseRedirect(reverse('calendario:espacio_all'))
     
     data = {}
     
