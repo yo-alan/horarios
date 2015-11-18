@@ -2,7 +2,7 @@
 from django.db import models
 
 class Restriccion(models.Model):
-    #HABLAR CON ENZO SOBRE LAS SUBCLASES
+    
     hora_desde = models.TimeField('desde', null=False, blank=False)
     hora_hasta = models.TimeField('hasta', null=False, blank=False)
     dia_semana = models.IntegerField(default=0, null=False, blank=False)

@@ -7,4 +7,3 @@ from espacio import Espacio
 class EspacioRestriccion(Restriccion):
     
     espacio = models.ForeignKey(Espacio)
-

@@ -19,7 +19,7 @@
                 }
             });
             
-            var form = $(".form");
+            var form = $("#addDiasForm");
             
             form.submit(function (ev){
                 
@@ -66,35 +66,54 @@
         Designar dias de trabajo a {{ espacio.nombre }}.
     </h2>
     <br>
-    <div>
-        <table class="table center-block">
-            <thead>
-                <tr class="bg-primary">
-                    <th>
-                    </th>
-                    {% for dia in dias %}
-                        <th class="text-center">
-                            <h4><strong>{{ dia }}</strong></h4>
-                        </th>
-                    {% endfor %}
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td class="text-center bg-primary">
-                        <h4>
-                            <strong>1°</strong>
-                        </h4>
-                    </td>
-                    {% for dia in espacio.dias_habiles %}
-                        <td class="text-center">
-                            <div id="{{ hora }}{{ dia }}" dia="{{ dia }}" desde="{{ hora }}" horario="{{ forloop.parentloop.counter0 }}" ondrop="drop(event)" ondragover="allowDrop(event)" class="horario-container">
-                                
-                            </div>
-                        </td>
-                    {% endfor %}
-                </tr>
-            </tbody>
-        </table>
+    <div class="col-xs-6 col-xs-offset-3">
+        <form class="form-horizontal" id="addDiasForm" method="POST" action="{% url 'calendario:espacio_add_dias' espacio.id %}">
+            {% csrf_token %}
+            <input type="hidden" id="espacio_id" name="espacio_id" value="{{ espacio.id }}">
+            <label>Seleccione los días hábiles:</label>
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" id="dia_7" name="dia_7"> Todos los días
+                </label>
+            </div>
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" id="dia_0" name="dia_0"> Domingo
+                </label>
+            </div>
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" id="dia_1" name="dia_1"> Lunes
+                </label>
+            </div>
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" id="dia_2" name="dia_2"> Martes
+                </label>
+            </div>
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" id="dia_3" name="dia_3"> Miércoles
+                </label>
+            </div>
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" id="dia_4" name="dia_4"> Jueves
+                </label>
+            </div>
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" id="dia_5" name="dia_5"> Viernes
+                </label>
+            </div>
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" id="dia_6" name="dia_6"> Sábado
+                </label>
+            </div>
+            <button type="submit" id="btnGuardar" data-loading-text="Guardando..." class="btn btn-primary pull-right" autocomplete="off">
+                <i class="glyphicon glyphicon-floppy-save"></i> Guardar y continuar
+            </button>
+        </form>
     </div>
 {% endblock %}

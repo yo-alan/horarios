@@ -10,6 +10,12 @@
                 $(".alert-danger").attr('class', "alert alert-dismissable alert-danger hidden");
             });
             
+            $('#eAsignadas').filter(function(){
+                if($(this).children("li").length == 0){
+                    $("#btnContinuar").prop('disabled', true);
+                    $("#btnContinuar").prop('class', "btn btn-primary disabled pull-right");
+                }
+            });
         });
         
         function agregar(item){
@@ -20,6 +26,9 @@
             item.setAttribute('onclick', 'eliminar(this)');
             
             eAsignadas.appendChild(item);
+            
+            $("#btnContinuar").prop('disabled', false);
+            $("#btnContinuar").prop('class', "btn btn-primary pull-right");
         }
         
         function eliminar(item){
@@ -30,6 +39,13 @@
             item.setAttribute('onclick', 'agregar(this)');
             
             eDisponibles.appendChild(item);
+            
+            $('#eAsignadas').filter(function(){
+                if($(this).children("li").length == 0){
+                    $("#btnContinuar").prop('disabled', true);
+                    $("#btnContinuar").prop('class', "btn btn-primary disabled pull-right");
+                }
+            });
         }
         
         function guardarEspecialidades(){
@@ -111,8 +127,8 @@
         <a href="{% url 'calendario:espacio_edit' espacio.id %}" class="btn btn-default">
             <i class="glyphicon glyphicon-chevron-left"></i> Volver a espacio
         </a>
-        <button class="btn btn-primary pull-right" onclick="guardarEspecialidades()">
-            <i class="glyphicon glyphicon-floppy-save"></i> Guardar cambios
+        <button id="btnContinuar" class="btn btn-primary pull-right" onclick="guardarEspecialidades()">
+            <i class="glyphicon glyphicon-floppy-save"></i> Guardar y continuar
         </button>
     </div>
 {% endblock %}

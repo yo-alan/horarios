@@ -179,12 +179,12 @@ def generar(request):
     GENERANDO = True
     
     espacio_id = request.POST['espacio_id']
-    tamanio_poblacion = int(request.POST['tamanio_poblacion']) * 100
+    #~ tamanio_poblacion = int(request.POST['tamanio_poblacion']) * 100
     generaciones = int(request.POST['generaciones']) * 500
     
     try:
         
-        espacio = Espacio.create(espacio_id, tamanio_poblacion)
+        espacio = Espacio.create(espacio_id)
         
         print "Generando población inicial... ",
         sys.stdout.flush()
@@ -502,42 +502,45 @@ def espacio_add_horas(request, espacio_id=0):
     
     return JsonResponse(data)
 
-def espacio_add_dias(request):
+def espacio_add_dias(request, espacio_id=0):
     
-    if request.method != 'POST':
-        return HttpResponseRedirect(reverse('calendario:espacio_all'))
+    if request.method == 'GET':
+        
+        espacio = Espacio.create(espacio_id)
+        
+        context = {'espacio': espacio}
+        
+        return render(request, 'calendario/espacio/add_dias.html', context)
     
     data = {}
     
     try:
         espacio = Espacio.create(request.POST['espacio_id'])
         
-        for i in range(7):
-            if request.POST.get('dia_' + str(i), False):
-                print "Venia el", i
-                espacio.dias_habiles.append(i)
-        print espacio.dias_habiles
-        #~ if(request.POST.get('dia_1', False)):
-            #~ espacio.dias_habiles.append(1)
+        if request.POST.get('dia_0', False):
+            espacio.dias_habiles.append(1)
         
-        #~ if(request.POST.get('dia_2', False)):
-            #~ espacio.dias_habiles.append(2)
+        if request.POST.get('dia_1', False):
+            espacio.dias_habiles.append(1)
         
-        #~ if(request.POST.get('dia_3', False)):
-            #~ espacio.dias_habiles.append(3)
+        if request.POST.get('dia_2', False):
+            espacio.dias_habiles.append(2)
         
-        #~ if(request.POST.get('dia_4', False)):
-            #~ espacio.dias_habiles.append(4)
+        if request.POST.get('dia_3', False):
+            espacio.dias_habiles.append(3)
         
-        #~ if(request.POST.get('dia_5', False)):
-            #~ espacio.dias_habiles.append(5)
+        if request.POST.get('dia_4', False):
+            espacio.dias_habiles.append(4)
         
-        #~ if(request.POST.get('dia_6', False)):
-            #~ espacio.dias_habiles.append(6)
+        if request.POST.get('dia_5', False):
+            espacio.dias_habiles.append(5)
         
-        #~ espacio.save()
+        if request.POST.get('dia_6', False):
+            espacio.dias_habiles.append(6)
         
-        data = {'mensaje': "La hora fue agregada exitosamente."}
+        espacio.save()
+        
+        data = {'mensaje': "Los dias fueron agregados exitosamente."}
         
     except Exception as ex:
         data = {'error': str(ex).decode('utf-8')}
@@ -602,6 +605,7 @@ def espacio_add_profesionales(request, espacio_id=0):
                 
                 if especialidad in profesional.especialidades.all():
                     profesionales.append(profesional)
+                    break
         
         context = {'espacio': espacio, 'profesionales': profesionales}
         
@@ -616,7 +620,22 @@ def espacio_add_profesionales(request, espacio_id=0):
             espacio.profesionales.remove(profesional)
         
         for profesional in profesionales:
-            espacio.profesionales.add(Profesional.objects.get(pk=profesional))
+            
+            profesional_id, especialidad_id = profesional.split('-')
+            
+            profesional = Profesional.objects.get(pk=profesional_id)
+            
+            espacio.profesionales.add(profesional)
+            
+            especialidad =  Especialidad.create(especialidad_id)
+            
+            coordinador = Coordinador()
+            
+            coordinador.espacio = espacio
+            coordinador.profesional = profesional
+            coordinador.especialidad = especialidad
+            
+            coordinador.save()
         
         data = {'mensaje': "Los profesionales fueron asignados exitosamente."}
         

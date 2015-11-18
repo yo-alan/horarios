@@ -10,6 +10,12 @@
                 $(".alert-danger").attr('class', "alert alert-dismissable alert-danger hidden");
             });
             
+            $('#pAsignados').filter(function(){
+                if($(this).children("li").length == 0){
+                    $("#btnContinuar").prop('disabled', true);
+                    $("#btnContinuar").prop('class', "btn btn-primary disabled pull-right");
+                }
+            });
         });
         
         function agregarProfesional(item){
@@ -20,6 +26,9 @@
             item.setAttribute('onclick', 'eliminarProfesional(this)');
             
             pAsignados.appendChild(item);
+            
+            $("#btnContinuar").prop('disabled', false);
+            $("#btnContinuar").prop('class', "btn btn-primary pull-right");
         }
         
         function eliminarProfesional(item){
@@ -30,6 +39,13 @@
             item.setAttribute('onclick', 'agregarProfesional(this)');
             
             pDisponibles.appendChild(item);
+            
+            $('#pAsignados').filter(function(){
+                if($(this).children("li").length == 0){
+                    $("#btnContinuar").prop('disabled', true);
+                    $("#btnContinuar").prop('class', "btn btn-primary disabled pull-right");
+                }
+            });
         }
         
         function guardarProfesionales(){
@@ -83,11 +99,15 @@
                 <ul id="pDisponibles" class="list-group profesionales overflow">
                     {% for profesional in profesionales %}
                         {% if profesional not in espacio.profesionales.all %}
-                            <li id="{{ profesional.id }}" class="btn list-group-item" onclick="agregarProfesional(this)">
-                                <p class="text-left">
-                                    {{ profesional }}
-                                </p>
-                            </li>
+                            {% for especialidad in profesional.especialidades.all %}
+                                {% if especialidad in espacio.especialidades.all %}
+                                    <li id="{{ profesional.id }}-{{ especialidad.id }}" class="btn list-group-item" onclick="agregarProfesional(this)">
+                                        <p class="text-left">
+                                            {{ profesional }} ({{ especialidad }})
+                                        </p>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
                         {% endif %}
                     {% endfor %}
                 </ul>
@@ -112,8 +132,8 @@
         <a href="{% url 'calendario:espacio_add_especialidades' espacio.id %}" class="btn btn-default">
             <i class="glyphicon glyphicon-chevron-left"></i> Volver a especialidades
         </a>
-        <button class="btn btn-primary pull-right" onclick="guardarProfesionales()">
-            <i class="glyphicon glyphicon-floppy-save"></i> Guardar cambios
+        <button id="btnContinuar" class="btn btn-primary pull-right" onclick="guardarProfesionales()">
+            <i class="glyphicon glyphicon-floppy-save"></i> Guardar y continuar
         </button>
     </div>
 {% endblock %}
