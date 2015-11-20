@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-from random import random, randrange
-
 from django.db import models
 
 from espacio import Espacio

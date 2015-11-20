@@ -121,10 +121,10 @@
                     <h3 class="panel-title"><b>Asignados</b></h3>
                 </div>
                 <ul id="pAsignados" class="list-group profesionales overflow">
-                    {% for profesional in espacio.profesionales.all %}
-                        <li id="{{ profesional.id }}" class="btn list-group-item" onclick="eliminarProfesional(this)">
+                    {% for coordinador in espacio.coordinadores.all %}
+                        <li id="{{ coordinador.profesional.id }}-{{ coordinador.especialidad.id }}" class="btn list-group-item" onclick="eliminarProfesional(this)">
                             <p class="text-left">
-                                {{ profesional }}
+                                {{ coordinador.profesional }} ({{ coordinador.especialidad }})
                             </p>
                         </li>
                     {% endfor %}

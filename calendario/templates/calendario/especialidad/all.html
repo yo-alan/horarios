@@ -53,16 +53,16 @@
             <tbody>
                 {% for especialidad in especialidades %}
                     <tr>
-                        <td class="vert-align">
+                        <td>
                             {{ especialidad.nombre }}
                         </td>
-                        <td class="vert-align">
+                        <td>
                             {{ especialidad.carga_horaria_semanal }}
                         </td>
-                        <td class="vert-align">
+                        <td>
                             {{ especialidad.max_horas_diaria }}
                         </td>
-                        <td class="vert-align">
+                        <td>
                             <div class="btn btn-group btn-block">
                                 <a class="btn btn-default" title="Editar" href="{% url 'calendario:especialidad_detail' especialidad.id %}#especialidad"><i class="glyphicon glyphicon-edit"></i></a>
                                 <a class="btn btn-danger" title="Eliminar" onclick="eliminarEspecialidad({{ especialidad.id }})"><i class="glyphicon glyphicon-trash"></i></a>

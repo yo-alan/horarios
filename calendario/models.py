@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.db import models
 
+from objects.diaHabil import DiaHabil
 from objects.espacio import Espacio
 from objects.hora import Hora
 from objects.coordinador import Coordinador

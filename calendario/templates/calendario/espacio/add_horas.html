@@ -10,13 +10,11 @@
                 $(".alert-danger").attr('class', "alert alert-dismissable alert-danger hidden");
             });
             
-            $("#dia_7").change(function() {
-                if(this.checked){
-                    for(i = 0; i < 7; i++) {
-                        $("#dia_" + i).prop('checked', true);
-                        $("#dia_" + i).checked = true;
-                    }
-                }
+            $("input[type=checkbox]").change(function() {
+                if(this.checked)
+                    $(this).siblings("i").prop("class", "glyphicon glyphicon-check");
+                else
+                    $(this).siblings("i").prop("class", "glyphicon glyphicon-unchecked");
             });
             
             var form = $(".form");
@@ -60,31 +58,88 @@
 {% block article %}
     <ol class="breadcrumb">
         <li><a href="{% url 'calendario:espacio_all' %}"><i class="glyphicon glyphicon-paperclip"></i> Espacios</a></li>
-        <li class="active">{{ espacio.nombre }}</li>
+        <li><a href="{% url 'calendario:espacio_edit' espacio.id %}">{{ espacio.nombre }}</a></li>
+        <li class="active">Designar horas</li>
     </ol>
     <h2 class="text-center">
         Designar dias de trabajo a {{ espacio.nombre }}.
     </h2>
-    <br>
-    <div>
-        <table class="table center-block">
-            <thead>
-                <tr class="bg-primary">
-                    <th>
+    <form class="form-horizontal">
+        <div class="form-group">
+            <label class="col-xs-2 control-label" for="modulo">Módulos de:</label>
+            <div class="col-xs-4">
+                <input type="text" id="modulo" name="modulo" class="form-control" placeholder="Longitud en minutos">
+            </div>
+        </div>
+    </form>
+    <table class="table table-bordered">
+        <thead>
+            <tr class="bg-primary">
+                <th>
+                </th>
+                <th>
+                    <div class="btn-group" data-toggle="buttons">
+                        <label class="btn btn-primary">
+                            <input type="checkbox" id="dia_0" name="dia_0"> DOM <i class="glyphicon glyphicon-unchecked"></i>
+                        </label>
+                    </div>
+                </th>
+                <th>
+                    <div class="btn-group" data-toggle="buttons">
+                        <label class="btn btn-primary">
+                            <input type="checkbox" id="dia_1" name="dia_1"> LUN <i class="glyphicon glyphicon-unchecked"></i>
+                        </label>
+                    </div>
+                </th>
+                <th>
+                    <div class="btn-group" data-toggle="buttons">
+                        <label class="btn btn-primary">
+                            <input type="checkbox" id="dia_2" name="dia_2"> MAR <i class="glyphicon glyphicon-unchecked"></i>
+                        </label>
+                    </div>
+                </th>
+                <th>
+                    <div class="btn-group" data-toggle="buttons">
+                        <label class="btn btn-primary">
+                            <input type="checkbox" id="dia_3" name="dia_3"> MIÉ <i class="glyphicon glyphicon-unchecked"></i>
+                        </label>
+                    </div>
+                </th>
+                <th>
+                    <div class="btn-group" data-toggle="buttons">
+                        <label class="btn btn-primary">
+                            <input type="checkbox" id="dia_4" name="dia_4"> JUE <i class="glyphicon glyphicon-unchecked"></i>
+                        </label>
+                    </div>
+                </th>
+                <th>
+                    <div class="btn-group" data-toggle="buttons">
+                        <label class="btn btn-primary">
+                            <input type="checkbox" id="dia_5" name="dia_5"> VIE <i class="glyphicon glyphicon-unchecked"></i>
+                        </label>
+                    </div>
+                </th>
+                <th>
+                    <div class="btn-group" data-toggle="buttons">
+                        <label class="btn btn-primary">
+                            <input type="checkbox" id="dia_6" name="dia_6"> SÁB <i class="glyphicon glyphicon-unchecked"></i>
+                        </label>
+                    </div>
+                </th>
+                {% for dia in dias %}
+                    <th class="text-center">
+                        <h4><strong>{{ dia }}</strong></h4>
                     </th>
-                    {% for dia in dias %}
-                        <th class="text-center">
-                            <h4><strong>{{ dia }}</strong></h4>
-                        </th>
-                    {% endfor %}
-                </tr>
-            </thead>
-            <tbody>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for i in "123456"|make_list %}
                 <tr>
                     <td class="text-center bg-primary">
-                        <h4>
-                            <strong>1°</strong>
-                        </h4>
+                        <select class="form-control">
+                            <option></option>
+                        </select>
                     </td>
                     {% for dia in espacio.dias_habiles %}
                         <td class="text-center">
@@ -94,7 +149,7 @@
                         </td>
                     {% endfor %}
                 </tr>
-            </tbody>
-        </table>
-    </div>
+            {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}

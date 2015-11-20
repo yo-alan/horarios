@@ -61,8 +61,12 @@ class Espacio(models.Model):
         puntos = Penalidad.create('DISTRIBUCION HORARIA').puntos
         espacio.PUNTOS_DISTRIBUCION_HORARIA = puntos
         
-        #HARDCODED
-        espacio._dias_habiles = [1, 2, 3, 4, 5]
+        from diaHabil import DiaHabil
+        
+        espacio._dias_habiles = []
+        
+        for dia_habil in DiaHabil.objects.filter(espacio=espacio):
+            espacio._dias_habiles.append(dia_habil)
         
         return espacio
     
@@ -279,7 +283,7 @@ class Espacio(models.Model):
         for padre, madre in parejas:
             
             #Y los cruzamos. Almacenamos los hijos resultantes.
-            poblacion_nueva += padre.cruce(madre)
+            poblacion_nueva += padre.crossover(madre)
         
         return poblacion_nueva
     

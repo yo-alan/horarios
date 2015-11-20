@@ -10,13 +10,11 @@
                 $(".alert-danger").attr('class', "alert alert-dismissable alert-danger hidden");
             });
             
-            $("#dia_7").change(function() {
-                if(this.checked){
-                    for(i = 0; i < 7; i++) {
-                        $("#dia_" + i).prop('checked', true);
-                        $("#dia_" + i).checked = true;
-                    }
-                }
+            $("input[type='checkbox']").change(function() {
+                if(this.checked)
+                    $(this).siblings("i").prop("class", "glyphicon glyphicon-check");
+                else
+                    $(this).siblings("i").prop("class", "glyphicon glyphicon-unchecked");
             });
             
             var form = $("#addDiasForm");
@@ -50,10 +48,11 @@
                         }
                         
                         alert(response.mensaje);
+                        
+                        window.location.href = "{% url 'calendario:espacio_add_horas' espacio.id %}";
                     }
                 });
             });
-            
         });
     </script>
 {% endblock %}
@@ -67,54 +66,41 @@
         Designar dias de trabajo a {{ espacio.nombre }}.
     </h2>
     <br>
-    <div class="col-xs-6 col-xs-offset-3">
+    <div class="col-xs-12">
         <form class="form-horizontal" id="addDiasForm" method="POST" action="{% url 'calendario:espacio_add_dias' espacio.id %}">
             {% csrf_token %}
             <input type="hidden" id="espacio_id" name="espacio_id" value="{{ espacio.id }}">
-            <label>Seleccione los días hábiles:</label>
-            <div class="checkbox">
-                <label>
-                    <input type="checkbox" id="dia_7" name="dia_7"> Todos los días
+            <div class="btn-group" data-toggle="buttons">
+                <label class="btn btn-primary">
+                    <input type="checkbox" id="dia_0" name="dia_0"> Domingo <i class="glyphicon glyphicon-unchecked"></i>
+                </label>
+                <label class="btn btn-primary">
+                    <input type="checkbox" id="dia_1" name="dia_1"> Lunes <i class="glyphicon glyphicon-unchecked"></i>
+                </label>
+                <label class="btn btn-primary">
+                    <input type="checkbox" id="dia_2" name="dia_2"> Martes <i class="glyphicon glyphicon-unchecked"></i>
+                </label>
+                <label class="btn btn-primary">
+                    <input type="checkbox" id="dia_3" name="dia_3"> Miércoles <i class="glyphicon glyphicon-unchecked"></i>
+                </label>
+                <label class="btn btn-primary">
+                    <input type="checkbox" id="dia_4" name="dia_4"> Jueves <i class="glyphicon glyphicon-unchecked"></i>
+                </label>
+                <label class="btn btn-primary">
+                    <input type="checkbox" id="dia_5" name="dia_5"> Viernes <i class="glyphicon glyphicon-unchecked"></i>
+                </label>
+                <label class="btn btn-primary">
+                    <input type="checkbox" id="dia_6" name="dia_6"> Sábado <i class="glyphicon glyphicon-unchecked"></i>
                 </label>
             </div>
-            <div class="checkbox">
-                <label>
-                    <input type="checkbox" id="dia_0" name="dia_0"> Domingo
-                </label>
+            <div class="col-xs-12">
+                <a href="{% url 'calendario:espacio_add_profesionales' espacio.id %}" class="btn btn-default">
+                    <i class="glyphicon glyphicon-chevron-left"></i> Volver a profesionales
+                </a>
+                <button type="submit" id="btnGuardar" data-loading-text="Guardando..." class="btn btn-primary pull-right" autocomplete="off">
+                    <i class="glyphicon glyphicon-floppy-save"></i> Guardar y continuar
+                </button>
             </div>
-            <div class="checkbox">
-                <label>
-                    <input type="checkbox" id="dia_1" name="dia_1"> Lunes
-                </label>
-            </div>
-            <div class="checkbox">
-                <label>
-                    <input type="checkbox" id="dia_2" name="dia_2"> Martes
-                </label>
-            </div>
-            <div class="checkbox">
-                <label>
-                    <input type="checkbox" id="dia_3" name="dia_3"> Miércoles
-                </label>
-            </div>
-            <div class="checkbox">
-                <label>
-                    <input type="checkbox" id="dia_4" name="dia_4"> Jueves
-                </label>
-            </div>
-            <div class="checkbox">
-                <label>
-                    <input type="checkbox" id="dia_5" name="dia_5"> Viernes
-                </label>
-            </div>
-            <div class="checkbox">
-                <label>
-                    <input type="checkbox" id="dia_6" name="dia_6"> Sábado
-                </label>
-            </div>
-            <button type="submit" id="btnGuardar" data-loading-text="Guardando..." class="btn btn-primary pull-right" autocomplete="off">
-                <i class="glyphicon glyphicon-floppy-save"></i> Guardar y continuar
-            </button>
         </form>
     </div>
 {% endblock %}

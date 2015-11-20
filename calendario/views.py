@@ -22,6 +22,7 @@ from .models import Especialidad
 from .models import Espacio
 from .models import Hora
 from .models import Coordinador
+from .models import DiaHabil
 
 DIAS = {0: 'Domingo', 1: 'Lunes', 2: 'Martes', 3: 'Miércoles',
         4: 'Jueves', 5: 'Viernes', 6: 'Sábado', 7: "Todos los días"}
@@ -116,7 +117,7 @@ def add(request, espacio_id):
     dias = []
     
     for dia in espacio.dias_habiles:
-        dias.append(DIAS[dia])
+        dias.append(DIAS[dia.dia])
     
     context = {'espacio': espacio, 'dias': dias}
     
@@ -162,7 +163,7 @@ def edit(request, calendario_id):
     dias = []
     
     for dia in calendario.espacio.dias_habiles:
-        dias.append(DIAS[dia])
+        dias.append(DIAS[dia.dia])
     
     context = {'calendario': calendario, 'dias': dias}
     
@@ -303,7 +304,7 @@ def detail(request, calendario_id):
     dias = []
     
     for dia in espacio.dias_habiles:
-        dias.append(DIAS[dia])
+        dias.append(DIAS[dia.dia])
     
     context = {'calendario': calendario, 'anterior': anterior,
                 'siguiente': siguiente, 'dias': dias}
@@ -354,7 +355,7 @@ def espacio_detail(request, espacio_id):
     dias = []
     
     for dia in espacio.dias_habiles:
-        dias.append(DIAS[dia])
+        dias.append(DIAS[dia.dia])
     
     total_horas_especialidades = 0
     for coordinador in espacio.coordinadores.all():
@@ -467,7 +468,12 @@ def espacio_add_horas(request, espacio_id=0):
         
         espacio = Espacio.create(espacio_id)
         
-        context = {'espacio': espacio}
+        dias = []
+        
+        for dia in espacio.dias_habiles:
+            dias.append(DIAS[dia.dia])
+        
+        context = {'espacio': espacio, 'dias': dias}
         
         return render(request, 'calendario/espacio/add_horas.html', context)
     
@@ -517,29 +523,22 @@ def espacio_add_dias(request, espacio_id=0):
     try:
         espacio = Espacio.create(request.POST['espacio_id'])
         
-        if request.POST.get('dia_0', False):
-            espacio.dias_habiles.append(1)
+        for dia in espacio.dias_habiles:
+            dia.delete()
         
-        if request.POST.get('dia_1', False):
-            espacio.dias_habiles.append(1)
-        
-        if request.POST.get('dia_2', False):
-            espacio.dias_habiles.append(2)
-        
-        if request.POST.get('dia_3', False):
-            espacio.dias_habiles.append(3)
-        
-        if request.POST.get('dia_4', False):
-            espacio.dias_habiles.append(4)
-        
-        if request.POST.get('dia_5', False):
-            espacio.dias_habiles.append(5)
-        
-        if request.POST.get('dia_6', False):
-            espacio.dias_habiles.append(6)
-        
-        espacio.save()
-        
+        for i in range(7):
+            
+            if request.POST.get('dia_' + str(i), False):
+                
+                dia_habil = DiaHabil()
+                
+                dia_habil.espacio = espacio
+                dia_habil.dia = i
+                
+                dia_habil.save()
+                
+                espacio.dias_habiles.append(dia_habil)
+            
         data = {'mensaje': "Los dias fueron agregados exitosamente."}
         
     except Exception as ex:
@@ -613,44 +612,44 @@ def espacio_add_profesionales(request, espacio_id=0):
     
     data = {}
     
-    #~ try:
-    profesionales = dict(request.POST.iterlists())['profesionales[]']
-    
-    for profesional in espacio.profesionales.filter(estado='ON'):
-        espacio.profesionales.remove(profesional)
-    
-    coordinadores = Coordinador.objects.filter(espacio=espacio)
-    
-    for coordinador in coordinadores:
-        coordinador.delete()
-    
-    for profesional in profesionales:
+    try:
+        profesionales = dict(request.POST.iterlists())['profesionales[]']
         
-        profesional_id, especialidad_id = profesional.split('-')
+        for profesional in espacio.profesionales.filter(estado='ON'):
+            espacio.profesionales.remove(profesional)
         
-        profesional = Profesional.objects.get(pk=profesional_id)
+        coordinadores = Coordinador.objects.filter(espacio=espacio)
         
-        espacio.profesionales.add(profesional)
+        for coordinador in coordinadores:
+            coordinador.delete()
         
-        especialidad =  Especialidad.create(especialidad_id)
+        for profesional in profesionales:
+            
+            profesional_id, especialidad_id = profesional.split('-')
+            
+            profesional = Profesional.objects.get(pk=profesional_id)
+            
+            espacio.profesionales.add(profesional)
+            
+            especialidad =  Especialidad.create(especialidad_id)
+            
+            coordinador = Coordinador()
+            
+            coordinador.espacio = espacio
+            coordinador.profesional = profesional
+            coordinador.especialidad = especialidad
+            
+            coordinador.save()
         
-        coordinador = Coordinador()
+        data = {'mensaje': "Los profesionales fueron asignados exitosamente."}
         
-        coordinador.espacio = espacio
-        coordinador.profesional = profesional
-        coordinador.especialidad = especialidad
-        
-        coordinador.save()
-    
-    data = {'mensaje': "Los profesionales fueron asignados exitosamente."}
-        
-    #~ except KeyError as ex:
-        #~ #KeyError 'profesionales[]', vacio todo el arreglo.
-        #~ for profesional in espacio.profesionales.filter(estado='ON'):
-            #~ espacio.profesionales.remove(profesional)
-        
-    #~ except Exception as ex:
-        #~ data = {'error': str(ex).decode('utf-8')}
+    except KeyError as ex:
+        #KeyError 'profesionales[]', vacio todo el arreglo.
+        for profesional in espacio.profesionales.filter(estado='ON'):
+            espacio.profesionales.remove(profesional)
+        #~ 
+    except Exception as ex:
+        data = {'error': str(ex).decode('utf-8')}
     
     return JsonResponse(data)
 
