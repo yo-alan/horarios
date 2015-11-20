@@ -613,39 +613,44 @@ def espacio_add_profesionales(request, espacio_id=0):
     
     data = {}
     
-    try:
-        profesionales = dict(request.POST.iterlists())['profesionales[]']
+    #~ try:
+    profesionales = dict(request.POST.iterlists())['profesionales[]']
+    
+    for profesional in espacio.profesionales.filter(estado='ON'):
+        espacio.profesionales.remove(profesional)
+    
+    coordinadores = Coordinador.objects.filter(espacio=espacio)
+    
+    for coordinador in coordinadores:
+        coordinador.delete()
+    
+    for profesional in profesionales:
         
-        for profesional in espacio.profesionales.filter(estado='ON'):
-            espacio.profesionales.remove(profesional)
+        profesional_id, especialidad_id = profesional.split('-')
         
-        for profesional in profesionales:
-            
-            profesional_id, especialidad_id = profesional.split('-')
-            
-            profesional = Profesional.objects.get(pk=profesional_id)
-            
-            espacio.profesionales.add(profesional)
-            
-            especialidad =  Especialidad.create(especialidad_id)
-            
-            coordinador = Coordinador()
-            
-            coordinador.espacio = espacio
-            coordinador.profesional = profesional
-            coordinador.especialidad = especialidad
-            
-            coordinador.save()
+        profesional = Profesional.objects.get(pk=profesional_id)
         
-        data = {'mensaje': "Los profesionales fueron asignados exitosamente."}
+        espacio.profesionales.add(profesional)
         
-    except KeyError as ex:
-        #KeyError 'profesionales[]', vacio todo el arreglo.
-        for profesional in espacio.profesionales.filter(estado='ON'):
-            espacio.profesionales.remove(profesional)
+        especialidad =  Especialidad.create(especialidad_id)
         
-    except Exception as ex:
-        data = {'error': str(ex).decode('utf-8')}
+        coordinador = Coordinador()
+        
+        coordinador.espacio = espacio
+        coordinador.profesional = profesional
+        coordinador.especialidad = especialidad
+        
+        coordinador.save()
+    
+    data = {'mensaje': "Los profesionales fueron asignados exitosamente."}
+        
+    #~ except KeyError as ex:
+        #~ #KeyError 'profesionales[]', vacio todo el arreglo.
+        #~ for profesional in espacio.profesionales.filter(estado='ON'):
+            #~ espacio.profesionales.remove(profesional)
+        
+    #~ except Exception as ex:
+        #~ data = {'error': str(ex).decode('utf-8')}
     
     return JsonResponse(data)
 

@@ -1,6 +1,6 @@
 {% extends "admin/base.html" %}
 
-{% block title %}Horas de trabajo.{% endblock %}
+{% block title %}Dias de trabajo.{% endblock %}
 
 {% block head %}
     <script>
@@ -60,7 +60,8 @@
 {% block article %}
     <ol class="breadcrumb">
         <li><a href="{% url 'calendario:espacio_all' %}"><i class="glyphicon glyphicon-paperclip"></i> Espacios</a></li>
-        <li class="active">{{ espacio.nombre }}</li>
+        <li><a href="{% url 'calendario:espacio_edit' espacio.id %}">{{ espacio.nombre }}</a></li>
+        <li class="active">Designar dias</li>
     </ol>
     <h2 class="text-center">
         Designar dias de trabajo a {{ espacio.nombre }}.

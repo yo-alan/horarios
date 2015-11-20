@@ -78,9 +78,16 @@
                     <input type="text" id="nombre" name="nombre" class="form-control" autofocus placeholder="Nombre del espacio">
                 </div>
             </div>
-            <button type="submit" id="btnGuardar" data-loading-text="Guardando..." class="btn btn-primary pull-right" autocomplete="off">
-                <i class="glyphicon glyphicon-floppy-save"></i> Guardar
-            </button>
+            <div class="form-group">
+                <div class="col-xs-8 col-xs-offset-4">
+                    <a href="{% url 'calendario:espacio_all' %}" class="btn btn-default">
+                        <i class="glyphicon glyphicon-chevron-left"></i> Volver
+                    </a>
+                    <button type="submit" id="btnGuardar" data-loading-text="Guardando..." class="btn btn-primary pull-right" autocomplete="off">
+                        <i class="glyphicon glyphicon-floppy-save"></i> Guardar y continuar
+                    </button>
+                </div>
+            </div>
         </form>
     </div>
 {% endblock %}

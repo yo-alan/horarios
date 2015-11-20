@@ -1,6 +1,6 @@
 {% extends "admin/base.html" %}
 
-{% block title %}Agregar profesionales a {{ espacio.nombre }}.{% endblock %}
+{% block title %}Asignar profesionales a {{ espacio.nombre }}.{% endblock %}
 
 {% block head %}
     <script>
@@ -19,6 +19,7 @@
         });
         
         function agregarProfesional(item){
+            
             var texto = item.children[0].innerHTML;
             
             var pAsignados = document.getElementById('pAsignados');
@@ -32,6 +33,7 @@
         }
         
         function eliminarProfesional(item){
+            
             var texto = item.children[0].innerHTML;
             
             var pDisponibles = document.getElementById('pDisponibles');
@@ -74,20 +76,20 @@
                     
                     alert(response.mensaje);
                     
-                    window.location.href = "{% url 'calendario:espacio_add_horas' espacio.id %}";
+                    window.location.href = "{% url 'calendario:espacio_add_dias' espacio.id %}";
                 }
             });
         }
-        
     </script>
 {% endblock %}
 {% block article %}
     <ol class="breadcrumb">
         <li><a href="{% url 'calendario:espacio_all' %}"><i class="glyphicon glyphicon-paperclip"></i> Espacios</a></li>
-        <li class="active">{{ espacio.nombre }}</li>
+        <li><a href="{% url 'calendario:espacio_edit' espacio.id %}">{{ espacio.nombre }}</a></li>
+        <li class="active">Asignar profesionales</li>
     </ol>
     <h2 class="text-center">
-        Agregar profesionales a {{ espacio.nombre }}.
+        Asignar profesionales a {{ espacio.nombre }}.
     </h2>
     <br>
     <div class="col-xs-12">
@@ -129,12 +131,14 @@
                 </ul>
             </div>
         </div>
-        <a href="{% url 'calendario:espacio_add_especialidades' espacio.id %}" class="btn btn-default">
-            <i class="glyphicon glyphicon-chevron-left"></i> Volver a especialidades
-        </a>
-        <button id="btnContinuar" class="btn btn-primary pull-right" onclick="guardarProfesionales()">
-            <i class="glyphicon glyphicon-floppy-save"></i> Guardar y continuar
-        </button>
+        <div class="col-xs-12">
+            <a href="{% url 'calendario:espacio_add_especialidades' espacio.id %}" class="btn btn-default">
+                <i class="glyphicon glyphicon-chevron-left"></i> Volver a especialidades
+            </a>
+            <button id="btnContinuar" class="btn btn-primary pull-right" onclick="guardarProfesionales()">
+                <i class="glyphicon glyphicon-floppy-save"></i> Guardar y continuar
+            </button>
+        </div>
     </div>
 {% endblock %}
 {% block alert %}
