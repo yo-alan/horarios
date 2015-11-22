@@ -122,5 +122,5 @@ ALLOWED_HOSTS = ['*']
 STATIC_ROOT = '/app/horariosudc/calendario'
 
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'static'),
+    os.path.join(BASE_DIR, '/app/horariosudc/calendario/static'),
 )
