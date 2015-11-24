@@ -23,7 +23,11 @@ div.horario-container {
 	width: 120px;
 }
 
-.table tbody > tr > td{
+.table tbody > tr > td {
+	vertical-align: middle;
+}
+
+.table thead > tr > th {
 	vertical-align: middle;
 }
 
@@ -45,8 +49,10 @@ ul.profesionales, ul.especialidades, ul.calendarios, ul.restricciones {
 }
 
 .table tbody > tr > td, .table thead > tr > th {
+/*
 	border-top: none;
 	border-bottom: none;
+*/
 }
 
 .logout {

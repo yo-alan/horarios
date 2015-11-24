@@ -462,20 +462,20 @@ def espacio_delete(request):
     return JsonResponse(data)
 
 @login_required(login_url='/index/')
-def espacio_add_horas(request, espacio_id=0):
+def espacio_add_horarios(request, espacio_id=0):
     
     if request.method == 'GET':
         
         espacio = Espacio.create(espacio_id)
         
-        dias = []
+        horas = []
         
-        for dia in espacio.dias_habiles:
-            dias.append(DIAS[dia.dia])
+        for hora in range(24):
+            horas.append("%02d" % hora)
         
-        context = {'espacio': espacio, 'dias': dias}
+        context = {'espacio': espacio, 'horas': horas}
         
-        return render(request, 'calendario/espacio/add_horas.html', context)
+        return render(request, 'calendario/espacio/add_horarios.html', context)
     
     data = {}
     

@@ -1,0 +1,253 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Horas de trabajo.{% endblock %}
+
+{% block head %}
+    <script>
+        $(function(){
+            
+            $("[data-hide]").click(function() {
+                $(".alert-danger").attr('class', "alert alert-dismissable alert-danger hidden");
+            });
+            
+            $("input[type=checkbox]").change(function() {
+                
+                var id = $(this).prop("id");
+                
+                var val = id.substr(id.length - 1);
+                
+                if(this.checked) {
+                    
+                    $(this).siblings("i").prop("class", "glyphicon glyphicon-check");
+                    
+                    $("div").each(function() {
+                        if($(this).prop("id").match(new RegExp(val+"$")))
+                        {
+                            $(this).parent().prop("class", "text-center bg-success");
+                        }
+                    })
+                }
+                else {
+                    
+                    $(this).siblings("i").prop("class", "glyphicon glyphicon-unchecked");
+                    
+                    $("div").each(function() {
+                        if($(this).prop("id").match(new RegExp(val+"$")))
+                        {
+                            $(this).parent().prop("class", "text-center bg-danger");
+                        }
+                    })
+                }
+            });
+            
+            var form = $(".form");
+            
+            form.submit(function (ev){
+                
+                ev.preventDefault();
+                
+                $("#" + form.attr('id') + " button[type=submit]").button('loading');
+                
+                $.ajax({
+                    url: form.attr('action'),
+                    type: form.attr('method'),
+                    data: form.serialize(),
+                    success: function (response){
+                        
+                        $("#" + form.attr('id') + " button[type=submit]").button('reset');
+                        
+                        $(".form-group").attr('class', "form-group");
+                        
+                        if(response.error){
+                            
+                            if(response.campo){
+                                $("#"+ response.campo).parent().parent().attr('class', "form-group has-error");
+                                $("#"+ response.campo).focus();
+                            }
+                            
+                            $("#" + form.attr('id') + " .alert").attr('class', "alert alert-dismissable alert-danger");
+                            $("#" + form.attr('id') + " .alert p").html(response.error);
+                            return;
+                        }
+                        
+                        alert(response.mensaje);
+                    }
+                });
+            });
+        });
+        
+        function addHorarios() {
+            
+            var id = 0;
+            var dia = 0;
+            
+            $("tr").each(function() {
+                
+                
+                
+                
+                
+            });
+            
+            var nuevoHorario = "<tr>" +
+                                    "<td class='text-center bg-primary'>" +
+                                        "<select id='hora_hasta' name='hora_hasta' class='form-control'>" +
+                                            "<option value='01'>01</option>" +
+                                        "</select>" +
+                                        "<select id='min_hasta' name='min_hasta' class='form-control'>" +
+                                            {% for h in horas %}
+                                                "<option value='{{ h }}'>{{ h }}</option>" +
+                                            {% endfor %}
+                                        "</select>" +
+                                    "</td>" +
+                                    "<td class='text-center bg-danger'>" +
+                                        "<div id='h" + id + "' dia='" + dia + "' ondrop='drop(event)' ondragover='allowDrop(event)'>" +
+                                        "</div>" +
+                                    "</td>" +
+                                    "<td class='text-center bg-danger'>" +
+                                        "<div id='h" + id + "' dia='" + dia + "' ondrop='drop(event)' ondragover='allowDrop(event)'>" +
+                                        "</div>" +
+                                    "</td>" +
+                                    "<td class='text-center bg-danger'>" +
+                                        "<div id='h" + id + "' dia='" + dia + "' ondrop='drop(event)' ondragover='allowDrop(event)'>" +
+                                        "</div>" +
+                                    "</td>" +
+                                    "<td class='text-center bg-danger'>" +
+                                        "<div id='h" + id + "' dia='" + dia + "' ondrop='drop(event)' ondragover='allowDrop(event)'>" +
+                                        "</div>" +
+                                    "</td>" +
+                                    "<td class='text-center bg-danger'>" +
+                                        "<div id='h" + id + "' dia='" + dia + "' ondrop='drop(event)' ondragover='allowDrop(event)'>" +
+                                        "</div>" +
+                                    "</td>" +
+                                    "<td class='text-center bg-danger'>" +
+                                        "<div id='h" + id + "' dia='" + dia + "' ondrop='drop(event)' ondragover='allowDrop(event)'>" +
+                                        "</div>" +
+                                    "</td>" +
+                                    "<td class='text-center bg-danger'>" +
+                                        "<div id='h" + id + "' dia='" + dia + "' ondrop='drop(event)' ondragover='allowDrop(event)'>" +
+                                        "</div>" +
+                                    "</td>" +
+                                "</tr>";
+            
+            $("tbody").append(nuevoHorario);
+        }
+        
+        function delHorarios() {
+            $('table tbody tr:last').remove();
+        }
+    </script>
+{% endblock %}
+{% block article %}
+    <ol class="breadcrumb">
+        <li><a href="{% url 'calendario:espacio_all' %}"><i class="glyphicon glyphicon-paperclip"></i> Espacios</a></li>
+        <li><a href="{% url 'calendario:espacio_edit' espacio.id %}">{{ espacio.nombre }}</a></li>
+        <li class="active">Designar horas</li>
+    </ol>
+    <h2 class="text-center">
+        Designar dias de trabajo a {{ espacio.nombre }}.
+    </h2>
+    <form class="form-horizontal">
+        <div class="form-group">
+            <label class="col-xs-2 control-label" for="modulo">Módulos de:</label>
+            <div class="col-xs-4">
+                <input type="text" id="modulo" name="modulo" class="form-control" placeholder="Longitud en minutos">
+            </div>
+        </div>
+    </form>
+    <table class="table table-bordered">
+        <thead>
+            <tr class="bg-primary">
+                <th class="text-center">
+                    <div class="btn btn-group">
+                        <button onclick="addHorarios()" class="btn btn-success" title="Agregar hora"><i class="glyphicon glyphicon-plus"></i></button>
+                        <button onclick="delHorarios()" class="btn btn-danger" title="Eliminar hora"><i class="glyphicon glyphicon-minus"></i></button>
+                    </div>
+                </th>
+                <th class="text-center">
+                    <div class="btn-group" data-toggle="buttons">
+                        <label class="btn btn-primary">
+                            <input type="checkbox" id="dia_0" name="dia_0"> DOM <i class="glyphicon glyphicon-unchecked"></i>
+                        </label>
+                    </div>
+                </th>
+                <th class="text-center">
+                    <div class="btn-group" data-toggle="buttons">
+                        <label class="btn btn-primary">
+                            <input type="checkbox" id="dia_1" name="dia_1"> LUN <i class="glyphicon glyphicon-unchecked"></i>
+                        </label>
+                    </div>
+                </th>
+                <th class="text-center">
+                    <div class="btn-group" data-toggle="buttons">
+                        <label class="btn btn-primary">
+                            <input type="checkbox" id="dia_2" name="dia_2"> MAR <i class="glyphicon glyphicon-unchecked"></i>
+                        </label>
+                    </div>
+                </th>
+                <th class="text-center">
+                    <div class="btn-group" data-toggle="buttons">
+                        <label class="btn btn-primary">
+                            <input type="checkbox" id="dia_3" name="dia_3"> MIÉ <i class="glyphicon glyphicon-unchecked"></i>
+                        </label>
+                    </div>
+                </th>
+                <th class="text-center">
+                    <div class="btn-group" data-toggle="buttons">
+                        <label class="btn btn-primary">
+                            <input type="checkbox" id="dia_4" name="dia_4"> JUE <i class="glyphicon glyphicon-unchecked"></i>
+                        </label>
+                    </div>
+                </th>
+                <th class="text-center">
+                    <div class="btn-group" data-toggle="buttons">
+                        <label class="btn btn-primary center">
+                            <input type="checkbox" id="dia_5" name="dia_5"> VIE <i class="glyphicon glyphicon-unchecked"></i>
+                        </label>
+                    </div>
+                </th>
+                <th class="text-center">
+                    <div class="btn-group" data-toggle="buttons">
+                        <label class="btn btn-primary">
+                            <input type="checkbox" id="dia_6" name="dia_6"> SÁB <i class="glyphicon glyphicon-unchecked"></i>
+                        </label>
+                    </div>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for i in "123456"|make_list %}
+                <tr>
+                    <td class="text-center bg-primary">
+                        <select id="hora_hasta" name="hora_hasta" class="form-control">
+                            {% for h in horas %}
+                                <option value="{{ h }}">{{ h }}</option>
+                            {% endfor %}
+                        </select>
+                        <select id="min_hasta" name="min_hasta" class="form-control">
+                            <option value="00">00</option>
+                            <option value="05">05</option>
+                            <option value="10">10</option>
+                            <option value="15">15</option>
+                            <option value="20">20</option>
+                            <option value="25">25</option>
+                            <option value="30">30</option>
+                            <option value="35">35</option>
+                            <option value="40">40</option>
+                            <option value="45">45</option>
+                            <option value="50">50</option>
+                            <option value="55">55</option>
+                        </select>
+                    </td>
+                    {% for j in "1234567"|make_list %}
+                        <td class="text-center bg-danger">
+                            <div id="h{{ forloop.parentloop.counter0 }}{{ forloop.counter0 }}" dia="{{ forloop.parentloop.counter0 }}" ondrop="drop(event)" ondragover="allowDrop(event)">
+                                
+                            </div>
+                        </td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
