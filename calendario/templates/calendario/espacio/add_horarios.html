@@ -6,11 +6,11 @@
     <script>
         $(function(){
             
-            $("[data-hide]").click(function() {
+            $("[data-hide]").click(function () {
                 $(".alert-danger").attr('class', "alert alert-dismissable alert-danger hidden");
             });
             
-            $("input[type=checkbox]").change(function() {
+            $("input[type=checkbox]").change(function () {
                 
                 var id = $(this).prop("id");
                 
@@ -38,6 +38,92 @@
                         }
                     })
                 }
+            });
+            
+            $("select[id^=hora_desde]").change(function (){
+                
+                var theSelect = $(this);
+                
+                var modulo = $("#modulo").val();
+                
+                var intervalo = parseInt(theSelect.val());
+                
+                $("select[id^=hora_desde]").each(function (){
+                    
+                    var select = $(this);
+                    
+                    if(select.prop("id") > theSelect.prop("id")){
+                        
+                        intervalo += modulo / 60;
+                        
+                        $("#" + select.prop("id") + " option").filter(function (){
+                            return $(this).text() == parseInt(intervalo);
+                        }).prop('selected', true);
+                    }
+                });
+                
+                intervalo = 0;
+                
+                $("select[id^=min_desde]").each(function (){
+                    
+                    var select = $(this);
+                    
+                    if(splitValue(select.prop("id"), 9).split(',')[1] > splitValue(theSelect.prop("id"), 10).split(',')[1]){
+                        
+                        intervalo += parseInt(modulo);
+                        
+                        if(intervalo >= 60)
+                            intervalo -= 60
+                        
+                        $("#" + select.prop("id") + " option").filter(function (){
+                            return $(this).text() == intervalo;
+                        }).prop('selected', true);
+                    }
+                });
+            });
+            
+            $("select[id^=min_desde]").change(function (){
+                
+                var theSelect = $(this);
+                
+                var modulo = $("#modulo").val();
+                
+                var intervalo = parseInt(theSelect.val());
+                
+                $("select[id^=min_desde]").each(function (){
+                    
+                    var select = $(this);
+                    
+                    if(select.prop("id") > theSelect.prop("id")){
+                        
+                        intervalo += parseInt(modulo);
+                        
+                        if(intervalo >= 60)
+                            intervalo -= 60
+                        
+                        $("#" + select.prop("id") + " option").filter(function (){
+                            return $(this).text() == intervalo;
+                        }).prop('selected', true);
+                    }
+                });
+                
+                var intervalo = parseInt(theSelect.val()) / 60;
+                var theSelect = theSelect.prev("select");
+                
+                $("select[id^=hora_desde]").each(function (){
+                    
+                    var select = $(this);
+                    
+                    if(select.prop("id") > theSelect.prop("id")){
+                        
+                        intervalo += modulo / 60;
+                        
+                        $("#" + select.prop("id") + " option").filter(function (){
+                            return $(this).text() == parseInt(theSelect.val()) + parseInt(intervalo);
+                        }).prop('selected', true);
+                    }
+                });
+                
             });
             
             var form = $(".form");
@@ -76,56 +162,80 @@
             });
         });
         
+        function splitValue(value, index) {
+            if(typeof value === 'undefined')
+                return "0,0";
+            else
+                return value.substring(0, index) + "," + value.substring(index);
+        }
+        
         function addHorarios() {
             
-            var id = 0;
-            var dia = 0;
+            var intId = parseInt(splitValue($("tr:last td:last div").prop("id"), 1).split(",")[1]);
             
-            $("tr").each(function() {
-                
-                
-                
-                
-                
-            });
+            var id = intId;
+            
+            if(id != 0)
+                id = parseInt(intId / 10) + 1;
+            
+            var hora = id;
+            
+            var classDomingo = $("#h" + parseInt(id - 1) + "0").parent().prop("class");
+            var classLunes = $("#h" + parseInt(id - 1) + "1").parent().prop("class");
+            var classMartes = $("#h" + parseInt(id - 1) + "2").parent().prop("class");
+            var classMiercoles = $("#h" + parseInt(id - 1) + "3").parent().prop("class");
+            var classJueves = $("#h" + parseInt(id - 1) + "4").parent().prop("class");
+            var classViernes = $("#h" + parseInt(id - 1) + "5").parent().prop("class");
+            var classSabado = $("#h" + parseInt(id - 1) + "6").parent().prop("class");
             
             var nuevoHorario = "<tr>" +
                                     "<td class='text-center bg-primary'>" +
-                                        "<select id='hora_hasta' name='hora_hasta' class='form-control'>" +
-                                            "<option value='01'>01</option>" +
-                                        "</select>" +
-                                        "<select id='min_hasta' name='min_hasta' class='form-control'>" +
+                                        "<select id='hora_desde" + hora + "' name='hora_desde" + hora + "' class='form-control'>" +
                                             {% for h in horas %}
                                                 "<option value='{{ h }}'>{{ h }}</option>" +
                                             {% endfor %}
                                         "</select>" +
+                                        "<select id='min_desde" + hora + "' name='min_desde" + hora + "' class='form-control'>" +
+                                            "<option value='00'>00</option>" +
+                                            "<option value='05'>05</option>" +
+                                            "<option value='10'>10</option>" +
+                                            "<option value='15'>15</option>" +
+                                            "<option value='20'>20</option>" +
+                                            "<option value='25'>25</option>" +
+                                            "<option value='30'>30</option>" +
+                                            "<option value='35'>35</option>" +
+                                            "<option value='40'>40</option>" +
+                                            "<option value='45'>45</option>" +
+                                            "<option value='50'>50</option>" +
+                                            "<option value='55'>55</option>" +
+                                        "</select>" +
                                     "</td>" +
-                                    "<td class='text-center bg-danger'>" +
-                                        "<div id='h" + id + "' dia='" + dia + "' ondrop='drop(event)' ondragover='allowDrop(event)'>" +
+                                    "<td class='text-center " + classDomingo + "'>" +
+                                        "<div id='h" + id+0 + "' hora='" + hora + "' ondrop='drop(event)' ondragover='allowDrop(event)'>" +
                                         "</div>" +
                                     "</td>" +
-                                    "<td class='text-center bg-danger'>" +
-                                        "<div id='h" + id + "' dia='" + dia + "' ondrop='drop(event)' ondragover='allowDrop(event)'>" +
+                                    "<td class='text-center " + classLunes + "'>" +
+                                        "<div id='h" + id+1 + "' hora='" + hora + "' ondrop='drop(event)' ondragover='allowDrop(event)'>" +
                                         "</div>" +
                                     "</td>" +
-                                    "<td class='text-center bg-danger'>" +
-                                        "<div id='h" + id + "' dia='" + dia + "' ondrop='drop(event)' ondragover='allowDrop(event)'>" +
+                                    "<td class='text-center " + classMartes + "'>" +
+                                        "<div id='h" + id+2 + "' hora='" + hora + "' ondrop='drop(event)' ondragover='allowDrop(event)'>" +
                                         "</div>" +
                                     "</td>" +
-                                    "<td class='text-center bg-danger'>" +
-                                        "<div id='h" + id + "' dia='" + dia + "' ondrop='drop(event)' ondragover='allowDrop(event)'>" +
+                                    "<td class='text-center " + classMiercoles + "'>" +
+                                        "<div id='h" + id+3 + "' hora='" + hora + "' ondrop='drop(event)' ondragover='allowDrop(event)'>" +
                                         "</div>" +
                                     "</td>" +
-                                    "<td class='text-center bg-danger'>" +
-                                        "<div id='h" + id + "' dia='" + dia + "' ondrop='drop(event)' ondragover='allowDrop(event)'>" +
+                                    "<td class='text-center " + classJueves + "'>" +
+                                        "<div id='h" + id+4 + "' hora='" + hora + "' ondrop='drop(event)' ondragover='allowDrop(event)'>" +
                                         "</div>" +
                                     "</td>" +
-                                    "<td class='text-center bg-danger'>" +
-                                        "<div id='h" + id + "' dia='" + dia + "' ondrop='drop(event)' ondragover='allowDrop(event)'>" +
+                                    "<td class='text-center " + classViernes + "'>" +
+                                        "<div id='h" + id+5 + "' hora='" + hora + "' ondrop='drop(event)' ondragover='allowDrop(event)'>" +
                                         "</div>" +
                                     "</td>" +
-                                    "<td class='text-center bg-danger'>" +
-                                        "<div id='h" + id + "' dia='" + dia + "' ondrop='drop(event)' ondragover='allowDrop(event)'>" +
+                                    "<td class='text-center " + classSabado + "'>" +
+                                        "<div id='h" + id+6 + "' hora='" + hora + "' ondrop='drop(event)' ondragover='allowDrop(event)'>" +
                                         "</div>" +
                                     "</td>" +
                                 "</tr>";
@@ -150,8 +260,8 @@
     <form class="form-horizontal">
         <div class="form-group">
             <label class="col-xs-2 control-label" for="modulo">Módulos de:</label>
-            <div class="col-xs-4">
-                <input type="text" id="modulo" name="modulo" class="form-control" placeholder="Longitud en minutos">
+            <div class="col-xs-3">
+                <input type="number" id="modulo" name="modulo" class="form-control" placeholder="Longitud en minutos" title="Longitud en minutos" value="60">
             </div>
         </div>
     </form>
@@ -219,12 +329,12 @@
             {% for i in "123456"|make_list %}
                 <tr>
                     <td class="text-center bg-primary">
-                        <select id="hora_hasta" name="hora_hasta" class="form-control">
+                        <select id="hora_desde{{ forloop.counter0 }}" name="hora_desde{{ forloop.counter0 }}" class="form-control">
                             {% for h in horas %}
                                 <option value="{{ h }}">{{ h }}</option>
                             {% endfor %}
                         </select>
-                        <select id="min_hasta" name="min_hasta" class="form-control">
+                        <select id="min_desde{{ forloop.counter0 }}" name="min_desde{{ forloop.counter0 }}" class="form-control">
                             <option value="00">00</option>
                             <option value="05">05</option>
                             <option value="10">10</option>
@@ -241,7 +351,7 @@
                     </td>
                     {% for j in "1234567"|make_list %}
                         <td class="text-center bg-danger">
-                            <div id="h{{ forloop.parentloop.counter0 }}{{ forloop.counter0 }}" dia="{{ forloop.parentloop.counter0 }}" ondrop="drop(event)" ondragover="allowDrop(event)">
+                            <div id="h{{ forloop.parentloop.counter0 }}{{ forloop.counter0 }}" hora="{{ forloop.parentloop.counter0 }}" ondrop="drop(event)" ondragover="allowDrop(event)">
                                 
                             </div>
                         </td>
@@ -250,4 +360,10 @@
             {% endfor %}
         </tbody>
     </table>
+    <a href="{% url 'calendario:espacio_add_profesionales' espacio.id %}" class="btn btn-default">
+        <i class="glyphicon glyphicon-chevron-left"></i> Volver a profesionales
+    </a>
+    <button id="btnContinuar" class="btn btn-primary pull-right" onclick="guardarEstructura()">
+        <i class="glyphicon glyphicon-floppy-save"></i> Guardar y continuar
+    </button>
 {% endblock %}
