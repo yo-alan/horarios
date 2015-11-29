@@ -40,6 +40,46 @@
                 }
             });
             
+            selectComportamiento();
+            
+            var form = $(".form");
+            
+            form.submit(function (ev){
+                
+                ev.preventDefault();
+                
+                $("#" + form.attr('id') + " button[type=submit]").button('loading');
+                
+                $.ajax({
+                    url: form.attr('action'),
+                    type: form.attr('method'),
+                    data: form.serialize(),
+                    success: function (response){
+                        
+                        $("#" + form.attr('id') + " button[type=submit]").button('reset');
+                        
+                        $(".form-group").attr('class', "form-group");
+                        
+                        if(response.error){
+                            
+                            if(response.campo){
+                                $("#"+ response.campo).parent().parent().attr('class', "form-group has-error");
+                                $("#"+ response.campo).focus();
+                            }
+                            
+                            $("#" + form.attr('id') + " .alert").attr('class', "alert alert-dismissable alert-danger");
+                            $("#" + form.attr('id') + " .alert p").html(response.error);
+                            return;
+                        }
+                        
+                        alert(response.mensaje);
+                    }
+                });
+            });
+        });
+        
+        function selectComportamiento() {
+            
             $("select[id^=hora_desde]").change(function (){
                 
                 var theSelect = $(this);
@@ -125,42 +165,7 @@
                 });
                 
             });
-            
-            var form = $(".form");
-            
-            form.submit(function (ev){
-                
-                ev.preventDefault();
-                
-                $("#" + form.attr('id') + " button[type=submit]").button('loading');
-                
-                $.ajax({
-                    url: form.attr('action'),
-                    type: form.attr('method'),
-                    data: form.serialize(),
-                    success: function (response){
-                        
-                        $("#" + form.attr('id') + " button[type=submit]").button('reset');
-                        
-                        $(".form-group").attr('class', "form-group");
-                        
-                        if(response.error){
-                            
-                            if(response.campo){
-                                $("#"+ response.campo).parent().parent().attr('class', "form-group has-error");
-                                $("#"+ response.campo).focus();
-                            }
-                            
-                            $("#" + form.attr('id') + " .alert").attr('class', "alert alert-dismissable alert-danger");
-                            $("#" + form.attr('id') + " .alert p").html(response.error);
-                            return;
-                        }
-                        
-                        alert(response.mensaje);
-                    }
-                });
-            });
-        });
+        }
         
         function splitValue(value, index) {
             if(typeof value === 'undefined')
@@ -232,6 +237,8 @@
                                 "</tr>";
             
             $("tbody").append(nuevoHorario);
+            
+            selectComportamiento();
         }
         
         function delHorarios(){

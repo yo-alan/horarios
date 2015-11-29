@@ -51,13 +51,7 @@ class Calendario(models.Model):
         if not isinstance(madre, Calendario):
             raise Exception("Se esperaba un Calendario.")
         
-        if self == madre:
-            return []
-        
         hijos = []
-        
-        #Obtenemos el punto de corte dividiendo en 2 la cantidad
-        #de horarios.
         
         hijo1 = Calendario.create()
         hijo2 = Calendario.create()
