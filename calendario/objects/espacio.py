@@ -17,8 +17,9 @@ class Espacio(models.Model):
     en el cual se desarrolla el algoritmo.
     
     @Atributos:
-    .dias_habiles - lista con los dias a cubrir. Valor: {}.
-    .horarios - diccionario con los horarios a cubrir. Valor: {}.
+    .dias_habiles - lista con los dias a cubrir. Valor: [].
+    .horas - lista con las horas a cubrir. Valor: [].
+    .horarios - lista con los horarios a cubrir. Valor: [].
     .poblacion - lista de individuos. Valor: [].
     .tamanio_poblacion - tamaño de la población. Valor: 0.
     """
@@ -48,6 +49,7 @@ class Espacio(models.Model):
         
         espacio._calendarios = []
         espacio._horas = []
+        espacio._dias_habiles = []
         espacio._coordinadores = []
         espacio._poblacion = []
         espacio._tamanio_poblacion = tamanio_poblacion
@@ -62,11 +64,13 @@ class Espacio(models.Model):
         espacio.PUNTOS_DISTRIBUCION_HORARIA = puntos
         
         from diaHabil import DiaHabil
-        
-        espacio._dias_habiles = []
+        from hora import Hora
         
         for dia_habil in DiaHabil.objects.filter(espacio=espacio):
             espacio._dias_habiles.append(dia_habil)
+        
+        for hora in Hora.objects.filter(espacio=espacio):
+            espacio._horas.append(hora)
         
         return espacio
     
@@ -128,7 +132,7 @@ class Espacio(models.Model):
                     #Se le asigna una hora hasta.
                     horario.hora_hasta = hora.hora_hasta
                     #Se le asigna un dia de la semana.
-                    horario.dia_semana = dia
+                    horario.dia_semana = dia.dia
                     #El Horario es agregado al Calendario.
                     calendario.agregar_horario(horario)
                     
@@ -181,7 +185,7 @@ class Espacio(models.Model):
                     #Se le asigna una hora hasta.
                     horario.hora_hasta = hora.hora_hasta
                     #Se le asigna un dia de la semana.
-                    horario.dia_semana = dia
+                    horario.dia_semana = dia.dia
                     
                     #Comprobamos que el Horario generado
                     #no exista en el Calendario.

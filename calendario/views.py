@@ -183,99 +183,99 @@ def generar(request):
     #~ tamanio_poblacion = int(request.POST['tamanio_poblacion']) * 100
     generaciones = int(request.POST['generaciones']) * 500
     
-    try:
+    #~ try:
+    
+    espacio = Espacio.create(espacio_id)
+    
+    print "Generando población inicial... ",
+    sys.stdout.flush()
+    
+    global_time = time.time()
+    
+    operation_time = time.time()
+    
+    espacio.generarpoblacioninicial()
+    
+    print " %d individuos en %7.3f seg."\
+            % (len(espacio.poblacion), time.time() - operation_time)
+    
+    print "Evaluando la población... ",
+    sys.stdout.flush()
+    
+    operation_time = time.time()
+    
+    espacio.fitness(espacio.poblacion)
+    
+    print " %7.3f seg." % (time.time() - operation_time)
+    
+    generacion = 0
+    
+    while generacion != generaciones:
         
-        espacio = Espacio.create(espacio_id)
+        generacion += 1
         
-        print "Generando población inicial... ",
+        print "Generación %d/%d" % (generacion, generaciones)
+        
+        print "Seleccionando individuos para el cruce... ",
         sys.stdout.flush()
-        
-        global_time = time.time()
         
         operation_time = time.time()
         
-        espacio.generarpoblacioninicial()
-        
-        print " %d individuos en %7.3f seg."\
-                % (len(espacio.poblacion), time.time() - operation_time)
-        
-        print "Evaluando la población... ",
-        sys.stdout.flush()
-        
-        operation_time = time.time()
-        
-        espacio.fitness(espacio.poblacion)
+        #Hacemos la seleccion de individuos.
+        seleccionados = espacio.seleccion()
         
         print " %7.3f seg." % (time.time() - operation_time)
         
-        generacion = 0
-        
-        while generacion != generaciones:
-            
-            generacion += 1
-            
-            print "Generación %d/%d" % (generacion, generaciones)
-            
-            print "Seleccionando individuos para el cruce... ",
-            sys.stdout.flush()
-            
-            operation_time = time.time()
-            
-            #Hacemos la seleccion de individuos.
-            seleccionados = espacio.seleccion()
-            
-            print " %7.3f seg." % (time.time() - operation_time)
-            
-            print "Cruzando los individuos... ",
-            sys.stdout.flush()
-            
-            operation_time = time.time()
-            
-            #Hacemos la seleccion de individuos.
-            hijos = espacio.cruzar(seleccionados)
-            
-            print " %7.3f seg." % (time.time() - operation_time)
-            
-            print "Evaluando la nueva población... ",
-            sys.stdout.flush()
-            
-            operation_time = time.time()
-            
-            #Evaluamos la nueva población.
-            espacio.fitness(hijos)
-            
-            print " %7.3f seg." % (time.time() - operation_time)
-            
-            print "Hijos generados", len(hijos)
-            
-            print "Actualizando la población... ",
-            sys.stdout.flush()
-            
-            operation_time = time.time()
-            
-            espacio.actualizarpoblacion(hijos)
-            
-            print " %7.3f seg." % (time.time() - operation_time)
-            
-            print "--------------------------------------------------------"
-            
-        
-        print "Guardando los individuos... ",
+        print "Cruzando los individuos... ",
         sys.stdout.flush()
         
         operation_time = time.time()
         
-        for calendario in espacio.poblacion:
-            calendario.full_save()
+        #Hacemos la seleccion de individuos.
+        hijos = espacio.cruzar(seleccionados)
         
-        print " %d individuos en %7.3f seg."\
-                % (len(espacio.poblacion), time.time() - operation_time)
-        print
-        print "La evolución tardó %7.3f seg."\
-                % (time.time() - global_time)
+        print " %7.3f seg." % (time.time() - operation_time)
         
-    except Exception as ex:
-        print ex
+        print "Evaluando la nueva población... ",
+        sys.stdout.flush()
+        
+        operation_time = time.time()
+        
+        #Evaluamos la nueva población.
+        espacio.fitness(hijos)
+        
+        print " %7.3f seg." % (time.time() - operation_time)
+        
+        print "Hijos generados", len(hijos)
+        
+        print "Actualizando la población... ",
+        sys.stdout.flush()
+        
+        operation_time = time.time()
+        
+        espacio.actualizarpoblacion(hijos)
+        
+        print " %7.3f seg." % (time.time() - operation_time)
+        
+        print "--------------------------------------------------------"
+        
+    
+    print "Guardando los individuos... ",
+    sys.stdout.flush()
+    
+    operation_time = time.time()
+    
+    for calendario in espacio.poblacion:
+        calendario.full_save()
+    
+    print " %d individuos en %7.3f seg."\
+            % (len(espacio.poblacion), time.time() - operation_time)
+    print
+    print "La evolución tardó %7.3f seg."\
+            % (time.time() - global_time)
+        
+    #~ except Exception as ex:
+        #~ print ex
     
     GENERANDO = False
 
@@ -468,12 +468,35 @@ def espacio_add_horarios(request, espacio_id=0):
         
         espacio = Espacio.create(espacio_id)
         
-        horas = []
+        horas_select = []
         
         for hora in range(24):
-            horas.append("%02d" % hora)
+            horas_select.append("%02d" % hora)
         
-        context = {'espacio': espacio, 'horas': horas}
+        min_select = ["00", "05", "10", "15",
+                        "20", "25", "30", "35",
+                        "40", "45", "50", "55"]
+        
+        horas = []
+        
+        if espacio.horas == []:
+            for hora in range(6):
+                horas.append(hora)
+        else:
+            for hora in espacio.horas:
+                horas.append(str(hora.hora_desde).split(':'))
+        
+        dias = []
+        
+        if espacio.dias_habiles == []:
+            for dia in range(7):
+                dias.append(dia)
+        else:
+            for dia in espacio.dias_habiles:
+                dias.append(str(dia.dia))
+        
+        context = {'espacio': espacio, 'horas': horas, 'dias': dias,
+                    'horas_select': horas_select, 'min_select': min_select}
         
         return render(request, 'calendario/espacio/add_horarios.html', context)
     
@@ -481,54 +504,14 @@ def espacio_add_horarios(request, espacio_id=0):
     
     try:
         
-        espacio = Espacio.create(request.POST['espacio_id'])
-        
-        hora = Hora()
-        
-        hora_desde = request.POST['hora_desde']
-        min_desde = request.POST['min_desde']
-        
-        hora_hasta = request.POST['min_hasta']
-        min_hasta = request.POST['min_hasta']
-        
-        hora.hora_desde = hora_desde + ":" + min_desde
-        hora.hora_hasta = hora_hasta + ":" + min_hasta
-        
-        if hora.hora_desde == hora.hora_hasta:
-            raise Exception("Las horas no pueden ser iguales.")
-        
-        hora.espacio = espacio
-        
-        hora.save()
-        
-        data = {'mensaje': "La hora fue agregada exitosamente."}
-        
-    except Exception as ex:
-        data = {'error': str(ex).decode('utf-8')}
-    
-    return JsonResponse(data)
-
-def espacio_add_dias(request, espacio_id=0):
-    
-    if request.method == 'GET':
-        
         espacio = Espacio.create(espacio_id)
-        
-        context = {'espacio': espacio}
-        
-        return render(request, 'calendario/espacio/add_dias.html', context)
-    
-    data = {}
-    
-    try:
-        espacio = Espacio.create(request.POST['espacio_id'])
         
         for dia in espacio.dias_habiles:
             dia.delete()
         
         for i in range(7):
             
-            if request.POST.get('dia_' + str(i), False):
+            if request.POST.get('d' + str(i), False):
                 
                 dia_habil = DiaHabil()
                 
@@ -539,7 +522,30 @@ def espacio_add_dias(request, espacio_id=0):
                 
                 espacio.dias_habiles.append(dia_habil)
             
-        data = {'mensaje': "Los dias fueron agregados exitosamente."}
+        modulo = request.POST.get("modulo", False)
+        
+        for hora in espacio.horas:
+            hora.delete()
+        
+        i = 0
+        for r in request.POST:
+            
+            if request.POST.get('h' + str(i), False):
+                
+                hora = Hora()
+                
+                hora.espacio = espacio
+                hora.hora_desde = request.POST['h' + str(i)]
+                hora.hora_hasta = request.POST['h' + str(i)]
+                
+                hora.save()
+                
+            else:
+                break
+            
+            i += 1
+        
+        data = {'mensaje': "La hora fue agregada exitosamente."}
         
     except Exception as ex:
         data = {'error': str(ex).decode('utf-8')}

@@ -56,41 +56,6 @@
                 });
             });
             
-            var formHora = $("#addHoraForm");
-            
-            formHora.submit(function (ev){
-                
-                ev.preventDefault();
-                
-                $("#" + formHora.attr('id') + " button[type=submit]").button('loading');
-                
-                $.ajax({
-                    url: formHora.attr('action'),
-                    type: formHora.attr('method'),
-                    data: formHora.serialize(),
-                    success: function (response){
-                        
-                        $("#" + formHora.attr('id') + " button[type=submit]").button('reset');
-                        
-                        $(".form-group").attr('class', "form-group");
-                        
-                        if(response.error){
-                            
-                            if(response.campo){
-                                $("#"+ response.campo).parent().parent().attr('class', "form-group has-error");
-                                $("#"+ response.campo).focus();
-                            }
-                            
-                            $("#" + formHora.attr('id') + " .alert").attr('class', "alert alert-dismissable alert-danger");
-                            $("#" + formHora.attr('id') + " .alert p").html(response.error);
-                            return;
-                        }
-                        
-                        alert(response.mensaje);
-                    }
-                });
-            });
-            
             var formGenerar = $("#formGenerar");
             
             formGenerar.submit(function (ev){
@@ -105,7 +70,6 @@
                     data: formGenerar.serialize(),
                     success: function (response){
                         
-                        alert("Generando...");
                     }
                 });
             });
@@ -218,7 +182,6 @@
         function verCalendario(calendario){
             window.location.href = calendario;
         }
-        
     </script>
 {% endblock %}
 {% block article %}
@@ -245,9 +208,6 @@
             {% endif %}
             </li>
             <li>
-                <a href="#horas" data-toggle="tab"><i class="glyphicon glyphicon-time"> Horas</i></a>
-            </li>
-            <li>
                 <a href="#calendarios" data-toggle="tab"><i class="glyphicon glyphicon-calendar"> Calendarios</i></a>
             </li>
         </ul>
@@ -264,11 +224,11 @@
                         </thead>
                         <tbody>
                             {% for coordinador in espacio.coordinadores %}
-                                <tr class="">
-                                    <td class="">
+                                <tr>
+                                    <td>
                                         {{ coordinador.profesional }}
                                     </td>
-                                    <td class="">
+                                    <td>
                                         {{ coordinador.especialidad }}
                                     </td>
                                 </tr>
@@ -378,118 +338,6 @@
                 <button class="btn btn-primary pull-right" onclick="guardarProfesionales()">
                     <i class="glyphicon glyphicon-floppy-save"></i> Guardar cambios
                 </button>
-            </div>
-            <div class="tab-pane" id="horas">
-                <div class="col-xs-10 col-xs-offset-2">
-                    <form class="form-horizontal" id="addHoraForm" method="POST" action="{% url 'calendario:espacio_add_horas' espacio.id %}">
-                        {% csrf_token %}
-                        <input type="hidden" id="espacio_id" name="espacio_id" value="{{ espacio.id }}">
-                        <div class="form-group">
-                            <div class="row">
-                                <label class="col-xs-3 control-label" for="desde">Hora desde:</label>
-                                <div class="col-xs-3 col-sm-3 col-md-2 col-lg-2">
-                                    <select id="hora_desde" name="hora_desde" class="form-control">
-                                        <option value="00">00</option>
-                                        <option value="01">01</option>
-                                        <option value="02">02</option>
-                                        <option value="03">03</option>
-                                        <option value="04">04</option>
-                                        <option value="05">05</option>
-                                        <option value="06">06</option>
-                                        <option value="07">07</option>
-                                        <option value="08">08</option>
-                                        <option value="09">09</option>
-                                        <option value="10">10</option>
-                                        <option value="11">11</option>
-                                        <option value="12">12</option>
-                                        <option value="13">13</option>
-                                        <option value="14">14</option>
-                                        <option value="15">15</option>
-                                        <option value="16">16</option>
-                                        <option value="17">17</option>
-                                        <option value="18">18</option>
-                                        <option value="19">19</option>
-                                        <option value="20">20</option>
-                                        <option value="21">21</option>
-                                        <option value="22">22</option>
-                                        <option value="23">23</option>
-                                    </select>
-                                </div>
-                                <div class="col-xs-3 col-sm-3 col-md-2 col-lg-2">
-                                    <select id="min_desde" name="min_desde" class="form-control">
-                                        <option value="00">00</option>
-                                        <option value="05">05</option>
-                                        <option value="10">10</option>
-                                        <option value="15">15</option>
-                                        <option value="20">20</option>
-                                        <option value="25">25</option>
-                                        <option value="30">30</option>
-                                        <option value="35">35</option>
-                                        <option value="40">40</option>
-                                        <option value="45">45</option>
-                                        <option value="50">50</option>
-                                        <option value="55">55</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="row">
-                                <label class="col-xs-3 control-label" for="hasta">Hora hasta:</label>
-                                <div class="col-xs-3 col-sm-3 col-md-2 col-lg-2">
-                                    <select id="hora_hasta" name="hora_hasta" class="form-control">
-                                        <option value="01">01</option>
-                                        <option value="02">02</option>
-                                        <option value="03">03</option>
-                                        <option value="04">04</option>
-                                        <option value="05">05</option>
-                                        <option value="06">06</option>
-                                        <option value="07">07</option>
-                                        <option value="08">08</option>
-                                        <option value="09">09</option>
-                                        <option value="10">10</option>
-                                        <option value="11">11</option>
-                                        <option value="12">12</option>
-                                        <option value="13">13</option>
-                                        <option value="14">14</option>
-                                        <option value="15">15</option>
-                                        <option value="16">16</option>
-                                        <option value="17">17</option>
-                                        <option value="18">18</option>
-                                        <option value="19">19</option>
-                                        <option value="20">20</option>
-                                        <option value="21">21</option>
-                                        <option value="22">22</option>
-                                        <option value="23">23</option>
-                                    </select>
-                                </div>
-                                <div class="col-xs-3 col-sm-3 col-md-2 col-lg-2">
-                                    <select id="min_hasta" name="min_hasta" class="form-control">
-                                        <option value="00">00</option>
-                                        <option value="05">05</option>
-                                        <option value="10">10</option>
-                                        <option value="15">15</option>
-                                        <option value="20">20</option>
-                                        <option value="25">25</option>
-                                        <option value="30">30</option>
-                                        <option value="35">35</option>
-                                        <option value="40">40</option>
-                                        <option value="45">45</option>
-                                        <option value="50">50</option>
-                                        <option value="55">55</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="col-xs-offset-10">
-                                <button type="submit" id="btnHoraGuardar" data-loading-text="Guardando..." class="btn btn-primary pull-right" autocomplete="off">
-                                    Agregar
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
             </div>
             <div class="tab-pane" id="calendarios">
                 <div class="col-xs-5">
