@@ -84,7 +84,8 @@
 {% endblock %}
 {% block article %}
     <ol class="breadcrumb">
-        <li><a href="{% url 'calendario:espacio_all' %}"><i class="glyphicon glyphicon-paperclip"></i> Espacios</a></li>
+        <li><a href="{% url 'index' %}"><i class="fa fa-fw fa-calendar"></i> Inicio</a></li>
+        <li><a href="{% url 'calendario:espacio_all' %}">Espacios</a></li>
         <li><a href="{% url 'calendario:espacio_edit' espacio.id %}">{{ espacio.nombre }}</a></li>
         <li class="active">Asignar especialidades</li>
     </ol>

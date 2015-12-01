@@ -28,7 +28,8 @@
 {% endblock %}
 {% block article %}
     <ol class="breadcrumb">
-        <li class="active"><i class="fa fa-fw fa-user"></i> Profesionales</li>
+        <li><a href="{% url 'index' %}"><i class="fa fa-fw fa-calendar"></i> Inicio</a></li>
+        <li class="active">Profesionales</li>
     </ol>
     <a href="{% url 'calendario:profesional_add' %}" class="btn btn-success">
         <i class="glyphicon glyphicon-plus"></i> Agregar profesional
