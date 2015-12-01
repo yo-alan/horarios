@@ -31,11 +31,13 @@ GENERANDO = False
 
 def index(request):
     
-    if request.user.is_authenticated():
-        return HttpResponseRedirect(reverse('calendario:espacio_all'))
+    if not request.user.is_authenticated():
+        return render(request, 'calendario/index.html')
     
-    return render(request, 'calendario/index.html')
-
+    context = {"user": request.user}
+    
+    return render(request, 'calendario/home.html', context)
+    
 def acerca(request):
     
     return render(request, 'calendario/acerca.html')
@@ -52,10 +54,8 @@ def log_in(request):
     
     if user is not None:
         login(request, user)
-        
-        return HttpResponseRedirect(reverse('calendario:espacio_all'))
-    else:
-        return HttpResponseRedirect(reverse('index'))
+    
+    return HttpResponseRedirect(reverse('index'))
 
 @login_required(login_url='/index/')
 def log_out(request):
