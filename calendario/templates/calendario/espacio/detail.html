@@ -75,112 +75,22 @@
             });
         });
         
-        function onValChange(object){
-            object.value = 10 > object.value ? "0" + object.value : object.value;
-        }
-        
-        function agregar(item){
-            var texto = item.children[0].innerHTML;
+        function eliminarCalendario(calendario_id){
             
-            var eAsignadas = document.getElementById('eAsignadas');
-            
-            item.setAttribute('onclick', 'eliminar(this)');
-            
-            eAsignadas.appendChild(item);
-        }
-        
-        function eliminar(item){
-            var texto = item.children[0].innerHTML;
-            
-            var eDisponibles = document.getElementById('eDisponibles');
-            
-            item.setAttribute('onclick', 'agregar(this)');
-            
-            eDisponibles.appendChild(item);
-        }
-        
-        function agregarProfesional(item){
-            var texto = item.children[0].innerHTML;
-            
-            var pAsignados = document.getElementById('pAsignados');
-            
-            item.setAttribute('onclick', 'eliminarProfesional(this)');
-            
-            pAsignados.appendChild(item);
-        }
-        
-        function eliminarProfesional(item){
-            var texto = item.children[0].innerHTML;
-            
-            var pDisponibles = document.getElementById('pDisponibles');
-            
-            item.setAttribute('onclick', 'agregarProfesional(this)');
-            
-            pDisponibles.appendChild(item);
-        }
-        
-        function guardarEspecialidades(){
-            
-            var eAsignadas = document.getElementById('eAsignadas');
-            
-            var especialidades = []
-            
-            for(i = 0; i < eAsignadas.children.length; i++){
-                especialidades.push(eAsignadas.children[i].id);
-            }
+            if(!confirm("¿Está seguro que desea eliminar el calendario?"))
+                return;
             
             $.ajax({
                 url: "",
                 type: 'POST',
                 data: {
                     csrfmiddlewaretoken: '{{ csrf_token }}',
-                    espacio_id: {{ espacio.id }},
-                    especialidades: especialidades
+                    calendario_id: calendario_id
                 },
                 success: function(response) {
-                    
-                    if(response.error){
-                        alert(response.error);
-                        return;
-                    }
-                    
-                    alert(response.mensaje);
+                    window.location.href = "{% url 'calendario:espacio_detail' espacio.id %}#calendarios";
                 }
             });
-        }
-        
-        function guardarProfesionales(){
-            
-            var pAsignados = document.getElementById('pAsignados');
-            
-            var profesionales = []
-            
-            for(i = 0; i < pAsignados.children.length; i++){
-                profesionales.push(pAsignados.children[i].id);
-            }
-            
-            $.ajax({
-                url: "",
-                type: 'POST',
-                data: {
-                    csrfmiddlewaretoken: '{{ csrf_token }}',
-                    espacio_id: {{ espacio.id }},
-                    profesionales: profesionales
-                },
-                success: function(response) {
-                    
-                    if(response.error){
-                        alert(response.error);
-                        return;
-                    }
-                    
-                    alert(response.mensaje);
-                }
-            });
-        }
-        
-        function verCalendario(calendario){
-            window.location.href = calendario;
         }
     </script>
 {% endblock %}
@@ -213,9 +123,8 @@
             </li>
         </ul>
         <div class="tab-content">
-            <br>
             <div class="tab-pane active" id="this">
-                <div class="col-xs-6">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6">
                     <table class="table table-bordered overflow">
                         <thead>
                             <tr class="bg-primary">
@@ -225,7 +134,7 @@
                         </thead>
                         <tbody>
                             {% for coordinador in espacio.coordinadores %}
-                                <tr>
+                                <tr style="background-color: {{ coordinador.especialidad.color }}">
                                     <td>
                                         {{ coordinador.profesional }}
                                     </td>
@@ -237,8 +146,8 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="col-xs-6">
-                    <form class="form-inline responsive" id="editForm" method="POST" action="{% url 'calendario:espacio_edit' espacio.id %}">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6">
+                    <form class="form-inline" id="editForm" method="POST" action="{% url 'calendario:espacio_edit' espacio.id %}">
                         <div class="alert alert-dismissable alert-danger hidden">
                             <button type="button" class="close" data-hide="alert" aria-hidden="true">
                                 ×
@@ -263,105 +172,64 @@
                 </div>
             </div>
             <div class="tab-pane" id="especialidades">
-                <div class="col-xs-6">
-                    <div class="panel panel-primary">
-                        <div class="panel-heading">
-                            <h3 class="panel-title"><b>Disponibles</b></h3>
+                <div class="col-xs-12">
+                    <p>
+                        <a href="{% url 'calendario:espacio_add_especialidades' espacio.id %}" class="btn btn-primary"><i class="glyphicon glyphicon-edit"></i> Editar las especialidades asignadas a este espacio</a>
+                    </p>
+                </div>
+                {% for especialidad in especialidades %}
+                <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+                    <div class="panel panel-default">
+                        <div class="panel-heading" style="color: white; background-color: {{ especialidad.color }}">
+                            <strong>{{ especialidad }}</strong>
                         </div>
-                        <ul id="eDisponibles" class="list-group especialidades overflow">
-                            {% for especialidad in especialidades %}
-                                {% if not especialidad in espacio.especialidades.all %}
-                                    <li id="{{ especialidad.id }}" class="btn list-group-item" onclick="agregar(this)">
-                                        <p class="text-left">
-                                            {{ especialidad }}
-                                        </p>
-                                    </li>
-                                {% endif %}
-                            {% endfor %}
-                        </ul>
+                        <div class="panel-body">
+                            Como segundo paso tienes que crear profesionales,
+                            asignándole especialidades y restricciones.
+                            <br>
+                            <br>
+                            <a href="{% url 'calendario:especialidad_detail' especialidad.id %}" class="btn pull-right" style="background-color: {{ especialidad.color }}">
+                                <strong style="color: white"><i class="fa fa-fw fa-pencil"></i> Editar</strong>
+                            </a>
+                        </div>
                     </div>
                 </div>
-                <div class="col-xs-6">
-                    <div class=" panel panel-primary">
-                        <div class="panel-heading">
-                            <h3 class="panel-title"><b>Asignadas</b></h3>
-                        </div>
-                        <ul id="eAsignadas" class="list-group especialidades overflow">
-                            {% for especialidad in espacio.especialidades.all %}
-                                <li id="{{ especialidad.id }}" class="btn list-group-item" onclick="eliminar(this)">
-                                    <p class="text-left">
-                                        {{ especialidad }}
-                                    </p>
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                </div>
-                <button class="btn btn-primary pull-right" onclick="guardarEspecialidades()">
-                    <i class="glyphicon glyphicon-floppy-save"></i> Guardar cambios
-                </button>
+                {% endfor %}
             </div>
             <div class="tab-pane" id="profesionales">
-                <div class="col-xs-6">
-                    <div class="panel panel-primary">
+                <div class="col-xs-12">
+                    <p>
+                        <a href="{% url 'calendario:espacio_add_profesionales' espacio.id %}" class="btn btn-primary"><i class="glyphicon glyphicon-edit"></i> Editar los profesionales asignados a este espacio</a>
+                    </p>
+                </div>
+                {% for profesional in profesionales %}
+                <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+                    <div class="panel panel-info">
                         <div class="panel-heading">
-                            <h3 class="panel-title"><b>Disponibles</b></h3>
+                            <strong>{{ profesional }}</strong>
                         </div>
-                        <ul id="pDisponibles" class="list-group profesionales overflow">
-                            {% for profesional in profesionales %}
-                                {% if not profesional in espacio.profesionales.all %}
-                                    <li id="{{ profesional.id }}" class="btn list-group-item" onclick="agregarProfesional(this)">
-                                        <p class="text-left">
-                                            {{ profesional }}
-                                        </p>
-                                    </li>
-                                {% endif %}
-                            {% endfor %}
-                        </ul>
+                        <div class="panel-body">
+                            Como segundo paso tienes que crear profesionales,
+                            asignándole especialidades y restricciones.
+                            <br>
+                            <br>
+                            <a href="{% url 'calendario:profesional_detail' profesional.id %}" class="btn btn-info pull-right">
+                                <strong><i class="fa fa-fw fa-pencil"></i> Editar</strong>
+                            </a>
+                        </div>
                     </div>
                 </div>
-                <div class="col-xs-6">
-                    <div class=" panel panel-primary">
-                        <div class="panel-heading">
-                            <h3 class="panel-title"><b>Asignados</b></h3>
-                        </div>
-                        <ul id="pAsignados" class="list-group profesionales overflow">
-                            {% for profesional in espacio.profesionales.all %}
-                                <li id="{{ profesional.id }}" class="btn list-group-item" onclick="eliminarProfesional(this)">
-                                    <p class="text-left">
-                                        {{ profesional }}
-                                    </p>
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                </div>
-                <button class="btn btn-primary pull-right" onclick="guardarProfesionales()">
-                    <i class="glyphicon glyphicon-floppy-save"></i> Guardar cambios
-                </button>
+                {% endfor %}
             </div>
             <div class="tab-pane" id="calendarios">
-                <div class="col-xs-5">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <h3 class="panel-title"><b>{{ espacio.calendarios|length }} calendarios en total.</b></h3>
-                        </div>
-                        <ul id="ulCalendarios" class="list-group calendarios overflow">
-                            {% for calendario in espacio.calendarios %}
-                                <li id="{{ calendario.id }}" class="btn list-group-item" onclick="verCalendario('{% url 'calendario:detail' calendario.id %}')">
-                                    <p class="text-left">
-                                        {{ calendario.id }}
-                                    </p>
-                                </li>
-                            {% endfor %}
-                        </ul>
+                <div class="col-xs-12 col-sm-12 col-md-7 col-lg-7">
+                    <div class="btn btn-group btn-block">
+                        <a class="btn btn-default" title="Ver" href="{% url 'calendario:detail' calendario.id %}"><i class="glyphicon glyphicon-eye-open"></i> Ver</a>
+                        <a class="btn btn-default" title="Editar" href="{% url 'calendario:edit' calendario.id %}"><i class="glyphicon glyphicon-edit"></i> Editar</a>
+                        <a class="btn btn-default" title="Imprimir" href=""><i class="fa fa-file-pdf-o"></i> Imprimir</a>
+                        <a class="btn btn-danger" title="Eliminar" onclick="eliminarCalendario({{ calendario.id }})"><i class="glyphicon glyphicon-trash"></i> Eliminar</a>
                     </div>
-                </div>
-                <!--
-                    Mini-calendario.
-                -->
-                <div class="col-xs-7">
-                    <table class="table mini-calendario">
+                    <table class="table">
                         <thead>
                             <tr class="bg-primary">
                                 <th class="text-center">
@@ -374,27 +242,39 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {% for hora in espacio.horas %}
-                                <tr>
-                                    <td class="text-center bg-primary">
-                                        <h4>
-                                            <strong>{{ hora.hora_desde }}</strong>
-                                        </h4>
-                                    </td>
-                                    {% for dia in espacio.dias_habiles %}
-                                        <td class="text-center active">
-                                        </td>
-                                    {% endfor %}
-                                </tr>
+                        {% for franja_horaria in calendario.horarios %}
+                            <tr>
+                                <td class="text-center bg-primary">
+                                    <h4>
+                                        <strong>{{ franja_horaria.1.hora_desde }}</strong>
+                                    </h4>
+                                </td>
+                            {% for horario in franja_horaria %}
+                                {% if horario.penalizado > 0 %}
+                                <td penalizado="{{ horario.penalizado }}" class="text-center">
+                                {% else %}
+                                <td penalizado="{{ horario.penalizado }}" class="text-center" style="background-color: {{ horario.especialidad.color }}">
+                                {% endif %}
+                                </td>
                             {% endfor %}
+                            </tr>
+                        {% endfor %}
                         </tbody>
                     </table>
-                    <div class="progress">
+                </div>
+                <!--
+                    Mini-calendario.
+                -->
+                <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5">
+                    <h2 class="text-center">
+                        Generar!
+                    </h2>
+                    <div class="progress hidden">
                         <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 45%">
                             <span class="sr-only">45% Complete</span>
                         </div>
                     </div>
-                    <form class="form-horizontal" id="formGenerar" name="formGenerar" method="POST" action="{% url 'calendario:generar' %}">
+                    <form class="form-horizontal" id="formGenerar" name="formGenerar" method="POST" action="{% url 'calendario:generar' %}" disabled>
                         {% csrf_token %}
                         <input type="hidden" id="espacio_id" name="espacio_id" value="{{ espacio.id }}">
                         <div class="form-group">
@@ -403,16 +283,16 @@
                                 <input type="range" id="generaciones" name="generaciones" min="1" max="3" value="2">
                             </div>
                         </div>
-                        {% if GENERANDO %}
+                        {% if estado.0 == "GENERANDO" %}
                             <button class="btn btn-success pull-right disabled" disabled>
                                 Generando...
                             </button>
+                        {% elif estado.0 == "NO ES VALIDO" %}
+                            <button type="submit" class="btn btn-success pull-right" data-loading-text="Generando..." disabled>
+                                Generar
+                            </button>
                         {% else %}
-                            {% if listo %}
-                                <button type="submit" class="btn btn-success pull-right" data-loading-text="Generando..." onclick="$(this).button('loading')">
-                            {% else %}
-                                <button type="submit" class="btn btn-success pull-right" disabled  data-loading-text="Generando..." onclick="$(this).button('loading')">
-                            {% endif %}
+                            <button type="submit" class="btn btn-success pull-right" data-loading-text="Generando...">
                                 Generar
                             </button>
                         {% endif %}
@@ -423,11 +303,4 @@
     </div>
 {% endblock %}
 {% block alert %}
-    <div class="alert alert-info" role="alert">
-        <p>
-            <span class="glyphicon glyphicon-info-sign"></span>
-            <strong>Nota:</strong> Para asignar una especialidad
-            disponible clickeala. Haz lo mismo para quitarla.
-        </p>
-    </div>
 {% endblock %}

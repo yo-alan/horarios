@@ -373,9 +373,21 @@ def espacio_detail(request, espacio_id):
     if espacio.coordinadores and calendario_valido:
         listo = True
     
-    context = {'espacio': espacio, 'especialidades': especialidades,
-                'profesionales': profesionales, 'dias': dias,
-                'listo': listo, 'GENERANDO': GENERANDO}
+    estado = ['', '']
+    
+    if GENERANDO:
+        estado[0] = "GENERANDO"
+        estado[1] = "El sistema está generando calendarios."
+    elif listo == False:
+        estado[0] = "NO ES VALIDO"
+        estado[1] = "Faltan datos para que el sistema pueda ejecutarse."
+    
+    calendario = Calendario.objects.filter(espacio=espacio)[0]
+    calendario = Calendario.create(calendario.id)
+    
+    context = {'estado': estado, 'espacio': espacio,
+                'calendario': calendario, 'profesionales': profesionales,
+                'especialidades': especialidades, 'dias': dias}
     
     return render(request, 'calendario/espacio/detail.html', context)
 
