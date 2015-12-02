@@ -160,12 +160,15 @@ def edit(request, calendario_id):
     
     calendario = Calendario.create(calendario_id)
     
+    espacio = Espacio.create(calendario.espacio.id)
+    
     dias = []
     
-    for dia in calendario.espacio.dias_habiles:
+    for dia in espacio.dias_habiles:
         dias.append(DIAS[dia.dia])
     
-    context = {'calendario': calendario, 'dias': dias}
+    context = {'espacio': espacio, 'calendario': calendario,
+                'dias': dias}
     
     return render(request, 'calendario/edit.html', context)
 

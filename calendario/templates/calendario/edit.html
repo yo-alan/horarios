@@ -115,31 +115,41 @@
 {% block article %}
     <h3 class="text-center">
         Calendario para "{{ espacio }}".
+        <button class="btn btn-danger pull-right" id="trash" ondrop="eliminar(event)" ondragover="allowDrop(event)">
+            <span class="glyphicon glyphicon-trash"></span> <strong>Eliminar calendarios</strong>
+        </button>
     </h3>
-    <ul class="list-inline">
-        <li>
-            <button class="btn btn-lg btn-default" onclick="nuevo()" title="Nuevo calendario...">
-                <span class="glyphicon glyphicon-file"></span>
-            </button>
-        </li>
-        <li>
-            <button class="btn btn-lg btn-default" onclick="guardar()" title="Guardar calendario...">
-                <span class="glyphicon glyphicon-floppy-save"></span>
-            </button>
-        </li>
-        <li>
-            <button class="btn btn-lg btn-default" onclick="imprimir()" title="Imprimir calendario...">
-                <span class="glyphicon glyphicon-print"></span>
-            </button>
-        </li>
-        <li>
-            <button class="btn btn-lg btn-default" id="trash" ondrop="eliminar(event)" ondragover="allowDrop(event)">
-                <span class="glyphicon glyphicon-trash"></span>
-            </button>
-        </li>
-    </ul>
-    <div class="col-xs-8 pull-left center-block">
-        <table class="table center-block">
+    <br>
+    <div class="col-xs-12">
+    {% for coordinador in espacio.coordinadores %}
+        <div class="col-xs-3 col-sm-3 col-md-2 col-lg-2">
+            <p id="{{ coordinador.especialidad|cut:" " }}" name="{{ coordinador.id }}" draggable="true" ondragstart="drag(event)" class="lead especialidad text-center" style="background-color: {{ coordinador.especialidad.color }}">
+                <strong>{{ coordinador.especialidad }}</strong>
+            </p>
+        </div>
+    {% endfor %}
+    </div>
+    <div class="col-xs-12">
+        <ul class="list-inline">
+            <li>
+                <button class="btn btn-lg btn-default" onclick="guardar()" title="Guardar calendario...">
+                    <span class="glyphicon glyphicon-floppy-save"></span>
+                </button>
+            </li>
+            <li>
+                <button class="btn btn-lg btn-default" onclick="nuevo()" title="Deshacer cambios...">
+                    <i class="fa fa-undo"></i>
+                </button>
+            </li>
+            <li>
+                <button class="btn btn-lg btn-default" onclick="imprimir()" title="Imprimir calendario...">
+                    <i class="fa fa-file-pdf-o"></i>
+                </button>
+            </li>
+        </ul>
+    </div>
+    <div class="col-xs-12">
+        <table class="table">
             <thead>
                 <tr class="bg-primary">
                     <th>
@@ -170,16 +180,5 @@
                 {% endfor %}
             </tbody>
         </table>
-    </div>
-    <div class="col-xs-2 pull-right">
-        <ul class="list-unstyled">
-            {% for coordinador in espacio.coordinadores %}
-                <li>
-                    <p id="{{ coordinador.especialidad|cut:" " }}" name="{{ coordinador.id }}" draggable="true" ondragstart="drag(event)" class="lead especialidad text-center" style="background-color: {{ coordinador.especialidad.color }}">
-                        <strong>{{ coordinador.especialidad }}</strong>
-                    </p>
-                </li>
-            {% endfor %}
-        </ul>
     </div>
 {% endblock %}
