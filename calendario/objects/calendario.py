@@ -83,11 +83,18 @@ class Calendario(models.Model):
     
     def mutar(self, ):
         
-        i = random.randint(0, len(self.horarios)-1)
-        j = random.randint(0, len(self.horarios[0])-1)
+        i = 0
+        j = 0
+        k = 0
+        l = 0
         
-        k = random.randint(0, len(self.horarios)-1)
-        l = random.randint(0, len(self.horarios[0])-1)
+        while i == k and j == l:
+            
+            i = random.randint(0, len(self.horarios)-1)
+            j = random.randint(0, len(self.horarios[0])-1)
+            
+            k = random.randint(0, len(self.horarios)-1)
+            l = random.randint(0, len(self.horarios[0])-1)
         
         primero = self.horarios[i][j]
         segundo = self.horarios[k][l]
