@@ -3,22 +3,24 @@
 {% block title %}Listado de especialidades{% endblock %}
 
 {% block head %}
-    <script>
-        function eliminarEspecialidad(especialidad_id){
+    <script>    
+        function eliminar(especialidad_id){
             
-            if(!confirm("¿Está seguro que desea eliminar a esta especialidad?"))
-                return;
+            $("#myModal").modal("show");
             
-            $.ajax({
-                url: "{% url 'calendario:especialidad_delete' %}",
-                type: 'POST',
-                data: {
-                    csrfmiddlewaretoken: '{{ csrf_token }}',
-                    especialidad_id: especialidad_id
-                },
-                success: function(response) {
-                    window.location.href = "{% url 'calendario:especialidad_all' %}";
-                }
+            $("#btnDel").click(function () {
+                
+                $.ajax({
+                    url: "{% url 'calendario:especialidad_delete' %}",
+                    type: 'POST',
+                    data: {
+                        csrfmiddlewaretoken: '{{ csrf_token }}',
+                        especialidad_id: especialidad_id
+                    },
+                    success: function(response) {
+                        window.location.href = "{% url 'calendario:especialidad_all' %}";
+                    }
+                });
             });
         }
     </script>
@@ -33,6 +35,24 @@
     </a>
     <br>
     <br>
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel"><i class="fa fa-exclamation-triangle"></i> Eliminar especialidad</h4>
+                </div>
+                <div class="modal-body">
+                    ¿Está seguro que desea eliminar esta especialidad?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                    <button id="btnDel" type="button" class="btn btn-danger">Eliminar</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <table class="table table-hover table-bordered table-striped">
         <thead>
             <tr class="default">
@@ -66,7 +86,9 @@
                         <td>
                             <div class="btn btn-group btn-block">
                                 <a class="btn btn-default" title="Editar" href="{% url 'calendario:especialidad_detail' especialidad.id %}#especialidad"><i class="glyphicon glyphicon-edit"></i></a>
-                                <a class="btn btn-danger" title="Eliminar" onclick="eliminarEspecialidad({{ especialidad.id }})"><i class="glyphicon glyphicon-trash"></i></a>
+                                <a type="button" class="btn btn-danger" data-toggle="modal" onclick="eliminar({{ especialidad.id }})">
+                                    <i class="glyphicon glyphicon-trash"></i>
+                                </a>
                             </div>
                         </td>
                     </tr>

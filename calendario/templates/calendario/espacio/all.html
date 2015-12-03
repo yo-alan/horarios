@@ -4,21 +4,23 @@
 
 {% block head %}
     <script>
-        function eliminarEspacio(espacio_id){
+        function eliminar(espacio_id){
             
-            if(!confirm("¿Está seguro que desea eliminar a este espacio?"))
-                return;
+            $("#myModal").modal("show");
             
-            $.ajax({
-                url: "{% url 'calendario:espacio_delete' %}",
-                type: 'POST',
-                data: {
-                    csrfmiddlewaretoken: '{{ csrf_token }}',
-                    espacio_id: espacio_id
-                },
-                success: function(response) {
-                    window.location.href = "{% url 'calendario:espacio_all' %}";
-                }
+            $("#btnDel").click(function () {
+                
+                $.ajax({
+                    url: "{% url 'calendario:espacio_delete' %}",
+                    type: 'POST',
+                    data: {
+                        csrfmiddlewaretoken: '{{ csrf_token }}',
+                        espacio_id: espacio_id
+                    },
+                    success: function(response) {
+                        window.location.href = "{% url 'calendario:espacio_all' %}";
+                    }
+                });
             });
         }
     </script>
@@ -33,6 +35,24 @@
     </a>
     <br>
     <br>
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel"><i class="fa fa-exclamation-triangle"></i> Eliminar espacio</h4>
+                </div>
+                <div class="modal-body">
+                    ¿Está seguro que desea eliminar este espacio?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                    <button id="btnDel" type="button" class="btn btn-danger">Eliminar</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <table class="table table-hover table-bordered table-striped">
         <thead>
             <tr class="default">
@@ -58,7 +78,9 @@
                                 <a class="btn btn-default" title="Profesionales" href="{% url 'calendario:espacio_add_profesionales' espacio.id %}"><i class="glyphicon glyphicon-user"></i></a>
                                 <a class="btn btn-default" title="Calendarios" href="{% url 'calendario:espacio_add_horarios' espacio.id %}"><i class="glyphicon glyphicon-time"></i></a>
                                 <a class="btn btn-default" title="Calendarios" href="{% url 'calendario:espacio_detail' espacio.id %}#calendarios"><i class="glyphicon glyphicon-calendar"></i></a>
-                                <a class="btn btn-danger" title="Eliminar" onclick="eliminarEspacio({{ espacio.id }})"><i class="glyphicon glyphicon-trash"></i></a>
+                                <a type="button" class="btn btn-danger" data-toggle="modal" onclick="eliminar({{ espacio.id }})">
+                                    <i class="glyphicon glyphicon-trash"></i>
+                                </a>
                             </div>
                         </td>
                     </tr>
