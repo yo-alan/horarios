@@ -385,8 +385,13 @@ def espacio_detail(request, espacio_id):
         estado[0] = "NO ES VALIDO"
         estado[1] = "Faltan datos para que el sistema pueda ejecutarse."
     
-    calendario = Calendario.objects.filter(espacio=espacio)[0]
-    calendario = Calendario.create(calendario.id)
+    calendario = None
+    
+    if Calendario.objects.filter(espacio=espacio):
+        
+        calendario = Calendario.objects.filter(espacio=espacio)[0]
+        
+        calendario = Calendario.create(calendario.id)
     
     context = {'estado': estado, 'espacio': espacio,
                 'calendario': calendario, 'profesionales': profesionales,

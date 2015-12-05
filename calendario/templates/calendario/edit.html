@@ -113,10 +113,17 @@
     </script>
 {% endblock %}
 {% block article %}
+    <ol class="breadcrumb">
+        <li><a href="{% url 'index' %}"><i class="fa fa-fw fa-calendar"></i> Inicio</a></li>
+        <li><a href="{% url 'calendario:espacio_all' %}">Espacios</a></li>
+        <li><a href="{% url 'calendario:espacio_detail' espacio.id %}">{{ espacio.nombre }}</a></li>
+        <li><a href="{% url 'calendario:detail' calendario.id %}">{{ calendario.id }}</a></li>
+        <li class="active">Editar</li>
+    </ol>
     <h3 class="text-center">
         Calendario para "{{ espacio }}".
         <button class="btn btn-danger pull-right" id="trash" ondrop="eliminar(event)" ondragover="allowDrop(event)">
-            <span class="glyphicon glyphicon-trash"></span> <strong>Eliminar calendarios</strong>
+            <span class="glyphicon glyphicon-trash"></span> <strong>Eliminar calendario</strong>
         </button>
     </h3>
     <br>

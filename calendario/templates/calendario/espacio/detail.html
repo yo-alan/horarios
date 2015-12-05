@@ -98,7 +98,7 @@
     <ol class="breadcrumb">
         <li><a href="{% url 'index' %}"><i class="fa fa-fw fa-calendar"></i> Inicio</a></li>
         <li><a href="{% url 'calendario:espacio_all' %}">Espacios</a></li>
-        <li class="active">Detalles</li>
+        <li class="active">{{ espacio.nombre }}</li>
     </ol>
     <h3 class="text-center">
         Detalles del espacio {{ espacio }}.
@@ -223,6 +223,7 @@
             </div>
             <div class="tab-pane" id="calendarios">
                 <div class="col-xs-12 col-sm-12 col-md-7 col-lg-7">
+                {% if calendario %}
                     <div class="btn btn-group btn-block">
                         <a class="btn btn-default" title="Ver este calendario" href="{% url 'calendario:detail' calendario.id %}"><i class="glyphicon glyphicon-eye-open"></i> Ver</a>
                         <a class="btn btn-default" title="Editar este calendario" href="{% url 'calendario:edit' calendario.id %}"><i class="glyphicon glyphicon-edit"></i> Editar</a>
@@ -262,41 +263,46 @@
                         </tbody>
                     </table>
                 </div>
-                <!--
-                    Mini-calendario.
-                -->
                 <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5">
-                    <h2 class="text-center">
-                        Generar!
-                    </h2>
-                    <div class="progress hidden">
-                        <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 45%">
-                            <span class="sr-only">45% Complete</span>
+                {% else %}
+                </div>
+                <div class="col-xs-12 col-sm-12 col-md-9 col-lg-7 col-centered">
+                {% endif %}
+                    <div class="panel panel-success">
+                        <div class="panel-heading">
+                            <strong><i class="fa fa-fw fa-calendar"></i> Generar calendarios</strong>
+                        </div>
+                        <div class="panel-body">
+                            <div class="progress hidden">
+                                <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 45%">
+                                    <span class="sr-only">45% Complete</span>
+                                </div>
+                            </div>
+                            <form class="form-horizontal" id="formGenerar" name="formGenerar" method="POST" action="{% url 'calendario:generar' %}" disabled>
+                                {% csrf_token %}
+                                <input type="hidden" id="espacio_id" name="espacio_id" value="{{ espacio.id }}">
+                                <div class="form-group">
+                                    <label class="col-xs-6 control-label" for="generaciones">Cantidad de generaciones:</label>
+                                    <div class="input-group col-xs-5">
+                                        <input type="range" id="generaciones" name="generaciones" min="1" max="3" value="2">
+                                    </div>
+                                </div>
+                                {% if estado.0 == "GENERANDO" %}
+                                    <button class="btn btn-success pull-right disabled" disabled>
+                                        Generando...
+                                    </button>
+                                {% elif estado.0 == "NO ES VALIDO" %}
+                                    <button type="submit" class="btn btn-success pull-right" data-loading-text="Generando..." disabled>
+                                        Generar
+                                    </button>
+                                {% else %}
+                                    <button type="submit" class="btn btn-success pull-right" data-loading-text="Generando...">
+                                        <i class="fa fa-spinner"></i> Generar
+                                    </button>
+                                {% endif %}
+                            </form>
                         </div>
                     </div>
-                    <form class="form-horizontal" id="formGenerar" name="formGenerar" method="POST" action="{% url 'calendario:generar' %}" disabled>
-                        {% csrf_token %}
-                        <input type="hidden" id="espacio_id" name="espacio_id" value="{{ espacio.id }}">
-                        <div class="form-group">
-                            <label class="col-xs-6 control-label" for="generaciones">Cantidad de generaciones:</label>
-                            <div class="input-group col-xs-5">
-                                <input type="range" id="generaciones" name="generaciones" min="1" max="3" value="2">
-                            </div>
-                        </div>
-                        {% if estado.0 == "GENERANDO" %}
-                            <button class="btn btn-success pull-right disabled" disabled>
-                                Generando...
-                            </button>
-                        {% elif estado.0 == "NO ES VALIDO" %}
-                            <button type="submit" class="btn btn-success pull-right" data-loading-text="Generando..." disabled>
-                                Generar
-                            </button>
-                        {% else %}
-                            <button type="submit" class="btn btn-success pull-right" data-loading-text="Generando...">
-                                Generar
-                            </button>
-                        {% endif %}
-                    </form>
                 </div>
             </div>
         </div>
