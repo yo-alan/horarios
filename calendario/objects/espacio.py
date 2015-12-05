@@ -10,6 +10,8 @@ from profesional import Profesional
 from penalidad import Penalidad
 
 PUNTOS_HORAS_SEMANALES = 1
+CANT_PAREJAS = 4
+PARTICIPANTES = 2
 
 class Espacio(models.Model):
     """
@@ -19,8 +21,8 @@ class Espacio(models.Model):
     @Atributos:
     .dias_habiles - lista con los dias a cubrir. Valor: [].
     .horas - lista con las horas a cubrir. Valor: [].
-    .horarios - lista con los horarios a cubrir. Valor: [].
     .poblacion - lista de individuos. Valor: [].
+    .coordinadores - lista de coordinadores. Valor: [].
     .tamanio_poblacion - tamaño de la población. Valor: 0.
     """
     
@@ -47,7 +49,6 @@ class Espacio(models.Model):
         else:
             espacio = Espacio()
         
-        espacio._calendarios = []
         espacio._horas = []
         espacio._dias_habiles = []
         espacio._coordinadores = []
@@ -256,12 +257,13 @@ class Espacio(models.Model):
         parejas = []
         
         #La division por 4 representa el número de parejas para cruzar.
-        cantidad_parejas = len(self.poblacion) / 4
+        cantidad_parejas = len(self.poblacion) / CANT_PAREJAS
         
         while cantidad_parejas > len(parejas):
             
             pareja = self.seleccionar()
             
+            #Damos vuelta la pareja para asegurarnos la evaluación.
             jarepa = (pareja[1], pareja[0])
             
             if pareja not in parejas and jarepa not in parejas:
@@ -293,16 +295,25 @@ class Espacio(models.Model):
     
     def actualizarpoblacion(self, hijos):
         """
+        Se realiza el reemplazo de padres por hijos. Se toma el peor
+        mitad y es reemplazada por el total de hijos.
         
+        @Parametros:
+        hijos: list[Calendario].
         
+        @Return:
+        None.
         """
         
+        #Dividimos la población a la mitad.
         punto_corte = len(self.poblacion) / 2
         
         irreemplazables = self.poblacion[:punto_corte]
         reemplazables = self.poblacion[punto_corte:]
         asignables = []
         
+        #Aleatoriamente quitamos individuos de la peor mitad y los
+        #reemplazamos por los hijos.
         for calendario in hijos:
             
             i = randint(0, len(reemplazables)-1)
@@ -313,6 +324,7 @@ class Espacio(models.Model):
         
         self.poblacion = irreemplazables + reemplazables + asignables
         
+        #Y por último ordenamos la población.
         self.poblacion.sort()
     
     def asignacion_horaria(self, calendario):
@@ -405,6 +417,8 @@ class Espacio(models.Model):
     
     def distribucion_horaria(self, calendario):
         """
+        Función que determina la distribución de horarios dentro
+        de un calendario.
         
         @Parametros:
         calendario: Calendario.
@@ -457,10 +471,6 @@ class Espacio(models.Model):
         boolean.
         """
         
-        #Validar que se reciba un Horario por parámetro.
-        #~ if not isinstance(horario, Horario):
-            #~ raise Exception("Se esperaba un Horario.")
-        
         #Por cada restriccion del profesional.
         for restriccion in horario.profesional.restricciones.all():
             
@@ -481,7 +491,6 @@ class Espacio(models.Model):
             if (horario.hora_desde > restriccion.hora_desde and horario.hora_hasta < restriccion.hora_hasta):
                 return False
             
-            #Este if esta de mas?
             if (horario.hora_desde == restriccion.hora_desde and horario.hora_hasta == restriccion.hora_hasta):
                 return False
             
@@ -502,14 +511,6 @@ class Espacio(models.Model):
         Int.
         """
         
-        #Validar que se reciba una Especialidad por parámetro.
-        #~ if not isinstance(especialidad, Especialidad):
-            #~ raise Exception("Se esperaba una Especialidad.")
-        
-        #Validar que se reciba un Calendario por parámetro.
-        #~ if not isinstance(calendario, Calendario):
-            #~ raise Exception("Se esperaba un Calendario.")
-        
         #Contador de horas semanales.
         horas_semanales = 0
         
@@ -527,7 +528,8 @@ class Espacio(models.Model):
     
     def seleccionar(self, ):
         """
-        
+        Función encargada de seleccionar dos padres para su cruce.
+        Método de selección elegido: Torneo deterministico.
         
         @Return:
         tuple(Calendario, Calendario).
@@ -539,8 +541,8 @@ class Espacio(models.Model):
         #Los elegidos para competir.
         elegidos = []
         
-        #Hacemos un torneo de 20 individuos.
-        for i in range(2):
+        #Seleccionamos los individuos para el torneo aleatoriamente.
+        for i in range(PARTICIPANTES):
             
             indice = randrange(len(self.poblacion))
             
@@ -549,13 +551,14 @@ class Espacio(models.Model):
             if calendario not in elegidos:
                 elegidos.append(calendario)
         
+        #Obtenemos al primer ganador.
         padre = self.winneroftournament(elegidos)
         
         while madre != padre:
             
             elegidos = []
             
-            for i in range(2):
+            for i in range(PARTICIPANTES):
                 
                 indice = randrange(len(self.poblacion))
                 
@@ -564,14 +567,15 @@ class Espacio(models.Model):
                 if calendario not in elegidos:
                     elegidos.append(calendario)
             
+            #Obtenemos al segundo ganador.
             madre = self.winneroftournament(elegidos)
         
         return (padre, madre)
     
     def winneroftournament(self, elegidos):
         """
-        Funcion que retorna al ganador de un torneo entre los
-        individuos elegidos.
+        Función que retorna al ganador de un torneo entre los
+        individuos elegidos dicho certamen.
         
         @Parametros:
         elegidos: Calendario[].
@@ -582,8 +586,15 @@ class Espacio(models.Model):
         
         while len(elegidos) != 1:
             
-            calendario1 = elegidos[randrange(len(elegidos))]
-            calendario2 = elegidos[randrange(len(elegidos))]
+            i = 0
+            j = 0
+            
+            while i != j:
+                i = randrange(len(elegidos))
+                j = randrange(len(elegidos))
+            
+            calendario1 = elegidos[i]
+            calendario2 = elegidos[j]
             
             if calendario1 < calendario2:
                 elegidos.remove(calendario1)
@@ -633,13 +644,4 @@ class Espacio(models.Model):
     @property
     def dias_habiles(self, ):
         return self._dias_habiles
-    
-    @property
-    def calendarios(self, ):
-        from calendario import Calendario
-        
-        if not self._calendarios:
-            self._calendarios = Calendario.objects.filter(espacio=self)
-        
-        return self._calendarios
     
