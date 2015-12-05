@@ -177,18 +177,18 @@
                         <a href="{% url 'calendario:espacio_add_especialidades' espacio.id %}" class="btn btn-primary"><i class="glyphicon glyphicon-edit"></i> Editar las especialidades asignadas a este espacio</a>
                     </p>
                 </div>
-                {% for especialidad in especialidades %}
+                {% for coordinador in espacio.coordinadores %}
                 <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
                     <div class="panel panel-default">
-                        <div class="panel-heading" style="color: white; background-color: {{ especialidad.color }}">
-                            <strong>{{ especialidad }}</strong>
+                        <div class="panel-heading" style="color: white; background-color: {{ coordinador.especialidad.color }}">
+                            <strong>{{ coordinador.especialidad }}</strong>
                         </div>
                         <div class="panel-body">
                             Como segundo paso tienes que crear profesionales,
                             asignándole especialidades y restricciones.
                             <br>
                             <br>
-                            <a href="{% url 'calendario:especialidad_detail' especialidad.id %}" class="btn pull-right" style="background-color: {{ especialidad.color }}">
+                            <a href="{% url 'calendario:especialidad_detail' coordinador.especialidad.id %}" class="btn pull-right" style="background-color: {{ coordinador.especialidad.color }}">
                                 <strong style="color: white"><i class="fa fa-fw fa-pencil"></i> Editar</strong>
                             </a>
                         </div>
@@ -202,18 +202,18 @@
                         <a href="{% url 'calendario:espacio_add_profesionales' espacio.id %}" class="btn btn-primary"><i class="glyphicon glyphicon-edit"></i> Editar los profesionales asignados a este espacio</a>
                     </p>
                 </div>
-                {% for profesional in profesionales %}
+                {% for coordinador in espacio.coordinadores %}
                 <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
                     <div class="panel panel-info">
                         <div class="panel-heading">
-                            <strong>{{ profesional }}</strong>
+                            <strong>{{ coordinador.profesional }}</strong>
                         </div>
                         <div class="panel-body">
                             Como segundo paso tienes que crear profesionales,
                             asignándole especialidades y restricciones.
                             <br>
                             <br>
-                            <a href="{% url 'calendario:profesional_detail' profesional.id %}" class="btn btn-info pull-right">
+                            <a href="{% url 'calendario:profesional_detail' coordinador.profesional.id %}" class="btn btn-info pull-right">
                                 <strong><i class="fa fa-fw fa-pencil"></i> Editar</strong>
                             </a>
                         </div>
@@ -281,6 +281,15 @@
                             <form class="form-horizontal" id="formGenerar" name="formGenerar" method="POST" action="{% url 'calendario:generar' %}" disabled>
                                 {% csrf_token %}
                                 <input type="hidden" id="espacio_id" name="espacio_id" value="{{ espacio.id }}">
+                                <div class="form-group">
+                                    <table class="col-xs-offset-6 col-xs-6">
+                                        <tr>
+                                            <td width="33%">Baja</td>
+                                            <td width="42%">Normal</td>
+                                            <td>Alta</td>
+                                        </tr>
+                                    </table>
+                                </div>
                                 <div class="form-group">
                                     <label class="col-xs-6 control-label" for="generaciones">Cantidad de generaciones:</label>
                                     <div class="input-group col-xs-5">

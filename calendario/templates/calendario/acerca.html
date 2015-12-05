@@ -1,99 +1,58 @@
 {% extends "admin/base.html" %}
 {% load staticfiles %}
 
-{% block title %}Acerca de Horarios.{% endblock %}
+{% block title %}Acerca de Horarios{% endblock %}
 
 {% block head %}
 {% endblock %}
 
 {% block article %}
-    <div class="page-header">
-        <h1>
-            Acerca de Horarios<small>.</small>
-        </h1>
+    <div class="col-xs-11">
+        <div class="page-header">
+            <h1>
+                Acerca de Horarios <small>¿Por dónde comenzar?</small>
+            </h1>
+        </div>
+        <p>
+            Primero establezcamos que queremos hacer y despues vemos
+            como conseguirlo. Para generar calendarios primero debemos
+            tener un espacio sobre el cual trabajar. Pero para tener un
+            espacio antes necesitamos tener especialidades y
+            profesionales, entonces empecemos por ahí...
+        </p>
+        <dl>
+            <dt>
+                <h3><i>Crear una especialidad</i></h3>
+            </dt>
+            <dd>
+                En el menú lateral izquierdo, clickea el ítem
+                Especialidad y selecciona la opción 'Crea nueva...' o
+                puedes acceder desde 
+                <a href="{% url 'calendario:especialidad_add' %}">este link.</a>
+                <br>
+                <br>
+                Verás algo asi:
+                <br>
+                <br>
+                <img src="{% static 'calendario/img/acerca/addEspecialidad.png' %}" class="col-xs-12">
+                <strong>NOTA:</strong> El campo color determina la
+                representación que tendrá esa especialidad en el
+                calendario final.
+            </dd>
+            <dt>
+                <h3><i>Ver todas las especialidades</i></h3>
+            </dt>
+            <dd>
+                Para ver todas las especialidades cargadas, ve a la
+                opción 'Ver todas' en el ítem Especialidad o clickea en
+                <a href="{% url 'calendario:especialidad_all' %}">este link.</a>
+                <br>
+                <br>
+                Allí las verás listadas de la siguiente manera:
+                <br>
+                <br>
+                <img src="{% static 'calendario/img/acerca/allEspecialidad.png' %}" class="col-xs-12">
+            </dd>
+        </dl>
     </div>
-    <dl>
-        <dt>
-            <h3><strong>Crear un espacio.</strong></h3>
-        </dt>
-        <dd>
-            Lo primero que hay que hacer es crear el espacio para el
-            cual se generarán los calendarios. Para hacer esto debemos
-            clickear la opción <strong>Agregar nuevo...</strong> en el
-            menú <strong>Espacio</strong>.
-            <br>
-            <br>
-            <img src="{% static 'calendario/img/acerca/img1.png' %}">
-            <br>
-            <br>
-            Al hacerle clic serás redireccionado al formulario de carga
-            de un espacio nuevo. Completa el campo nombre y dale
-            <strong>Agregar</strong>.
-            <br>
-            <br>
-            <img src="{% static 'calendario/img/acerca/img2.png' %}">
-        </dd>
-        <dt>
-            <h3><strong>Agregar especialidades al espacio.</strong></h3>
-        </dt>
-        <dd>
-            Como segundo paso debemos agregar especialidades a nuestro
-            espacio creado. Para hacer esto debemos situarnos en la
-            vista de espacios para ver el listado de todos los espacios
-            creados, una vez ubicado el nuestro, seleccionamos la opción
-            <strong>Especialidades</strong>.
-            <br>
-            <br>
-            <img src="{% static 'calendario/img/acerca/img3.png' %}">
-            <br>
-            <br>
-            Lo cual no abrirá la
-            pestaña especialidades del espacio. Aquí veremos dos listas,
-            la de la izquierda tendrá todas las especialidades que hayas
-            creado y la lista de la derecha tendrá aquellas que estén
-            asignadas al espacio. Para agregar una especialidad al
-            espacio simplemente clickeala y verás como es asignada.
-            Al terminar <strong>Guarda los cambios</strong>.
-            <br>
-            <br>
-            <img src="{% static 'calendario/img/acerca/img4.png' %}">
-            <br>
-            <br>
-            Si no ves ninguna especialidad en la lista de la izquierda
-            significa que no tienes especialidades cargadas, para
-            cargarlas <a href="{% url 'calendario:especialidad_add' %}">haz clic aquí</a>.
-        </dd>
-        <dt>
-            <h3><strong>Agregar profesionales al espacio.</strong></h3>
-        </dt>
-        <dd>
-            El siguiente paso es agregar profesionales que ejerzan las
-            especialidades que acabamos de agregar. En la pestaña
-            <strong>Profesionales</strong> también verás dos listas,
-            con la diferencia de que los profesionales de la izquierda
-            si o si ejercen alguna de las especialidades que tiene el
-            espacio.
-            <br>
-            <br>
-            <img src="{% static 'calendario/img/acerca/img5.png' %}">
-            <br>
-            <br>
-            Para agregar un profesional haz lo mismo que con
-            las especialidades, clickealos.
-            <br>
-            <br>
-            <strong>*NOTA*</strong> La cantidad de profesionales está
-            limitada a la cantidad de especialidades que existan en el
-            espacio, esto es, no se pueden agregar 11 profesionales
-            cuando el espacio cuenta con 10 especialidades. Pero si es
-            posible agregar 9 profesionales teniendo 10 especialidades.
-        </dd>
-        <dt>
-            <h3><strong>Establecer las horas.</strong></h3>
-        </dt>
-        <dd>
-            Ahora debes decirle al espacio sobre que horas tiene que
-            trabajar.
-        </dd>
-    </dl>
 {% endblock %}

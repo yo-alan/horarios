@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 import sys
 import time
-from threading import Thread
-from itertools import groupby
 
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
@@ -183,7 +181,6 @@ def generar(request):
     GENERANDO = True
     
     espacio_id = request.POST['espacio_id']
-    #~ tamanio_poblacion = int(request.POST['tamanio_poblacion']) * 100
     generaciones = int(request.POST['generaciones']) * 500
     
     #~ try:
@@ -197,6 +194,7 @@ def generar(request):
     
     operation_time = time.time()
     
+    #Generamos la población inicial.
     espacio.generarpoblacioninicial()
     
     print " %d individuos en %7.3f seg."\
@@ -207,12 +205,14 @@ def generar(request):
     
     operation_time = time.time()
     
+    #Evaluamos la población.
     espacio.fitness(espacio.poblacion)
     
     print " %7.3f seg." % (time.time() - operation_time)
     
     generacion = 0
     
+    #Comienza el ciclo de evolución.
     while generacion != generaciones:
         
         generacion += 1
@@ -224,7 +224,7 @@ def generar(request):
         
         operation_time = time.time()
         
-        #Hacemos la seleccion de individuos.
+        #Hacemos la seleccion de padres.
         seleccionados = espacio.seleccion()
         
         print " %7.3f seg." % (time.time() - operation_time)
@@ -234,7 +234,7 @@ def generar(request):
         
         operation_time = time.time()
         
-        #Hacemos la seleccion de individuos.
+        #Obtenemos los hijos resultantes del cruce.
         hijos = espacio.cruzar(seleccionados)
         
         print " %7.3f seg." % (time.time() - operation_time)
@@ -256,6 +256,7 @@ def generar(request):
         
         operation_time = time.time()
         
+        #Actualizamos lo individuos de la población.
         espacio.actualizarpoblacion(hijos)
         
         print " %7.3f seg." % (time.time() - operation_time)
@@ -285,6 +286,8 @@ def generar(request):
 @login_required(login_url='/index/')
 def detail(request, calendario_id):
     
+    calendario_id = int(calendario_id)
+    
     calendario = Calendario.create(calendario_id)
     
     espacio = Espacio.create(espacio_id=calendario.espacio.id)
@@ -293,12 +296,12 @@ def detail(request, calendario_id):
     siguiente = None
     
     try:
-        anterior = get_object_or_404(Calendario, pk=int(calendario_id)-1)
+        anterior = get_object_or_404(Calendario, pk=calendario_id-1)
     except Exception as ex:
         print ex
     
     try:
-        siguiente = get_object_or_404(Calendario, pk=int(calendario_id)+1)
+        siguiente = get_object_or_404(Calendario, pk=calendario_id+1)
     except Exception as ex:
         print ex
     
@@ -337,23 +340,6 @@ def espacio_detail(request, espacio_id):
     global GENERANDO
     
     espacio = Espacio.create(espacio_id)
-    
-    especialidades = Especialidad.objects.filter(estado='ON')\
-                                            .order_by('nombre')
-    
-    todas_profesionales = Profesional.objects.filter(estado='ON')\
-                                                .order_by('apellido', 'nombre')
-    
-    #Muestro solo los profesionales que ejercen
-    #las especialidades asignadas al espacio.
-    profesionales = []
-    
-    for profesional in todas_profesionales:
-        
-        for especialidad in espacio.especialidades.all():
-            
-            if especialidad in profesional.especialidades.all():
-                profesionales.append(profesional)
     
     dias = []
     
@@ -394,8 +380,7 @@ def espacio_detail(request, espacio_id):
         calendario = Calendario.create(calendario.id)
     
     context = {'estado': estado, 'espacio': espacio,
-                'calendario': calendario, 'profesionales': profesionales,
-                'especialidades': especialidades, 'dias': dias}
+                'calendario': calendario, 'dias': dias}
     
     return render(request, 'calendario/espacio/detail.html', context)
 
@@ -411,6 +396,8 @@ def espacio_add(request):
         espacio = Espacio.create()
         
         espacio.setnombre(request.POST["nombre"])
+        espacio.usuario_creador = request.user.username
+        espacio.usuario_modificador = request.user.username
         
         espacio.save()
         
@@ -441,10 +428,12 @@ def espacio_edit(request, espacio_id=0):
     data = {}
     
     try:
-        #~ espacio = Espacio.create(request.POST['espacio_id'])
+        
         espacio = Espacio.create(espacio_id)
         
         espacio.setnombre(request.POST['nombre'])
+        espacio.usuario_creador = request.user.username
+        espacio.usuario_modificador = request.user.username
         
         espacio.save()
         
@@ -471,6 +460,7 @@ def espacio_delete(request):
         espacio = Espacio.create(request.POST['espacio_id'])
         
         espacio.estado = 'OFF'
+        espacio.usuario_modificador = request.user.username
         
         espacio.save()
         
@@ -531,6 +521,7 @@ def espacio_add_horarios(request, espacio_id=0):
         
         for i in range(7):
             
+            #Formato de dato 'd0', 'd1', 'd2', etc...
             if request.POST.get('d' + str(i), False):
                 
                 dia_habil = DiaHabil()
@@ -550,6 +541,7 @@ def espacio_add_horarios(request, espacio_id=0):
         i = 0
         for r in request.POST:
             
+            #Formato de dato 'h0', 'h1', 'h2', etc...
             if request.POST.get('h' + str(i), False):
                 
                 hora = Hora()
@@ -592,17 +584,20 @@ def espacio_add_especialidades(request, espacio_id=0):
         
         especialidades = dict(request.POST.iterlists())['especialidades[]']
         
-        for especialidad in espacio.especialidades.filter(estado='ON'):
+        for especialidad in espacio.especialidades.all():
             espacio.especialidades.remove(especialidad)
         
-        for especialidad in especialidades:
-            espacio.especialidades.add(Especialidad.objects.get(pk=especialidad))
+        for especialidad_id in especialidades:
+            
+            especialidad = Especialidad.objects.get(pk=especialidad_id)
+            
+            espacio.especialidades.add(especialidad)
         
         data = {'mensaje': "Las especialidades fueron asignadas exitosamente."}
         
     except KeyError as ex:
         #KeyError 'especialidades[]', vacio todo el arreglo.
-        for especialidad in espacio.especialidades.filter(estado='ON'):
+        for especialidad in espacio.especialidades.all():
             espacio.especialidades.remove(especialidad)
         
         data = {'mensaje': "Las especialidades fueron removidas exitosamente."}
@@ -641,7 +636,7 @@ def espacio_add_profesionales(request, espacio_id=0):
     try:
         profesionales = dict(request.POST.iterlists())['profesionales[]']
         
-        for profesional in espacio.profesionales.filter(estado='ON'):
+        for profesional in espacio.profesionales.all():
             espacio.profesionales.remove(profesional)
         
         coordinadores = Coordinador.objects.filter(espacio=espacio)
@@ -671,9 +666,9 @@ def espacio_add_profesionales(request, espacio_id=0):
         
     except KeyError as ex:
         #KeyError 'profesionales[]', vacio todo el arreglo.
-        for profesional in espacio.profesionales.filter(estado='ON'):
+        for profesional in espacio.profesionales.all():
             espacio.profesionales.remove(profesional)
-        #~ 
+        
     except Exception as ex:
         data = {'error': str(ex).decode('utf-8')}
     
@@ -711,10 +706,12 @@ def profesional_add(request):
         profesional.setnombre(request.POST['nombre'])
         profesional.setapellido(request.POST['apellido'])
         profesional.setcuil(request.POST['cuil'])
+        profesional.usuario_creador = request.user.username
+        profesional.usuario_modificador = request.user.username
         
         profesional.save()
         
-        data = {'mensaje': "El profesional ha sido guardado exitosamente."}
+        data = {'mensaje': "El profesional fue guardado exitosamente."}
         
     except Exception as ex:
         
@@ -747,7 +744,7 @@ def profesional_detail(request, profesional_id):
         
         restricciones.append(restriccion)
     
-    #TODO DIAS
+    #TODO dias de las restricciones
     context = {'profesional': profesional,
                 'especialidades': especialidades,
                 'restricciones': restricciones}
@@ -767,6 +764,7 @@ def profesional_edit(request):
         profesional.setnombre(request.POST['nombre'])
         profesional.setapellido(request.POST['apellido'])
         profesional.setcuil(request.POST['cuil'])
+        profesional.usuario_modificador = request.user.username
         
         profesional.save()
         
@@ -799,6 +797,7 @@ def profesional_delete(request):
         profesional = Profesional.create(request.POST['profesional_id'])
         
         profesional.estado = 'OFF'
+        profesional.usuario_modificador = request.user.username
         
         profesional.save()
         
@@ -823,17 +822,20 @@ def profesional_add_especialidades(request, ):
         
         profesional = Profesional.create(profesional_id)
         
-        for especialidad in profesional.especialidades.filter(estado='ON'):
+        for especialidad in profesional.especialidades.all():
             profesional.especialidades.remove(especialidad)
         
-        for especialidad in especialidades:
-            profesional.especialidades.add(Especialidad.objects.get(pk=especialidad))
+        for especialidad_id in especialidades:
+            
+            especialidad = Especialidad.objects.get(pk=especialidad_id)
+            
+            profesional.especialidades.add(especialidad)
         
         data = {'mensaje': "Las especialidades fueron asignadas exitosamente."}
         
     except KeyError as ex:
         #KeyError 'especialidades[]', vacio todo el arreglo.
-        for especialidad in profesional.especialidades.filter(estado='ON'):
+        for especialidad in profesional.especialidades.all():
             profesional.especialidades.remove(especialidad)
         
     except Exception as ex:
@@ -845,7 +847,7 @@ def profesional_add_especialidades(request, ):
 def profesional_add_restriccion(request):
     
     if request.method != 'POST':
-        return HttpResponseRedirect(reverse('calendario:espacio_all'))
+        return HttpResponseRedirect(reverse('index'))
     
     data = {}
     
@@ -860,6 +862,8 @@ def profesional_add_restriccion(request):
         restriccion.setdia_semana(request.POST['dia_semana'])
         restriccion.sethora_desde(request.POST['hora_desde'])
         restriccion.sethora_hasta(request.POST['hora_hasta'])
+        restriccion.usuario_creador = request.user.username
+        restriccion.usuario_modificador = request.user.username
         
         restriccion.save()
         
@@ -907,19 +911,26 @@ def especialidad_add(request):
     data = {}
     
     try:
+        carga_horaria_semanal = request.POST["carga_horaria_semanal"]
+        max_horas_diaria = request.POST["max_horas_diaria"]
+        
+        #TODO si el usuario no quiere que exista un maximo de horas
+        #diarias podria querer poner un valor superior...
+        if carga_horaria_semanal < max_horas_diaria:
+            raise Exception("La carga horaria semanal no puede ser menor que la cantidad de horas.")
+        
         especialidad = Especialidad()
         
         especialidad.setnombre(request.POST["nombre"])
-        especialidad.setcarga_horaria_semanal(request.POST["carga_horaria_semanal"])
-        especialidad.setmax_horas_diaria(request.POST["max_horas_diaria"])
+        especialidad.setcarga_horaria_semanal(carga_horaria_semanal)
+        especialidad.setmax_horas_diaria(max_horas_diaria)
         especialidad.color = request.POST["color"]
-        
-        if especialidad.carga_horaria_semanal < especialidad.max_horas_diaria:
-            raise Exception("La carga horaria semanal no puede ser menor que la cantidad de horas.")
+        especialidad.usuario_creador = request.user.username
+        especialidad.usuario_modificador = request.user.username
         
         especialidad.save()
         
-        data = {'mensaje': "La especialidad ha sido guardada exitosamente."}
+        data = {'mensaje': "La especialidad fue guardada exitosamente."}
         
     except Exception as ex:
         
@@ -961,6 +972,7 @@ def especialidad_edit(request):
         especialidad.setcarga_horaria_semanal(request.POST["carga_horaria_semanal"])
         especialidad.setmax_horas_diaria(request.POST["max_horas_diaria"])
         especialidad.color = request.POST["color"]
+        especialidad.usuario_modificador = request.user.username
         
         especialidad.save()
         
@@ -990,9 +1002,12 @@ def especialidad_delete(request):
     data = {}
     
     try:
-        especialidad = Especialidad.objects.get(pk=request.POST['especialidad_id'])
+        especialidad_id = request.POST['especialidad_id']
+        
+        especialidad = Especialidad.objects.get(pk=especialidad_id)
         
         especialidad.estado = 'OFF'
+        especialidad.usuario_modificador = request.user.username
         
         especialidad.save()
         
@@ -1017,6 +1032,8 @@ def restriccion_add(request):
         restriccion.setnombre(request.POST["nombre"])
         restriccion.setcarga_horaria_semanal(request.POST["carga_horaria_semanal"])
         restriccion.setmax_horas_diaria(request.POST["max_horas_diaria"])
+        restriccion.usuario_creador = request.user.username
+        restriccion.usuario_modificador = request.user.username
         
         if restriccion.carga_horaria_semanal < restriccion.max_horas_diaria:
             raise Exception("La carga horaria semanal no puede ser menor que la cantidad de horas.")
