@@ -55,10 +55,11 @@
         <li><a href="{% url 'calendario:espacio_all' %}">Espacios</a></li>
         <li class="active">Agregar</li>
     </ol>
-    <h2 class="text-center">
-        Agregar espacio nuevo
-    </h2>
-    <br>
+    <div class="page-header text-center">
+        <h1>
+            Agregar espacio<small>.</small>
+        </h1>
+    </div>
     <div class="col-xs-12 col-sm-12 col-md-9 col-lg-7 col-centered">
         <form class="form-horizontal responsive" id="addForm" name="addForm" method="POST" action="{% url 'calendario:espacio_add' %}">
             <div class="alert alert-dismissable alert-danger hidden">

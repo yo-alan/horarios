@@ -1,21 +1,16 @@
 body {
-	background-color: #313131;
+    height: 100%;
+    min-height: 100%;
+    width: 100%;
+    background-color: white;
 }
 
-div.article {
-	background-color: white;
-	margin: auto;
-	margin-top: 50px;
-	border: 3px solid;
-	padding: 5px;
-	vertical-align: middle;
-}
-
-p.especialidad {
+.especialidad {
 	cursor: move;
 	padding-top: 10%;
 	height: 80px;
 	width: 120px;
+	vertical-align: middle;
 }
 
 div.horario-container {
@@ -23,11 +18,7 @@ div.horario-container {
 	width: 120px;
 }
 
-.table tbody > tr > td {
-	vertical-align: middle;
-}
-
-.table thead > tr > th {
+.table tbody > tr > td, .table thead > tr > th {
 	vertical-align: middle;
 }
 
@@ -48,34 +39,13 @@ ul.profesionales, ul.especialidades, ul.calendarios, ul.restricciones {
   color: #000;
 }
 
-.table tbody > tr > td, .table thead > tr > th {
-/*
+.calendario tbody > tr > td, .calendario thead > tr > th {
 	border-top: none;
 	border-bottom: none;
-*/
 }
 
 .logout {
 	margin-right: 10px;
-}
-
-table.mini-calendario {
-	width: auto;
-	height: auto;
-	border: grey solid 1px;
-    table-layout: fixed;
-}
-
-table.mini-calendario thead > tr > th {
-    width: 100px;
-    height: 40px;
-	border: grey solid 1px;
-}
-
-table.mini-calendario tbody > tr > td {
-    width: 100px;
-    height: 30px;
-	border: grey solid 1px;
 }
 
 img.user {

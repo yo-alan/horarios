@@ -1,10 +1,9 @@
 {% extends "admin/base.html" %}
 
-{% block title %}Crear un calendario a medida.{% endblock %}
+{% block title %}Crear un calendario a medida{% endblock %}
 
 {% block head %}
     <script>
-        
         function allowDrop(ev) {
             ev.preventDefault();
         }
@@ -14,7 +13,9 @@
         }
         
         function drop(ev) {
+            
             ev.preventDefault();
+            
             var coordinadorId = ev.dataTransfer.getData("text");
             var coordinador = document.getElementById(coordinadorId);
             
@@ -71,7 +72,7 @@
             }
             
             $.ajax({
-                url: "/calendario/add/{{ espacio.id }}/",
+                url: "{% url 'calendario:edit' espacio.id %}",
                 type: 'POST',
                 dataType: 'json',
                 data: datos,
@@ -128,13 +129,15 @@
     </h3>
     <br>
     <div class="col-xs-12">
-    {% for coordinador in espacio.coordinadores %}
-        <div class="col-xs-3 col-sm-3 col-md-2 col-lg-2">
-            <p id="{{ coordinador.especialidad|cut:" " }}" name="{{ coordinador.id }}" draggable="true" ondragstart="drag(event)" class="lead especialidad text-center" style="background-color: {{ coordinador.especialidad.color }}">
-                <strong>{{ coordinador.especialidad }}</strong>
-            </p>
-        </div>
-    {% endfor %}
+        <ul class="list-inline">
+        {% for coordinador in espacio.coordinadores %}
+            <li>
+                <p id="{{ coordinador.especialidad|cut:" " }}" name="{{ coordinador.id }}" draggable="true" ondragstart="drag(event)" class="lead especialidad text-center" style="background-color: {{ coordinador.especialidad.color }}">
+                    <strong>{{ coordinador.especialidad }}</strong>
+                </p>
+            </li>
+        {% endfor %}
+        </ul>
     </div>
     <div class="col-xs-12">
         <ul class="list-inline">
@@ -156,7 +159,7 @@
         </ul>
     </div>
     <div class="col-xs-12">
-        <table class="table">
+        <table class="table calendario">
             <thead>
                 <tr class="bg-primary">
                     <th>
@@ -178,7 +181,7 @@
                         </td>
                         {% for dia in espacio.dias_habiles %}
                             <td class="text-center">
-                                <div id="{{ hora }}{{ dia }}" dia="{{ dia }}" desde="{{ hora }}" horario="{{ forloop.parentloop.counter0 }}" ondrop="drop(event)" ondragover="allowDrop(event)" class="horario-container">
+                                <div id="{{ hora.hora_desde }}{{ dia.dia }}" dia="{{ dia.dia }}" desde="{{ hora.hora_desde }}" horario="{{ forloop.parentloop.counter0 }}" ondrop="drop(event)" ondragover="allowDrop(event)" class="horario-container">
                                     
                                 </div>
                             </td>

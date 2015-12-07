@@ -17,7 +17,9 @@
         }
         
         function drop(ev) {
+            
             ev.preventDefault();
+            
             var coordinadorId = ev.dataTransfer.getData("text");
             var coordinador = document.getElementById(coordinadorId);
             
@@ -74,7 +76,7 @@
             }
             
             $.ajax({
-                url: "/calendario/add/{{ espacio.id }}/",
+                url: "{% url 'calendario:add' espacio.id %}",
                 type: 'POST',
                 dataType: 'json',
                 data: datos,
@@ -143,8 +145,8 @@
             </a>
         </li>
     </ul>
-    <div class="col-xs-8 pull-left center-block">
-        <table class="table center-block">
+    <div class="col-xs-8">
+        <table class="table calendario">
             <thead>
                 <tr class="bg-primary">
                     <th>
@@ -166,7 +168,7 @@
                         </td>
                         {% for dia in espacio.dias_habiles %}
                             <td class="text-center">
-                                <div id="{{ hora }}{{ dia }}" dia="{{ dia }}" desde="{{ hora }}" horario="{{ forloop.parentloop.counter0 }}" ondrop="drop(event)" ondragover="allowDrop(event)" class="horario-container">
+                                <div id="{{ hora.hora_desde }}{{ dia.dia }}" dia="{{ dia.dia }}" desde="{{ hora.hora_desde }}" horario="{{ forloop.parentloop.counter0 }}" ondrop="drop(event)" ondragover="allowDrop(event)" class="horario-container">
                                     
                                 </div>
                             </td>

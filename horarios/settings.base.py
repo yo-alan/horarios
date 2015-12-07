@@ -38,6 +38,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'calendario',
+    'perfil',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -75,7 +76,8 @@ WSGI_APPLICATION = 'horarios.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
-DATABASES = {#Reemplazar los valores a medida
+# Reemplazar estos valores a medida
+DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'horarios',
@@ -105,3 +107,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_URL = '/static/'
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "calendario/static"),
+    os.path.join(BASE_DIR, "perfil/static"),
+]

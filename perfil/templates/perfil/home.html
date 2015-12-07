@@ -1,0 +1,103 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Perfil{% endblock %}
+
+{% block head %}
+    <script>
+        $(function () {
+           $("#tbActividad").DataTable();
+        });
+    </script>
+{% endblock %}
+{% block article %}
+    <div class="container-fluid">
+        <div class="col-md-12">
+            <h2>
+                Perfil
+            </h2>
+            <br>
+			<div class="tabbable" id="tabs-70055">
+				<ul class="nav nav-tabs">
+					<li class="active">
+						<a href="#datos" data-toggle="tab">Mi perfil</a>
+					</li>
+					<li>
+						<a href="#actividad" data-toggle="tab">Actividad</a>
+					</li>
+				</ul>
+				<div class="tab-content">
+					<div class="tab-pane active" id="datos">
+                        <div class="col-xs-11">
+                            <a href="#" class="btn btn-info pull-right">
+                                <i class="glyphicon glyphicon-edit"></i> Editar
+                            </a>
+                        </div>
+                        <div class="col-md-4">
+                            
+                        </div>
+                        <div class="col-md-7">
+                            <dl class="dl-horizontal">
+                                <dt>
+                                    Nombre
+                                </dt>
+                                <dd>
+                                    {{ user.first_name }}
+                                </dd>
+                                <hr>
+                                <dt>
+                                    Apellido
+                                </dt>
+                                <dd>
+                                    {{ user.last_name }}
+                                </dd>
+                                <hr>
+                                <dt>
+                                    Usuario
+                                </dt>
+                                <dd>
+                                    {{ user.username }}
+                                </dd>
+                                <hr>
+                                <dt>
+                                    Email
+                                </dt>
+                                <dd>
+                                    {{ user.email }}
+                                </dd>
+                                <hr>
+                                <dt>
+                                    Contraseña
+                                </dt>
+                                <dd>
+                                    ******
+                                </dd>
+                            </dl>
+                        </div>
+					</div>
+					<div class="tab-pane" id="actividad">
+                        <div class="panel panel-info">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">
+                                    Actividad
+                                </h3>
+                            </div>
+                            <div class="panel-body">
+                                <table id="tbActividad">
+                                    <thead>
+                                        <tr>
+                                            <th>Fecha</th>
+                                            <th>Mensaje</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+					</div>
+				</div>
+			</div>
+		</div>
+    </div>
+{% endblock %}

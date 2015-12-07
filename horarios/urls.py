@@ -16,13 +16,15 @@ Including another URLconf
 from django.conf.urls import include, url
 from django.contrib import admin
 
-from calendario import views
+from calendario import views as calendario_views
+from perfil import views as perfil_views
 
 urlpatterns = [
-    url(r'^$', views.index, name='index'),
-    url(r'^index/$', views.index, name='index'),
-    url(r'^log_in/$', views.log_in, name='log_in'),
-    url(r'^log_out/$', views.log_out, name='log_out'),
+    url(r'^$', calendario_views.index, name='index'),
+    url(r'^index/$', calendario_views.index, name='index'),
+    url(r'^log_in/$', calendario_views.log_in, name='log_in'),
+    url(r'^log_out/$', calendario_views.log_out, name='log_out'),
     url(r'^calendario/', include('calendario.urls', namespace="calendario")),
+    url(r'^perfil/', include('perfil.urls', namespace="perfil")),
     url(r'^admin/', include(admin.site.urls)),
 ]
