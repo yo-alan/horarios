@@ -16,55 +16,71 @@
     </h2>
     <br>
     <div class="container-fluid">
-		<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-            <div class="panel panel-warning">
+        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+            <div class="panel panel-yellow">
                 <div class="panel-heading">
-                    <strong>Crear una especialidad</strong>
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-fw fa-th-list fa-5x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div class="huge">{{ especialidades|length }}</div>
+                            <div>Especialidades</div>
+                        </div>
+                    </div>
                 </div>
-                <div class="panel-body">
-                    Como primer paso deberías crear especialidades.
-                    De esta manera estarán disponibles en los pasos
-                    posteriores.
-                    <br>
-                    <br>
-                    <a href="{% url 'calendario:especialidad_add' %}" class="btn btn-warning pull-right">
-                        <i class="fa fa-fw fa-th-list"></i> <strong>Crear</strong>
-                    </a>
-                </div>
+                <a href="{% url 'calendario:especialidad_all' %}">
+                    <div class="panel-footer">
+                        <span class="pull-left">Ver todas</span>
+                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                        <div class="clearfix"></div>
+                    </div>
+                </a>
             </div>
-		</div>
-		<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-            <div class="panel panel-info">
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+            <div class="panel panel-primary">
                 <div class="panel-heading">
-                    <strong>Crear un profesional</strong>
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-fw fa-user fa-5x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div class="huge">{{ profesionales|length }}</div>
+                            <div>Profesionales</div>
+                        </div>
+                    </div>
                 </div>
-                <div class="panel-body">
-                    Como segundo paso tienes que crear profesionales,
-                    asignándole especialidades y restricciones.
-                    <br>
-                    <br>
-                    <a href="{% url 'calendario:profesional_add' %}" class="btn btn-info pull-right">
-                        <i class="fa fa-fw fa-user"></i> <strong>Crear</strong>
-                    </a>
-                </div>
+                <a href="{% url 'calendario:profesional_all' %}">
+                    <div class="panel-footer">
+                        <span class="pull-left">Ver todos</span>
+                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                        <div class="clearfix"></div>
+                    </div>
+                </a>
             </div>
-		</div>
-		<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-            <div class="panel panel-success">
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+            <div class="panel panel-green">
                 <div class="panel-heading">
-                    <strong>Crear un espacio</strong>
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-fw fa-paperclip fa-5x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div class="huge">{{ espacios|length }}</div>
+                            <div>Espacios</div>
+                        </div>
+                    </div>
                 </div>
-                <div class="panel-body">
-                    Por último debes definir un espacio, el cual
-                    estará compuesto por las especialidades y
-                    profesionales de los pasos anteriores.
-                    <br>
-                    <br>
-                    <a href="{% url 'calendario:espacio_add' %}" class="btn btn-success pull-right">
-                        <i class="glyphicon glyphicon-paperclip"></i> <strong>Crear</strong>
-                    </a>
-                </div>
+                <a href="{% url 'calendario:espacio_all' %}">
+                    <div class="panel-footer">
+                        <span class="pull-left">Ver todos</span>
+                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                        <div class="clearfix"></div>
+                    </div>
+                </a>
             </div>
-		</div>
+        </div>
     </div>
 {% endblock %}

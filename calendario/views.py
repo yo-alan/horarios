@@ -25,14 +25,19 @@ from .models import DiaHabil
 DIAS = {0: 'Domingo', 1: 'Lunes', 2: 'Martes', 3: 'Miércoles',
         4: 'Jueves', 5: 'Viernes', 6: 'Sábado', 7: "Todos los días"}
 
-GENERANDO = False
+_status = [False, 0]
 
 def index(request):
     
     if not request.user.is_authenticated():
         return render(request, 'calendario/index.html')
     
-    context = {"user": request.user}
+    especialidades = Especialidad.objects.filter(estado="ON")
+    profesionales = Profesional.objects.filter(estado="ON")
+    espacios = Espacio.objects.filter(estado="ON")
+    
+    context = {"user": request.user, "especialidades": especialidades,
+                "profesionales": profesionales, "espacios": espacios}
     
     return render(request, 'calendario/home.html', context)
     
@@ -173,12 +178,12 @@ def edit(request, calendario_id):
 @login_required(login_url='/index/')
 def generar(request):
     
-    global GENERANDO
+    global _status
     
-    if GENERANDO or request.method != 'POST':
-        return HttpResponseRedirect(reverse('calendario:espacio_all'))
+    if _status[0] or request.method != 'POST':
+        return HttpResponseRedirect(reverse('index'))
     
-    GENERANDO = True
+    _status[0] = True
     
     espacio_id = request.POST['espacio_id']
     generaciones = int(request.POST['generaciones']) * 500
@@ -216,6 +221,8 @@ def generar(request):
     while generacion != generaciones:
         
         generacion += 1
+        
+        _status[1] = generacion * 100 / generaciones
         
         print "Generación %d/%d" % (generacion, generaciones)
         
@@ -281,7 +288,7 @@ def generar(request):
     #~ except Exception as ex:
         #~ print ex
     
-    GENERANDO = False
+    _status = [False, 0]
 
 @login_required(login_url='/index/')
 def detail(request, calendario_id):
@@ -337,7 +344,7 @@ def espacio_all(request, pagina=1):
 @login_required(login_url='/index/')
 def espacio_detail(request, espacio_id):
     
-    global GENERANDO
+    global _status
     
     espacio = Espacio.create(espacio_id)
     
@@ -364,9 +371,9 @@ def espacio_detail(request, espacio_id):
     
     estado = ['', '']
     
-    if GENERANDO:
+    if _status[0]:
         estado[0] = "GENERANDO"
-        estado[1] = "El sistema está generando calendarios."
+        estado[1] = _status[1]
     elif listo == False:
         estado[0] = "NO ES VALIDO"
         estado[1] = "Faltan datos para que el sistema pueda ejecutarse."
@@ -1142,3 +1149,11 @@ def some_view(request):
     p.showPage()
     p.save()
     return response
+
+def status(request):
+    
+    global _status
+    
+    data = {"status": _status[1]}
+    
+    return JsonResponse(data)

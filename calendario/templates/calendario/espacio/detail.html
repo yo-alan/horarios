@@ -21,6 +21,10 @@
                 $(".alert-danger").attr('class', "alert alert-dismissable alert-danger hidden");
             });
             
+            {% if estado.0 == "GENERANDO" %}
+                var tid = setInterval(checkStatus, 20000);
+            {% endif %}
+            
             var form = $("#editForm");
             
             form.submit(function (ev){
@@ -64,6 +68,10 @@
                 
                 $("#" + formGenerar.attr('id') + " button[type=submit]").button('loading');
                 
+                $("#progress-bar").parent().prop("class", "progress");
+                
+                var tid = setInterval(checkStatus, 20000);
+                
                 $.ajax({
                     url: formGenerar.attr('action'),
                     type: formGenerar.attr('method'),
@@ -92,6 +100,24 @@
                 }
             });
         }
+        
+        function checkStatus() {
+           
+            $.ajax({
+                url: "{% url 'calendario:status' %}",
+                type: 'GET',
+                success: function(response) {
+                    
+                    $("#progress-bar").width(response.status + "%");
+                    
+                }
+            }); 
+        }
+        
+        function abortTimer() {
+            clearInterval(tid);
+        }
+        
     </script>
 {% endblock %}
 {% block article %}
@@ -273,12 +299,16 @@
                             <strong><i class="fa fa-fw fa-calendar"></i> Generar calendarios</strong>
                         </div>
                         <div class="panel-body">
+                            {% if estado.0 == "GENERANDO" %}
+                            <div class="progress">
+                            {% else %}
                             <div class="progress hidden">
-                                <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 45%">
-                                    <span class="sr-only">45% Complete</span>
+                            {% endif %}
+                                <div id="progress-bar" class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="{{ estado.1 }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ estado.1 }}%">
+                                    <span class="sr-only">{{ estado.1 }}% Complete</span>
                                 </div>
                             </div>
-                            <form class="form-horizontal" id="formGenerar" name="formGenerar" method="POST" action="{% url 'calendario:generar' %}" disabled>
+                            <form class="form-horizontal" id="formGenerar" name="formGenerar" method="POST" action="{% url 'calendario:generar' %}">
                                 {% csrf_token %}
                                 <input type="hidden" id="espacio_id" name="espacio_id" value="{{ espacio.id }}">
                                 <div class="form-group">
@@ -297,15 +327,15 @@
                                     </div>
                                 </div>
                                 {% if estado.0 == "GENERANDO" %}
-                                    <button class="btn btn-success pull-right disabled" disabled>
-                                        Generando...
+                                    <button id="btnGenerar" class="btn btn-success pull-right disabled" disabled>
+                                        <i class="fa fa-spinner"></i> Generando...
                                     </button>
                                 {% elif estado.0 == "NO ES VALIDO" %}
-                                    <button type="submit" class="btn btn-success pull-right" data-loading-text="Generando..." disabled>
-                                        Generar
+                                    <button id="btnGenerar" type="submit" class="btn btn-success pull-right" data-loading-text="Generando..." disabled>
+                                        <i class="fa fa-spinner"></i> Generar
                                     </button>
                                 {% else %}
-                                    <button type="submit" class="btn btn-success pull-right" data-loading-text="Generando...">
+                                    <button id="btnGenerar" type="submit" class="btn btn-success pull-right" data-loading-text="Generando...">
                                         <i class="fa fa-spinner"></i> Generar
                                     </button>
                                 {% endif %}
