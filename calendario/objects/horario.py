@@ -2,8 +2,7 @@
 from django.db import models
 
 from calendario import Calendario
-from profesional import Profesional
-from especialidad import Especialidad
+from coordinador import Coordinador
 
 class Horario(models.Model):
     
@@ -12,11 +11,10 @@ class Horario(models.Model):
     dia_semana = models.IntegerField(default=0, null=False)
     penalizado = models.IntegerField(default=0)
     calendario = models.ForeignKey(Calendario)
-    profesional = models.ForeignKey(Profesional)
-    especialidad = models.ForeignKey(Especialidad)
+    coordinador = models.ForeignKey(Coordinador)
     
     def __str__(self, ):
-        return str(self.especialidad)
+        return str(self.coordinador.especialidad)
     
     def __eq__(self, o):
         return self.hora_desde == o.hora_desde and\

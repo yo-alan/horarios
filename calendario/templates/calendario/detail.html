@@ -67,12 +67,12 @@
                 {% if horario.penalizado > 0 %}
                 <td penalizado="{{ horario.penalizado }}" class="text-center">
                 {% else %}
-                <td penalizado="{{ horario.penalizado }}" class="text-center" style="background-color: {{ horario.especialidad.color }}">
+                <td penalizado="{{ horario.penalizado }}" class="text-center" style="background-color: {{ horario.coordinador.especialidad.color }}">
                 {% endif %}
                     <h4>
-                        <strong>{{ horario.especialidad }}</strong>
+                        <strong>{{ horario.coordinador.especialidad }}</strong>
                     </h4>
-                    {{ horario.profesional }}
+                    {{ horario.coordinador.profesional }}
                 </td>
             {% endfor %}
             </tr>
@@ -82,11 +82,11 @@
     <nav>
         <ul class="pager">
             {% if anterior %}
-                <li class="previous"><a href="{% url 'calendario:detail' anterior.id %}"><span class="glyphicon glyphicon-arrow-left"></span> Anterior</a></li>
+                <li class="previous"><a href="{% url 'calendario:detail' anterior.id %}"><i class="glyphicon glyphicon-arrow-left"></i> Anterior</a></li>
             {% endif %}
             
             {% if siguiente %}
-                <li class="next"><a href="{% url 'calendario:detail' siguiente.id %}">Siguiente <span class="glyphicon glyphicon-arrow-right"></span></a>
+                <li class="next"><a href="{% url 'calendario:detail' siguiente.id %}">Siguiente <i class="glyphicon glyphicon-arrow-right"></i></a>
             {% endif %}
         </ul>
     </nav>

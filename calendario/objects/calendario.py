@@ -99,14 +99,11 @@ class Calendario(models.Model):
         primero = self.horarios[i][j]
         segundo = self.horarios[k][l]
         
-        especialidad_aux = primero.especialidad
-        profesional_aux = primero.profesional
+        coordinador_aux = primero.coordinador
         
-        primero.especialidad = segundo.especialidad
-        primero.profesional = segundo.profesional
+        primero.coordinador = segundo.coordinador
         
-        segundo.especialidad = especialidad_aux
-        segundo.profesional = profesional_aux
+        segundo.coordinador = coordinador_aux
         
         primero.penalizado = 0
         segundo.penalizado = 0

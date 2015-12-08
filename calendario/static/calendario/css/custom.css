@@ -6,16 +6,20 @@ body {
 }
 
 .especialidad {
-	cursor: move;
-	padding-top: 10%;
-	height: 80px;
+	height: 60px;
 	width: 120px;
+	cursor: move;
 	vertical-align: middle;
+	text-align: center;
 }
 
 div.horario-container {
-	height: 80px;
+	height: 60px;
 	width: 120px;
+    text-align: center;
+	vertical-align: middle;
+    position: relative;
+    display: inline-block;
 }
 
 .table tbody > tr > td, .table thead > tr > th {

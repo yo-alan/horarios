@@ -27,6 +27,8 @@ DIAS = {0: 'Domingo', 1: 'Lunes', 2: 'Martes', 3: 'Miércoles',
 
 _status = [False, 0]
 
+DENSIDAD = 500
+
 def index(request):
     
     if not request.user.is_authenticated():
@@ -101,8 +103,7 @@ def add(request, espacio_id):
             #Creamos un horario y los completamos.
             horario = Horario()
             
-            horario.profesional = coordinador.profesional
-            horario.especialidad = coordinador.especialidad
+            horario.coordinador = coordinador
             horario.hora_desde = hora[0].hora_desde
             horario.hora_hasta = hora[0].hora_hasta
             horario.dia_semana = dia_semana
@@ -149,8 +150,7 @@ def edit(request, calendario_id):
             #Creamos un horario y los completamos.
             horario = Horario()
             
-            horario.profesional = coordinador.profesional
-            horario.especialidad = coordinador.especialidad
+            horario.coordinador = coordinador
             horario.hora_desde = hora[0].hora_desde
             horario.hora_hasta = hora[0].hora_hasta
             horario.dia_semana = dia_semana
@@ -186,7 +186,7 @@ def generar(request):
     _status[0] = True
     
     espacio_id = request.POST['espacio_id']
-    generaciones = int(request.POST['generaciones']) * 500
+    generaciones = int(request.POST['generaciones']) * DENSIDAD
     
     #~ try:
     

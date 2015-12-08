@@ -1,6 +1,6 @@
 {% extends "admin/base.html" %}
 
-{% block title %}Crear un calendario a medida.{% endblock %}
+{% block title %}Crear un calendario a medida{% endblock %}
 
 {% block head %}
     <script>
@@ -126,22 +126,22 @@
     <ul class="list-inline">
         <li>
             <button class="btn btn-lg btn-default" onclick="nuevo()" title="Nuevo calendario...">
-                <span class="glyphicon glyphicon-file"></span>
+                <i class="glyphicon glyphicon-file"></i>
             </button>
         </li>
         <li>
             <button class="btn btn-lg btn-default" onclick="guardar()" title="Guardar calendario...">
-                <span class="glyphicon glyphicon-floppy-save"></span>
+                <i class="glyphicon glyphicon-floppy-save"></i>
             </button>
         </li>
         <li>
             <a class="btn btn-lg btn-default" href="{% url 'calendario:some_view' %}" target="_blank" title="Imprimir calendario...">
-                <span class="glyphicon glyphicon-print"></span>
+                <i class="glyphicon glyphicon-print"></i>
             </a>
         </li>
         <li>
-            <a class="btn btn-lg btn-default" id="trash" ondrop="eliminar(event)" ondragover="allowDrop(event)" data-toggle="popover" data-trigger="focus" title="Dismissible popover" data-content="iiiiiiiiiiiiiiiiiiiiih">
-                <span class="glyphicon glyphicon-trash"></span>
+            <a id="trash" class="btn btn-lg btn-default" ondrop="eliminar(event)" ondragover="allowDrop(event)" data-toggle="popover" data-trigger="focus" title="Dismissible popover" data-content="iiiiiiiiiiiiiiiiiiiiih">
+                <i class="glyphicon glyphicon-trash"></i>
             </a>
         </li>
     </ul>

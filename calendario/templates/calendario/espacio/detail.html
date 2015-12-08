@@ -280,7 +280,7 @@
                                 {% if horario.penalizado > 0 %}
                                 <td penalizado="{{ horario.penalizado }}" class="text-center">
                                 {% else %}
-                                <td penalizado="{{ horario.penalizado }}" class="text-center" style="background-color: {{ horario.especialidad.color }}">
+                                <td penalizado="{{ horario.penalizado }}" class="text-center" style="background-color: {{ horario.coordinador.especialidad.color }}">
                                 {% endif %}
                                 </td>
                             {% endfor %}

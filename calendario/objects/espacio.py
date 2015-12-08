@@ -124,10 +124,8 @@ class Espacio(models.Model):
                     
                     #Se crea un Horario.
                     horario = Horario()
-                    #Se le asigna una Especialidad.
-                    horario.especialidad = coordinador.especialidad
-                    #Se le asigna una Profesional.
-                    horario.profesional = coordinador.profesional
+                    #Se le asigna el Coordinador.
+                    horario.coordinador = coordinador
                     #Se le asigna una hora desde.
                     horario.hora_desde = hora.hora_desde
                     #Se le asigna una hora hasta.
@@ -156,9 +154,7 @@ class Espacio(models.Model):
             
             for coordinador in coordinadores_asig_global:
                 
-                especialidad = individuo.horarios[0][0].especialidad
-                
-                if coordinador.especialidad == especialidad:
+                if coordinador == individuo.horarios[0][0].coordinador:
                     coordinadores_asig.remove(coordinador)
                     break
             
@@ -177,10 +173,8 @@ class Espacio(models.Model):
                     
                     #Se crea un Horario.
                     horario = Horario()
-                    #Se le asigna una Especialidad.
-                    horario.especialidad = coordinador.especialidad
-                    #Se le asigna una Profesional.
-                    horario.profesional = coordinador.profesional
+                    #Se le asigna el Coordinador.
+                    horario.coordinador = coordinador
                     #Se le asigna una hora desde.
                     horario.hora_desde = hora.hora_desde
                     #Se le asigna una hora hasta.
@@ -404,7 +398,7 @@ class Espacio(models.Model):
                     #Obtenemos el horario a evaluar.
                     horario = calendario.horarios[i][j]
                     
-                    if especialidad == horario.especialidad:
+                    if especialidad == horario.coordinador.especialidad:
                         horas_diarias += 1
                 
                 if especialidad.max_horas_diaria < horas_diarias:
@@ -438,22 +432,22 @@ class Espacio(models.Model):
                 horario = calendario.horarios[i+1][j]
                 horario_siguiente = calendario.horarios[i+2][j]
                 
-                if horario_anterior.especialidad != horario.especialidad:
-                    if horario.especialidad != horario_siguiente.especialidad:
+                if horario_anterior.coordinador != horario.coordinador:
+                    if horario.coordinador != horario_siguiente.coordinador:
                         puntos += self.PUNTOS_DISTRIBUCION_HORARIA
             
             horario_1 = calendario.horarios[0][j]
             horario_2 = calendario.horarios[1][j]
             
             #Evaluamos el extremo inicial.
-            if horario_1.especialidad != horario_2.especialidad:
+            if horario_1.coordinador != horario_2.coordinador:
                 puntos += self.PUNTOS_DISTRIBUCION_HORARIA
             
             horario_1 = calendario.horarios[i+1][j]
             horario_2 = calendario.horarios[i+2][j]
             
             #Evaluamos el extremo final.
-            if horario_1.especialidad != horario_2.especialidad:
+            if horario_1.coordinador != horario_2.coordinador:
                 puntos += self.PUNTOS_DISTRIBUCION_HORARIA
         
         return puntos
@@ -472,7 +466,7 @@ class Espacio(models.Model):
         """
         
         #Por cada restriccion del profesional.
-        for restriccion in horario.profesional.restricciones.all():
+        for restriccion in horario.coordinador.profesional.restricciones.all():
             
             #Si no es el mismo dia de la semana del horario continuamos.
             if horario.dia_semana != restriccion.dia_semana:
@@ -521,7 +515,7 @@ class Espacio(models.Model):
             for horario in franja_horaria:
                 
                 #Si la especialidad es igual, contamos.
-                if horario.especialidad == especialidad:
+                if horario.coordinador.especialidad == especialidad:
                     horas_semanales += 1
         
         return abs(especialidad.carga_horaria_semanal - horas_semanales)
