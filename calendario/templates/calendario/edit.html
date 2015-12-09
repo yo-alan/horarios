@@ -98,6 +98,7 @@
         }
         
         function eliminar(ev){
+            
             var coordinadorId = ev.dataTransfer.getData("text");
             var coordinador = document.getElementById(coordinadorId);
             
@@ -110,6 +111,31 @@
                 nodePadre.removeChild(coordinador);
                 nodePadre.parentNode.style.backgroundColor = "white";
             }
+        }
+        
+        function eliminarCalendario(){
+            
+            if(!confirm("¿Está seguro que desea eliminar el calendario?"))
+                return;
+            
+            $.ajax({
+                url: "{% url 'calendario:delete' calendario.id %}",
+                type: 'POST',
+                data: {
+                    csrfmiddlewaretoken: '{{ csrf_token }}'
+                },
+                success: function(response) {
+                    
+                    if(response.error) {
+                        alert(response.error);
+                        return;
+                    }
+                    
+                    alert(response.mensaje);
+                    
+                    window.location.href = "{% url 'calendario:espacio_detail' calendario.espacio.id %}#calendarios";
+                }
+            });
         }
         
         function nuevo(){
@@ -127,8 +153,8 @@
     </ol>
     <h3 class="text-center">
         Editando calendario #{{ calendario.id }}
-        <button class="btn btn-danger pull-right" id="trash" ondrop="eliminar(event)" ondragover="allowDrop(event)">
-            <span class="glyphicon glyphicon-trash"></span> <strong>Eliminar calendario</strong>
+        <button class="btn btn-danger pull-right" onclick="eliminarCalendario()">
+            <i class="glyphicon glyphicon-trash"></i> <strong>Eliminar calendario</strong>
         </button>
     </h3>
     <br>

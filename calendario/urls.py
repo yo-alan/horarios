@@ -11,6 +11,8 @@ urlpatterns = [
     url(r'^add/(?P<espacio_id>[0-9]+)/$', views.add, name='add'),
     # ex: /calendario/edit/5
     url(r'^edit/(?P<calendario_id>[0-9]+)/$', views.edit, name='edit'),
+    # ex: /calendario/delete/5
+    url(r'^delete/(?P<calendario_id>[0-9]+)/$', views.delete, name='delete'),
     # ex: /calendario/5/
     url(r'^(?P<calendario_id>[0-9]+)/$', views.detail, name='detail'),
     # ex: /calendario/generar/

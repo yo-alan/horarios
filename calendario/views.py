@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import sys
 import time
+from datetime import datetime, timedelta
 
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
@@ -174,6 +175,27 @@ def edit(request, calendario_id):
                 'dias': dias}
     
     return render(request, 'calendario/edit.html', context)
+
+@login_required(login_url='/index/')
+def delete(request, calendario_id):
+    
+    if request.method != 'POST':
+        
+        return HttpResponseRedirect(reverse('calendario:espacio_all'))
+    
+    data = {}
+    
+    try:
+        calendario = Calendario.create(calendario_id)
+        
+        calendario.delete()
+        
+        data = {"mensaje": "El calendario se eliminó exitosamente."}
+        
+    except Exception as ex:
+        data = {"error": "No se pudo eliminar el calendario" + str(ex)}
+    
+    return JsonResponse(data)
 
 @login_required(login_url='/index/')
 def generar(request):
@@ -545,17 +567,26 @@ def espacio_add_horarios(request, espacio_id=0):
         for hora in espacio.horas:
             hora.delete()
         
+        formato = "%H:%M"
+        
         i = 0
         for r in request.POST:
             
-            #Formato de dato 'h0', 'h1', 'h2', etc...
+            # Formato de dato 'h0', 'h1', 'h2', etc...
             if request.POST.get('h' + str(i), False):
+                
+                # Obtenemos la hora desde.
+                hora_desde = request.POST['h' + str(i)]
+                hora_desde = datetime.strptime(hora_desde, formato)
+                
+                # Determinamos la hora desde con el intervalo "modulo".
+                hora_hasta = hora_desde + timedelta(minutes=int(modulo))
                 
                 hora = Hora()
                 
                 hora.espacio = espacio
-                hora.hora_desde = request.POST['h' + str(i)]
-                hora.hora_hasta = request.POST['h' + str(i)]
+                hora.hora_desde = hora_desde.time()
+                hora.hora_hasta = hora_hasta.time()
                 
                 hora.save()
                 
@@ -564,7 +595,7 @@ def espacio_add_horarios(request, espacio_id=0):
             
             i += 1
         
-        data = {'mensaje': "La hora fue agregada exitosamente."}
+        data = {'mensaje': "Los horarios fueron seteados exitosamente."}
         
     except Exception as ex:
         data = {'error': str(ex).decode('utf-8')}
