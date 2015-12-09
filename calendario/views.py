@@ -882,47 +882,6 @@ def profesional_add_especialidades(request, ):
     return JsonResponse(data)
 
 @login_required(login_url='/index/')
-def profesional_add_restriccion(request):
-    
-    if request.method != 'POST':
-        return HttpResponseRedirect(reverse('index'))
-    
-    data = {}
-    
-    try:
-        profesional_id = request.POST['profesional_id']
-        
-        profesional = Profesional.create(profesional_id)
-        
-        restriccion = ProfesionalRestriccion()
-        
-        restriccion.setprofesional(profesional)
-        restriccion.setdia_semana(request.POST['dia_semana'])
-        restriccion.sethora_desde(request.POST['hora_desde'])
-        restriccion.sethora_hasta(request.POST['hora_hasta'])
-        restriccion.usuario_creador = request.user.username
-        restriccion.usuario_modificador = request.user.username
-        
-        restriccion.save()
-        
-        data = {'mensaje': "La restricción fue asignada exitosamente."}
-        
-    except Exception as ex:
-        
-        data = {'error': str(ex).decode('utf-8')}
-        
-        if 'hora_hasta' in str(ex) or request.POST['hora_hasta'] in str(ex):
-            data['campo'] = 'hora_hasta'
-        
-        if 'hora_desde' in str(ex) or request.POST['hora_desde'] in str(ex):
-            data['campo'] = 'hora_desde'
-        
-        if 'dia_semana' in str(ex):
-            data['campo'] = 'dia_semana'
-    
-    return JsonResponse(data)
-
-@login_required(login_url='/index/')
 def especialidad_all(request, pagina=1):
     
     total_especialidades = Especialidad.objects.filter(estado='ON')\
@@ -1060,59 +1019,63 @@ def especialidad_delete(request):
 def restriccion_add(request):
     
     if request.method != 'POST':
-        return HttpResponseRedirect(reverse('calendario:espacio_all'))
+        return HttpResponseRedirect(reverse('index'))
     
     data = {}
     
     try:
-        restriccion = Restriccion()
+        profesional_id = request.POST['profesional_id']
         
-        restriccion.setnombre(request.POST["nombre"])
-        restriccion.setcarga_horaria_semanal(request.POST["carga_horaria_semanal"])
-        restriccion.setmax_horas_diaria(request.POST["max_horas_diaria"])
+        profesional = Profesional.create(profesional_id)
+        
+        restriccion = ProfesionalRestriccion()
+        
+        restriccion.setprofesional(profesional)
+        restriccion.setdia_semana(request.POST['dia_semana'])
+        restriccion.sethora_desde(request.POST['hora_desde'])
+        restriccion.sethora_hasta(request.POST['hora_hasta'])
         restriccion.usuario_creador = request.user.username
         restriccion.usuario_modificador = request.user.username
         
-        if restriccion.carga_horaria_semanal < restriccion.max_horas_diaria:
-            raise Exception("La carga horaria semanal no puede ser menor que la cantidad de horas.")
-        
         restriccion.save()
         
-        data = {'mensaje': "La especialidad ha sido guardada exitosamente."}
+        data = {'mensaje': "La restricción fue asignada exitosamente."}
+        data["id"] = restriccion.id
+        data["dia_semana"] = DIAS[int(restriccion.dia_semana)]
+        data["hora_desde"] = restriccion.hora_desde
+        data["hora_hasta"] = restriccion.hora_hasta
         
     except Exception as ex:
         
-        data = {'error': str(ex).decode('utf-8')}
+        data = {'error': str(ex)}
         
-        if 'nombre' in str(ex):
-            data['campo'] = 'nombre'
+        if "tiene un formato inv" in str(ex):
+            data = {'error': "El campo tiene un formato inválido."}
         
-        if 'semanal' in str(ex):
-            data['campo'] = 'carga_horaria_semanal'
+        if 'hora_hasta' in str(ex) or request.POST['hora_hasta'] in str(ex):
+            data['campo'] = 'hora_hasta'
         
-        if 'diaria' in str(ex):
-            data['campo'] = 'max_horas_diaria'
+        if 'hora_desde' in str(ex) or request.POST['hora_desde'] in str(ex):
+            data['campo'] = 'hora_desde'
         
-    finally:
-        return JsonResponse(data)
+        if 'dia_semana' in str(ex):
+            data['campo'] = 'dia_semana'
+    
+    return JsonResponse(data)
 
 @login_required(login_url='/index/')
-def restriccion_edit(request):
+def restriccion_edit(request, restriccion_id):
     
     if request.method != 'POST':
-        return HttpResponseRedirect(reverse('calendario:espacio_all'))
+        return HttpResponseRedirect(reverse('index'))
     
     data = {}
     
     try:
         
-        especialidad = Especialidad.objects.get(pk=especialidad_id)
+        restriccion = ProfesionalRestriccion.objects.get(pk=restriccion_id)
         
-        especialidad.nombre = request.POST["nombre"]
-        especialidad.carga_horaria_semanal = request.POST["carga_horaria_semanal"]
-        especialidad.max_horas_diaria = request.POST["max_horas_diaria"]
-        
-        especialidad.save()
+        restriccion.save()
         
         data = {'mensaje': "La restricción fue editada exitosamente."}
         
@@ -1125,39 +1088,22 @@ def restriccion_edit(request):
 def restriccion_delete(request):
     
     if request.method != 'POST':
-        return HttpResponseRedirect(reverse('calendario:espacio_all'))
+        return HttpResponseRedirect(reverse('index'))
     
     data = {}
     
     try:
-        restriccion = Especialidad.objects.get(pk=request.POST['especialidad_id'])
+        
+        restriccion_id = request.POST['restriccion_id']
+        
+        restriccion = ProfesionalRestriccion.objects.get(pk=restriccion_id)
         
         restriccion.estado = 'OFF'
+        restriccion.usuario_modificador = request.user.username
         
         restriccion.save()
         
-        data = {'mensaje': "El profesional fue eliminado exitosamente."}
-        
-    except Exception as ex:
-        data = {'error': str(ex).decode('utf-8')}
-    
-    return JsonResponse(data)
-
-@login_required(login_url='/index/')
-def getrestriccionesof(request):
-    
-    if request.method != 'GET':
-        return HttpResponseRedirect(reverse('calendario:espacio_all'))
-    
-    data = {}
-    
-    try:
-        
-        profesional = Profesional.create(request.GET['profesional_id'])
-        
-        data = serializers.serialize('json', profesional.restricciones.filter(estado='ON'))
-        
-        print data
+        data = {'mensaje': "La restricción fue eliminada exitosamente."}
         
     except Exception as ex:
         data = {'error': str(ex).decode('utf-8')}

@@ -61,8 +61,6 @@ urlpatterns = [
     url(r'^profesional/delete/$', views.profesional_delete, name='profesional_delete'),
     # ex: /calendario/profesional/profesional_add_especialidades/
     url(r'^profesional/profesional_add_especialidades/$', views.profesional_add_especialidades, name='profesional_add_especialidades'),
-    # ex: /calendario/profesional/profesional_add_restriccion/
-    url(r'^profesional/profesional_add_restriccion/$', views.profesional_add_restriccion, name='profesional_add_restriccion'),
     
     # ex: /calendario/especialidad/
     url(r'^especialidad/$', views.especialidad_all, name='especialidad_all'),
@@ -85,8 +83,6 @@ urlpatterns = [
     url(r'^restriccion/edit/$', views.restriccion_edit, name='restriccion_edit'),
     # ex: /calendario/restriccion/delete/
     url(r'^restriccion/delete/$', views.restriccion_delete, name='restriccion_delete'),
-    # ex: /calendario/restriccion/getrestriccionesof/
-    url(r'^restriccion/getrestriccionesof/$', views.getrestriccionesof, name='getrestriccionesof'),
     
     url(r'^someview/$', views.some_view, name='some_view'),
     

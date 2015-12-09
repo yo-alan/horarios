@@ -9,6 +9,7 @@
         $(function (){
             
             var url = document.location.toString();
+            
             if(url.match('#')) {
                 $('.nav-tabs a[href="#'+url.split('#')[1]+'"]').tab('show');
             }
@@ -85,30 +86,21 @@
                         
                         alert(response.mensaje);
                         
-                        //Recuperamos las restricciones del profesional desde la BBDD.
-                        $.ajax({
-                            url: "{% url 'calendario:getrestriccionesof' %}",
-                            type: 'GET',
-                            data: {
-                                profesional_id: {{ profesional.id }}
-                            },
-                            success: function (response){
-                                
-                                if(response.error){
-                                    alert(response.error);
-                                    return;
-                                }
-                                
-                                $.each(response.restricciones, function(i){
-                                    alert(restricciones[i]);
-                                });
-                            }
-                        });
+                        var li = "<li id='" + response.id + "' class='list-group-item'>" +
+                                        "<p class='text-left'>" +
+                                            "El " + response.dia_semana + " de " + response.hora_desde + " a " + response.hora_hasta + "." +
+                                            "<a class='btn btn-danger pull-right' data-toggle='modal' onclick='eliminarRestriccion(" + response.id + ")'>" +
+                                                "<i class='glyphicon glyphicon-trash'></i>" +
+                                            "</a>" +
+                                        "</p>" +
+                                    "</li>";
+                        
+                        $("#ulRestricciones").append(li);
                     }
                 });
             });
         });
-
+        
         function agregar(item){
             var texto = item.children[0].innerHTML;
             
@@ -118,7 +110,7 @@
             
             eAsignadas.appendChild(item);
         }
-
+        
         function eliminar(item){
             var texto = item.children[0].innerHTML;
             
@@ -128,7 +120,7 @@
             
             eDisponibles.appendChild(item);
         }
-
+        
         function guardarEspecialidades(){
             
             var eAsignadas = document.getElementById('eAsignadas');
@@ -158,8 +150,27 @@
                 }
             });
         }
+        
+        function eliminarRestriccion(restriccion_id){
+            
+            $("#myModal").modal("show");
+            
+            $("#btnDel").click(function () {
+                
+                $.ajax({
+                    url: "{% url 'calendario:restriccion_delete' %}",
+                    type: 'POST',
+                    data: {
+                        csrfmiddlewaretoken: '{{ csrf_token }}',
+                        restriccion_id: restriccion_id
+                    },
+                    success: function(response) {
+                        location.reload();
+                    }
+                });
+            });
+        }
     </script>
-    <script type="text/javascript" src="{% static 'calendario/js/profesional/detail.js' %}"></script>
 {% endblock %}
 {% block article %}
     <ol class="breadcrumb">
@@ -170,6 +181,24 @@
     <h3 class="text-center">
         {{ profesional }}.
     </h3>
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel"><i class="fa fa-exclamation-triangle"></i> Eliminar restricción</h4>
+                </div>
+                <div class="modal-body">
+                    ¿Está seguro que desea eliminar esta restricción?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                    <button id="btnDel" type="button" class="btn btn-danger">Eliminar</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="tabbable" id="tabs-348111">
         <ul class="nav nav-tabs">
             <li class="active">
@@ -231,13 +260,16 @@
                         </div>
                         <ul id="ulRestricciones" class="list-group restricciones overflow">
                             {% for restriccion in restricciones %}
-                                <li id="{{ restriccion.id }}" class="btn list-group-item" onclick="">
+                                <li id="{{ restriccion.id }}" class="list-group-item">
                                     <p class="text-left">
                                         {% if restriccion.nombre_dia_semana|length > 10 %}
                                             {{ restriccion.nombre_dia_semana }} de {{ restriccion.hora_desde }} a {{ restriccion.hora_hasta }}.
                                         {% else %}
                                             El {{ restriccion.nombre_dia_semana }} de {{ restriccion.hora_desde }} a {{ restriccion.hora_hasta }}.
                                         {% endif %}
+                                        <a class="btn btn-danger pull-right" data-toggle="modal" onclick="eliminarRestriccion({{ restriccion.id }})">
+                                            <i class="glyphicon glyphicon-trash"></i>
+                                        </a>
                                     </p>
                                 </li>
                             {% endfor %}
@@ -252,7 +284,7 @@
                             </h3>
                         </div>
                         <div class="panel-body">
-                            <form class="form" id="addRestriccionForm" method="POST" action="{% url 'calendario:profesional_add_restriccion' %}">
+                            <form class="form" id="addRestriccionForm" method="POST" action="{% url 'calendario:restriccion_add' %}">
                                 <div class="alert alert-dismissable alert-danger hidden">
                                     <button type="button" class="close" data-hide="alert" aria-hidden="true">
                                         ×
