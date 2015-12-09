@@ -82,7 +82,7 @@
                 });
             });
         });
-        
+        {% if calendario %}
         function eliminarCalendario(){
             
             if(!confirm("¿Está seguro que desea eliminar el calendario?"))
@@ -107,7 +107,7 @@
                 }
             });
         }
-        
+        {% endif %}
         function checkStatus() {
            
             $.ajax({
@@ -124,7 +124,6 @@
         function abortTimer() {
             clearInterval(tid);
         }
-        
     </script>
 {% endblock %}
 {% block article %}

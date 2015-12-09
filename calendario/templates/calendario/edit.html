@@ -216,7 +216,7 @@
                         </td>
                         {% for horario in franja_horaria %}
                             <td class="text-center">
-                                <div id="{{ horario.hora_desde }}{{ horario.dia_semana }}" dia="{{ horario.dia_semana }}" desde="{{ horario.hora_desde }}" horario="{{ forloop.parentloop.counter0 }}" ondrop="drop(event)" ondragover="allowDrop(event)" class="horario-container">
+                                <div id="{% widthratio forloop.parentloop.counter0 1 espacio.dias_habiles|length|add:horario.dia_semana %}" dia="{{ horario.dia_semana }}" desde="{{ horario.hora_desde }}" horario="{{ forloop.parentloop.counter0 }}" ondrop="drop(event)" ondragover="allowDrop(event)" class="horario-container">
                                     <p id="{{ horario.coordinador.especialidad|cut:" " }}" name="{{ horario.coordinador.id }}" draggable="true" ondragstart="drag(event)" class="lead especialidad" style="background-color: {{ horario.coordinador.especialidad.color }}">
                                         <strong>{{ horario.coordinador.especialidad }}</strong>
                                     </p>
