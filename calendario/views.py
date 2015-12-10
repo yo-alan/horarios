@@ -5,13 +5,19 @@ from datetime import datetime, timedelta
 
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
-from django.core import serializers
 from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from reportlab.pdfgen import canvas
+# TEMPORAL
+import cStringIO as StringIO
+from xhtml2pdf import pisa
+from django.template.loader import get_template
+from django.template import Context
+from django.http import HttpResponse
+from cgi import escape
 
 from .models import Calendario
 from .models import Profesional
@@ -38,9 +44,11 @@ def index(request):
     especialidades = Especialidad.objects.filter(estado="ON")
     profesionales = Profesional.objects.filter(estado="ON")
     espacios = Espacio.objects.filter(estado="ON")
+    calendarios = Calendario.objects.filter(estado="ON")
     
     context = {"user": request.user, "especialidades": especialidades,
-                "profesionales": profesionales, "espacios": espacios}
+                "profesionales": profesionales, "espacios": espacios,
+                "calendarios": calendarios}
     
     return render(request, 'calendario/home.html', context)
     
@@ -1110,22 +1118,33 @@ def restriccion_delete(request):
     
     return JsonResponse(data)
 
-def some_view(request):
-    # Create the HttpResponse object with the appropriate PDF headers.
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'filename="somefilename.pdf"'
+def render_to_pdf(template_src, context_dict):
+    
+    template = get_template(template_src)
+    context = Context(context_dict)
+    html  = template.render(context)
+    result = StringIO.StringIO()
 
-    # Create the PDF object, using the response object as its "file."
-    p = canvas.Canvas(response)
+    pdf = pisa.pisaDocument(StringIO.StringIO(html.encode("ISO-8859-1")), result)
+    
+    if pdf.err:
+        return HttpResponse('ERROR <pre>%s</pre>' % escape(html))
+    
+    return HttpResponse(result.getvalue(), content_type='application/pdf')
+    
+    
 
-    # Draw things on the PDF. Here's where the PDF generation happens.
-    # See the ReportLab documentation for the full list of functionality.
-    p.drawString(100, 100, "Hello world.")
-
-    # Close the PDF object cleanly, and we're done.
-    p.showPage()
-    p.save()
-    return response
+def imprimir(request, calendario_id):
+    
+    calendario = Calendario.create(calendario_id)
+    
+    return render_to_pdf(
+            'calendario/imprimir.html',
+            {
+                "pagesize": "A5",
+                "calendario": calendario,
+            }
+        )
 
 def status(request):
     

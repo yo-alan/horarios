@@ -84,6 +84,6 @@ urlpatterns = [
     # ex: /calendario/restriccion/delete/
     url(r'^restriccion/delete/$', views.restriccion_delete, name='restriccion_delete'),
     
-    url(r'^someview/$', views.some_view, name='some_view'),
-    
+    # ex: /calendario/imprimir/5
+    url(r'^imprimir/(?P<calendario_id>[0-9]+)/$', views.imprimir, name='imprimir'),
 ]

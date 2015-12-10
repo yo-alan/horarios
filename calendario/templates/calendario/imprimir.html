@@ -1,0 +1,47 @@
+{% load staticfiles %}
+
+<html>
+    <head>
+        <title>Calendario #{{ calendario.id }}</title>
+        <style type="text/css">
+            @page {
+                size: {{ pagesize }};
+                margin: 1cm;
+            }
+        </style>
+    </head>
+    <body>
+        <table>
+            <thead>
+                <tr>
+                    <th>
+                    </th>
+                    {% for dia in dias %}
+                        <th>
+                            <h4><strong>{{ dia }}</strong></h4>
+                        </th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+            {% for franja_horaria in calendario.horarios %}
+                <tr>
+                    <td>
+                        <h4>
+                            <strong>{{ franja_horaria.1.hora_desde }}</strong>
+                        </h4>
+                    </td>
+                {% for horario in franja_horaria %}
+                    <td style="background-color: {{ horario.coordinador.especialidad.color }}">
+                        <h4>
+                            <strong>{{ horario.coordinador.especialidad }}</strong>
+                        </h4>
+                        {{ horario.coordinador.profesional }}
+                    </td>
+                {% endfor %}
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </body>
+</html>
