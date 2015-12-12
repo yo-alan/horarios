@@ -1124,27 +1124,30 @@ def render_to_pdf(template_src, context_dict):
     context = Context(context_dict)
     html  = template.render(context)
     result = StringIO.StringIO()
-
-    pdf = pisa.pisaDocument(StringIO.StringIO(html.encode("ISO-8859-1")), result)
+    
+    html = StringIO.StringIO(html.encode("ISO-8859-1"))
+    
+    pdf = pisa.pisaDocument(html, result)
     
     if pdf.err:
         return HttpResponse('ERROR <pre>%s</pre>' % escape(html))
     
     return HttpResponse(result.getvalue(), content_type='application/pdf')
-    
-    
 
 def imprimir(request, calendario_id):
     
     calendario = Calendario.create(calendario_id)
     
-    return render_to_pdf(
-            'calendario/imprimir.html',
-            {
-                "pagesize": "A5",
-                "calendario": calendario,
-            }
-        )
+    dias = []
+    
+    espacio = Espacio.create(calendario.espacio.id)
+    
+    for dia in espacio.dias_habiles:
+        dias.append(DIAS[dia.dia])
+    
+    context = {"pagesize": "A5", "calendario": calendario, "dias": dias}
+    
+    return render_to_pdf('calendario/imprimir.html', context)
 
 def status(request):
     
@@ -1153,3 +1156,16 @@ def status(request):
     data = {"status": _status[1]}
     
     return JsonResponse(data)
+
+import os
+from django.conf import settings
+
+def fetch_resources(uri, rel):
+    """
+    Callback to allow pisa/reportlab to retrieve Images,Stylesheets, etc.
+    `uri` is the href attribute from the html link element.
+    `rel` gives a relative path, but it's not used here.
+
+    """
+    path = os.path.join(settings.MEDIA_ROOT, uri.replace(settings.MEDIA_URL, ""))
+    return path

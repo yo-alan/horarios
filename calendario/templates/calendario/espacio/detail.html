@@ -259,7 +259,7 @@
                     <div class="btn btn-group btn-block">
                         <a class="btn btn-default" title="Ver este calendario" href="{% url 'calendario:detail' calendario.id %}"><i class="glyphicon glyphicon-eye-open"></i> Ver</a>
                         <a class="btn btn-default" title="Editar este calendario" href="{% url 'calendario:edit' calendario.id %}"><i class="glyphicon glyphicon-edit"></i> Editar</a>
-                        <a class="btn btn-default" title="Imprimir este calendario" href=""><i class="fa fa-file-pdf-o"></i> Imprimir</a>
+                        <a class="btn btn-default" title="Imprimir este calendario" href="{% url 'calendario:imprimir' calendario.id %}" target="_blank"><i class="fa fa-file-pdf-o"></i> Imprimir</a>
                         <a class="btn btn-danger" title="Eliminar este calendario" onclick="eliminarCalendario()"><i class="glyphicon glyphicon-trash"></i> Eliminar</a>
                     </div>
                     <table class="table calendario">

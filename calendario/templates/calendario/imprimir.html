@@ -5,20 +5,54 @@
         <title>Calendario #{{ calendario.id }}</title>
         <style type="text/css">
             @page {
-                size: {{ pagesize }};
+                size: {{ pagesize }} landscape;
                 margin: 1cm;
+            }
+            .TFtable{
+                width:100%;
+                border-collapse:collapse;
+            }
+            .TFtable th{
+                background: #b8d1f3;
+                padding:3px;
+                border:#4e95f4 1px solid;
+            }
+            /* provide some minimal visual accomodation for IE8 and below */
+            .TFtable td{
+                text-align: center;
+                padding:3px;
+                border:#4e95f4 1px solid;
+            }
+            /* provide some minimal visual accomodation for IE8 and below */
+            .TFtable tr{
+                background: #b8d1f3;
+            }
+            /*  Define the background color for all the ODD background rows  */
+            .TFtable tr:nth-child(odd){
+                background: #FFF;
+            }
+            /*  Define the background color for all the EVEN background rows  */
+            .TFtable tr:nth-child(even){
+                background: #CCC;
+            }
+            
+            .hora {
+                background: #b8d1f3;
             }
         </style>
     </head>
     <body>
-        <table>
+        <h1>
+            <i>Horarios de {{ calendario.espacio.nombre }}</i>
+        </h1>
+        <table class="TFtable">
             <thead>
                 <tr>
                     <th>
                     </th>
                     {% for dia in dias %}
                         <th>
-                            <h4><strong>{{ dia }}</strong></h4>
+                            <h2><strong>{{ dia }}</strong></h2>
                         </th>
                     {% endfor %}
                 </tr>
@@ -26,16 +60,16 @@
             <tbody>
             {% for franja_horaria in calendario.horarios %}
                 <tr>
-                    <td>
-                        <h4>
+                    <td class="hora">
+                        <h2>
                             <strong>{{ franja_horaria.1.hora_desde }}</strong>
-                        </h4>
+                        </h2>
                     </td>
                 {% for horario in franja_horaria %}
                     <td style="background-color: {{ horario.coordinador.especialidad.color }}">
-                        <h4>
+                        <h2>
                             <strong>{{ horario.coordinador.especialidad }}</strong>
-                        </h4>
+                        </h2>
                         {{ horario.coordinador.profesional }}
                     </td>
                 {% endfor %}
