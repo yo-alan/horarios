@@ -1,53 +1,91 @@
 {% extends "admin/base.html" %}
 
-{% block title %}Asignar profesionales a {{ espacio.nombre }}.{% endblock %}
+{% block title %}Asignar profesionales a {{ espacio.nombre }}{% endblock %}
 
 {% block head %}
     <script>
         $(function(){
             
-            $("[data-hide]").click(function(){
+            $("[data-hide]").click(function (){
                 $(".alert-danger").attr('class', "alert alert-dismissable alert-danger hidden");
             });
             
-            $('#pAsignados').filter(function(){
+            $('#pAsignados').filter(function (){
                 if($(this).children("li").length == 0){
                     $("#btnContinuar").prop('disabled', true);
                     $("#btnContinuar").prop('class', "btn btn-primary disabled pull-right");
                 }
             });
+            
+            var cantidad = 0;
+            
+            $("#pDisponibles li").each(function (){
+                cantidad++;
+                $("#cant-disponible").html(cantidad);
+            });
+            
+            
+            var cantidad = 0;
+            
+            $("#pAsignados li").each(function (){
+                cantidad++;
+                $("#cant-asignados").html(cantidad);
+            });
+            
+            $("#pDisponibles").on("click", "li", agregarProfesional);
+            
+            $("#pAsignados").on("click", "li", eliminarProfesional);
         });
         
-        function agregarProfesional(item){
+        function agregarProfesional(){
             
-            var texto = item.children[0].innerHTML;
+            if($("#pAsignados li").length == {{ espacio.especialidades.all|length }})
+                return;
             
-            var pAsignados = document.getElementById('pAsignados');
+            var idEndsWith = $(this).prop("id").split('-')[1];
             
-            item.setAttribute('onclick', 'eliminarProfesional(this)');
+            var yaExiste = false;
             
-            pAsignados.appendChild(item);
+            $("#pAsignados [id$='" + idEndsWith + "']").each(function (){
+                $("#modal-container-687267").modal("show");
+                yaExiste = true;
+            });
+            
+            if(yaExiste)
+                return;
+            
+            $(this).children("i").prop("class", "glyphicon glyphicon-chevron-left text-danger pull-right");
+            
+            $("#pAsignados").append(this);
             
             $("#btnContinuar").prop('disabled', false);
             $("#btnContinuar").prop('class', "btn btn-primary pull-right");
+            
+            $("#cant-asignados").html(parseInt($("#cant-asignados").html())+1);
+            $("#cant-disponible").html(parseInt($("#cant-disponible").html())-1);
+            
+            $(this).off("click");
+            $(this).on("click", eliminarProfesional);
         }
         
-        function eliminarProfesional(item){
+        function eliminarProfesional(){
             
-            var texto = item.children[0].innerHTML;
+            $(this).children("i").prop("class", "glyphicon glyphicon-chevron-right text-success pull-right");
             
-            var pDisponibles = document.getElementById('pDisponibles');
+            $("#pDisponibles").append(this);
             
-            item.setAttribute('onclick', 'agregarProfesional(this)');
+            $("#cant-asignados").html(parseInt($("#cant-asignados").html())-1);
+            $("#cant-disponible").html(parseInt($("#cant-disponible").html())+1);
             
-            pDisponibles.appendChild(item);
-            
-            $('#pAsignados').filter(function(){
+            $('#pAsignados').filter(function (){
                 if($(this).children("li").length == 0){
                     $("#btnContinuar").prop('disabled', true);
                     $("#btnContinuar").prop('class', "btn btn-primary disabled pull-right");
                 }
             });
+            
+            $(this).off("click");
+            $(this).on("click", agregarProfesional);
         }
         
         function guardarProfesionales(){
@@ -90,13 +128,37 @@
         <li class="active">Asignar profesionales</li>
     </ol>
     <h2 class="text-center">
-        Asignar profesionales a {{ espacio.nombre }}.
+        Asignar profesionales a {{ espacio.nombre }}
     </h2>
-    <br>
+    <div class="modal fade" id="modal-container-687267" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header modal-warning">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        ×
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        <i class="glyphicon glyphicon-alert"></i> ¡Atención!
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    Ya se encuentra asignado un profesional que ejerce
+                    esta especialidad. Quítelo e intente de nuevo.
+                    <br>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-warning pull-right" data-dismiss="modal">
+                        Aceptar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="col-xs-12">
         <div class="col-xs-6">
             <div class="panel panel-primary">
                 <div class="panel-heading">
+                    <span id="cant-disponible" class="pull-right"></span>
                     <h3 class="panel-title"><b>Disponibles</b></h3>
                 </div>
                 <ul id="pDisponibles" class="list-group profesionales overflow">
@@ -104,10 +166,9 @@
                         {% if profesional not in espacio.profesionales.all %}
                             {% for especialidad in profesional.especialidades.all %}
                                 {% if especialidad in espacio.especialidades.all %}
-                                    <li id="{{ profesional.id }}-{{ especialidad.id }}" class="btn list-group-item" onclick="agregarProfesional(this)">
-                                        <p class="text-left">
-                                            {{ profesional }} ({{ especialidad }})
-                                        </p>
+                                    <li id="{{ profesional.id }}-{{ especialidad.id }}" class="btn list-group-item li">
+                                        {{ profesional }} ({{ especialidad }})
+                                        <i class="glyphicon glyphicon-chevron-right text-success pull-right"></i>
                                     </li>
                                 {% endif %}
                             {% endfor %}
@@ -119,14 +180,14 @@
         <div class="col-xs-6">
             <div class=" panel panel-primary">
                 <div class="panel-heading">
+                    <span id="cant-asignados" class="pull-right">0</span>
                     <h3 class="panel-title"><b>Asignados</b></h3>
                 </div>
                 <ul id="pAsignados" class="list-group profesionales overflow">
                     {% for coordinador in espacio.coordinadores.all %}
-                        <li id="{{ coordinador.profesional.id }}-{{ coordinador.especialidad.id }}" class="btn list-group-item" onclick="eliminarProfesional(this)">
-                            <p class="text-left">
-                                {{ coordinador.profesional }} ({{ coordinador.especialidad }})
-                            </p>
+                        <li id="{{ coordinador.profesional.id }}-{{ coordinador.especialidad.id }}" class="btn list-group-item li">
+                            {{ coordinador.profesional }} ({{ coordinador.especialidad }})
+                            <i class="glyphicon glyphicon-chevron-left text-danger pull-right"></i>
                         </li>
                     {% endfor %}
                 </ul>
@@ -146,8 +207,8 @@
     <div class="alert alert-info" role="alert">
         <p>
             <span class="glyphicon glyphicon-info-sign"></span>
-            <strong>Nota:</strong> Para asignar un profesional
-            disponible clickealo. Haz lo mismo para quitarlo.
+            <strong>Nota:</strong> Haz clic sobre un profesional para
+            asignarlo. Lo mismo para quitarlo.
         </p>
     </div>
 {% endblock %}

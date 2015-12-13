@@ -1,0 +1,26 @@
+[
+  {
+    "model": "calendario.penalidad",
+    "pk": 1,
+    "fields": {
+      "nombre": "RESTRICCION PROFESIONAL",
+      "puntos": 1
+    }
+  },
+  {
+    "model": "calendario.penalidad",
+    "pk": 2,
+    "fields": {
+      "nombre": "HORAS DIARIAS",
+      "puntos": 1
+    }
+  },
+  {
+    "model": "calendario.penalidad",
+    "pk": 3,
+    "fields": {
+      "nombre": "DISTRIBUCION HORARIA",
+      "puntos": 1
+    }
+  }
+]

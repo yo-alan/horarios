@@ -1,6 +1,6 @@
 {% extends "admin/base.html" %}
 
-{% block title %}Asignar especialidades a {{ espacio.nombre }}.{% endblock %}
+{% block title %}Asignar especialidades a {{ espacio.nombre }}{% endblock %}
 
 {% block head %}
     <script>
@@ -20,8 +20,6 @@
         
         function agregar(item){
             
-            var texto = item.children[0].innerHTML;
-            
             var eAsignadas = document.getElementById('eAsignadas');
             
             item.setAttribute('onclick', 'eliminar(this)');
@@ -30,11 +28,11 @@
             
             $("#btnContinuar").prop('disabled', false);
             $("#btnContinuar").prop('class', "btn btn-primary pull-right");
+            
+            $(item).children("i").prop("class", "glyphicon glyphicon-chevron-left text-danger pull-right");
         }
         
         function eliminar(item){
-            
-            var texto = item.children[0].innerHTML;
             
             var eDisponibles = document.getElementById('eDisponibles');
             
@@ -48,6 +46,8 @@
                     $("#btnContinuar").prop('class', "btn btn-primary disabled pull-right");
                 }
             });
+            
+            $(item).children("i").prop("class", "glyphicon glyphicon-chevron-right text-success pull-right");
         }
         
         function guardarEspecialidades(){
@@ -102,10 +102,9 @@
                 <ul id="eDisponibles" class="list-group especialidades overflow">
                     {% for especialidad in especialidades %}
                         {% if not especialidad in espacio.especialidades.all %}
-                            <li id="{{ especialidad.id }}" class="btn list-group-item" onclick="agregar(this)">
-                                <p class="text-left">
-                                    {{ especialidad }}
-                                </p>
+                            <li id="{{ especialidad.id }}" class="btn list-group-item li" onclick="agregar(this)">
+                                {{ especialidad }}
+                                <i class="glyphicon glyphicon-chevron-right text-success pull-right"></i>
                             </li>
                         {% endif %}
                     {% endfor %}
@@ -119,10 +118,9 @@
                 </div>
                 <ul id="eAsignadas" class="list-group especialidades overflow">
                     {% for especialidad in espacio.especialidades.all %}
-                        <li id="{{ especialidad.id }}" class="btn list-group-item" onclick="eliminar(this)">
-                            <p class="text-left">
-                                {{ especialidad }}
-                            </p>
+                        <li id="{{ especialidad.id }}" class="btn list-group-item li" onclick="eliminar(this)">
+                            {{ especialidad }}
+                            <i class="glyphicon glyphicon-chevron-left text-danger pull-right"></i>
                         </li>
                     {% endfor %}
                 </ul>
@@ -142,8 +140,8 @@
     <div class="alert alert-info" role="alert">
         <p>
             <span class="glyphicon glyphicon-info-sign"></span>
-            <strong>Nota:</strong> Para asignar una especialidad
-            disponible clickeala. Haz lo mismo para quitarla.
+            <strong>Nota:</strong> Haz clic sobre una especialidad para
+            asignarla. Lo mismo para quitarla.
         </p>
     </div>
 {% endblock %}

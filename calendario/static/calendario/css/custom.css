@@ -30,6 +30,10 @@ ul.profesionales, ul.especialidades, ul.calendarios, ul.restricciones {
 	height: 400px;
 }
 
+li.li {
+    text-align: left;
+}
+
 .overflow {
 	overflow-y: auto;
 }
@@ -167,6 +171,10 @@ input[type=range]:focus::-ms-fill-upper {
 }
 
 .default {
-  background-color: #ddd;
-  color: #000;
+    background-color: #ddd;
+    color: #000;
+}
+
+.modal-warning {
+    background-color: #f0ad4e;
 }
