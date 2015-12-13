@@ -74,9 +74,11 @@
                         return;
                     }
                     
-                    alert(response.mensaje);
+                    var modal = $("#modal-infomacion");
                     
-                    window.location.href = "{% url 'calendario:espacio_add_profesionales' espacio.id %}";
+                    $("#modal-infomacion p").html(response.mensaje);
+                    
+                    modal.modal("show");
                 }
             });
         }
@@ -90,9 +92,31 @@
         <li class="active">Asignar especialidades</li>
     </ol>
     <h2 class="text-center">
-        Asignar especialidades a {{ espacio.nombre }}.
+        Asignar especialidades a {{ espacio.nombre }}
     </h2>
-    <br>
+    <div class="modal fade" id="modal-infomacion" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-primary">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        ×
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        <i class="glyphicon glyphicon-info-sign"></i> Información
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <p>
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <a href="{% url 'calendario:espacio_add_profesionales' espacio.id %}" class="btn btn-primary pull-right">
+                        Continuar
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="col-xs-12">
         <div class="col-xs-6">
             <div class="panel panel-primary">
@@ -131,7 +155,7 @@
                 <i class="glyphicon glyphicon-chevron-left"></i> Volver a espacio
             </a>
             <button id="btnContinuar" class="btn btn-primary pull-right" onclick="guardarEspecialidades()">
-                <i class="glyphicon glyphicon-floppy-save"></i> Guardar y continuar
+                <i class="glyphicon glyphicon-floppy-save"></i> Guardar
             </button>
         </div>
     </div>

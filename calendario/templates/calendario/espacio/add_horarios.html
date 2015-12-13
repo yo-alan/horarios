@@ -1,6 +1,6 @@
 {% extends "admin/base.html" %}
 
-{% block title %}Estructura del espacio{% endblock %}
+{% block title %}Estructura del calendario{% endblock %}
 
 {% block head %}
     <script>
@@ -9,6 +9,13 @@
             $("[data-hide]").click(function () {
                 $(".alert-danger").attr('class', "alert alert-dismissable alert-danger hidden");
             });
+            
+            $('[data-toggle="popover"]').popover({
+                placement: "top",
+                trigger: "hover"
+            });
+            
+            $('.btn-success').popover("show");
             
             $("input[type=checkbox]").change(function () {
                 
@@ -20,62 +27,23 @@
                     
                     $(this).siblings("i").prop("class", "glyphicon glyphicon-check");
                     
-                    $("div").each(function() {
+                    $("div").each(function (){
                         if($(this).prop("id").match(new RegExp(val+"$")))
-                        {
                             $(this).parent().prop("class", "text-center bg-success");
-                        }
                     })
                 }
                 else {
                     
                     $(this).siblings("i").prop("class", "glyphicon glyphicon-unchecked");
                     
-                    $("div").each(function() {
+                    $("div").each(function (){
                         if($(this).prop("id").match(new RegExp(val+"$")))
-                        {
                             $(this).parent().prop("class", "text-center bg-danger");
-                        }
                     })
                 }
             });
             
             selectComportamiento();
-            
-            var form = $(".form");
-            
-            form.submit(function (ev){
-                
-                ev.preventDefault();
-                
-                $("#" + form.attr('id') + " button[type=submit]").button('loading');
-                
-                $.ajax({
-                    url: form.attr('action'),
-                    type: form.attr('method'),
-                    data: form.serialize(),
-                    success: function (response){
-                        
-                        $("#" + form.attr('id') + " button[type=submit]").button('reset');
-                        
-                        $(".form-group").attr('class', "form-group");
-                        
-                        if(response.error){
-                            
-                            if(response.campo){
-                                $("#"+ response.campo).parent().parent().attr('class', "form-group has-error");
-                                $("#"+ response.campo).focus();
-                            }
-                            
-                            $("#" + form.attr('id') + " .alert").attr('class', "alert alert-dismissable alert-danger");
-                            $("#" + form.attr('id') + " .alert p").html(response.error);
-                            return;
-                        }
-                        
-                        alert(response.mensaje);
-                    }
-                });
-            });
         });
         
         function selectComportamiento() {
@@ -148,7 +116,7 @@
                 });
                 
                 var intervalo = parseInt(theSelect.val()) / 60;
-                var theSelect = theSelect.prev("select");
+                var theSelect = theSelect.parent().prev("div").children("select");
                 
                 $("select[id^=hora_desde]").each(function (){
                     
@@ -195,16 +163,22 @@
             
             var nuevoHorario = "<tr>" +
                                     "<td class='text-center bg-primary'>" +
-                                        "<select id='hora_desde" + hora + "' name='hora_desde" + hora + "' class='form-control'>" +
-                                            {% for h in horas_select %}
-                                                "<option value='{{ h }}'>{{ h }}</option>" +
-                                            {% endfor %}
-                                        "</select>" +
-                                        "<select id='min_desde" + hora + "' name='min_desde" + hora + "' class='form-control'>" +
-                                            {% for m in min_select %}
-                                                "<option value='{{ m }}'>{{ m }}</option>" +
-                                            {% endfor %}
-                                        "</select>" +
+                                        "<div class='row'>" +
+                                            "<div class='col-xs-6'>" +
+                                                "<select id='hora_desde" + hora + "' name='hora_desde" + hora + "' class='form-control'>" +
+                                                    {% for h in horas_select %}
+                                                        "<option value='{{ h }}'>{{ h }}</option>" +
+                                                    {% endfor %}
+                                                "</select>" +
+                                            "</div>" +
+                                            "<div class='col-xs-6'>" +
+                                                "<select id='min_desde" + hora + "' name='min_desde" + hora + "' class='form-control'>" +
+                                                    {% for m in min_select %}
+                                                        "<option value='{{ m }}'>{{ m }}</option>" +
+                                                    {% endfor %}
+                                                "</select>" +
+                                            "</div>" +
+                                        "</div>" +
                                     "</td>" +
                                     "<td class='text-center " + classDomingo + "'>" +
                                         "<div id='h" + id+0 + "' hora='" + hora + "' ondrop='drop(event)' ondragover='allowDrop(event)'>" +
@@ -254,7 +228,9 @@
             
             $("select[id^=hora_desde]").each(function (){
                 
-                data["h"+i] = $(this).val() + ":" + $(this).next("select").val();
+                var min_select = $(this).parent().next("div").children("select");
+                
+                data["h"+i] = $(this).val() + ":" + min_select.val();
                 
                 i++;
             });
@@ -264,7 +240,6 @@
             $("input[type=checkbox]").each(function () {
                 
                 if(this.checked){
-                    
                     data["d"+i] = $(this).prop("name");
                 }
                 
@@ -283,9 +258,11 @@
                         return;
                     }
                     
-                    alert(response.mensaje);
+                    var modal = $("#modal-infomacion");
                     
-                    window.location.href = "{% url 'calendario:espacio_all' espacio.id %}";
+                    $("#modal-infomacion p").html(response.mensaje);
+                    
+                    modal.modal("show");
                 }
             });
         }
@@ -299,8 +276,31 @@
         <li class="active">Designar horas</li>
     </ol>
     <h2 class="text-center">
-        Estructura del espacio
+        Estructura del calendario
     </h2>
+    <div class="modal fade" id="modal-infomacion" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-primary">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        ×
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        <i class="glyphicon glyphicon-info-sign"></i> Información
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <p>
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <a href="{% url 'calendario:espacio_all' %}" class="btn btn-primary pull-right">
+                        Continuar
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="form-horizontal">
         <label class="col-xs-2 control-label" for="modulo">Módulos de:</label>
         <div class="col-xs-3">
@@ -312,10 +312,20 @@
     <table class="table table-bordered">
         <thead>
             <tr class="bg-primary">
-                <th class="text-center">
-                    <div class="btn btn-group">
-                        <button onclick="addHorarios()" class="btn btn-success" title="Agregar hora"><i class="glyphicon glyphicon-plus"></i></button>
-                        <button onclick="delHorarios()" class="btn btn-danger" title="Eliminar hora"><i class="glyphicon glyphicon-minus"></i></button>
+                <th class="text-center" style="color: black">
+                    <button onclick="addHorarios()" class="btn btn-success" data-toggle="popover" title="Agregar horas" data-content="Haz clic aquí para agregar horas">
+                        <i class="glyphicon glyphicon-plus"></i>
+                    </button>
+                    <button onclick="delHorarios()" class="btn btn-danger" data-toggle="popover" title="Eliminar horas" data-content="Haz clic aquí para eliminar horas">
+                        <i class="glyphicon glyphicon-minus"></i>
+                    </button>
+                    <div class="col-xs-12" style="color: white">
+                        <div class="col-xs-6">
+                            Hora
+                        </div>
+                        <div class="col-xs-6">
+                            Min
+                        </div>
                     </div>
                 </th>
                 <th class="text-center">
@@ -408,24 +418,30 @@
             {% for hora in horas %}
                 <tr>
                     <td class="text-center bg-primary">
-                        <select id="hora_desde{{ forloop.counter0 }}" name="hora_desde{{ forloop.counter0 }}" class="form-control">
-                            {% for h in horas_select %}
-                                {% if h == hora.0 %}
-                                    <option selected value="{{ h }}">{{ h }}</option>
-                                {% else %}
-                                    <option value="{{ h }}">{{ h }}</option>
-                                {% endif %}
-                            {% endfor %}
-                        </select>
-                        <select id="min_desde{{ forloop.counter0 }}" name="min_desde{{ forloop.counter0 }}" class="form-control">
-                            {% for m in min_select %}
-                                {% if m == hora.1 %}
-                                    <option selected value="{{ m }}">{{ m }}</option>
-                                {% else %}
-                                    <option value="{{ m }}">{{ m }}</option>
-                                {% endif %}
-                            {% endfor %}
-                        </select>
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <select id="hora_desde{{ forloop.counter0 }}" name="hora_desde{{ forloop.counter0 }}" class="form-control">
+                                    {% for h in horas_select %}
+                                        {% if h == hora.0 %}
+                                            <option selected value="{{ h }}">{{ h }}</option>
+                                        {% else %}
+                                            <option value="{{ h }}">{{ h }}</option>
+                                        {% endif %}
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-xs-6">
+                                <select id="min_desde{{ forloop.counter0 }}" name="min_desde{{ forloop.counter0 }}" class="form-control">
+                                    {% for m in min_select %}
+                                        {% if m == hora.1 %}
+                                            <option selected value="{{ m }}">{{ m }}</option>
+                                        {% else %}
+                                            <option value="{{ m }}">{{ m }}</option>
+                                        {% endif %}
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
                     </td>
                     {% for dia in "0123456"|make_list %}
                         {% if dia in dias %}
@@ -446,6 +462,6 @@
         <i class="glyphicon glyphicon-chevron-left"></i> Volver a profesionales
     </a>
     <button id="btnContinuar" class="btn btn-primary pull-right" onclick="guardarEstructura()">
-        <i class="glyphicon glyphicon-floppy-save"></i> Guardar y continuar
+        <i class="glyphicon glyphicon-floppy-save"></i> Guardar
     </button>
 {% endblock %}

@@ -298,6 +298,8 @@ def generar(request):
         
         print " %7.3f seg." % (time.time() - operation_time)
         
+        print "Grado de la población: ", espacio.grado
+        
         print "--------------------------------------------------------"
         
     

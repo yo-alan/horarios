@@ -24,6 +24,7 @@ class Espacio(models.Model):
     .poblacion - lista de individuos. Valor: [].
     .coordinadores - lista de coordinadores. Valor: [].
     .tamanio_poblacion - tamaño de la población. Valor: 0.
+    .grado - puntaje promedio de la población actual. Valor: 0.
     """
     
     nombre = models.CharField(max_length=100, null=False, blank=False)
@@ -54,6 +55,7 @@ class Espacio(models.Model):
         espacio._coordinadores = []
         espacio._poblacion = []
         espacio._tamanio_poblacion = tamanio_poblacion
+        espacio._grado = 0
         
         puntos = Penalidad.create('RESTRICCION PROFESIONAL').puntos
         espacio.PUNTOS_RESTRICCION_PROFESIONAL = puntos
@@ -639,3 +641,9 @@ class Espacio(models.Model):
     def dias_habiles(self, ):
         return self._dias_habiles
     
+    @property
+    def grado(self, ):
+        
+        suma = sum(calendario.puntaje for calendario in self.poblacion)
+        
+        return suma / len(self.poblacion)

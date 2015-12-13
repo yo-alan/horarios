@@ -47,7 +47,7 @@
             var yaExiste = false;
             
             $("#pAsignados [id$='" + idEndsWith + "']").each(function (){
-                $("#modal-container-687267").modal("show");
+                $("#modal-profesional-existente").modal("show");
                 yaExiste = true;
             });
             
@@ -112,9 +112,11 @@
                         return;
                     }
                     
-                    alert(response.mensaje);
+                    var modal = $("#modal-informacion");
                     
-                    window.location.href = "{% url 'calendario:espacio_add_horarios' espacio.id %}";
+                    $("#modal-informacion p").html(response.mensaje);
+                    
+                    modal.modal("show");
                 }
             });
         }
@@ -130,7 +132,7 @@
     <h2 class="text-center">
         Asignar profesionales a {{ espacio.nombre }}
     </h2>
-    <div class="modal fade" id="modal-container-687267" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal fade" id="modal-profesional-existente" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header modal-warning">
@@ -144,12 +146,34 @@
                 <div class="modal-body">
                     Ya se encuentra asignado un profesional que ejerce
                     esta especialidad. Quítelo e intente de nuevo.
-                    <br>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-warning pull-right" data-dismiss="modal">
                         Aceptar
                     </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modal-informacion" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-primary">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        ×
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        <i class="glyphicon glyphicon-info-sign"></i> Información
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <p>
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <a href="{% url 'calendario:espacio_add_horarios' espacio.id %}" class="btn btn-primary pull-right">
+                        Continuar
+                    </a>
                 </div>
             </div>
         </div>
@@ -198,7 +222,7 @@
                 <i class="glyphicon glyphicon-chevron-left"></i> Volver a especialidades
             </a>
             <button id="btnContinuar" class="btn btn-primary pull-right" onclick="guardarProfesionales()">
-                <i class="glyphicon glyphicon-floppy-save"></i> Guardar y continuar
+                <i class="glyphicon glyphicon-floppy-save"></i> Guardar
             </button>
         </div>
     </div>
