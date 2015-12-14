@@ -40,9 +40,15 @@
                             return;
                         }
                         
-                        alert(response.mensaje);
+                        var modal = $("#modal-infomacion");
                         
-                        window.location.href = "/calendario/espacio/especialidades/" + response.espacio_id;
+                        $("#modal-infomacion p").html(response.mensaje);
+                        
+                        modal.modal("show");
+                        
+                        var a = modal.children("div").children("div").children("div").children("a");
+                        
+                        a.attr("href", "/calendario/espacio/especialidades/" + response.espacio_id);
                     }
                 });
             });
@@ -59,6 +65,29 @@
         <h1>
             Agregar espacio<small>.</small>
         </h1>
+    </div>
+    <div class="modal fade" id="modal-infomacion" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-primary">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        ×
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        <i class="glyphicon glyphicon-info-sign"></i> Información
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <p>
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-primary pull-right">
+                        Continuar
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-9 col-lg-7 col-centered">
         <form class="form-horizontal responsive" id="addForm" name="addForm" method="POST" action="{% url 'calendario:espacio_add' %}">

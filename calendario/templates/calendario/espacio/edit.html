@@ -40,9 +40,11 @@
                             return;
                         }
                         
-                        alert(response.mensaje);
+                        var modal = $("#modal-infomacion");
                         
-                        window.location.href = "{% url 'calendario:espacio_add_especialidades' espacio.id %}";
+                        $("#modal-infomacion p").html(response.mensaje);
+                        
+                        modal.modal("show");
                     }
                 });
             });
@@ -59,6 +61,29 @@
         <h1>
             Editar espacio {{ espacio.nombre }}<small>.</small>
         </h1>
+    </div>
+    <div class="modal fade" id="modal-infomacion" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-primary">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        ×
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        <i class="glyphicon glyphicon-info-sign"></i> Información
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <p>
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <a href="{% url 'calendario:espacio_add_especialidades' espacio.id %}" class="btn btn-primary pull-right">
+                        Continuar
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-9 col-lg-7 col-centered">
         <form class="form-horizontal responsive" id="editForm" name="editForm" method="POST" action="{% url 'calendario:espacio_edit' espacio.id %}">
