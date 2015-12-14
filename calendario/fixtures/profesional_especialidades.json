@@ -1,0 +1,58 @@
+[
+  {
+    "model": "calendario.profesional_especialidades",
+    "pk": 1,
+    "fields": {
+      "profesional_id": 1,
+      "especialidad_id": 1
+    }
+  },
+  {
+    "model": "calendario.profesional_especialidades",
+    "pk": 2,
+    "fields": {
+      "profesional_id": 2,
+      "especialidad_id": 2
+    }
+  },
+  {
+    "model": "calendario.profesional_especialidades",
+    "pk": 3,
+    "fields": {
+      "profesional_id": 3,
+      "especialidad_id": 3
+    }
+  },
+  {
+    "model": "calendario.profesional_especialidades",
+    "pk": 4,
+    "fields": {
+      "profesional_id": 4,
+      "especialidad_id": 4
+    }
+  },
+  {
+    "model": "calendario.profesional_especialidades",
+    "pk": 5,
+    "fields": {
+      "profesional_id": 5,
+      "especialidad_id": 5
+    }
+  },
+  {
+    "model": "calendario.profesional_especialidades",
+    "pk": 6,
+    "fields": {
+      "profesional_id": 6,
+      "especialidad_id": 6
+    }
+  },
+  {
+    "model": "calendario.profesional_especialidades",
+    "pk": 7,
+    "fields": {
+      "profesional_id": 7,
+      "especialidad_id": 7
+    }
+  }
+]

@@ -1,0 +1,44 @@
+[
+  {
+    "model": "calendario.profesional",
+    "fields": {
+      "persona_ptr_id": 1
+    }
+  },
+  {
+    "model": "calendario.profesional",
+    "fields": {
+      "persona_ptr_id": 2
+    }
+  },
+  {
+    "model": "calendario.profesional",
+    "fields": {
+      "persona_ptr_id": 3
+    }
+  },
+  {
+    "model": "calendario.profesional",
+    "fields": {
+      "persona_ptr_id": 4
+    }
+  },
+  {
+    "model": "calendario.profesional",
+    "fields": {
+      "persona_ptr_id": 5
+    }
+  },
+  {
+    "model": "calendario.profesional",
+    "fields": {
+      "persona_ptr_id": 6
+    }
+  },
+  {
+    "model": "calendario.profesional",
+    "fields": {
+      "persona_ptr_id": 7
+    }
+  }
+]

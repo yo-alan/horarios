@@ -1,0 +1,86 @@
+[
+  {
+    "model": "calendario.especialidad",
+    "pk": 1,
+    "fields": {
+      "nombre": "Ingles",
+      "carga_horaria_semanal": 5,
+      "max_horas_diaria": 2,
+      "color": "",
+      "fecha_creacion": "2015-12-14 00:00:00.000000-03",
+      "fecha_modificacion": "2015-12-14 00:00:00.000000-03"
+    }
+  },
+  {
+    "model": "calendario.especialidad",
+    "pk": 2,
+    "fields": {
+      "nombre": "Lengua",
+      "carga_horaria_semanal": 5,
+      "max_horas_diaria": 2,
+      "color": "",
+      "fecha_creacion": "2015-12-14 00:00:00.000000-03",
+      "fecha_modificacion": "2015-12-14 00:00:00.000000-03"
+    }
+  },
+  {
+    "model": "calendario.especialidad",
+    "pk": 3,
+    "fields": {
+      "nombre": "Matemática",
+      "carga_horaria_semanal": 5,
+      "max_horas_diaria": 2,
+      "color": "",
+      "fecha_creacion": "2015-12-14 00:00:00.000000-03",
+      "fecha_modificacion": "2015-12-14 00:00:00.000000-03"
+    }
+  },
+  {
+    "model": "calendario.especialidad",
+    "pk": 4,
+    "fields": {
+      "nombre": "Física",
+      "carga_horaria_semanal": 3,
+      "max_horas_diaria": 2,
+      "color": "",
+      "fecha_creacion": "2015-12-14 00:00:00.000000-03",
+      "fecha_modificacion": "2015-12-14 00:00:00.000000-03"
+    }
+  },
+  {
+    "model": "calendario.especialidad",
+    "pk": 5,
+    "fields": {
+      "nombre": "Biología",
+      "carga_horaria_semanal": 3,
+      "max_horas_diaria": 2,
+      "color": "",
+      "fecha_creacion": "2015-12-14 00:00:00.000000-03",
+      "fecha_modificacion": "2015-12-14 00:00:00.000000-03"
+    }
+  },
+  {
+    "model": "calendario.especialidad",
+    "pk": 6,
+    "fields": {
+      "nombre": "Filosofía",
+      "carga_horaria_semanal": 3,
+      "max_horas_diaria": 2,
+      "color": "",
+      "fecha_creacion": "2015-12-14 00:00:00.000000-03",
+      "fecha_modificacion": "2015-12-14 00:00:00.000000-03"
+    }
+  },
+  {
+    "model": "calendario.especialidad",
+    "pk": 7,
+    "fields": {
+      "nombre": "Música",
+      "carga_horaria_semanal": 3,
+      "max_horas_diaria": 2,
+      "color": "",
+      "fecha_creacion": "2015-12-14 00:00:00.000000-03",
+      "fecha_modificacion": "2015-12-14 00:00:00.000000-03"
+    }
+  }
+]

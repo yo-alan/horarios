@@ -1,0 +1,79 @@
+[
+  {
+    "model": "calendario.persona",
+    "pk": 1,
+    "fields": {
+      "nombre": "Clorinda",
+      "apellido": "Matiasa",
+      "cuil": "24-33546041-9",
+      "fecha_creacion": "2015-12-14 00:00:00.000000-03",
+      "fecha_modificacion": "2015-12-14 00:00:00.000000-03"
+    }
+  },
+  {
+    "model": "calendario.persona",
+    "pk": 2,
+    "fields": {
+      "nombre": "Leoncia",
+      "apellido": "Leovigilda",
+      "cuil": "24-27516221-9",
+      "fecha_creacion": "2015-12-14 00:00:00.000000-03",
+      "fecha_modificacion": "2015-12-14 00:00:00.000000-03"
+    }
+  },
+  {
+    "model": "calendario.persona",
+    "pk": 3,
+    "fields": {
+      "nombre": "Macario",
+      "apellido": "Severo",
+      "cuil": "23-25726445-9",
+      "fecha_creacion": "2015-12-14 00:00:00.000000-03",
+      "fecha_modificacion": "2015-12-14 00:00:00.000000-03"
+    }
+  },
+  {
+    "model": "calendario.persona",
+    "pk": 4,
+    "fields": {
+      "nombre": "Toribio",
+      "apellido": "Sotera",
+      "cuil": "23-30183630-9",
+      "fecha_creacion": "2015-12-14 00:00:00.000000-03",
+      "fecha_modificacion": "2015-12-14 00:00:00.000000-03"
+    }
+  },
+  {
+    "model": "calendario.persona",
+    "pk": 5,
+    "fields": {
+      "nombre": "Eliseo",
+      "apellido": "Lopa",
+      "cuil": "23-22497396-9",
+      "fecha_creacion": "2015-12-14 00:00:00.000000-03",
+      "fecha_modificacion": "2015-12-14 00:00:00.000000-03"
+    }
+  },
+  {
+    "model": "calendario.persona",
+    "pk": 6,
+    "fields": {
+      "nombre": "Romualdo",
+      "apellido": "Cancio",
+      "cuil": "23-28732118-9",
+      "fecha_creacion": "2015-12-14 00:00:00.000000-03",
+      "fecha_modificacion": "2015-12-14 00:00:00.000000-03"
+    }
+  },
+  {
+    "model": "calendario.persona",
+    "pk": 7,
+    "fields": {
+      "nombre": "Nemesia",
+      "apellido": "Liberata",
+      "cuil": "27-32746159-7",
+      "fecha_creacion": "2015-12-14 00:00:00.000000-03",
+      "fecha_modificacion": "2015-12-14 00:00:00.000000-03"
+    }
+  }
+]
