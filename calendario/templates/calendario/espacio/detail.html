@@ -316,11 +316,13 @@
                             <strong><i class="fa fa-fw fa-calendar"></i> Generar calendarios</strong>
                         </div>
                         <div class="panel-body">
+                        {% if calendario %}
                             <div class="alert alert-info" role="alert">
                                 <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
                                 <span class="sr-only">Atención:</span>
                                 Se borrará el calendario ya creado.
                             </div>
+                        {% endif %}
                             <form class="form-horizontal" id="formGenerar" name="formGenerar" method="POST" action="{% url 'calendario:generar' %}">
                                 {% csrf_token %}
                                 <input type="hidden" id="espacio_id" name="espacio_id" value="{{ espacio.id }}">

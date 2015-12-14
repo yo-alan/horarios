@@ -29,9 +29,9 @@ class Especialidad(models.Model):
                                 choices=[('ON', 'ON'), ('OFF', 'OFF')],
                                 default='ON')
     usuario_creador = models.CharField(max_length=30, default='admin')
-    fecha_creacion = models.DateField(auto_now_add=True)
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
     usuario_modificador = models.CharField(max_length=30, default='admin')
-    fecha_modificacion = models.DateField(auto_now=True)
+    fecha_modificacion = models.DateTimeField(auto_now=True)
     
     @classmethod
     def create(cls, especialidad_id=0):
