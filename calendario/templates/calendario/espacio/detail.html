@@ -83,16 +83,17 @@
             });
         });
         {% if calendario %}
-        function eliminarCalendario(){
+        function eliminarCalendario(calendario_id){
             
             if(!confirm("¿Está seguro que desea eliminar el calendario?"))
                 return;
             
             $.ajax({
-                url: "{% url 'calendario:delete' calendario.id %}",
+                url: "{% url 'calendario:delete' %}",
                 type: 'POST',
                 data: {
-                    csrfmiddlewaretoken: '{{ csrf_token }}'
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                    calendario_id: calendario_id
                 },
                 success: function(response) {
                     
@@ -117,6 +118,7 @@
                     
                     $("#progress-bar").width(response.status + "%");
                     
+                    $("#progress-bar b").html(response.status + "% Completo");
                 }
             }); 
         }
@@ -254,13 +256,22 @@
                 {% endfor %}
             </div>
             <div class="tab-pane" id="calendarios">
+                {% if estado.0 == "GENERANDO" %}
+                <div class="progress">
+                {% else %}
+                <div class="progress hidden">
+                {% endif %}
+                    <div id="progress-bar" class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="{{ estado.1 }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ estado.1 }}%">
+                        <b>{{ estado.1 }}% Completo</b>
+                    </div>
+                </div>
                 <div class="col-xs-12 col-sm-12 col-md-7 col-lg-7">
                 {% if calendario %}
                     <div class="btn btn-group btn-block">
                         <a class="btn btn-default" title="Ver este calendario" href="{% url 'calendario:detail' calendario.id %}"><i class="glyphicon glyphicon-eye-open"></i> Ver</a>
                         <a class="btn btn-default" title="Editar este calendario" href="{% url 'calendario:edit' calendario.id %}"><i class="glyphicon glyphicon-edit"></i> Editar</a>
                         <a class="btn btn-default" title="Imprimir este calendario" href="{% url 'calendario:imprimir' calendario.id %}" target="_blank"><i class="fa fa-file-pdf-o"></i> Imprimir</a>
-                        <a class="btn btn-danger" title="Eliminar este calendario" onclick="eliminarCalendario()"><i class="glyphicon glyphicon-trash"></i> Eliminar</a>
+                        <a class="btn btn-danger" title="Eliminar este calendario" onclick="eliminarCalendario({{ calendario.id }})"><i class="glyphicon glyphicon-trash"></i> Eliminar</a>
                     </div>
                     <table class="table calendario">
                         <thead>
@@ -305,14 +316,10 @@
                             <strong><i class="fa fa-fw fa-calendar"></i> Generar calendarios</strong>
                         </div>
                         <div class="panel-body">
-                            {% if estado.0 == "GENERANDO" %}
-                            <div class="progress">
-                            {% else %}
-                            <div class="progress hidden">
-                            {% endif %}
-                                <div id="progress-bar" class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="{{ estado.1 }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ estado.1 }}%">
-                                    <span class="sr-only">{{ estado.1 }}% Complete</span>
-                                </div>
+                            <div class="alert alert-info" role="alert">
+                                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                                <span class="sr-only">Atención:</span>
+                                Se borrará el calendario ya creado.
                             </div>
                             <form class="form-horizontal" id="formGenerar" name="formGenerar" method="POST" action="{% url 'calendario:generar' %}">
                                 {% csrf_token %}

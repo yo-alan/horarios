@@ -1,23 +1,108 @@
 {% extends "admin/base.html" %}
 
-{% block title %}Listado de calendarios.{% endblock %}
+{% load static %}
 
+{% block title %}Listado de calendarios{% endblock %}
+
+{% block head %}
+    <script>
+        function eliminar(calendario_id){
+            
+            $("#myModal").modal("show");
+            
+            $("#btnDel").click(function () {
+                
+                $.ajax({
+                    url: "{% url 'calendario:delete' %}",
+                    type: 'POST',
+                    data: {
+                        csrfmiddlewaretoken: '{{ csrf_token }}',
+                        calendario_id: calendario_id
+                    },
+                    success: function(response) {
+                        window.location.href = "{% url 'calendario:all' %}";
+                    }
+                });
+            });
+        }
+    </script>
+{% endblock %}
 {% block article %}
-    <div class="panel panel-primary">
-        <div class="panel-heading">
-            <h3 class="panel-title"><b>
-                Listado de calendarios generados.
-            </b></h3>
+    <ol class="breadcrumb">
+        <li><a href="{% url 'index' %}"><i class="fa fa-fw fa-calendar"></i> Inicio</a></li>
+        <li class="active">Calendarios</li>
+    </ol>
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header modal-danger">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel"><i class="fa fa-exclamation-triangle"></i> Eliminar calendario</h4>
+                </div>
+                <div class="modal-body">
+                    ¿Está seguro que desea eliminar este calendario?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                    <button id="btnDel" type="button" class="btn btn-danger">Eliminar</button>
+                </div>
+            </div>
         </div>
-        {% if calendarios %}
-            <ul class="list-group">
-                {% for calendario in calendarios %}
-                    <li class="list-group-item"><a href="{% url 'calendario:detail' calendario.id %}">{{ calendario.id }}</a></li>
-                {% endfor %}
-            </ul>
-        {% endif %}
     </div>
-    {% if calendarios %}
-        <p class="text-right">{{ calendarios|length }} calendarios.</p>
-    {% endif %}
+    <table class="table table-hover table-bordered table-striped">
+        <thead>
+            <tr class="default">
+                <th>
+                    #
+                </th>
+                <th>
+                    Espacio
+                </th>
+                <th class="col-xs-5 col-sm-5 col-md-4 col-lg-3">
+                    Acciones
+                </th>
+            </tr>
+        </thead>
+        {% if calendarios %}
+            <tbody>
+                {% for calendario in calendarios %}
+                    <tr>
+                        <td>
+                            {{ calendario.id }}
+                        </td>
+                        <td>
+                            {{ calendario.espacio.nombre }}
+                        </td>
+                        <td>
+                            <div class="btn btn-group btn-block">
+                                <a class="btn btn-default" title="Ver" href="{% url 'calendario:detail' calendario.id %}"><i class="glyphicon glyphicon-eye-open"></i></a>
+                                <a class="btn btn-default" title="Editar" href="{% url 'calendario:edit' calendario.id %}"><i class="glyphicon glyphicon-edit"></i></a>
+                                <a onclick="eliminar({{ calendario.id }})" type="button" class="btn btn-danger" data-toggle="modal">
+                                    <i class="glyphicon glyphicon-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        {% else %}
+            <tfoot align="center">
+                <tr>
+                    <td colspan="5">No hay calendario creados.</td>
+                </tr>
+            </tfoot>
+        {% endif %}
+    </table>
+    <nav>
+        <ul class="pager">
+            {% if calendarios.has_previous %}
+                <li class="previous"><a href="{% url 'calendario:all' calendarios.previous_page_number %}"><span class="glyphicon glyphicon-arrow-left"></span> Anterior</a></li>
+            {% endif %}
+            
+            {% if calendarios.has_next %}
+                <li class="next"><a href="{% url 'calendario:all' calendarios.next_page_number %}">Siguiente <span class="glyphicon glyphicon-arrow-right"></span></a>
+            {% endif %}
+        </ul>
+    </nav>
 {% endblock %}

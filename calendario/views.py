@@ -10,7 +10,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-from reportlab.pdfgen import canvas
+#from reportlab.pdfgen import canvas
 # TEMPORAL
 import cStringIO as StringIO
 from xhtml2pdf import pisa
@@ -79,9 +79,17 @@ def log_out(request):
     return HttpResponseRedirect(reverse('index'))
 
 @login_required(login_url='/index/')
-def all(request):
+def all(request, pagina=1):
     
-    calendarios = Calendario.objects.filter(estado='ON')
+    total_calendarios = Calendario.objects.all()
+    paginator = Paginator(total_calendarios, 10)
+    
+    try:
+        calendarios = paginator.page(pagina)
+    except PageNotAnInteger:
+        calendarios = paginator.page(1)
+    except EmptyPage:
+        calendarios = paginator.page(paginator.num_pages)
     
     context = {'calendarios': calendarios}
     
@@ -185,15 +193,16 @@ def edit(request, calendario_id):
     return render(request, 'calendario/edit.html', context)
 
 @login_required(login_url='/index/')
-def delete(request, calendario_id):
+def delete(request):
     
     if request.method != 'POST':
-        
         return HttpResponseRedirect(reverse('calendario:espacio_all'))
     
     data = {}
     
     try:
+        calendario_id = request.POST['calendario_id']
+        
         calendario = Calendario.create(calendario_id)
         
         calendario.delete()
@@ -751,9 +760,14 @@ def profesional_add(request):
     try:
         profesional = Profesional.create()
         
+        tipo = str(request.POST['tipo'])
+        documento = str(request.POST['documento'])
+        verificador = str(request.POST['verificador'])
+        cuil = tipo + "-" + documento + "-" + verificador
+        
         profesional.setnombre(request.POST['nombre'])
         profesional.setapellido(request.POST['apellido'])
-        profesional.setcuil(request.POST['cuil'])
+        profesional.setcuil(cuil)
         profesional.usuario_creador = request.user.username
         profesional.usuario_modificador = request.user.username
         
@@ -782,6 +796,10 @@ def profesional_detail(request, profesional_id):
     
     profesional = Profesional.create(profesional_id)
     
+    profesional.tipo = profesional.cuil.split('-')[0]
+    profesional.documento = profesional.cuil.split('-')[1]
+    profesional.verificador = profesional.cuil.split('-')[2]
+    
     especialidades = Especialidad.objects.filter(estado='ON')\
                                             .order_by('nombre')
     
@@ -792,7 +810,6 @@ def profesional_detail(request, profesional_id):
         
         restricciones.append(restriccion)
     
-    #TODO dias de las restricciones
     context = {'profesional': profesional,
                 'especialidades': especialidades,
                 'restricciones': restricciones}
@@ -809,9 +826,14 @@ def profesional_edit(request):
         
         profesional = Profesional.create(request.POST['profesional_id'])
         
+        tipo = str(request.POST['tipo'])
+        documento = str(request.POST['documento'])
+        verificador = str(request.POST['verificador'])
+        cuil = tipo + "-" + documento + "-" + verificador
+        
         profesional.setnombre(request.POST['nombre'])
         profesional.setapellido(request.POST['apellido'])
-        profesional.setcuil(request.POST['cuil'])
+        profesional.setcuil(cuil)
         profesional.usuario_modificador = request.user.username
         
         profesional.save()
@@ -1170,4 +1192,5 @@ def fetch_resources(uri, rel):
 
     """
     path = os.path.join(settings.MEDIA_ROOT, uri.replace(settings.MEDIA_URL, ""))
+    
     return path

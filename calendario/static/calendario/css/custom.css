@@ -178,3 +178,11 @@ input[type=range]:focus::-ms-fill-upper {
 .modal-warning {
     background-color: #f0ad4e;
 }
+
+.modal-danger {
+    background-color: #d9534f;
+}
+
+.modal-danger > * {
+    color: white;
+}

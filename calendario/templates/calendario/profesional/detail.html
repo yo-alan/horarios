@@ -40,16 +40,24 @@
                         if(response.error){
                             
                             if(response.campo){
+                                
+                                if(response.campo == "cuil")
+                                    response.campo = "documento";
+                                
                                 $("#"+ response.campo).parent().parent().attr('class', "form-group has-error");
                                 $("#"+ response.campo).focus();
                             }
                             
-                            $("#" + form.attr('id') + " .alert").attr('class', "alert alert-dismissable alert-danger");
-                            $("#" + form.attr('id') + " .alert p").html(response.error);
+                            form.children(".alert").attr('class', "alert alert-dismissable alert-danger");
+                            form.children(".alert").children("p").html(response.error);
                             return;
                         }
                         
-                        alert(response.mensaje);
+                        var modal = $("#modal-infomacion");
+                        
+                        $("#modal-infomacion p").html(response.mensaje);
+                        
+                        modal.modal("show");
                     }
                 });
             });
@@ -79,15 +87,15 @@
                                 $("#"+ response.campo).focus();
                             }
                             
-                            $("#" + formRestriccion.attr('id') + " .alert").attr('class', "alert alert-dismissable alert-danger");
-                            $("#" + formRestriccion.attr('id') + " .alert p").html(response.error);
+                            formRestriccion.children(".alert").attr('class', "alert alert-dismissable alert-danger");
+                            formRestriccion.children(".alert").children("p").html(response.error);
                             return;
                         }
                         
                         alert(response.mensaje);
                         
                         var li = "<li id='" + response.id + "' class='list-group-item'>" +
-                                        "<p class='text-left'>" +
+                                        "<p>" +
                                             "El " + response.dia_semana + " de " + response.hora_desde + " a " + response.hora_hasta + "." +
                                             "<a class='btn btn-danger pull-right' data-toggle='modal' onclick='eliminarRestriccion(" + response.id + ")'>" +
                                                 "<i class='glyphicon glyphicon-trash'></i>" +
@@ -102,23 +110,21 @@
         });
         
         function agregar(item){
-            var texto = item.children[0].innerHTML;
-            
-            var eAsignadas = document.getElementById('eAsignadas');
             
             item.setAttribute('onclick', 'eliminar(this)');
             
-            eAsignadas.appendChild(item);
+            $(item).children("i").prop("class", "glyphicon glyphicon-chevron-left text-danger pull-right");
+            
+            $("#eAsignadas").append(item);
         }
         
         function eliminar(item){
-            var texto = item.children[0].innerHTML;
-            
-            var eDisponibles = document.getElementById('eDisponibles');
             
             item.setAttribute('onclick', 'agregar(this)');
             
-            eDisponibles.appendChild(item);
+            $(item).children("i").prop("class", "glyphicon glyphicon-chevron-right text-success pull-right");
+            
+            $("#eDisponibles").append(item);
         }
         
         function guardarEspecialidades(){
@@ -181,11 +187,33 @@
     <h3 class="text-center">
         {{ profesional }}.
     </h3>
-    <!-- Modal -->
+    <div class="modal fade" id="modal-infomacion" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-primary">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        ×
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        <i class="glyphicon glyphicon-info-sign"></i> Información
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <p>
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <a href="{% url 'calendario:profesional_all' %}" class="btn btn-primary pull-right">
+                        Aceptar
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <div class="modal-header">
+                <div class="modal-header modal-danger">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     <h4 class="modal-title" id="myModalLabel"><i class="fa fa-exclamation-triangle"></i> Eliminar restricción</h4>
                 </div>
@@ -242,8 +270,46 @@
                         </div>
                         <div class="form-group">
                             <label class="col-xs-3 control-label" for="cuil">Cuil:</label>
-                            <div class="col-xs-9">
-                                <input type="text" id="cuil" name="cuil" class="form-control" value="{{ profesional.cuil }}" placeholder="Cuil del profesional">
+                            <div class="col-xs-2">
+                                <select id="tipo" name="tipo" class="form-control">
+                                {% if profesional.tipo == "20" %}
+                                    <option selected value="20">20</option>
+                                {% else %}
+                                    <option value="20">20</option>
+                                {% endif %}
+                                {% if profesional.tipo == "23" %}
+                                    <option selected value="23">23</option>
+                                {% else %}
+                                    <option value="23">23</option>
+                                {% endif %}
+                                {% if profesional.tipo == "24" %}
+                                    <option selected value="24">24</option>
+                                {% else %}
+                                    <option value="24">24</option>
+                                {% endif %}
+                                {% if profesional.tipo == "27" %}
+                                    <option selected value="27">27</option>
+                                {% else %}
+                                    <option value="27">27</option>
+                                {% endif %}
+                                </select>
+                            </div>
+                            <div class="col-xs-5">
+                                <input type="text" id="documento" name="documento" class="form-control" placeholder="Número de documento" value="{{ profesional.documento }}">
+                            </div>
+                            <div class="col-xs-2">
+                                <select id="verificador" name="verificador" class="form-control">
+                                {% if profesional.verificador == '0' %}
+                                    <option selected value="0">0</option>
+                                {% else %}
+                                    <option value="0">0</option>
+                                {% endif %}
+                                {% if profesional.verificador == '9' %}
+                                    <option selected value="9">9</option>
+                                {% else %}
+                                    <option value="9">9</option>
+                                {% endif %}
+                                </select>
                             </div>
                         </div>
                         <button type="submit" id="btnGuardar" data-loading-text="Guardando..." class="btn btn-primary pull-right" autocomplete="off">
@@ -261,7 +327,7 @@
                         <ul id="ulRestricciones" class="list-group restricciones overflow">
                             {% for restriccion in restricciones %}
                                 <li id="{{ restriccion.id }}" class="list-group-item">
-                                    <p class="text-left">
+                                    <p>
                                         {% if restriccion.nombre_dia_semana|length > 10 %}
                                             {{ restriccion.nombre_dia_semana }} de {{ restriccion.hora_desde }} a {{ restriccion.hora_hasta }}.
                                         {% else %}
@@ -336,10 +402,9 @@
                         <ul id="eDisponibles" class="list-group especialidades overflow">
                             {% for especialidad in especialidades %}
                                 {% if not especialidad in profesional.especialidades.all %}
-                                    <li id="{{ especialidad.id }}" class="btn list-group-item" onclick="agregar(this)">
-                                        <p class="text-left">
-                                            {{ especialidad }}
-                                        </p>
+                                    <li id="{{ especialidad.id }}" class="btn list-group-item li" onclick="agregar(this)">
+                                        {{ especialidad }}
+                                        <i class="glyphicon glyphicon-chevron-right text-success pull-right"></i>
                                     </li>
                                 {% endif %}
                             {% endfor %}
@@ -353,10 +418,9 @@
                         </div>
                         <ul id="eAsignadas" class="list-group especialidades overflow">
                             {% for especialidad in profesional.especialidades.all %}
-                                <li id="{{ especialidad.id }}" class="btn list-group-item" onclick="eliminar(this)">
-                                    <p class="text-left">
-                                        {{ especialidad }}
-                                    </p>
+                                <li id="{{ especialidad.id }}" class="btn list-group-item li" onclick="eliminar(this)">
+                                    {{ especialidad }}
+                                    <i class="glyphicon glyphicon-chevron-left text-danger pull-right"></i>
                                 </li>
                             {% endfor %}
                         </ul>
@@ -373,8 +437,8 @@
     <div class="alert alert-info" role="alert">
         <p>
             <span class="glyphicon glyphicon-info-sign"></span>
-            <strong>Nota:</strong> Para asignar una especialidad
-            disponible clickeala. Haz lo mismo para quitarla.
+            <strong>Nota:</strong> Haz clic sobre una especialidad para
+            asignarla. Lo mismo para quitarla.
         </p>
     </div>
 {% endblock %}

@@ -66,7 +66,10 @@
                 <div class="collapse navbar-collapse navbar-ex1-collapse">
                     <ul class="nav navbar-nav side-nav">
                         <li>
-                            <a href="javascript:;" data-toggle="collapse" data-target="#espacio"><i class="glyphicon glyphicon-paperclip"></i> Espacio <i class="fa fa-fw fa-caret-down"></i></a>
+                            <a href="{% url 'calendario:all' %}"><i class="fa fa-calendar"></i> Calendarios</a>
+                        </li>
+                        <li>
+                            <a href="javascript:;" data-toggle="collapse" data-target="#espacio"><i class="glyphicon glyphicon-paperclip"></i> Espacios <i class="fa fa-fw fa-caret-down pull-right"></i></a>
                             <ul id="espacio" class="collapse">
                                 <li>
                                     <a href="{% url 'calendario:espacio_add' %}">Agregar nuevo...</a>
@@ -77,7 +80,7 @@
                             </ul>
                         </li>
                         <li>
-                            <a href="javascript:;" data-toggle="collapse" data-target="#profesional"><i class="fa fa-fw fa-user"></i> Profesional <i class="fa fa-fw fa-caret-down"></i></a>
+                            <a href="javascript:;" data-toggle="collapse" data-target="#profesional"><i class="fa fa-fw fa-user"></i> Profesionales <i class="fa fa-fw fa-caret-down pull-right"></i></a>
                             <ul id="profesional" class="collapse">
                                 <li>
                                     <a href="{% url 'calendario:profesional_add' %}">Agregar nuevo...</a>
@@ -88,7 +91,7 @@
                             </ul>
                         </li>
                         <li>
-                            <a href="javascript:;" data-toggle="collapse" data-target="#especialidad"><i class="fa fa-fw fa-th-list"></i> Especialidad <i class="fa fa-fw fa-caret-down"></i></a>
+                            <a href="javascript:;" data-toggle="collapse" data-target="#especialidad"><i class="fa fa-fw fa-th-list"></i> Especialidades <i class="fa fa-fw fa-caret-down pull-right"></i></a>
                             <ul id="especialidad" class="collapse">
                                 <li>
                                     <a href="{% url 'calendario:especialidad_add' %}">Agregar nueva...</a>

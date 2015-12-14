@@ -113,16 +113,17 @@
             }
         }
         
-        function eliminarCalendario(){
+        function eliminarCalendario(calendario_id){
             
             if(!confirm("¿Está seguro que desea eliminar el calendario?"))
                 return;
             
             $.ajax({
-                url: "{% url 'calendario:delete' calendario.id %}",
+                url: "{% url 'calendario:delete' %}",
                 type: 'POST',
                 data: {
-                    csrfmiddlewaretoken: '{{ csrf_token }}'
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                    calendario_id: calendario_id
                 },
                 success: function(response) {
                     
@@ -153,7 +154,7 @@
     </ol>
     <h3 class="text-center">
         Editando calendario #{{ calendario.id }}
-        <button class="btn btn-danger pull-right" onclick="eliminarCalendario()">
+        <button class="btn btn-danger pull-right" onclick="eliminarCalendario({{ calendario.id }})">
             <i class="glyphicon glyphicon-trash"></i> <strong>Eliminar calendario</strong>
         </button>
     </h3>
