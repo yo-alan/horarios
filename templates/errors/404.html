@@ -1,0 +1,21 @@
+{% extends "admin/base.html" %}
+
+{% block title %}404 {{ error }}{% endblock %}
+
+{% block head %}
+    <script>
+        
+    </script>
+{% endblock %}
+{% block article %}
+    <ol class="breadcrumb">
+        <li><a href="{% url 'index' %}"><i class="fa fa-fw fa-calendar"></i> Inicio</a></li>
+        {% if "calendario" in error %}
+        <li><a href="{% url 'calendario:all' %}">Calendarios</a></li>
+        {% endif %}
+        <li class="active">No existe</li>
+    </ol>
+    <h2 class="text-center">
+        404 {{ error }}
+    </h2>
+{% endblock %}

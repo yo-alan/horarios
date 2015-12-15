@@ -28,3 +28,8 @@ urlpatterns = [
     url(r'^perfil/', include('perfil.urls', namespace="perfil")),
     url(r'^admin/', include(admin.site.urls)),
 ]
+
+handler400 = calendario_views.bad_request
+handler403 = calendario_views.permission_denied
+handler404 = calendario_views.page_not_found
+handler500 = calendario_views.server_error
