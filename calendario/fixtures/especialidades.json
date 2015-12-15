@@ -6,7 +6,7 @@
       "nombre": "Ingles",
       "carga_horaria_semanal": 5,
       "max_horas_diaria": 2,
-      "color": "",
+      "color": "#ffbf00",
       "fecha_creacion": "2015-12-14 00:00:00.000000-03",
       "fecha_modificacion": "2015-12-14 00:00:00.000000-03"
     }
@@ -18,7 +18,7 @@
       "nombre": "Lengua",
       "carga_horaria_semanal": 5,
       "max_horas_diaria": 2,
-      "color": "",
+      "color": "#01df74",
       "fecha_creacion": "2015-12-14 00:00:00.000000-03",
       "fecha_modificacion": "2015-12-14 00:00:00.000000-03"
     }
@@ -30,7 +30,7 @@
       "nombre": "Matemática",
       "carga_horaria_semanal": 5,
       "max_horas_diaria": 2,
-      "color": "",
+      "color": "#9a2efe",
       "fecha_creacion": "2015-12-14 00:00:00.000000-03",
       "fecha_modificacion": "2015-12-14 00:00:00.000000-03"
     }
@@ -42,7 +42,7 @@
       "nombre": "Física",
       "carga_horaria_semanal": 3,
       "max_horas_diaria": 2,
-      "color": "",
+      "color": "#d0a9f5",
       "fecha_creacion": "2015-12-14 00:00:00.000000-03",
       "fecha_modificacion": "2015-12-14 00:00:00.000000-03"
     }
@@ -54,7 +54,7 @@
       "nombre": "Biología",
       "carga_horaria_semanal": 3,
       "max_horas_diaria": 2,
-      "color": "",
+      "color": "#f7be81",
       "fecha_creacion": "2015-12-14 00:00:00.000000-03",
       "fecha_modificacion": "2015-12-14 00:00:00.000000-03"
     }
@@ -66,7 +66,7 @@
       "nombre": "Filosofía",
       "carga_horaria_semanal": 3,
       "max_horas_diaria": 2,
-      "color": "",
+      "color": "#a9bcf5",
       "fecha_creacion": "2015-12-14 00:00:00.000000-03",
       "fecha_modificacion": "2015-12-14 00:00:00.000000-03"
     }
@@ -78,7 +78,7 @@
       "nombre": "Música",
       "carga_horaria_semanal": 3,
       "max_horas_diaria": 2,
-      "color": "",
+      "color": "#f7819f",
       "fecha_creacion": "2015-12-14 00:00:00.000000-03",
       "fecha_modificacion": "2015-12-14 00:00:00.000000-03"
     }

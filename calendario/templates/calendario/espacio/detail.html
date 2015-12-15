@@ -55,7 +55,11 @@
                             return;
                         }
                         
-                        alert(response.mensaje);
+                        var modal = $("#modal-infomacion");
+                        
+                        $("#modal-infomacion p").html(response.mensaje);
+                        
+                        modal.modal("show");
                     }
                 });
             });
@@ -78,6 +82,9 @@
                     data: formGenerar.serialize(),
                     success: function (response){
                         
+                    },
+                    error: function (response){
+                        location.reload();
                     }
                 });
             });
@@ -95,16 +102,24 @@
                     csrfmiddlewaretoken: '{{ csrf_token }}',
                     calendario_id: calendario_id
                 },
-                success: function(response) {
+                success: function (response){
                     
-                    if(response.error) {
-                        alert(response.error);
+                    if(response.error){
+                        
+                        var modal = $("#modal-error");
+                        
+                        $("#modal-error p").html(response.mensaje);
+                        
+                        modal.modal("show");
+                        
                         return;
                     }
                     
-                    alert(response.mensaje);
+                    var modal = $("#modal-infomacion");
                     
-                    location.reload();
+                    $("#modal-infomacion p").html(response.mensaje);
+                    
+                    modal.modal("show");
                 }
             });
         }
@@ -137,6 +152,52 @@
     <h3 class="text-center">
         Detalles del espacio {{ espacio }}.
     </h3>
+    <div class="modal fade" id="modal-infomacion" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-primary">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        ×
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        <i class="glyphicon glyphicon-info-sign"></i> Información
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <p>
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <a href="{% url 'calendario:espacio_detail' espacio.id %}" class="btn btn-primary pull-right">
+                        Aceptar
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modal-error" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header modal-danger">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        ×
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        <i class="glyphicon glyphicon-info-sign"></i> Error
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <p>
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-primary pull-right">
+                        Aceptar
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="tabbable" id="tabs-776256">
         <ul class="nav nav-tabs">
             <li class="active">

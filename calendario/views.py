@@ -31,10 +31,7 @@ DIAS = {0: 'Domingo', 1: 'Lunes', 2: 'Martes', 3: 'Miércoles',
 
 _status = [False, 0]
 
-DENSIDAD = 500
-
-from django.template import RequestContext
-
+DENSIDAD = 1
 
 def bad_request(request):
     
@@ -349,8 +346,7 @@ def generar(request):
     
     operation_time = time.time()
     
-    for calendario in espacio.poblacion:
-        calendario.full_save()
+    espacio.poblacion[0].full_save()
     
     print " %d individuos en %7.3f seg."\
             % (len(espacio.poblacion), time.time() - operation_time)

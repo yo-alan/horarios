@@ -65,7 +65,13 @@
                 var espacio_horario = document.getElementById(i);
                 
                 if(espacio_horario == null){
-                    alert("El calendario no se puede guardar por que no está completo:" + i);
+                    
+                    var modal = $("#myModal");
+                    
+                    $("#myModal p").html("El calendario no se puede guardar por que no está completo");
+                    
+                    modal.modal("show");
+                    
                     return;
                 }
                 
@@ -123,6 +129,25 @@
     <h3 class="text-center">
         Calendario para "{{ espacio }}".
     </h3>
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header modal-danger">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel"><i class="fa fa-exclamation-triangle"></i> Error</h4>
+                </div>
+                <div class="modal-body">
+                    <p>
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">
+                        Aceptar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
     <ul class="list-inline">
         <li>
             <button class="btn btn-lg btn-default" onclick="nuevo()" title="Nuevo calendario...">

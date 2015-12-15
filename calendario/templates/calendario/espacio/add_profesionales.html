@@ -108,7 +108,13 @@
                 success: function(response) {
                     
                     if(response.error){
-                        alert(response.error);
+                        
+                        var modal = $("#modal-error");
+                        
+                        $("#modal-error p").html(response.mensaje);
+                        
+                        modal.modal("show");
+                        
                         return;
                     }
                     
@@ -146,6 +152,29 @@
                 <div class="modal-body">
                     Ya se encuentra asignado un profesional que ejerce
                     esta especialidad. Quítelo e intente de nuevo.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-warning pull-right" data-dismiss="modal">
+                        Aceptar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modal-error-existente" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header modal-danger">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        ×
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        <i class="glyphicon glyphicon-alert"></i> Error
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <p>
+                    </p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-warning pull-right" data-dismiss="modal">

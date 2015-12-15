@@ -92,7 +92,13 @@
                             return;
                         }
                         
-                        alert(response.mensaje);
+                        var modal = $("#modal-infomacion");
+                        
+                        $("#modal-infomacion p").html(response.mensaje);
+                        
+                        $("#modal-infomacion a").attr("href", "");
+                        
+                        modal.modal("show");
                         
                         var li = "<li id='" + response.id + "' class='list-group-item'>" +
                                         "<p>" +
@@ -148,11 +154,21 @@
                 success: function(response) {
                     
                     if(response.error){
-                        alert(response.error);
+                        
+                        var modal = $("#modal-error");
+                        
+                        $("#modal-error p").html(response.mensaje);
+                        
+                        modal.modal("show");
+                        
                         return;
                     }
                     
-                    alert(response.mensaje);
+                    var modal = $("#modal-infomacion");
+                    
+                    $("#modal-infomacion p").html(response.mensaje);
+                    
+                    modal.modal("show");
                 }
             });
         }
@@ -206,6 +222,29 @@
                     <a href="{% url 'calendario:profesional_all' %}" class="btn btn-primary pull-right">
                         Aceptar
                     </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modal-error" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header modal-danger">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        ×
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        <i class="glyphicon glyphicon-info-sign"></i> Error
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <p>
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger pull-right" data-dismiss="modal">
+                        Aceptar
+                    </button>
                 </div>
             </div>
         </div>
