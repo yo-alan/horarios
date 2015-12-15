@@ -67,13 +67,9 @@ class Espacio(models.Model):
         espacio.PUNTOS_DISTRIBUCION_HORARIA = puntos
         
         from diaHabil import DiaHabil
-        from hora import Hora
         
         for dia_habil in DiaHabil.objects.filter(espacio=espacio):
             espacio._dias_habiles.append(dia_habil)
-        
-        for hora in Hora.objects.filter(espacio=espacio):
-            espacio._horas.append(hora)
         
         return espacio
     
@@ -601,6 +597,22 @@ class Espacio(models.Model):
             
         return elegidos[0]
     
+    def esHoraValida(self, la_hora):
+        
+        # Si el espacio no tiene horas cargadas, la hora es válida.
+        if not self.horas:
+            return True
+        
+        for hora in self.horas:
+            print str(hora.hora_desde) + " <= " + str(la_hora.hora_desde) + " < " + str(hora.hora_hasta)
+            if hora.hora_desde <= la_hora.hora_desde < hora.hora_hasta:
+                return False
+            print str(hora.hora_desde) + " < " + str(la_hora.hora_hasta) + " <= " + str(hora.hora_hasta)
+            if hora.hora_desde < la_hora.hora_hasta <= hora.hora_hasta:
+                return False
+        
+        return True
+    
     @property
     def tamanio_poblacion(self, ):
         return self._tamanio_poblacion
@@ -621,8 +633,7 @@ class Espacio(models.Model):
     def horas(self, ):
         from hora import Hora
         
-        if not self._horas:
-            self._horas = Hora.objects.filter(espacio=self)\
+        self._horas = Hora.objects.filter(espacio=self)\
                                         .order_by('hora_desde')
         
         return self._horas

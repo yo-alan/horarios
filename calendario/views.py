@@ -10,13 +10,10 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-#from reportlab.pdfgen import canvas
-# TEMPORAL
-import cStringIO as StringIO
-from xhtml2pdf import pisa
 from django.template.loader import get_template
 from django.template import Context
-from django.http import HttpResponse
+import cStringIO as StringIO
+from xhtml2pdf import pisa
 from cgi import escape
 
 from .models import Calendario
@@ -104,8 +101,8 @@ def add(request, espacio_id):
         
         calendario.espacio = Espacio.create(espacio_id)
         
-        #Dividimos por 3, esa es la cantidad de atributos.
-        #Mas 1 por que el primero es el csrf.
+        # Dividimos por 3, esa es la cantidad de atributos.
+        # Mas 1 por que el primero es el csrf.
         for i in range(1, len(request.POST)/3+1):
             
             coordinador_id = request.POST[str(i) + '[coordinador]']
@@ -117,7 +114,7 @@ def add(request, espacio_id):
             
             dia_semana = request.POST[str(i) + '[dia]']
             
-            #Creamos un horario y los completamos.
+            # Creamos un horario y los completamos.
             horario = Horario()
             
             horario.coordinador = coordinador
@@ -151,8 +148,8 @@ def edit(request, calendario_id):
         
         calendario = Calendario.create(calendario_id)
         
-        #Dividimos por 3, esa es la cantidad de atributos.
-        #Mas 1 por que el primero es el csrf.
+        # Dividimos por 3, esa es la cantidad de atributos.
+        # Mas 1 por que el primero es el csrf.
         for i in range(1, len(request.POST)/3+1):
             
             coordinador_id = request.POST[str(i) + '[coordinador]']
@@ -164,7 +161,7 @@ def edit(request, calendario_id):
             
             dia_semana = request.POST[str(i) + '[dia]']
             
-            #Creamos un horario y los completamos.
+            # Creamos un horario y los completamos.
             horario = Horario()
             
             horario.coordinador = coordinador
@@ -238,7 +235,7 @@ def generar(request):
     
     operation_time = time.time()
     
-    #Generamos la población inicial.
+    # Generamos la población inicial.
     espacio.generarpoblacioninicial()
     
     print " %d individuos en %7.3f seg."\
@@ -249,14 +246,14 @@ def generar(request):
     
     operation_time = time.time()
     
-    #Evaluamos la población.
+    # Evaluamos la población.
     espacio.fitness(espacio.poblacion)
     
     print " %7.3f seg." % (time.time() - operation_time)
     
     generacion = 0
     
-    #Comienza el ciclo de evolución.
+    # Comienza el ciclo de evolución.
     while generacion != generaciones:
         
         generacion += 1
@@ -270,7 +267,7 @@ def generar(request):
         
         operation_time = time.time()
         
-        #Hacemos la seleccion de padres.
+        # Hacemos la seleccion de padres.
         seleccionados = espacio.seleccion()
         
         print " %7.3f seg." % (time.time() - operation_time)
@@ -280,7 +277,7 @@ def generar(request):
         
         operation_time = time.time()
         
-        #Obtenemos los hijos resultantes del cruce.
+        # Obtenemos los hijos resultantes del cruce.
         hijos = espacio.cruzar(seleccionados)
         
         print " %7.3f seg." % (time.time() - operation_time)
@@ -290,7 +287,7 @@ def generar(request):
         
         operation_time = time.time()
         
-        #Evaluamos la nueva población.
+        # Evaluamos la nueva población.
         espacio.fitness(hijos)
         
         print " %7.3f seg." % (time.time() - operation_time)
@@ -302,7 +299,7 @@ def generar(request):
         
         operation_time = time.time()
         
-        #Actualizamos lo individuos de la población.
+        # Actualizamos lo individuos de la población.
         espacio.actualizarpoblacion(hijos)
         
         print " %7.3f seg." % (time.time() - operation_time)
@@ -569,7 +566,7 @@ def espacio_add_horarios(request, espacio_id=0):
         
         for i in range(7):
             
-            #Formato de dato 'd0', 'd1', 'd2', etc...
+            # Formato de dato 'd0', 'd1', 'd2', etc...
             if request.POST.get('d' + str(i), False):
                 
                 dia_habil = DiaHabil()
@@ -586,6 +583,8 @@ def espacio_add_horarios(request, espacio_id=0):
         for hora in espacio.horas:
             hora.delete()
         
+        espacio._horas = []
+        
         formato = "%H:%M"
         
         i = 0
@@ -598,7 +597,7 @@ def espacio_add_horarios(request, espacio_id=0):
                 hora_desde = request.POST['h' + str(i)]
                 hora_desde = datetime.strptime(hora_desde, formato)
                 
-                # Determinamos la hora desde con el intervalo "modulo".
+                # Determinamos la hora hasta con el intervalo "modulo".
                 hora_hasta = hora_desde + timedelta(minutes=int(modulo))
                 
                 hora = Hora()
@@ -606,6 +605,12 @@ def espacio_add_horarios(request, espacio_id=0):
                 hora.espacio = espacio
                 hora.hora_desde = hora_desde.time()
                 hora.hora_hasta = hora_hasta.time()
+                
+                if not espacio.esHoraValida(hora):
+                    
+                    error = "La hora no es válida:", str(hora.hora_desde)
+                    
+                    raise Exception(error)
                 
                 hora.save()
                 
@@ -653,7 +658,7 @@ def espacio_add_especialidades(request, espacio_id=0):
         data = {'mensaje': "Las especialidades fueron asignadas exitosamente."}
         
     except KeyError as ex:
-        #KeyError 'especialidades[]', vacio todo el arreglo.
+        # KeyError 'especialidades[]', vacio todo el arreglo.
         for especialidad in espacio.especialidades.all():
             espacio.especialidades.remove(especialidad)
         
@@ -722,7 +727,7 @@ def espacio_add_profesionales(request, espacio_id=0):
         data = {'mensaje': "Los profesionales fueron asignados exitosamente."}
         
     except KeyError as ex:
-        #KeyError 'profesionales[]', vacio todo el arreglo.
+        # KeyError 'profesionales[]', vacio todo el arreglo.
         for profesional in espacio.profesionales.all():
             espacio.profesionales.remove(profesional)
         
@@ -904,7 +909,7 @@ def profesional_add_especialidades(request, ):
         data = {'mensaje': "Las especialidades fueron asignadas exitosamente."}
         
     except KeyError as ex:
-        #KeyError 'especialidades[]', vacio todo el arreglo.
+        # KeyError 'especialidades[]', vacio todo el arreglo.
         for especialidad in profesional.especialidades.all():
             profesional.especialidades.remove(especialidad)
         
@@ -943,8 +948,8 @@ def especialidad_add(request):
         carga_horaria_semanal = request.POST["carga_horaria_semanal"]
         max_horas_diaria = request.POST["max_horas_diaria"]
         
-        #TODO si el usuario no quiere que exista un maximo de horas
-        #diarias podria querer poner un valor superior...
+        # TODO si el usuario no quiere que exista un maximo de horas
+        # diarias podria querer poner un valor superior...
         if carga_horaria_semanal < max_horas_diaria:
             raise Exception("La carga horaria semanal no puede ser menor que la cantidad de horas.")
         
@@ -1180,17 +1185,3 @@ def status(request):
     data = {"status": _status[1]}
     
     return JsonResponse(data)
-
-import os
-from django.conf import settings
-
-def fetch_resources(uri, rel):
-    """
-    Callback to allow pisa/reportlab to retrieve Images,Stylesheets, etc.
-    `uri` is the href attribute from the html link element.
-    `rel` gives a relative path, but it's not used here.
-
-    """
-    path = os.path.join(settings.MEDIA_ROOT, uri.replace(settings.MEDIA_URL, ""))
-    
-    return path
