@@ -623,7 +623,22 @@ class Espacio(models.Model):
     
     @property
     def poblacion(self, ):
-        return self._poblacion
+        try:
+            return self._poblacion
+        except AttributeError:
+            
+            from calendario import Calendario
+            
+            self._poblacion = []
+            
+            for calendario in Calendario.objects.filter(espacio=self):
+                
+                calendario = Calendario.create(calendario.id)
+                
+                self._poblacion.append(calendario)
+            
+            return self._poblacion
+        
     
     @poblacion.setter
     def poblacion(self, poblacion):

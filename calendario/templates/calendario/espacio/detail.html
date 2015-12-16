@@ -131,9 +131,12 @@
                 type: 'GET',
                 success: function(response) {
                     
-                    $("#progress-bar").width(response.status + "%");
+                    if(response.status == false)
+                        location.reload();
                     
-                    $("#progress-bar b").html(response.status + "% Completo");
+                    $("#progress-bar").width(response.progress + "%");
+                    
+                    $("#progress-bar b").html(response.progress + "% Completo");
                 }
             }); 
         }
