@@ -257,106 +257,106 @@ def generar(request):
     
     generaciones = cant_generaciones(request.POST['generaciones'])
     
-    #~ try:
-    
-    espacio = Espacio.create(espacio_id)
-    
-    print "Generando población inicial... ",
-    sys.stdout.flush()
-    
-    global_time = time.time()
-    
-    operation_time = time.time()
-    
-    # Generamos la población inicial.
-    espacio.generarpoblacioninicial()
-    
-    print " %d individuos en %7.3f seg."\
-            % (len(espacio.poblacion), time.time() - operation_time)
-    
-    print "Evaluando la población... ",
-    sys.stdout.flush()
-    
-    operation_time = time.time()
-    
-    # Evaluamos la población.
-    espacio.fitness(espacio.poblacion)
-    
-    print " %7.3f seg." % (time.time() - operation_time)
-    
-    generacion = 0
-    
-    # Comienza el ciclo de evolución.
-    while generacion != generaciones:
+    try:
         
-        generacion += 1
+        espacio = Espacio.create(espacio_id)
         
-        _status[1] = generacion * 100 / generaciones
+        print "Generando población inicial... ",
+        sys.stdout.flush()
         
-        print "Generación %d/%d" % (generacion, generaciones)
+        global_time = time.time()
         
-        print "Seleccionando individuos para el cruce... ",
+        operation_time = time.time()
+        
+        # Generamos la población inicial.
+        espacio.generarpoblacioninicial()
+        
+        print " %d individuos en %7.3f seg."\
+                % (len(espacio.poblacion), time.time() - operation_time)
+        
+        print "Evaluando la población... ",
         sys.stdout.flush()
         
         operation_time = time.time()
         
-        # Hacemos la seleccion de padres.
-        seleccionados = espacio.seleccion()
+        # Evaluamos la población.
+        espacio.fitness(espacio.poblacion)
         
         print " %7.3f seg." % (time.time() - operation_time)
         
-        print "Cruzando los individuos... ",
+        generacion = 0
+        
+        # Comienza el ciclo de evolución.
+        while generacion != generaciones:
+            
+            generacion += 1
+            
+            _status[1] = generacion * 100 / generaciones
+            
+            print "Generación %d/%d" % (generacion, generaciones)
+            
+            print "Seleccionando individuos para el cruce... ",
+            sys.stdout.flush()
+            
+            operation_time = time.time()
+            
+            # Hacemos la seleccion de padres.
+            seleccionados = espacio.seleccion()
+            
+            print " %7.3f seg." % (time.time() - operation_time)
+            
+            print "Cruzando los individuos... ",
+            sys.stdout.flush()
+            
+            operation_time = time.time()
+            
+            # Obtenemos los hijos resultantes del cruce.
+            hijos = espacio.cruzar(seleccionados)
+            
+            print " %7.3f seg." % (time.time() - operation_time)
+            
+            print "Evaluando la nueva población... ",
+            sys.stdout.flush()
+            
+            operation_time = time.time()
+            
+            # Evaluamos la nueva población.
+            espacio.fitness(hijos)
+            
+            print " %7.3f seg." % (time.time() - operation_time)
+            
+            print "Hijos generados", len(hijos)
+            
+            print "Actualizando la población... ",
+            sys.stdout.flush()
+            
+            operation_time = time.time()
+            
+            # Actualizamos lo individuos de la población.
+            espacio.actualizarpoblacion(hijos)
+            
+            print " %7.3f seg." % (time.time() - operation_time)
+            
+            print "Grado de la población: ", espacio.grado
+            
+            print "----------------------------------------------------"
+            
+        
+        print "Guardando los individuos... ",
         sys.stdout.flush()
         
         operation_time = time.time()
         
-        # Obtenemos los hijos resultantes del cruce.
-        hijos = espacio.cruzar(seleccionados)
+        espacio.poblacion[0].full_save()
         
-        print " %7.3f seg." % (time.time() - operation_time)
+        print " %d individuos en %7.3f seg."\
+                % (len(espacio.poblacion), time.time() - operation_time)
+        print
+        print "La evolución tardó %7.3f seg."\
+                % (time.time() - global_time)
         
-        print "Evaluando la nueva población... ",
-        sys.stdout.flush()
-        
-        operation_time = time.time()
-        
-        # Evaluamos la nueva población.
-        espacio.fitness(hijos)
-        
-        print " %7.3f seg." % (time.time() - operation_time)
-        
-        print "Hijos generados", len(hijos)
-        
-        print "Actualizando la población... ",
-        sys.stdout.flush()
-        
-        operation_time = time.time()
-        
-        # Actualizamos lo individuos de la población.
-        espacio.actualizarpoblacion(hijos)
-        
-        print " %7.3f seg." % (time.time() - operation_time)
-        
-        print "Grado de la población: ", espacio.grado
-        
-        print "----------------------------------------------------"
-        
-    
-    print "Guardando los individuos... ",
-    sys.stdout.flush()
-    
-    operation_time = time.time()
-    
-    espacio.poblacion[0].full_save()
-    
-    print " %d individuos en %7.3f seg."\
-            % (len(espacio.poblacion), time.time() - operation_time)
-    print
-    print "La evolución tardó %7.3f seg."\
-            % (time.time() - global_time)
-        
-    #~ except Exception as ex:
-        #~ print ex
+    except Exception as ex:
+        print ex
     
     _status = [False, 0]
 
