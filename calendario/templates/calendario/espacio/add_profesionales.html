@@ -24,7 +24,6 @@
                 $("#cant-disponible").html(cantidad);
             });
             
-            
             var cantidad = 0;
             
             $("#pAsignados li").each(function (){
@@ -154,7 +153,7 @@
                     esta especialidad. Quítelo e intente de nuevo.
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-warning pull-right" data-dismiss="modal">
+                    <button type="button" class="btn btn-danger pull-right" data-dismiss="modal">
                         Aceptar
                     </button>
                 </div>
@@ -177,7 +176,7 @@
                     </p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-warning pull-right" data-dismiss="modal">
+                    <button type="button" class="btn btn-danger pull-right" data-dismiss="modal">
                         Aceptar
                     </button>
                 </div>
@@ -200,7 +199,7 @@
                     </p>
                 </div>
                 <div class="modal-footer">
-                    <a href="{% url 'calendario:espacio_add_horarios' espacio.id %}" class="btn btn-primary pull-right">
+                    <a href="{% url 'calendario:espacio_all' %}" class="btn btn-primary pull-right">
                         Continuar
                     </a>
                 </div>

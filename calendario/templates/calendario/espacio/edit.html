@@ -4,7 +4,7 @@
 
 {% block head %}
     <script>
-        $(function(){
+        $(function (){
             
             $("[data-hide]").click(function(){
                 $(".alert-danger").attr('class', "alert alert-dismissable alert-danger hidden");
@@ -16,7 +16,7 @@
                 
                 ev.preventDefault();
                 
-                $("#" + form.attr('id') + " button[type=submit]").button('loading');
+                form.children("button[type=submit]").button('loading');
                 
                 $.ajax({
                     url: form.attr('action'),
@@ -24,7 +24,7 @@
                     data: form.serialize(),
                     success: function (response){
                         
-                        $("#" + form.attr('id') + " button[type=submit]").button('reset');
+                        form.children("button[type=submit]").button('reset');
                         
                         $(".form-group").attr('class', "form-group");
                         
@@ -78,7 +78,7 @@
                     </p>
                 </div>
                 <div class="modal-footer">
-                    <a href="{% url 'calendario:espacio_add_especialidades' espacio.id %}" class="btn btn-primary pull-right">
+                    <a href="{% url 'calendario:espacio_add_horarios' espacio.id %}" class="btn btn-primary pull-right">
                         Continuar
                     </a>
                 </div>

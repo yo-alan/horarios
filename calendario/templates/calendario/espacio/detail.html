@@ -31,7 +31,7 @@
                 
                 ev.preventDefault();
                 
-                $("#" + form.attr('id') + " button[type=submit]").button('loading');
+                form.children("button[type=submit]").button('loading');
                 
                 $.ajax({
                     url: form.attr('action'),
@@ -39,7 +39,7 @@
                     data: form.serialize(),
                     success: function (response){
                         
-                        $("#" + form.attr('id') + " button[type=submit]").button('reset');
+                        form.children("button[type=submit]").button('reset');
                         
                         $(".form-group").attr('class', "form-group");
                         
@@ -70,7 +70,7 @@
                 
                 ev.preventDefault();
                 
-                $("#" + formGenerar.attr('id') + " button[type=submit]").button('loading');
+                formGenerar.children("button[type=submit]").button('loading');
                 
                 $("#progress-bar").parent().prop("class", "progress");
                 
@@ -210,11 +210,7 @@
                 <a href="#especialidades" data-toggle="tab"><i class="glyphicon glyphicon-th-list"> Especialidades</i></a>
             </li>
             <li>
-            {% if espacio.especialidades.all %}
                 <a href="#profesionales" data-toggle="tab"><i class="glyphicon glyphicon-user"> Profesionales</i></a>
-            {% else %}
-                <a href="#profesionales"><i class="glyphicon glyphicon-user"> Profesionales</i></a>
-            {% endif %}
             </li>
             <li>
                 <a href="#calendarios" data-toggle="tab"><i class="glyphicon glyphicon-calendar"> Calendarios</i></a>
@@ -282,8 +278,7 @@
                             <strong>{{ coordinador.especialidad }}</strong>
                         </div>
                         <div class="panel-body">
-                            Como segundo paso tienes que crear profesionales,
-                            asignándole especialidades y restricciones.
+                            
                             <br>
                             <br>
                             <a href="{% url 'calendario:especialidad_detail' coordinador.especialidad.id %}" class="btn pull-right" style="background-color: {{ coordinador.especialidad.color }}">
@@ -307,8 +302,7 @@
                             <strong>{{ coordinador.profesional }}</strong>
                         </div>
                         <div class="panel-body">
-                            Como segundo paso tienes que crear profesionales,
-                            asignándole especialidades y restricciones.
+                            
                             <br>
                             <br>
                             <a href="{% url 'calendario:profesional_detail' coordinador.profesional.id %}" class="btn btn-info pull-right">

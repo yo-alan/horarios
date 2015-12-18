@@ -4,7 +4,7 @@
 
 {% block head %}
     <script>
-        $(function(){
+        $(function (){
             
             $("[data-hide]").click(function(){
                 $(".alert-danger").attr('class', "alert alert-dismissable alert-danger hidden");
@@ -16,7 +16,7 @@
                 
                 ev.preventDefault();
                 
-                $("#" + form.attr('id') + " button[type=submit]").button('loading');
+                form.children("button[type=submit]").button('loading');
                 
                 $.ajax({
                     url: form.attr('action'),
@@ -24,7 +24,7 @@
                     data: form.serialize(),
                     success: function (response){
                         
-                        $("#" + form.attr('id') + " button[type=submit]").button('reset');
+                        form.children("button[type=submit]").button('reset');
                         
                         $(".form-group").attr('class', "form-group");
                         
@@ -48,7 +48,7 @@
                         
                         var a = modal.children("div").children("div").children("div").children("a");
                         
-                        a.attr("href", "/calendario/espacio/especialidades/" + response.espacio_id);
+                        a.attr("href", "/calendario/espacio/horarios/" + response.espacio_id);
                     }
                 });
             });
@@ -106,13 +106,12 @@
             <div class="form-group">
                 <label class="col-xs-4 control-label" for="nombre">Nombre:</label>
                 <div class="col-xs-8">
-                    <input type="text" id="nombre" name="nombre" class="form-control" autofocus placeholder="Nombre del espacio">
+                    <input type="text" id="nombre" name="nombre" class="form-control" placeholder="Nombre del espacio" autofocus>
                 </div>
             </div>
-                <button type="submit" id="btnGuardar" data-loading-text="Guardando..." class="btn btn-primary pull-right" autocomplete="off">
-                    <i class="glyphicon glyphicon-floppy-save"></i> Guardar y continuar
-                </button>
-            </div>
+            <button type="submit" id="btnGuardar" data-loading-text="Guardando..." class="btn btn-primary pull-right" autocomplete="off">
+                <i class="glyphicon glyphicon-floppy-save"></i> Guardar y continuar
+            </button>
         </form>
     </div>
 {% endblock %}

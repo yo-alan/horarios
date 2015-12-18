@@ -45,7 +45,7 @@ urlpatterns = [
     # ex: /calendario/espacio/profesionales/5
     url(r'^espacio/profesionales/(?P<espacio_id>[0-9]+)/$', views.espacio_add_profesionales, name='espacio_add_profesionales'),
     # ex: /calendario/espacio/horarios/add/
-    url(r'^espacio/horarios/add/(?P<espacio_id>[0-9]+)/$', views.espacio_add_horarios, name='espacio_add_horarios'),
+    url(r'^espacio/horarios/(?P<espacio_id>[0-9]+)/$', views.espacio_add_horarios, name='espacio_add_horarios'),
     
     # ex: /calendario/profesional/
     url(r'^profesional/$', views.profesional_all, name='profesional_all'),
