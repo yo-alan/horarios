@@ -99,42 +99,42 @@ class Espacio(models.Model):
         from calendario import Calendario
         from horario import Horario
         
-        #Iteramos generando todas las combinaciones de horarios
-        #posibles. Y agregamos cada uno a un calendario.
+        # Iteramos generando todas las combinaciones de horarios
+        # posibles. Y agregamos cada uno a un calendario.
         
         individuos = []
         
-        #Cantidad de iteraciones por los dias.
+        # Cantidad de iteraciones por los dias.
         for dia in self.dias_habiles:
             
-            #Cantidad de iteraciones por los horarios.
+            # Cantidad de iteraciones por los horarios.
             for hora in self.horas:
                 
-                #Iteracion por cada coordinador.
+                # Iteracion por cada coordinador.
                 for coordinador in self.coordinadores:
                     
-                    #Se crea un Calendario.
+                    # Se crea un Calendario.
                     calendario = Calendario.create()
-                    #Se le asigna este espacio.
+                    # Se le asigna este espacio.
                     calendario.espacio = self
-                    #A su vez el Calendario es agregado a la poblacion.
+                    # A su vez el Calendario es agregado a la poblacion.
                     individuos.append(calendario)
                     
-                    #Se crea un Horario.
+                    # Se crea un Horario.
                     horario = Horario()
-                    #Se le asigna el Coordinador.
+                    # Se le asigna el Coordinador.
                     horario.coordinador = coordinador
-                    #Se le asigna una hora desde.
+                    # Se le asigna una hora desde.
                     horario.hora_desde = hora.hora_desde
-                    #Se le asigna una hora hasta.
+                    # Se le asigna una hora hasta.
                     horario.hora_hasta = hora.hora_hasta
-                    #Se le asigna un dia de la semana.
+                    # Se le asigna un dia de la semana.
                     horario.dia_semana = dia.dia
-                    #El Horario es agregado al Calendario.
+                    # El Horario es agregado al Calendario.
                     calendario.agregar_horario(horario)
                     
         
-        #Rellenamos el Calendario generando Horarios.
+        # Rellenamos el Calendario generando Horarios.
         
         coordinadores_asig_global = []
         
@@ -156,10 +156,10 @@ class Espacio(models.Model):
                     coordinadores_asig.remove(coordinador)
                     break
             
-            #Iteramos por la cantidad de dias.
+            # Iteramos por la cantidad de dias.
             for dia in self.dias_habiles:
                 
-                #Tambien por la cantidad de horarios.
+                # Tambien por la cantidad de horarios.
                 for hora in self.horas:
                     
                     if len(coordinadores_asig) == 0:
@@ -169,32 +169,32 @@ class Espacio(models.Model):
                     
                     coordinador = coordinadores_asig[indice]
                     
-                    #Se crea un Horario.
+                    # Se crea un Horario.
                     horario = Horario()
-                    #Se le asigna el Coordinador.
+                    # Se le asigna el Coordinador.
                     horario.coordinador = coordinador
-                    #Se le asigna una hora desde.
+                    # Se le asigna una hora desde.
                     horario.hora_desde = hora.hora_desde
-                    #Se le asigna una hora hasta.
+                    # Se le asigna una hora hasta.
                     horario.hora_hasta = hora.hora_hasta
-                    #Se le asigna un dia de la semana.
+                    # Se le asigna un dia de la semana.
                     horario.dia_semana = dia.dia
                     
-                    #Comprobamos que el Horario generado
-                    #no exista en el Calendario.
+                    # Comprobamos que el Horario generado
+                    # no exista en el Calendario.
                     existe = False
                     for franja_horaria in individuo.horarios:
                         for horario_comp in franja_horaria:
                             if horario == horario_comp:
                                 existe = True
                     
-                    #Si ya existia continuamos generando.
+                    # Si ya existia continuamos generando.
                     if existe:
                         continue
                     
                     coordinadores_asig.remove(coordinador)
                     
-                    #Lo agregamos a la lista de horarios del Calendario.
+                    # Lo agregamos a la lista de horarios del Calendario.
                     individuo.agregar_horario(horario)
             
             self.poblacion.append(individuo)
@@ -213,25 +213,25 @@ class Espacio(models.Model):
         None.
         """
         
-        #Por cada individuo en la poblacion.
+        # Por cada individuo en la poblacion.
         for calendario in poblacion[:]:
             
-            #Si el individuo no cumple la asignacion de horas semanales
-            #es abortado.
+            # Si el individuo no cumple la asignacion de horas semanales
+            # es abortado.
             if self.asignacion_semanal(calendario) != 0:
                 poblacion.remove(calendario)
                 continue
             
-            #Primera evaluacion: Se evalua que los horarios asignados
-            #cumplan las restricciones del profesional que contienen.
+            # Primera evaluacion: Se evalua que los horarios asignados
+            # cumplan las restricciones del profesional que contienen.
             calendario.puntaje += self.asignacion_horaria(calendario)
             
-            #Segunda evaluacion: Se busca que las especialidades
-            #cumplan con la horas maximas por dia.
+            # Segunda evaluacion: Se busca que las especialidades
+            # cumplan con la horas maximas por dia.
             calendario.puntaje += self.asignacion_diaria(calendario)
             
-            #Tercera evaluación: En esta instancia se desea comprobar
-            #la distribución horaria de las especialidades.
+            # Tercera evaluación: En esta instancia se desea comprobar
+            # la distribución horaria de las especialidades.
             calendario.puntaje += self.distribucion_horaria(calendario)
     
     def seleccion(self, ):
@@ -248,14 +248,14 @@ class Espacio(models.Model):
         
         parejas = []
         
-        #La division por 4 representa el número de parejas para cruzar.
+        # La division por 4 representa el número de parejas para cruzar.
         cantidad_parejas = len(self.poblacion) / CANT_PAREJAS
         
         while cantidad_parejas > len(parejas):
             
             pareja = self.seleccionar()
             
-            #Damos vuelta la pareja para asegurarnos la evaluación.
+            # Damos vuelta la pareja para asegurarnos la evaluación.
             jarepa = (pareja[1], pareja[0])
             
             if pareja not in parejas and jarepa not in parejas:
@@ -277,10 +277,10 @@ class Espacio(models.Model):
         
         poblacion_nueva = []
         
-        #Obtenemos cada pareja (padre y madre) del listado.
+        # Obtenemos cada pareja (padre y madre) del listado.
         for padre, madre in parejas:
             
-            #Y los cruzamos. Almacenamos los hijos resultantes.
+            # Y los cruzamos. Almacenamos los hijos resultantes.
             poblacion_nueva += padre.crossover(madre)
         
         return poblacion_nueva
@@ -297,15 +297,15 @@ class Espacio(models.Model):
         None.
         """
         
-        #Dividimos la población a la mitad.
+        # Dividimos la población a la mitad.
         punto_corte = len(self.poblacion) / 2
         
         irreemplazables = self.poblacion[:punto_corte]
         reemplazables = self.poblacion[punto_corte:]
         asignables = []
         
-        #Aleatoriamente quitamos individuos de la peor mitad y los
-        #reemplazamos por los hijos.
+        # Aleatoriamente quitamos individuos de la peor mitad y los
+        # reemplazamos por los hijos.
         for calendario in hijos:
             
             i = randint(0, len(reemplazables)-1)
@@ -316,7 +316,7 @@ class Espacio(models.Model):
         
         self.poblacion = irreemplazables + reemplazables + asignables
         
-        #Y por último ordenamos la población.
+        # Y por último ordenamos la población.
         self.poblacion.sort()
     
     def asignacion_horaria(self, calendario):
@@ -333,13 +333,13 @@ class Espacio(models.Model):
         
         puntos = 0
         
-        #Por cada franja de horarios.
+        # Por cada franja de horarios.
         for franja_horaria in calendario.horarios:
             
-            #Por cada horario dentro de la franja.
+            # Por cada horario dentro de la franja.
             for horario in franja_horaria:
                 
-                #Si el horario no está bien asignado es penalizado.
+                # Si el horario no está bien asignado es penalizado.
                 if not self.itswellassigned(horario):
                     puntos += self.PUNTOS_RESTRICCION_PROFESIONAL
                     horario.penalizado += 1
@@ -361,10 +361,10 @@ class Espacio(models.Model):
         
         puntos = 0
         
-        #Por cada especialidad en el espacio.
+        # Por cada especialidad en el espacio.
         for especialidad in self.especialidades.all():
             
-            #Obtenemos la cantidad de horas semanales de la especialidad.
+            # Obtenemos la cantidad de horas semanales de la especialidad.
             horas_semanales = self.horas_semanales_de(especialidad, calendario)
             
             puntos += horas_semanales * PUNTOS_HORAS_SEMANALES
@@ -393,7 +393,7 @@ class Espacio(models.Model):
                 
                 for i in range(len(self.horas)):
                     
-                    #Obtenemos el horario a evaluar.
+                    # Obtenemos el horario a evaluar.
                     horario = calendario.horarios[i][j]
                     
                     if especialidad == horario.coordinador.especialidad:
@@ -425,7 +425,7 @@ class Espacio(models.Model):
             
             for i in range(len(self.horas)-2):
                 
-                #Obtenemos los 3 horarios a comparar.
+                # Obtenemos los 3 horarios a comparar.
                 horario_anterior = calendario.horarios[i][j]
                 horario = calendario.horarios[i+1][j]
                 horario_siguiente = calendario.horarios[i+2][j]
@@ -437,14 +437,14 @@ class Espacio(models.Model):
             horario_1 = calendario.horarios[0][j]
             horario_2 = calendario.horarios[1][j]
             
-            #Evaluamos el extremo inicial.
+            # Evaluamos el extremo inicial.
             if horario_1.coordinador != horario_2.coordinador:
                 puntos += self.PUNTOS_DISTRIBUCION_HORARIA
             
             horario_1 = calendario.horarios[i+1][j]
             horario_2 = calendario.horarios[i+2][j]
             
-            #Evaluamos el extremo final.
+            # Evaluamos el extremo final.
             if horario_1.coordinador != horario_2.coordinador:
                 puntos += self.PUNTOS_DISTRIBUCION_HORARIA
         
@@ -463,7 +463,7 @@ class Espacio(models.Model):
         boolean.
         """
         
-        #Por cada restriccion del profesional.
+        # Por cada restriccion del profesional.
         for restriccion in horario.coordinador.profesional.restricciones.all():
             
             #Si no es el mismo dia de la semana del horario continuamos.
@@ -503,16 +503,16 @@ class Espacio(models.Model):
         Int.
         """
         
-        #Contador de horas semanales.
+        # Contador de horas semanales.
         horas_semanales = 0
         
-        #Por cada franja de horarios.
+        # Por cada franja de horarios.
         for franja_horaria in calendario.horarios:
             
-            #Por cada horario en la franja horaria.
+            # Por cada horario en la franja horaria.
             for horario in franja_horaria:
                 
-                #Si la especialidad es igual, contamos.
+                # Si la especialidad es igual, contamos.
                 if horario.coordinador.especialidad == especialidad:
                     horas_semanales += 1
         
@@ -530,10 +530,10 @@ class Espacio(models.Model):
         padre = None
         madre = None
         
-        #Los elegidos para competir.
+        # Los elegidos para competir.
         elegidos = []
         
-        #Seleccionamos los individuos para el torneo aleatoriamente.
+        # Seleccionamos los individuos para el torneo aleatoriamente.
         for i in range(PARTICIPANTES):
             
             indice = randrange(len(self.poblacion))
@@ -543,7 +543,7 @@ class Espacio(models.Model):
             if calendario not in elegidos:
                 elegidos.append(calendario)
         
-        #Obtenemos al primer ganador.
+        # Obtenemos al primer ganador.
         padre = self.winneroftournament(elegidos)
         
         while madre != padre:
@@ -559,7 +559,7 @@ class Espacio(models.Model):
                 if calendario not in elegidos:
                     elegidos.append(calendario)
             
-            #Obtenemos al segundo ganador.
+            # Obtenemos al segundo ganador.
             madre = self.winneroftournament(elegidos)
         
         return (padre, madre)
@@ -573,7 +573,7 @@ class Espacio(models.Model):
         elegidos: Calendario[].
         
         @Return:
-        calendario: Calendario.
+        Calendario.
         """
         
         while len(elegidos) != 1:
@@ -590,24 +590,19 @@ class Espacio(models.Model):
             
             if calendario1 < calendario2:
                 elegidos.remove(calendario1)
-            elif calendario1 > calendario2:
-                elegidos.remove(calendario2)
             else:
                 elegidos.remove(calendario2)
-            
+        
         return elegidos[0]
     
     def esHoraValida(self, la_hora):
         
-        # Si el espacio no tiene horas cargadas, la hora es válida.
-        if not self.horas:
-            return True
-        
+        # Verificamos que no se solape con alguna ya cargada.
         for hora in self.horas:
-            print str(hora.hora_desde) + " <= " + str(la_hora.hora_desde) + " < " + str(hora.hora_hasta)
+            
             if hora.hora_desde <= la_hora.hora_desde < hora.hora_hasta:
                 return False
-            print str(hora.hora_desde) + " < " + str(la_hora.hora_hasta) + " <= " + str(hora.hora_hasta)
+            
             if hora.hora_desde < la_hora.hora_hasta <= hora.hora_hasta:
                 return False
         
@@ -638,7 +633,6 @@ class Espacio(models.Model):
                 self._poblacion.append(calendario)
             
             return self._poblacion
-        
     
     @poblacion.setter
     def poblacion(self, poblacion):
