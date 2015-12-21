@@ -1,7 +1,7 @@
-*Horarios*
+*Horarios!*
 ========
 
-***Práctica Profesional/Trabajo Final Integrador 2015 - UDC***
+***Generador de calendarios***
 
 Es una aplicación que permite la organización de horarios y la asignación de profesionales que deben intervenir sobre determinado espacio o grupo. La aplicación tomará en cuenta las distintas restricciones que cada profesional tiene, buscando evitar posibles superposiciones, ahorrar tiempo y tratar de lograr satisfacer lo más cercanamente posible los objetivos deseados.
 
