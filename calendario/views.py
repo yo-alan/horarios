@@ -25,6 +25,7 @@ from .models import Espacio
 from .models import Hora
 from .models import Coordinador
 from .models import DiaHabil
+from perfil.models import Actividad
 
 DIAS = {0: 'Domingo', 1: 'Lunes', 2: 'Martes', 3: 'Miércoles',
         4: 'Jueves', 5: 'Viernes', 6: 'Sábado', 7: "Todos los días"}
@@ -158,6 +159,13 @@ def add(request, espacio_id):
         
         calendario.full_save()
         
+        actividad = Actividad()
+        
+        actividad.usuario = request.user.username
+        actividad.mensaje = "Agregó un calendario a " + str(espacio)
+        
+        actividad.save()
+        
         data = {'mensaje': "El calendario fue creado exitosamente."}
         
         return JsonResponse(data)
@@ -205,6 +213,13 @@ def edit(request, calendario_id):
         
         calendario.full_save()
         
+        actividad = Actividad()
+        
+        actividad.usuario = request.user.username
+        actividad.mensaje = "Editó el calendario #" + str(calendario.id)
+        
+        actividad.save()
+        
         return HttpResponseRedirect(reverse('calendario:espacio_all'))
     
     calendario = Calendario.create(calendario_id)
@@ -235,6 +250,13 @@ def delete(request):
         calendario = Calendario.create(calendario_id)
         
         calendario.delete()
+        
+        actividad = Actividad()
+        
+        actividad.usuario = request.user.username
+        actividad.mensaje = "Eliminó el calendario #" + str(calendario.id)
+        
+        actividad.save()
         
         data = {"mensaje": "El calendario se eliminó exitosamente."}
         
@@ -480,6 +502,13 @@ def espacio_add(request):
         
         espacio.save()
         
+        actividad = Actividad()
+        
+        actividad.usuario = request.user.username
+        actividad.mensaje = "Agregó el espacio " + str(espacio)
+        
+        actividad.save()
+        
         data = {'mensaje': "El espacio ha sido guardado exitosamente.",
                 'espacio_id': espacio.id}
         
@@ -516,6 +545,13 @@ def espacio_edit(request, espacio_id=0):
         
         espacio.save()
         
+        actividad = Actividad()
+        
+        actividad.usuario = request.user.username
+        actividad.mensaje = "Editó el espacio " + str(espacio)
+        
+        actividad.save()
+        
         data = {'mensaje': "El espacio fue editado exitosamente."}
         
     except Exception as ex:
@@ -542,6 +578,13 @@ def espacio_delete(request):
         espacio.usuario_modificador = request.user.username
         
         espacio.save()
+        
+        actividad = Actividad()
+        
+        actividad.usuario = request.user.username
+        actividad.mensaje = "Eliminó el espacio " + str(espacio)
+        
+        actividad.save()
         
         data = {'mensaje': "El espacio fue eliminado exitosamente."}
         
@@ -653,6 +696,13 @@ def espacio_add_horarios(request, espacio_id=0):
             
             i += 1
         
+        actividad = Actividad()
+        
+        actividad.usuario = request.user.username
+        actividad.mensaje = "Modificó los días y las horas del espacio " + str(espacio)
+        
+        actividad.save()
+        
         data = {'mensaje': "Los horarios fueron seteados exitosamente."}
         
     except Exception as ex:
@@ -688,6 +738,13 @@ def espacio_add_especialidades(request, espacio_id=0):
             especialidad = Especialidad.objects.get(pk=especialidad_id)
             
             espacio.especialidades.add(especialidad)
+        
+        actividad = Actividad()
+        
+        actividad.usuario = request.user.username
+        actividad.mensaje = "Modificó las especialidades del espacio " + str(espacio)
+        
+        actividad.save()
         
         data = {'mensaje': "Las especialidades fueron asignadas exitosamente."}
         
@@ -758,6 +815,13 @@ def espacio_add_profesionales(request, espacio_id=0):
             
             coordinador.save()
         
+        actividad = Actividad()
+        
+        actividad.usuario = request.user.username
+        actividad.mensaje = "Modificó los profesionales del espacio " + str(espacio)
+        
+        actividad.save()
+        
         data = {'mensaje': "Los profesionales fueron asignados exitosamente."}
         
     except KeyError as ex:
@@ -811,6 +875,13 @@ def profesional_add(request):
         profesional.usuario_modificador = request.user.username
         
         profesional.save()
+        
+        actividad = Actividad()
+        
+        actividad.usuario = request.user.username
+        actividad.mensaje = "Agregó el profesional " + str(profesional)
+        
+        actividad.save()
         
         data = {'mensaje': "El profesional fue guardado exitosamente."}
         
@@ -878,6 +949,13 @@ def profesional_edit(request):
         
         profesional.save()
         
+        actividad = Actividad()
+        
+        actividad.usuario = request.user.username
+        actividad.mensaje = "Editó el profesional " + str(profesional)
+        
+        actividad.save()
+        
         data = {'mensaje': "El profesional fue editado exitosamente."}
         
     except Exception as ex:
@@ -910,6 +988,13 @@ def profesional_delete(request):
         profesional.usuario_modificador = request.user.username
         
         profesional.save()
+        
+        actividad = Actividad()
+        
+        actividad.usuario = request.user.username
+        actividad.mensaje = "Eliminó el profesional " + str(profesional)
+        
+        actividad.save()
         
         data = {'mensaje': "El profesional fue eliminado exitosamente."}
         
@@ -999,6 +1084,13 @@ def especialidad_add(request):
         
         especialidad.save()
         
+        actividad = Actividad()
+        
+        actividad.usuario = request.user.username
+        actividad.mensaje = "Agregó la especialidad " + str(especialidad)
+        
+        actividad.save()
+        
         data = {'mensaje': "La especialidad fue guardada exitosamente."}
         
     except Exception as ex:
@@ -1046,6 +1138,13 @@ def especialidad_edit(request):
         
         especialidad.save()
         
+        actividad = Actividad()
+        
+        actividad.usuario = request.user.username
+        actividad.mensaje = "Editó la especialidad " + str(especialidad)
+        
+        actividad.save()
+        
         data = {'mensaje': "La especialidad fue editada exitosamente."}
         
     except Exception as ex:
@@ -1081,6 +1180,13 @@ def especialidad_delete(request):
         
         especialidad.save()
         
+        actividad = Actividad()
+        
+        actividad.usuario = request.user.username
+        actividad.mensaje = "Eliminó la especialidad " + str(especialidad)
+        
+        actividad.save()
+        
         data = {'mensaje': "La especialidad fue eliminada exitosamente."}
         
     except Exception as ex:
@@ -1111,6 +1217,13 @@ def restriccion_add(request):
         restriccion.usuario_modificador = request.user.username
         
         restriccion.save()
+        
+        actividad = Actividad()
+        
+        actividad.usuario = request.user.username
+        actividad.mensaje = "Le agregó una restricción a " + str(profesional)
+        
+        actividad.save()
         
         data = {'mensaje': "La restricción fue asignada exitosamente."}
         data["id"] = restriccion.id
@@ -1150,6 +1263,13 @@ def restriccion_edit(request, restriccion_id):
         
         restriccion.save()
         
+        actividad = Actividad()
+        
+        actividad.usuario = request.user.username
+        actividad.mensaje = "Le editó una restricción a " + str(restriccion.profesional)
+        
+        actividad.save()
+        
         data = {'mensaje': "La restricción fue editada exitosamente."}
         
     except Exception as ex:
@@ -1175,6 +1295,13 @@ def restriccion_delete(request):
         restriccion.usuario_modificador = request.user.username
         
         restriccion.save()
+        
+        actividad = Actividad()
+        
+        actividad.usuario = request.user.username
+        actividad.mensaje = "Le eliminó una restricción a " + str(restriccion.profesional)
+        
+        actividad.save()
         
         data = {'mensaje': "La restricción fue eliminada exitosamente."}
         
