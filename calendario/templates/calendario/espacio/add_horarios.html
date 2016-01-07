@@ -1,6 +1,6 @@
 {% extends "admin/base.html" %}
 
-{% block title %}Estructura del calendario{% endblock %}
+{% block title %}Días y horas del calendario{% endblock %}
 
 {% block head %}
     <script>
@@ -282,7 +282,7 @@
         <li class="active">Designar horas</li>
     </ol>
     <h2 class="text-center">
-        Estructura del calendario
+        Días y horas del calendario
     </h2>
     <div class="modal fade" id="modal-infomacion" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -487,8 +487,8 @@
             {% endfor %}
         </tbody>
     </table>
-    <a href="{% url 'calendario:espacio_add_profesionales' espacio.id %}" class="btn btn-default">
-        <i class="glyphicon glyphicon-chevron-left"></i> Volver a profesionales
+    <a href="{% url 'calendario:espacio_edit' espacio.id %}" class="btn btn-default">
+        <i class="glyphicon glyphicon-chevron-left"></i> Volver a espacio
     </a>
     <button id="btnContinuar" class="btn btn-primary pull-right" onclick="guardarEstructura()">
         <i class="glyphicon glyphicon-floppy-save"></i> Guardar

@@ -53,7 +53,6 @@
                 
                 ev.target.parentNode.style.backgroundColor = coordinador.style.backgroundColor;
             }
-            
         }
         
         function guardar(){
@@ -99,10 +98,6 @@
             });
         }
         
-        function imprimir(){
-            alert("Imprimiendo...");
-        }
-        
         function eliminar(ev){
             
             var coordinadorId = ev.dataTransfer.getData("text");
@@ -144,10 +139,6 @@
                 }
             });
         }
-        
-        function nuevo(){
-            location.reload();
-        }
     </script>
 {% endblock %}
 {% block article %}
@@ -160,9 +151,6 @@
     </ol>
     <h3 class="text-center">
         Editando calendario #{{ calendario.id }}
-        <button class="btn btn-danger pull-right" onclick="eliminarCalendario({{ calendario.id }})">
-            <i class="glyphicon glyphicon-trash"></i> <strong>Eliminar calendario</strong>
-        </button>
     </h3>
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog" role="document">
@@ -195,28 +183,14 @@
         </ul>
     </div>
     <div class="col-xs-12">
-        <ul class="list-inline">
-            <li>
-                <button class="btn btn-lg btn-default" onclick="guardar()" title="Guardar cambios">
-                    <i class="glyphicon glyphicon-floppy-save"></i>
-                </button>
-            </li>
-            <li>
-                <button class="btn btn-lg btn-default" onclick="nuevo()" title="Deshacer cambios">
-                    <i class="fa fa-undo"></i>
-                </button>
-            </li>
-            <li>
-                <button class="btn btn-lg btn-default" onclick="imprimir()" title="Imprimir calendario">
-                    <i class="fa fa-file-pdf-o"></i>
-                </button>
-            </li>
-            <li>
-                <a id="trash" class="btn btn-lg btn-default" ondrop="eliminar(event)" ondragover="allowDrop(event)" data-toggle="popover" data-trigger="focus" title="Eliminar horario" data-content="">
-                    <i class="glyphicon glyphicon-trash"></i>
-                </a>
-            </li>
-        </ul>
+        <div class="btn btn-group">
+            <button class="btn btn-lg btn-default" onclick="guardar()" title="Guardar cambios">
+                <i class="glyphicon glyphicon-floppy-save"></i> Guardar
+            </button>
+            <a href="{% url 'calendario:edit' calendario.id %}" class="btn btn-lg btn-default" title="Editar este calendario"><i class="glyphicon glyphicon-edit"></i> Editar</a>
+            <a href="{% url 'calendario:imprimir' calendario.id %}" class="btn btn-lg btn-default" title="Imprimir este calendario" target="_blank"><i class="fa fa-file-pdf-o"></i> Imprimir</a>
+            <a onclick="eliminarCalendario({{ calendario.id }})" class="btn btn-lg btn-danger" title="Eliminar este calendario"><i class="glyphicon glyphicon-trash"></i> Eliminar</a>
+        </div>
     </div>
     <div class="col-xs-12">
         <table class="table calendario">

@@ -4,10 +4,6 @@
 
 {% block head %}
     <script>
-        $(function () {
-            $('[data-toggle="popover"]').popover();
-        });
-        
         function allowDrop(ev) {
             ev.preventDefault();
         }
@@ -19,40 +15,6 @@
         function drop(ev) {
             
             ev.preventDefault();
-            
-            var coordinadorId = ev.dataTransfer.getData("text");
-            var coordinador = document.getElementById(coordinadorId);
-            
-            if(coordinador == null)
-                return;
-            
-            if(ev.target.nodeName == 'STRONG' && coordinador.parentNode.nodeName != 'LI'){
-                
-                var coordinadorDestino = ev.target.parentNode;
-                var divDestino = coordinadorDestino.parentNode;
-                var divOrigen = coordinador.parentNode;
-                
-                divDestino.appendChild(coordinador);
-                divOrigen.appendChild(coordinadorDestino);
-                
-            }
-            else if(ev.target.children.length == 0){
-                
-                if(ev.target.nodeName == 'STRONG')
-                    return;
-                
-                if(coordinador.parentNode.nodeName != 'DIV')
-                    coordinador = coordinador.cloneNode(true);
-                
-                //PARA ASIGNAR UN ID HAY QUE COMPROBAR SU UBICACION.
-                coordinador.setAttribute('id', parseInt(ev.target.getAttribute("horario"))*{{ espacio.dias_habiles|length }}+parseInt(ev.target.getAttribute("dia")));
-                coordinador.setAttribute('desde', ev.target.getAttribute('desde'));
-                coordinador.setAttribute('dia', ev.target.getAttribute('dia'));
-                
-                ev.target.appendChild(coordinador);
-                
-                ev.target.parentNode.style.backgroundColor = coordinador.style.backgroundColor;
-            }
             
         }
         
@@ -99,23 +61,16 @@
             });
         }
         
-        function eliminar(ev){
-            var coordinadorId = ev.dataTransfer.getData("text");
-            var coordinador = document.getElementById(coordinadorId);
-            
-            if(coordinador == null)
-                return;
-            
-            var nodePadre = coordinador.parentNode;
-            
-            if(nodePadre.nodeName == 'DIV'){
-                nodePadre.removeChild(coordinador);
-                nodePadre.parentNode.style.backgroundColor = "white";
-            }
-        }
-        
         function nuevo(){
             location.reload();
+        }
+        
+        function seleccionar(){
+            
+            var modal = $("#seleccionarEspecialidad");
+            
+            modal.modal("show");
+            
         }
     </script>
 {% endblock %}
@@ -127,7 +82,7 @@
         <li class="active">Agregar</li>
     </ol>
     <h3 class="text-center">
-        Calendario para "{{ espacio }}".
+        Calendario para "{{ espacio }}"
     </h3>
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog" role="document">
@@ -148,24 +103,31 @@
             </div>
         </div>
     </div>
-    <ul class="list-inline">
-        <li>
-            <button class="btn btn-lg btn-default" onclick="nuevo()" title="Nuevo calendario...">
-                <i class="glyphicon glyphicon-file"></i>
-            </button>
-        </li>
-        <li>
-            <button class="btn btn-lg btn-default" onclick="guardar()" title="Guardar calendario...">
-                <i class="glyphicon glyphicon-floppy-save"></i>
-            </button>
-        </li>
-        <li>
-            <a id="trash" class="btn btn-lg btn-default" ondrop="eliminar(event)" ondragover="allowDrop(event)" data-toggle="popover" data-trigger="focus" title="Dismissible popover" data-content="iiiiiiiiiiiiiiiiiiiiih">
-                <i class="glyphicon glyphicon-trash"></i>
-            </a>
-        </li>
-    </ul>
-    <div class="col-xs-8">
+    <div class="modal fade" id="seleccionarEspecialidad" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div data-toggle="buttons">
+                    {% for coordinador in espacio.coordinadores %}
+                        <label class="btn btn-lg col-xs-6" style="background-color: {{ coordinador.especialidad.color }}">
+                            <input type="checkbox" autocomplete="off"> {{ coordinador.especialidad }}
+                        </label>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="btn btn-group btn-block">
+        <button class="btn btn-lg btn-default" onclick="nuevo()" title="Nuevo calendario">
+            <i class="glyphicon glyphicon-file"></i> Nuevo
+        </button>
+        <button class="btn btn-lg btn-default" onclick="guardar()" title="Guardar calendario">
+            <i class="glyphicon glyphicon-floppy-save"></i> Guardar
+        </button>
+        <a id="trash" class="btn btn-lg pull-right" ondrop="eliminar(event)" ondragover="allowDrop(event)">
+            <i class="glyphicon glyphicon-trash"></i>
+        </a>
+    </div>
+    <div>
         <table class="table calendario">
             <thead>
                 <tr class="bg-primary">
@@ -188,25 +150,14 @@
                         </td>
                         {% for dia in espacio.dias_habiles %}
                             <td class="text-center">
-                                <div id="{{ hora.hora_desde }}{{ dia.dia }}" dia="{{ dia.dia }}" desde="{{ hora.hora_desde }}" horario="{{ forloop.parentloop.counter0 }}" ondrop="drop(event)" ondragover="allowDrop(event)" class="horario-container">
-                                    
-                                </div>
+                                <button onclick="seleccionar()" class="btn btn-lg btn-default">
+                                    <i class="glyphicon glyphicon-plus"></i>
+                                </button>
                             </td>
                         {% endfor %}
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
-    </div>
-    <div class="col-xs-2 pull-right">
-        <ul class="list-unstyled">
-            {% for coordinador in espacio.coordinadores %}
-                <li>
-                    <p id="{{ coordinador.especialidad|cut:" " }}" name="{{ coordinador.id }}" draggable="true" ondragstart="drag(event)" class="lead especialidad text-center" style="background-color: {{ coordinador.especialidad.color }}">
-                        <strong>{{ coordinador.especialidad }}</strong>
-                    </p>
-                </li>
-            {% endfor %}
-        </ul>
     </div>
 {% endblock %}

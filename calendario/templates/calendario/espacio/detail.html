@@ -325,7 +325,7 @@
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-7 col-lg-7">
                 {% if calendario %}
-                    <div class="btn btn-group btn-block">
+                    <div class="btn btn-group">
                         <a class="btn btn-default" title="Ver este calendario" href="{% url 'calendario:detail' calendario.id %}"><i class="glyphicon glyphicon-eye-open"></i> Ver</a>
                         <a class="btn btn-default" title="Editar este calendario" href="{% url 'calendario:edit' calendario.id %}"><i class="glyphicon glyphicon-edit"></i> Editar</a>
                         <a class="btn btn-default" title="Imprimir este calendario" href="{% url 'calendario:imprimir' calendario.id %}" target="_blank"><i class="fa fa-file-pdf-o"></i> Imprimir</a>
