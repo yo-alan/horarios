@@ -8,51 +8,33 @@
             $('[data-toggle="popover"]').popover();
         });
         
+        var elementTransfer;
+        
         function allowDrop(ev) {
             ev.preventDefault();
         }
         
         function drag(ev) {
-            ev.dataTransfer.setData("text", ev.target.id);
+            ev.dataTransfer.setData("text", ev.target);
+            elementTransfer = ev.target;
         }
         
         function drop(ev) {
             
             ev.preventDefault();
             
-            var coordinadorId = ev.dataTransfer.getData("text");
-            var coordinador = document.getElementById(coordinadorId);
+            var coordinador_origen = $(elementTransfer);
             
-            if(coordinador == null)
-                return;
+            var horario_destino = $(ev.target).parent();
             
-            if(ev.target.nodeName == 'STRONG' && coordinador.parentNode.nodeName != 'LI'){
-                
-                var coordinadorDestino = ev.target.parentNode;
-                var divDestino = coordinadorDestino.parentNode;
-                var divOrigen = coordinador.parentNode;
-                
-                divDestino.appendChild(coordinador);
-                divOrigen.appendChild(coordinadorDestino);
-                
-            }
-            else if(ev.target.children.length == 0){
-                
-                if(ev.target.nodeName == 'STRONG')
-                    return;
-                
-                if(coordinador.parentNode.nodeName != 'DIV')
-                    coordinador = coordinador.cloneNode(true);
-                
-                //PARA ASIGNAR UN ID HAY QUE COMPROBAR SU UBICACION.
-                coordinador.setAttribute('id', parseInt(ev.target.getAttribute("horario"))*{{ espacio.dias_habiles|length }}+parseInt(ev.target.getAttribute("dia")));
-                coordinador.setAttribute('desde', ev.target.getAttribute('desde'));
-                coordinador.setAttribute('dia', ev.target.getAttribute('dia'));
-                
-                ev.target.appendChild(coordinador);
-                
-                ev.target.parentNode.style.backgroundColor = coordinador.style.backgroundColor;
-            }
+            if(ev.target.nodeName == "STRONG")
+                horario_destino = horario_destino.parent();
+            
+            var coordinador_destino = horario_destino.children("p");
+            var horario_origen = coordinador_origen.parent();
+            
+            horario_destino.append(coordinador_origen);
+            horario_origen.append(coordinador_destino);
         }
         
         function guardar(){
@@ -162,21 +144,8 @@
         </div>
     </div>
     <div class="col-xs-12">
-        <ul class="list-inline">
-        {% for coordinador in espacio.coordinadores %}
-            <li class="col-xs-2">
-                <p id="{{ coordinador.id }}" draggable="true" ondragstart="drag(event)" class="lead especialidad" style="background-color: {{ coordinador.especialidad.color }}">
-                    <strong>{{ coordinador.especialidad }}</strong>
-                </p>
-            </li>
-        {% endfor %}
-        </ul>
-    </div>
-    <div class="col-xs-12">
         <div class="btn btn-group">
-            <button class="btn btn-lg btn-default" onclick="guardar()" title="Guardar cambios">
-                <i class="glyphicon glyphicon-floppy-save"></i> Guardar
-            </button>
+            <a onclick="guardar()" class="btn btn-lg btn-default" title="Guardar cambios"><i class="glyphicon glyphicon-floppy-save"></i> Guardar</a>
             <a href="{% url 'calendario:imprimir' calendario.id %}" class="btn btn-lg btn-default" title="Generar PDF" target="_blank"><i class="fa fa-file-pdf-o"></i> PDF</a>
             <a onclick="eliminarCalendario({{ calendario.id }})" class="btn btn-lg btn-danger" title="Eliminar este calendario"><i class="glyphicon glyphicon-trash"></i> Eliminar</a>
         </div>
