@@ -75,11 +75,10 @@
                         </td>
                         <td>
                             <div class="btn btn-group btn-block">
-                                <a class="btn btn-default" title="Ver" href="{% url 'calendario:detail' calendario.id %}"><i class="glyphicon glyphicon-eye-open"></i></a>
-                                <a class="btn btn-default" title="Editar" href="{% url 'calendario:edit' calendario.id %}"><i class="glyphicon glyphicon-edit"></i></a>
-                                <a onclick="eliminar({{ calendario.id }})" type="button" class="btn btn-danger" data-toggle="modal">
-                                    <i class="glyphicon glyphicon-trash"></i>
-                                </a>
+                                <a href="{% url 'calendario:detail' calendario.id %}" class="btn btn-default" title="Ver"><i class="glyphicon glyphicon-eye-open"></i></a>
+                                <a href="{% url 'calendario:edit' calendario.id %}" class="btn btn-default" title="Editar"><i class="glyphicon glyphicon-edit"></i></a>
+                                <a href="{% url 'calendario:imprimir' calendario.id %}" class="btn btn-default" title="PDF" target="_blank"><i class="fa fa-file-pdf-o"></i></a>
+                                <a onclick="eliminar({{ calendario.id }})" type="button" class="btn btn-danger" data-toggle="modal"><i class="glyphicon glyphicon-trash"></i></a>
                             </div>
                         </td>
                     </tr>

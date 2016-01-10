@@ -184,57 +184,46 @@ def add(request, espacio_id):
 @login_required(login_url='/index/')
 def edit(request, calendario_id):
     
-    if request.method == 'POST':
+    if request.method == "GET":
         
         calendario = Calendario.create(calendario_id)
         
-        # Dividimos por 3, esa es la cantidad de atributos.
-        # Mas 1 por que el primero es el csrf.
-        for i in range(1, len(request.POST)/3+1):
-            
-            coordinador_id = request.POST[str(i) + '[coordinador]']
-            desde = request.POST[str(i) + '[desde]']
-            
-            coordinador = Coordinador.objects.get(pk=coordinador_id)
-            hora = Hora.objects.filter(hora_desde=desde)
-            hora = hora.filter(espacio=calendario.espacio.id)
-            
-            dia_semana = request.POST[str(i) + '[dia]']
-            
-            # Creamos un horario y los completamos.
-            horario = Horario()
-            
-            horario.coordinador = coordinador
-            horario.hora_desde = hora[0].hora_desde
-            horario.hora_hasta = hora[0].hora_hasta
-            horario.dia_semana = dia_semana
-            
-            calendario.agregar_horario(horario)
+        espacio = Espacio.create(calendario.espacio.id)
         
-        calendario.full_save()
+        dias = []
         
-        actividad = Actividad()
+        for dia in espacio.dias_habiles:
+            dias.append(DIAS[dia.dia])
         
-        actividad.usuario = request.user.username
-        actividad.mensaje = "Editó el calendario #" + str(calendario.id)
+        context = {'espacio': espacio, 'calendario': calendario,
+                    'dias': dias}
         
-        actividad.save()
+        return render(request, 'calendario/edit.html', context)
+    
+    # Dividimos por 2, esa es la cantidad de atributos.
+    for i in range(0, len(request.POST)/2):
         
-        return HttpResponseRedirect(reverse('calendario:espacio_all'))
+        horario_id = request.POST[str(i) + '[horario]']
+        coordinador_id = request.POST[str(i) + '[coordinador]']
+        
+        horario = Horario.objects.get(pk=horario_id)
+        coordinador = Coordinador.objects.get(pk=coordinador_id)
+        
+        horario.coordinador = coordinador
+        
+        horario.save()
     
-    calendario = Calendario.create(calendario_id)
+    actividad = Actividad()
     
-    espacio = Espacio.create(calendario.espacio.id)
+    actividad.usuario = request.user.username
+    actividad.mensaje = "Editó el calendario #" + str(calendario_id)
     
-    dias = []
+    actividad.save()
     
-    for dia in espacio.dias_habiles:
-        dias.append(DIAS[dia.dia])
+    data = {"mensaje": "El calendario fue editado exitosamente."}
     
-    context = {'espacio': espacio, 'calendario': calendario,
-                'dias': dias}
+    return JsonResponse(data)
     
-    return render(request, 'calendario/edit.html', context)
 
 @login_required(login_url='/index/')
 def delete(request):

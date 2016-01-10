@@ -6,24 +6,17 @@ body {
 }
 
 .especialidad {
-	height: 60px;
-	width: 120px;
 	cursor: move;
-	vertical-align: middle;
 	text-align: center;
-}
-
-div.horario-container {
-	height: 60px;
-	width: 120px;
-    text-align: center;
-	vertical-align: middle;
-    position: relative;
-    display: inline-block;
+    padding-top: 10px;
 }
 
 .table tbody > tr > td, .table thead > tr > th {
 	vertical-align: middle;
+}
+
+.table .horario-container {
+    padding: 0px;
 }
 
 ul.profesionales, ul.especialidades, ul.calendarios, ul.restricciones {

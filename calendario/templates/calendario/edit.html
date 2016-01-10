@@ -58,42 +58,32 @@
         function guardar(){
             
             var datos = {csrfmiddlewaretoken: "{{ csrf_token }}"};
+            var i = 0;
             
-            for(i = 1; i < {{ espacio.dias_habiles|length }}*{{ espacio.horas|length }}+1; i++){
-                
-                var espacio_horario = document.getElementById(i);
-                
-                if(espacio_horario == null){
-                    
-                    var modal = $("#myModal");
-                    
-                    $("#myModal p").html("El calendario no se puede guardar por que no está completo");
-                    
-                    modal.modal("show");
-                    
-                    return;
-                }
+            $('[name="horario"]').each(function (){
                 
                 datos[i] = {};
-                datos[i].coordinador = espacio_horario.getAttribute('name');
-                datos[i].desde = espacio_horario.getAttribute('desde');
-                datos[i].dia = espacio_horario.getAttribute('dia');
-            }
+                datos[i].horario = $(this).prop("id");
+                datos[i].coordinador = $(this).children('p').prop("id");
+                
+                i++;
+            });
             
             $.ajax({
-                url: "{% url 'calendario:edit' espacio.id %}",
+                url: "{% url 'calendario:edit' calendario.id %}",
                 type: 'POST',
                 dataType: 'json',
                 data: datos,
                 success: function(response){
                     
+                    if(response.error)
+                    {
+                        alert(response.error);
+                        
+                        return
+                    }
+                    
                     alert(response.mensaje);
-                    
-                },
-                error: function(response){
-                    
-                    alert(response.responseText);
-                    
                 }
             });
         }
@@ -174,8 +164,8 @@
     <div class="col-xs-12">
         <ul class="list-inline">
         {% for coordinador in espacio.coordinadores %}
-            <li>
-                <p id="{{ coordinador.especialidad|cut:" " }}" name="{{ coordinador.id }}" draggable="true" ondragstart="drag(event)" class="lead especialidad" style="background-color: {{ coordinador.especialidad.color }}">
+            <li class="col-xs-2">
+                <p id="{{ coordinador.id }}" draggable="true" ondragstart="drag(event)" class="lead especialidad" style="background-color: {{ coordinador.especialidad.color }}">
                     <strong>{{ coordinador.especialidad }}</strong>
                 </p>
             </li>
@@ -187,8 +177,7 @@
             <button class="btn btn-lg btn-default" onclick="guardar()" title="Guardar cambios">
                 <i class="glyphicon glyphicon-floppy-save"></i> Guardar
             </button>
-            <a href="{% url 'calendario:edit' calendario.id %}" class="btn btn-lg btn-default" title="Editar este calendario"><i class="glyphicon glyphicon-edit"></i> Editar</a>
-            <a href="{% url 'calendario:imprimir' calendario.id %}" class="btn btn-lg btn-default" title="Imprimir este calendario" target="_blank"><i class="fa fa-file-pdf-o"></i> Imprimir</a>
+            <a href="{% url 'calendario:imprimir' calendario.id %}" class="btn btn-lg btn-default" title="Generar PDF" target="_blank"><i class="fa fa-file-pdf-o"></i> PDF</a>
             <a onclick="eliminarCalendario({{ calendario.id }})" class="btn btn-lg btn-danger" title="Eliminar este calendario"><i class="glyphicon glyphicon-trash"></i> Eliminar</a>
         </div>
     </div>
@@ -214,9 +203,9 @@
                             </h4>
                         </td>
                         {% for horario in franja_horaria %}
-                            <td class="text-center">
-                                <div id="{% widthratio forloop.parentloop.counter0 1 espacio.dias_habiles|length|add:horario.dia_semana %}" dia="{{ horario.dia_semana }}" desde="{{ horario.hora_desde }}" horario="{{ forloop.parentloop.counter0 }}" ondrop="drop(event)" ondragover="allowDrop(event)" class="horario-container">
-                                    <p id="{{ horario.coordinador.especialidad|cut:" " }}" name="{{ horario.coordinador.id }}" draggable="true" ondragstart="drag(event)" class="lead especialidad" style="background-color: {{ horario.coordinador.especialidad.color }}">
+                            <td class="text-center horario-container">
+                                <div id="{{ horario.id }}" name="horario" ondrop="drop(event)" ondragover="allowDrop(event)">
+                                    <p id="{{ horario.coordinador.id }}" draggable="true" ondragstart="drag(event)" class="lead especialidad" style="background-color: {{ horario.coordinador.especialidad.color }}">
                                         <strong>{{ horario.coordinador.especialidad }}</strong>
                                     </p>
                                 </div>
