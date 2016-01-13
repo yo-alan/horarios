@@ -328,6 +328,7 @@
                     <div class="btn btn-group">
                         <a href="{% url 'calendario:detail' calendario.id %}" class="btn btn-default" title="Ver este calendario"><i class="glyphicon glyphicon-eye-open"></i> Ver</a>
                         <a href="{% url 'calendario:edit' calendario.id %}" class="btn btn-default" title="Editar este calendario"><i class="glyphicon glyphicon-edit"></i> Editar</a>
+                        <a href="#" class="btn btn-default" title="Confirmar este calendario"><i class="glyphicon glyphicon-ok"></i> Confirmar</a>
                         <a href="{% url 'calendario:imprimir' calendario.id %}" class="btn btn-default" title="Generar PDF" target="_blank"><i class="fa fa-file-pdf-o"></i> PDF</a>
                         <a onclick="eliminarCalendario({{ calendario.id }})" class="btn btn-danger" title="Eliminar este calendario"><i class="glyphicon glyphicon-trash"></i> Eliminar</a>
                     </div>
@@ -353,9 +354,9 @@
                                 </td>
                             {% for horario in franja_horaria %}
                                 {% if horario.penalizado > 0 %}
-                                <td penalizado="{{ horario.penalizado }}" class="text-center">
+                                <td penalizado="{{ horario.penalizado }}">
                                 {% else %}
-                                <td penalizado="{{ horario.penalizado }}" class="text-center" style="background-color: {{ horario.coordinador.especialidad.color }}">
+                                <td penalizado="{{ horario.penalizado }}" style="background-color: {{ horario.coordinador.especialidad.color }}">
                                 {% endif %}
                                 </td>
                             {% endfor %}

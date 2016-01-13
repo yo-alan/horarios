@@ -73,18 +73,20 @@
                         </td>
                         <td>
                             <div class="btn btn-group btn-block">
-                                <a class="btn btn-default" title="Detalles" href="{% url 'calendario:espacio_detail' espacio.id %}"><i class="glyphicon glyphicon-eye-open"></i></a>
-                                <a class="btn btn-default" title="Días y horas" href="{% url 'calendario:espacio_add_horarios' espacio.id %}"><i class="glyphicon glyphicon-time"></i></a>
-                                <a class="btn btn-default" title="Especialidades" href="{% url 'calendario:espacio_add_especialidades' espacio.id %}"><i class="glyphicon glyphicon-th-list"></i></a>
-                                <a class="btn btn-default" title="Profesionales" href="{% url 'calendario:espacio_add_profesionales' espacio.id %}"><i class="glyphicon glyphicon-user"></i></a>
-                                {% if espacio.poblacion %}
-                                    <a class="btn btn-success" title="Calendarios" href="{% url 'calendario:espacio_detail' espacio.id %}#calendarios"><i class="glyphicon glyphicon-calendar"></i></a>
+                                <a href="{% url 'calendario:espacio_detail' espacio.id %}" class="btn btn-default" title="Detalles"><i class="glyphicon glyphicon-eye-open"></i></a>
+                                <a href="{% url 'calendario:espacio_add_horarios' espacio.id %}" class="btn btn-default" title="Días y horas"><i class="glyphicon glyphicon-time"></i></a>
+                                <a href="{% url 'calendario:espacio_add_especialidades' espacio.id %}" class="btn btn-default" title="Especialidades"><i class="glyphicon glyphicon-th-list"></i></a>
+                                <a href="{% url 'calendario:espacio_add_profesionales' espacio.id %}" class="btn btn-default" title="Profesionales"><i class="glyphicon glyphicon-user"></i></a>
+                                {% if espacio.poblacion.0 %}
+                                    {% if espacio.poblacion.0.estado == "ON" %}
+                                        <a href="{% url 'calendario:espacio_detail' espacio.id %}#calendarios" class="btn btn-success" title="Calendario confirmado"><i class="glyphicon glyphicon-calendar"></i></a>
+                                    {% else %}
+                                        <a href="{% url 'calendario:espacio_detail' espacio.id %}#calendarios" class="btn btn-warning" title="Calendario sin confirmar"><i class="glyphicon glyphicon-calendar"></i></a>
+                                    {% endif %}
                                 {% else %}
-                                    <a class="btn btn-default" title="Calendarios" href="{% url 'calendario:espacio_detail' espacio.id %}#calendarios"><i class="glyphicon glyphicon-calendar"></i></a>
+                                    <a href="{% url 'calendario:espacio_detail' espacio.id %}#calendarios" class="btn btn-default" title="Calendarios"><i class="glyphicon glyphicon-calendar"></i></a>
                                 {% endif %}
-                                <a type="button" class="btn btn-danger" data-toggle="modal" onclick="eliminar({{ espacio.id }})">
-                                    <i class="glyphicon glyphicon-trash"></i>
-                                </a>
+                                <a onclick="eliminar({{ espacio.id }})" type="button" class="btn btn-danger" title="Eliminar espacio" data-toggle="modal"><i class="glyphicon glyphicon-trash"></i></a>
                             </div>
                         </td>
                     </tr>

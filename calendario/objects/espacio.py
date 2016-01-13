@@ -368,6 +368,9 @@ class Espacio(models.Model):
             horas_semanales = self.horas_semanales_de(especialidad, calendario)
             
             puntos += horas_semanales * PUNTOS_HORAS_SEMANALES
+            
+            if puntos > 0:
+                return puntos
         
         return puntos
     

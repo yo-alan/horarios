@@ -66,6 +66,7 @@
                     }
                     
                     alert(response.mensaje);
+                    window.location.href = "{% url 'calendario:detail' calendario.id %}";
                 }
             });
         }
