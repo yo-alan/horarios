@@ -74,7 +74,7 @@ def index(request):
     especialidades = Especialidad.objects.filter(estado="ON")
     profesionales = Profesional.objects.filter(estado="ON")
     espacios = Espacio.objects.filter(estado="ON")
-    calendarios = Calendario.objects.filter(estado="ON")
+    calendarios = Calendario.objects.all()
     
     context = {"user": request.user, "especialidades": especialidades,
                 "profesionales": profesionales, "espacios": espacios,
