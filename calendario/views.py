@@ -223,7 +223,6 @@ def edit(request, calendario_id):
     data = {"mensaje": "El calendario fue editado exitosamente."}
     
     return JsonResponse(data)
-    
 
 @login_required(login_url='/index/')
 def delete(request):
@@ -251,6 +250,37 @@ def delete(request):
         
     except Exception as ex:
         data = {"error": "No se pudo eliminar el calendario" + str(ex)}
+    
+    return JsonResponse(data)
+
+@login_required(login_url='/index/')
+def confirmar(request):
+    
+    if request.method != 'POST':
+        return HttpResponseRedirect(reverse('calendario:espacio_all'))
+    
+    data = {}
+    
+    try:
+        calendario_id = request.POST['calendario_id']
+        
+        calendario = Calendario.create(calendario_id)
+        
+        calendario.estado = "ON"
+        
+        calendario.save()
+        
+        actividad = Actividad()
+        
+        actividad.usuario = request.user.username
+        actividad.mensaje = "Confirmó el calendario #" + str(calendario.id)
+        
+        actividad.save()
+        
+        data = {"mensaje": "El calendario se confirmó exitosamente."}
+        
+    except Exception as ex:
+        data = {"error": "No se pudo confirmar el calendario" + str(ex)}
     
     return JsonResponse(data)
 

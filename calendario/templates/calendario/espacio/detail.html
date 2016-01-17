@@ -123,6 +123,40 @@
                 }
             });
         }
+        
+        function confirmarCalendario(calendario_id){
+            
+            if(!confirm("¿Está seguro que desea confirmar el calendario?"))
+                return;
+            
+            $.ajax({
+                url: "{% url 'calendario:confirmar' %}",
+                type: 'POST',
+                data: {
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                    calendario_id: calendario_id
+                },
+                success: function (response){
+                    
+                    if(response.error){
+                        
+                        var modal = $("#modal-error");
+                        
+                        $("#modal-error p").html(response.mensaje);
+                        
+                        modal.modal("show");
+                        
+                        return;
+                    }
+                    
+                    var modal = $("#modal-infomacion");
+                    
+                    $("#modal-infomacion p").html(response.mensaje);
+                    
+                    modal.modal("show");
+                }
+            });
+        }
         {% endif %}
         function checkStatus() {
            
@@ -328,8 +362,8 @@
                     <div class="btn btn-group">
                         <a href="{% url 'calendario:detail' calendario.id %}" class="btn btn-default" title="Ver este calendario"><i class="glyphicon glyphicon-eye-open"></i> Ver</a>
                         <a href="{% url 'calendario:edit' calendario.id %}" class="btn btn-default" title="Editar este calendario"><i class="glyphicon glyphicon-edit"></i> Editar</a>
-                        <a href="#" class="btn btn-default" title="Confirmar este calendario"><i class="glyphicon glyphicon-ok"></i> Confirmar</a>
-                        <a href="{% url 'calendario:imprimir' calendario.id %}" class="btn btn-default" title="Generar PDF" target="_blank"><i class="fa fa-file-pdf-o"></i> PDF</a>
+                        <a onclick="confirmarCalendario({{ calendario.id }})" class="btn btn-default" title="Confirmar este calendario"><i class="glyphicon glyphicon-ok"></i> Confirmar</a>
+                        <a href="{% url 'calendario:imprimir' calendario.id %}" class="btn btn-default" title="PDF de este calendario" target="_blank"><i class="fa fa-file-pdf-o"></i> PDF</a>
                         <a onclick="eliminarCalendario({{ calendario.id }})" class="btn btn-danger" title="Eliminar este calendario"><i class="glyphicon glyphicon-trash"></i> Eliminar</a>
                     </div>
                     <table class="table calendario">
