@@ -117,8 +117,7 @@
 {% block article %}
     <ol class="breadcrumb">
         <li><a href="{% url 'index' %}"><i class="fa fa-fw fa-calendar"></i> Inicio</a></li>
-        <li><a href="{% url 'calendario:espacio_all' %}">Espacios</a></li>
-        <li><a href="{% url 'calendario:espacio_detail' espacio.id %}">{{ espacio.nombre }}</a></li>
+        <li><a href="{% url 'calendario:all' %}">Calendarios</a></li>
         <li><a href="{% url 'calendario:detail' calendario.id %}">{{ calendario.id }}</a></li>
         <li class="active">Editar</li>
     </ol>

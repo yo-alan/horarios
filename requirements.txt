@@ -1,4 +1,4 @@
-Django==1.9
+Django==1.9.1
 reportlab==2.5
 whitenoise==2.0.6
 dj-database-url==0.3.0

@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 from django.db import models
+from calendario import Calendario
 
 class Restriccion(models.Model):
     
     hora_desde = models.TimeField('desde', null=False, blank=False)
     hora_hasta = models.TimeField('hasta', null=False, blank=False)
     dia_semana = models.IntegerField(default=0, null=False, blank=False)
+    calendario = models.ForeignKey(Calendario, null=True)
     estado = models.CharField(max_length=3,
                                 choices=[('ON', 'ON'), ('OFF', 'OFF')],
                                 default='ON')
