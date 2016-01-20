@@ -32,7 +32,7 @@ DIAS = {0: 'Domingo', 1: 'Lunes', 2: 'Martes', 3: 'Miércoles',
 
 _status = [False, 0]
 
-DENSIDAD = 100
+DENSIDAD = 1
 
 def bad_request(request):
     
@@ -270,6 +270,22 @@ def confirmar(request):
         
         calendario.save()
         
+        for franja_horaria in calendario.horarios:
+			
+			for horario in franja_horaria:
+				
+				restriccion = ProfesionalRestriccion()
+				
+				restriccion.hora_desde = horario.hora_desde
+				restriccion.hora_hasta = horario.hora_hasta
+				restriccion.dia_semana = horario.dia_semana
+				restriccion.profesional = horario.coordinador.profesional
+				restriccion.calendario = calendario
+				restriccion.usuario_creador = request.user.username
+				restriccion.usuario_modificador = request.user.username
+				
+				restriccion.save()
+		
         actividad = Actividad()
         
         actividad.usuario = request.user.username

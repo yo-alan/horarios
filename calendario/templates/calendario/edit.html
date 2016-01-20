@@ -145,9 +145,9 @@
     </div>
     <div class="col-xs-12">
         <div class="btn btn-group">
-            <a onclick="guardar()" class="btn btn-lg btn-default" title="Guardar cambios"><i class="glyphicon glyphicon-floppy-save"></i> Guardar</a>
-            <a href="{% url 'calendario:imprimir' calendario.id %}" class="btn btn-lg btn-default" title="Generar PDF" target="_blank"><i class="fa fa-file-pdf-o"></i> PDF</a>
-            <a onclick="eliminarCalendario({{ calendario.id }})" class="btn btn-lg btn-danger" title="Eliminar este calendario"><i class="glyphicon glyphicon-trash"></i> Eliminar</a>
+            <a onclick="guardar()" class="btn btn-default" title="Confirmar calendario"><i class="glyphicon glyphicon-floppy-save"></i> Confirmar</a>
+            <a href="{% url 'calendario:imprimir' calendario.id %}" class="btn btn-default" title="Generar PDF" target="_blank"><i class="fa fa-file-pdf-o"></i> PDF</a>
+            <a onclick="eliminarCalendario({{ calendario.id }})" class="btn btn-danger" title="Eliminar este calendario"><i class="glyphicon glyphicon-trash"></i> Eliminar</a>
         </div>
     </div>
     <div class="col-xs-12">
