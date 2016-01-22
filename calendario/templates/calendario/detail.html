@@ -33,15 +33,11 @@
     <h3 class="text-center">
         Detalles del calendario #{{ calendario.id }}
     </h3>
-    <dl>
-        <a href="{% url 'calendario:edit' calendario.id %}" class="btn btn-primary pull-right">Editar</a>
-        <dt>
-            Espacio: <span><a href="{% url 'calendario:espacio_detail' calendario.espacio.id %}">{{ calendario.espacio }}</a></span>
-        </dt>
-        <dt>
-            Puntaje: <span>{{ calendario.puntaje }}</span>
-        </dt>
-    </dl>
+    <div class="btn btn-group">
+        <a href="{% url 'calendario:edit' calendario.id %}" class="btn btn-default" title="Editar calendario"><i class="glyphicon glyphicon-edit"></i> Editar</a>
+        <a href="{% url 'calendario:imprimir' calendario.id %}" class="btn btn-default" title="Generar PDF" target="_blank"><i class="fa fa-file-pdf-o"></i> PDF</a>
+        <a onclick="eliminarCalendario({{ calendario.id }})" class="btn btn-danger" title="Eliminar este calendario"><i class="glyphicon glyphicon-trash"></i> Eliminar</a>
+    </div>
     <table class="table calendario">
         <thead>
             <tr class="bg-primary">

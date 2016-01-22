@@ -35,6 +35,11 @@
             
             horario_destino.append(coordinador_origen);
             horario_origen.append(coordinador_destino);
+            
+            var background_color_destino = horario_destino.parent().css("background-color");
+            
+            horario_destino.parent().css("background-color", horario_origen.parent().css("background-color"));
+            horario_origen.parent().css("background-color", background_color_destino);
         }
         
         function guardar(){
@@ -69,22 +74,6 @@
                     window.location.href = "{% url 'calendario:detail' calendario.id %}";
                 }
             });
-        }
-        
-        function eliminar(ev){
-            
-            var coordinadorId = ev.dataTransfer.getData("text");
-            var coordinador = document.getElementById(coordinadorId);
-            
-            if(coordinador == null)
-                return;
-            
-            var nodePadre = coordinador.parentNode;
-            
-            if(nodePadre.nodeName == 'DIV'){
-                nodePadre.removeChild(coordinador);
-                nodePadre.parentNode.style.backgroundColor = "white";
-            }
         }
         
         function eliminarCalendario(calendario_id){
@@ -143,46 +132,44 @@
             </div>
         </div>
     </div>
-    <div class="col-xs-12">
-        <div class="btn btn-group">
-            <a onclick="guardar()" class="btn btn-default" title="Confirmar calendario"><i class="glyphicon glyphicon-floppy-save"></i> Confirmar</a>
-            <a href="{% url 'calendario:imprimir' calendario.id %}" class="btn btn-default" title="Generar PDF" target="_blank"><i class="fa fa-file-pdf-o"></i> PDF</a>
-            <a onclick="eliminarCalendario({{ calendario.id }})" class="btn btn-danger" title="Eliminar este calendario"><i class="glyphicon glyphicon-trash"></i> Eliminar</a>
-        </div>
+    <div class="btn btn-group">
+        <a onclick="guardar()" class="btn btn-default" title="Confirmar calendario"><i class="glyphicon glyphicon-floppy-save"></i> Confirmar</a>
+        <a href="{% url 'calendario:imprimir' calendario.id %}" class="btn btn-default" title="Generar PDF" target="_blank"><i class="fa fa-file-pdf-o"></i> PDF</a>
+        <a onclick="eliminarCalendario({{ calendario.id }})" class="btn btn-danger" title="Eliminar este calendario"><i class="glyphicon glyphicon-trash"></i> Eliminar</a>
     </div>
-    <div class="col-xs-12">
-        <table class="table calendario">
-            <thead>
-                <tr class="bg-primary">
-                    <th>
+    <table class="table calendario">
+        <thead>
+            <tr class="bg-primary">
+                <th>
+                </th>
+                {% for dia in dias %}
+                    <th class="text-center">
+                        <h4><strong>{{ dia }}</strong></h4>
                     </th>
-                    {% for dia in dias %}
-                        <th class="text-center">
-                            <h4><strong>{{ dia }}</strong></h4>
-                        </th>
-                    {% endfor %}
-                </tr>
-            </thead>
-            <tbody>
-                {% for franja_horaria in calendario.horarios %}
-                    <tr>
-                        <td class="text-center bg-primary">
-                            <h4>
-                                <strong>{{ franja_horaria.1.hora_desde }}</strong>
-                            </h4>
-                        </td>
-                        {% for horario in franja_horaria %}
-                            <td class="text-center horario-container">
-                                <div id="{{ horario.id }}" name="horario" ondrop="drop(event)" ondragover="allowDrop(event)">
-                                    <p id="{{ horario.coordinador.id }}" draggable="true" ondragstart="drag(event)" class="lead especialidad" style="background-color: {{ horario.coordinador.especialidad.color }}">
-                                        <strong>{{ horario.coordinador.especialidad }}</strong>
-                                    </p>
-                                </div>
-                            </td>
-                        {% endfor %}
-                    </tr>
                 {% endfor %}
-            </tbody>
-        </table>
-    </div>
+            </tr>
+        </thead>
+        <tbody>
+        {% for franja_horaria in calendario.horarios %}
+            <tr>
+                <td class="text-center bg-primary">
+                    <h4>
+                        <strong>{{ franja_horaria.1.hora_desde }}</strong>
+                    </h4>
+                </td>
+            {% for horario in franja_horaria %}
+                <td class="text-center" style="background-color: {{ horario.coordinador.especialidad.color }}">
+                    <div id="{{ horario.id }}" name="horario" ondrop="drop(event)" ondragover="allowDrop(event)">
+                        <p id="{{ horario.coordinador.id }}" draggable="true" ondragstart="drag(event)" class="especialidad">
+                            <strong>{{ horario.coordinador.especialidad }}</strong>
+                            <br>
+                            {{ horario.coordinador.profesional }}
+                        </p>
+                    </div>
+                </td>
+            {% endfor %}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}

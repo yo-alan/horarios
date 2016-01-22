@@ -66,40 +66,16 @@
                 <div class="collapse navbar-collapse navbar-ex1-collapse">
                     <ul class="nav navbar-nav side-nav">
                         <li>
-                            <a href="{% url 'calendario:all' %}"><i class="fa fa-calendar"></i> Calendarios</a>
+                            <a href="{% url 'calendario:all' %}"><i class="fa fa-fw fa-calendar"></i> Calendarios</a>
                         </li>
                         <li>
-                            <a href="javascript:;" data-toggle="collapse" data-target="#espacio"><i class="glyphicon glyphicon-paperclip"></i> Espacios <i class="fa fa-fw fa-caret-down pull-right"></i></a>
-                            <ul id="espacio" class="collapse">
-                                <li>
-                                    <a href="{% url 'calendario:espacio_add' %}">Agregar nuevo...</a>
-                                </li>
-                                <li>
-                                    <a href="{% url 'calendario:espacio_all' %}">Ver todos</a>
-                                </li>
-                            </ul>
+                            <a href="{% url 'calendario:espacio_all' %}"><i class="glyphicon fa-fw glyphicon-paperclip"></i> Espacios</a>
                         </li>
                         <li>
-                            <a href="javascript:;" data-toggle="collapse" data-target="#profesional"><i class="fa fa-fw fa-user"></i> Profesionales <i class="fa fa-fw fa-caret-down pull-right"></i></a>
-                            <ul id="profesional" class="collapse">
-                                <li>
-                                    <a href="{% url 'calendario:profesional_add' %}">Agregar nuevo...</a>
-                                </li>
-                                <li>
-                                    <a href="{% url 'calendario:profesional_all' %}">Ver todos</a>
-                                </li>
-                            </ul>
+                            <a href="{% url 'calendario:profesional_all' %}"><i class="fa fa-fw fa-user"></i> Profesionales</a>
                         </li>
                         <li>
-                            <a href="javascript:;" data-toggle="collapse" data-target="#especialidad"><i class="fa fa-fw fa-th-list"></i> Especialidades <i class="fa fa-fw fa-caret-down pull-right"></i></a>
-                            <ul id="especialidad" class="collapse">
-                                <li>
-                                    <a href="{% url 'calendario:especialidad_add' %}">Agregar nueva...</a>
-                                </li>
-                                <li>
-                                    <a href="{% url 'calendario:especialidad_all' %}">Ver todas</a>
-                                </li>
-                            </ul>
+                            <a href="{% url 'calendario:especialidad_all' %}"><i class="fa fa-fw fa-th-list"></i> Especialidades</a>
                         </li>
                         <li>
                             <a href="{% url 'calendario:acerca' %}"><i class="fa fa-fw fa-dashboard"></i> Acerca de Horarios</a>
