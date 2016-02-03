@@ -25,11 +25,12 @@ class Calendario(models.Model):
         
         if calendario_id != 0:
             calendario = Calendario.objects.get(pk=calendario_id)
+            
+            calendario.espacio = Espacio.create(calendario.espacio.id)
         else:
             calendario = Calendario()
         
         calendario._horarios = []
-        
         return calendario
     
     def __str__(self, ):
@@ -163,8 +164,41 @@ class Calendario(models.Model):
                 horario.calendario = self
                 horario.save()
     
+    def confirmar(self, ):
+        
+        from profesionalRestriccion import ProfesionalRestriccion
+        
+        for franja_horaria in self.horarios:
+            
+            for horario in franja_horaria:
+                
+                horario.penalizado = 0
+        
+        self.espacio.fitness([self])
+        
+        self.estado = "ON"
+        
+        self.save()
+        
+        for franja_horaria in self.horarios:
+            
+            for horario in franja_horaria:
+                
+                restriccion = ProfesionalRestriccion()
+                
+                restriccion.hora_desde = horario.hora_desde
+                restriccion.hora_hasta = horario.hora_hasta
+                restriccion.dia_semana = horario.dia_semana
+                restriccion.profesional = horario.coordinador.profesional
+                restriccion.calendario = self
+                
+                restriccion.save()
+            
+        
+
     @property
     def horarios(self, ):
+        
         from horario import Horario
         
         if not self._horarios:

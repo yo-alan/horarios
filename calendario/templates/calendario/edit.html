@@ -63,15 +63,24 @@
                 data: datos,
                 success: function(response){
                     
-                    if(response.error)
-                    {
-                        alert(response.error);
+                    if(response.error) {
+                        
+                        var modal = $("#modal-error");
+                        
+                        $("#modal-error p").html(response.mensaje);
+                        
+                        modal.modal("show");
                         
                         return
                     }
                     
-                    alert(response.mensaje);
-                    window.location.href = "{% url 'calendario:detail' calendario.id %}";
+                    var modal = $("#modal-infomacion");
+                    
+                    $("#modal-infomacion p").html(response.mensaje);
+                    
+                    $("#modal-infomacion a").prop("href", "{% url 'calendario:detail' calendario.id %}");
+                    
+                    modal.modal("show");
                 }
             });
         }
@@ -91,13 +100,23 @@
                 success: function(response) {
                     
                     if(response.error) {
-                        alert(response.error);
+                        
+                        var modal = $("#modal-error");
+                        
+                        $("#modal-error p").html(response.mensaje);
+                        
+                        modal.modal("show");
+                        
                         return;
                     }
                     
-                    alert(response.mensaje);
+                    var modal = $("#modal-infomacion");
                     
-                    window.location.href = "{% url 'calendario:espacio_detail' calendario.espacio.id %}#calendarios";
+                    $("#modal-infomacion p").html(response.mensaje);
+                    
+                    $("#modal-infomacion a").prop("href", "{% url 'calendario:all' %}");
+                    
+                    modal.modal("show");
                 }
             });
         }
@@ -113,21 +132,48 @@
     <h3 class="text-center">
         Editando calendario #{{ calendario.id }}
     </h3>
-    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-        <div class="modal-dialog" role="document">
+    <div class="modal fade" id="modal-infomacion" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header modal-danger">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="myModalLabel"><i class="fa fa-exclamation-triangle"></i> Error</h4>
+                <div class="modal-header bg-primary">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        ×
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        <i class="glyphicon glyphicon-info-sign"></i> Información
+                    </h4>
                 </div>
                 <div class="modal-body">
                     <p>
                     </p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">
+                    <a class="btn btn-primary pull-right">
                         Aceptar
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modal-error" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header modal-danger">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        ×
                     </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        <i class="glyphicon glyphicon-info-sign"></i> Error
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <p>
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-danger pull-right" data-dismiss="modal">
+                        Aceptar
+                    </a>
                 </div>
             </div>
         </div>

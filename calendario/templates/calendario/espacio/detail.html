@@ -205,7 +205,7 @@
                     </p>
                 </div>
                 <div class="modal-footer">
-                    <a href="{% url 'calendario:espacio_detail' espacio.id %}" class="btn btn-primary pull-right">
+                    <a href="{% url 'calendario:espacio_detail' espacio.id %}" class="btn btn-primary pull-right" data-dismiss="modal">
                         Aceptar
                     </a>
                 </div>
@@ -228,7 +228,7 @@
                     </p>
                 </div>
                 <div class="modal-footer">
-                    <a class="btn btn-primary pull-right">
+                    <a class="btn btn-danger pull-right" data-dismiss="modal">
                         Aceptar
                     </a>
                 </div>
@@ -312,7 +312,6 @@
                             <strong>{{ coordinador.especialidad }}</strong>
                         </div>
                         <div class="panel-body">
-                            
                             <br>
                             <br>
                             <a href="{% url 'calendario:especialidad_detail' coordinador.especialidad.id %}" class="btn pull-right" style="background-color: {{ coordinador.especialidad.color }}">

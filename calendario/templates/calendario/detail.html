@@ -22,6 +22,78 @@
                 {% endif %}
             }
         }
+        
+        function confirmarCalendario(calendario_id){
+            
+            if(!confirm("¿Está seguro que desea confirmar el calendario?"))
+                return;
+            
+            $.ajax({
+                url: "{% url 'calendario:confirmar' %}",
+                type: 'POST',
+                data: {
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                    calendario_id: calendario_id
+                },
+                success: function (response){
+                    
+                    if(response.error){
+                        
+                        var modal = $("#modal-error");
+                        
+                        $("#modal-error p").html(response.mensaje);
+                        
+                        modal.modal("show");
+                        
+                        return;
+                    }
+                    
+                    var modal = $("#modal-infomacion");
+                    
+                    $("#modal-infomacion p").html(response.mensaje);
+                    
+                    $("#modal-infomacion a").prop("href", "{% url 'calendario:all' %}");
+                    
+                    modal.modal("show");
+                }
+            });
+        }
+        
+        function eliminarCalendario(calendario_id){
+            
+            if(!confirm("¿Está seguro que desea eliminar el calendario?"))
+                return;
+            
+            $.ajax({
+                url: "{% url 'calendario:delete' %}",
+                type: 'POST',
+                data: {
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                    calendario_id: calendario_id
+                },
+                success: function(response) {
+                    
+                    if(response.error) {
+                        
+                        var modal = $("#modal-error");
+                        
+                        $("#modal-error p").html(response.mensaje);
+                        
+                        modal.modal("show");
+                        
+                        return;
+                    }
+                    
+                    var modal = $("#modal-infomacion");
+                    
+                    $("#modal-infomacion p").html(response.mensaje);
+                    
+                    $("#modal-infomacion a").prop("href", "{% url 'calendario:all' %}");
+                    
+                    modal.modal("show");
+                }
+            });
+        }
     </script>
 {% endblock %}
 {% block article %}
@@ -33,7 +105,54 @@
     <h3 class="text-center">
         Detalles del calendario #{{ calendario.id }}
     </h3>
+    <div class="modal fade" id="modal-infomacion" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-primary">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        ×
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        <i class="glyphicon glyphicon-info-sign"></i> Información
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <p>
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-primary pull-right">
+                        Aceptar
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modal-error" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header modal-danger">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        ×
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        <i class="glyphicon glyphicon-info-sign"></i> Error
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <p>
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-danger pull-right" data-dismiss="modal">
+                        Aceptar
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="btn btn-group">
+        <a onclick="confirmarCalendario({{ calendario.id }})" class="btn btn-default" title="Confirmar este calendario"><i class="glyphicon glyphicon-ok"></i> Confirmar</a>
         <a href="{% url 'calendario:edit' calendario.id %}" class="btn btn-default" title="Editar calendario"><i class="glyphicon glyphicon-edit"></i> Editar</a>
         <a href="{% url 'calendario:imprimir' calendario.id %}" class="btn btn-default" title="Generar PDF" target="_blank"><i class="fa fa-file-pdf-o"></i> PDF</a>
         <a onclick="eliminarCalendario({{ calendario.id }})" class="btn btn-danger" title="Eliminar este calendario"><i class="glyphicon glyphicon-trash"></i> Eliminar</a>

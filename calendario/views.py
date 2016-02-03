@@ -32,7 +32,7 @@ DIAS = {0: 'Domingo', 1: 'Lunes', 2: 'Martes', 3: 'Miércoles',
 
 _status = [False, 0]
 
-DENSIDAD = 1
+DENSIDAD = 10
 
 def bad_request(request):
     
@@ -184,19 +184,16 @@ def add(request, espacio_id):
 @login_required(login_url='/index/')
 def edit(request, calendario_id):
     
+    calendario = Calendario.create(calendario_id)
+    
     if request.method == "GET":
-        
-        calendario = Calendario.create(calendario_id)
-        
-        espacio = Espacio.create(calendario.espacio.id)
         
         dias = []
         
-        for dia in espacio.dias_habiles:
+        for dia in calendario.espacio.dias_habiles:
             dias.append(DIAS[dia.dia])
         
-        context = {'espacio': espacio, 'calendario': calendario,
-                    'dias': dias}
+        context = {'calendario': calendario, 'dias': dias}
         
         return render(request, 'calendario/edit.html', context)
     
@@ -212,6 +209,8 @@ def edit(request, calendario_id):
         horario.coordinador = coordinador
         
         horario.save()
+    
+    calendario.confirmar()
     
     actividad = Actividad()
     
@@ -266,26 +265,8 @@ def confirmar(request):
         
         calendario = Calendario.create(calendario_id)
         
-        calendario.estado = "ON"
+        calendario.confirmar()
         
-        calendario.save()
-        
-        for franja_horaria in calendario.horarios:
-			
-			for horario in franja_horaria:
-				
-				restriccion = ProfesionalRestriccion()
-				
-				restriccion.hora_desde = horario.hora_desde
-				restriccion.hora_hasta = horario.hora_hasta
-				restriccion.dia_semana = horario.dia_semana
-				restriccion.profesional = horario.coordinador.profesional
-				restriccion.calendario = calendario
-				restriccion.usuario_creador = request.user.username
-				restriccion.usuario_modificador = request.user.username
-				
-				restriccion.save()
-		
         actividad = Actividad()
         
         actividad.usuario = request.user.username
@@ -317,6 +298,9 @@ def generar(request):
     try:
         
         espacio = Espacio.create(espacio_id)
+        
+        if espacio.poblacion:
+            espacio.poblacion[0].delete()
         
         print "Generando población inicial... ",
         sys.stdout.flush()
@@ -427,8 +411,6 @@ def detail(request, calendario_id):
     calendario = get_object_or_404(Calendario, pk=calendario_id)
     calendario = Calendario.create(calendario_id)
     
-    espacio = Espacio.create(espacio_id=calendario.espacio.id)
-    
     anterior = None
     siguiente = None
     
@@ -444,7 +426,7 @@ def detail(request, calendario_id):
     
     dias = []
     
-    for dia in espacio.dias_habiles:
+    for dia in calendario.espacio.dias_habiles:
         dias.append(DIAS[dia.dia])
     
     context = {'calendario': calendario, 'anterior': anterior,
@@ -1367,12 +1349,10 @@ def imprimir(request, calendario_id):
     
     dias = []
     
-    espacio = Espacio.create(calendario.espacio.id)
-    
-    for dia in espacio.dias_habiles:
+    for dia in calendario.espacio.dias_habiles:
         dias.append(DIAS[dia.dia])
     
-    context = {"pagesize": "A5", "calendario": calendario, "dias": dias}
+    context = {"calendario": calendario, "dias": dias}
     
     return render_to_pdf('calendario/imprimir.html', context)
 
