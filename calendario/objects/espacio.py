@@ -67,9 +67,13 @@ class Espacio(models.Model):
         espacio.PUNTOS_DISTRIBUCION_HORARIA = puntos
         
         from diaHabil import DiaHabil
+        from calendario import Calendario
         
         for dia_habil in DiaHabil.objects.filter(espacio=espacio):
             espacio._dias_habiles.append(dia_habil)
+        
+        #~ for calendario in Calendario.objects.filter(espacio=espacio):
+			#~ espacio.poblacion.append(Calendario.create(calendario.id))
         
         return espacio
     
