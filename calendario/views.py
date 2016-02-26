@@ -1295,6 +1295,15 @@ def restriccion_edit(request, restriccion_id):
     return JsonResponse(data)
 
 @login_required(login_url='/index/')
+def restriccion_detail(request, restriccion_id):
+    
+    restriccion = ProfesionalRestriccion.objects.get(pk=restriccion_id)
+    
+    context = {'restriccion': restriccion}
+    
+    return render(request, 'calendario/restriccion/detail.html', context)
+
+@login_required(login_url='/index/')
 def restriccion_delete(request):
     
     if request.method != 'POST':

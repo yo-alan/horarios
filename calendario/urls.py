@@ -83,6 +83,8 @@ urlpatterns = [
     
     # ex: /calendario/restriccion/add/
     url(r'^restriccion/add/$', views.restriccion_add, name='restriccion_add'),
+    # ex: /calendario/restriccion/5
+    url(r'^restriccion/(?P<restriccion_id>[0-9]+)/$', views.restriccion_detail, name='restriccion_detail'),
     # ex: /calendario/restriccion/edit/
     url(r'^restriccion/edit/$', views.restriccion_edit, name='restriccion_edit'),
     # ex: /calendario/restriccion/delete/

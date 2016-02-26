@@ -1,0 +1,143 @@
+{% extends "admin/base.html" %}
+
+{% load static %}
+
+{% block title %}Restricción de {{ restriccion.profesional }}.{% endblock %}
+
+{% block head %}
+    <script>
+        $(function (){
+            
+            
+        }
+    </script>
+{% endblock %}
+{% block article %}
+    <ol class="breadcrumb">
+        <li><a href="{% url 'index' %}"><i class="fa fa-fw fa-calendar"></i> Inicio</a></li>
+        <li><a href="{% url 'calendario:profesional_all' %}">Profesionales</a></li>
+        <li><a href="{% url 'calendario:profesional_detail' restriccion.profesional.id %}">{{ restriccion.profesional }}</a></li>
+        <li><a href="{% url 'calendario:profesional_detail' restriccion.profesional.id %}#restricciones">Restricciones</a></li>
+        <li class="active">Detalles</li>
+    </ol>
+    <div class="modal fade" id="modal-infomacion" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-primary">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        ×
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        <i class="glyphicon glyphicon-info-sign"></i> Información
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <p>
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <a href="{% url 'calendario:profesional_all' %}" class="btn btn-primary pull-right">
+                        Aceptar
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modal-error" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header modal-danger">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        ×
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        <i class="glyphicon glyphicon-info-sign"></i> Error
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <p>
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger pull-right" data-dismiss="modal">
+                        Aceptar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="tabbable" id="tabs-348111">
+        <ul class="nav nav-tabs">
+            <li class="active">
+                <a href="#this" data-toggle="tab"><i class="glyphicon glyphicon-user"> Restricción</i></a>
+            </li>
+        </ul>
+        <div class="tab-content">
+            <h3 class="text-center">
+                {{ restriccion.profesional }}
+            </h3>
+            <br>
+            <div class="tab-pane active" id="this">
+                <div class="col-xs-12 col-sm-12 col-md-9 col-lg-7 col-centered">
+                    <form class="form-horizontal responsive" id="editRestriccionForm" method="POST" action="{% url 'calendario:restriccion_add' %}">
+                        <div class="alert alert-dismissable alert-danger hidden">
+                            <button type="button" class="close" data-hide="alert" aria-hidden="true">
+                                ×
+                            </button>
+                            <h4>
+                                Error al guardar la restricción.
+                            </h4>
+                            <strong>Ojo!</strong> Un campo no es válido:
+                            <p>
+                            </p>
+                        </div>
+                        {% csrf_token %}
+                        <input id="profesional_id" name="profesional_id" type="hidden" value="{{ profesional.id }}">
+                        <div class="form-group">
+                            <label class="control-label col-xs-4" for="dia_semana">Día de la semana:</label>
+                            <div class="col-xs-8">
+                                <select class="form-control" id="dia_semana" name="dia_semana">
+                                    <option value="7">Todos los días</option>
+                                    <option value="0">Domingo</option>
+                                    <option value="1">Lunes</option>
+                                    <option value="2">Martes</option>
+                                    <option value="3">Miércoles</option>
+                                    <option value="4">Jueves</option>
+                                    <option value="5">Viernes</option>
+                                    <option value="6">Sábado</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-xs-4" for="hora_desde">Hora desde:</label>
+                            <div class="col-xs-8">
+                                <input type="text" class="form-control" id="hora_desde" name="hora_desde" placeholder="HH:mm"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-xs-4" for="hora_hasta">Hora hasta:</label>
+                            <div class="col-xs-8">
+                                <input type="text" class="form-control" id="hora_hasta" name="hora_hasta" placeholder="HH:mm"/>
+                            </div>
+                        </div>
+                        <button class="btn btn-default" data-dismiss="modal">
+                            <i class="glyphicon glyphicon-chevron-left"></i> Cancelar
+                        </button>
+                        <button type="submit" id="btnRestriccionGuardar" data-loading-text="Guardando..." class="btn btn-primary pull-right" autocomplete="off">
+                            <i class="glyphicon glyphicon-floppy-save"></i> Guardar
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block alert %}
+    <div class="alert alert-info" role="alert">
+        <p>
+            <span class="glyphicon glyphicon-info-sign"></span>
+            <strong>Nota:</strong> Haz clic sobre una especialidad para
+            asignarla. Lo mismo para quitarla.
+        </p>
+    </div>
+{% endblock %}

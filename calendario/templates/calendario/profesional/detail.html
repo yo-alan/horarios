@@ -192,26 +192,6 @@
                 });
             });
         }
-        
-        function editarRestriccion(restriccion_id){
-            
-            $("#myModalEdit").modal("show");
-            
-            $("#btnEdit").click(function () {
-                
-                $.ajax({
-                    url: "{% url 'calendario:restriccion_edit' %}",
-                    type: 'POST',
-                    data: {
-                        csrfmiddlewaretoken: '{{ csrf_token }}',
-                        restriccion_id: restriccion_id
-                    },
-                    success: function(response) {
-                        location.reload();
-                    }
-                });
-            });
-        }
     </script>
 {% endblock %}
 {% block article %}
@@ -220,9 +200,6 @@
         <li><a href="{% url 'calendario:profesional_all' %}">Profesionales</a></li>
         <li class="active">Detalles</li>
     </ol>
-    <h3 class="text-center">
-        {{ profesional }}
-    </h3>
     <div class="modal fade" id="modal-infomacion" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -242,66 +219,6 @@
                     <a href="{% url 'calendario:profesional_all' %}" class="btn btn-primary pull-right">
                         Aceptar
                     </a>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="modal fade" id="myModalEdit" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header bg-primary">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-                        ×
-                    </button>
-                    <h4 class="modal-title" id="myModalLabel">
-                        <i class="glyphicon glyphicon-info-sign"></i> Editar restricción
-                    </h4>
-                </div>
-                <div class="modal-body">
-                    <form class="form" id="editRestriccionForm" method="POST" action="{% url 'calendario:restriccion_add' %}">
-                        <div class="alert alert-dismissable alert-danger hidden">
-                            <button type="button" class="close" data-hide="alert" aria-hidden="true">
-                                ×
-                            </button>
-                            <h4>
-                                Error al guardar la restricción.
-                            </h4>
-                            <strong>Ojo!</strong> Un campo no es válido:
-                            <p>
-                            </p>
-                        </div>
-                        {% csrf_token %}
-                        <input id="profesional_id" name="profesional_id" type="hidden" value="{{ profesional.id }}">
-                        <div class="form-group">
-                            <label class="control-label" for="dia_semana">Día de la semana:</label>
-                            <select class="form-control" id="dia_semana" name="dia_semana">
-                                <option value="7">Todos los días</option>
-                                <option value="0">Domingo</option>
-                                <option value="1">Lunes</option>
-                                <option value="2">Martes</option>
-                                <option value="3">Miércoles</option>
-                                <option value="4">Jueves</option>
-                                <option value="5">Viernes</option>
-                                <option value="6">Sábado</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label" for="hora_desde">Hora desde:</label>
-                            <input type="text" class="form-control" id="hora_desde" name="hora_desde" placeholder="HH:mm"/>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label" for="hora_hasta">Hora hasta:</label>
-                            <input type="text" class="form-control" id="hora_hasta" name="hora_hasta" placeholder="HH:mm"/>
-                        </div>
-                        <div class="modal-footer">
-                            <button class="btn btn-default">
-                                Cancelar
-                            </button>
-                            <button type="submit" id="btnRestriccionGuardar" data-loading-text="Guardando..." class="btn btn-primary pull-right" autocomplete="off">
-                                <i class="glyphicon glyphicon-floppy-save"></i> Guardar
-                            </button>
-                        </div>
-                    </form>
                 </div>
             </div>
         </div>
@@ -359,6 +276,10 @@
             </li>
         </ul>
         <div class="tab-content">
+            <h3 class="text-center">
+                {{ profesional }}
+            </h3>
+            <br>
             <div class="tab-pane active" id="this">
                 <div class="col-xs-12 col-sm-12 col-md-9 col-lg-7 col-centered">
                     <form class="form-horizontal" id="editForm" name="editForm" method="POST" action="{% url 'calendario:profesional_edit' %}">
@@ -495,7 +416,7 @@
                                         <a class="btn btn-danger pull-right" data-toggle="modal" onclick="eliminarRestriccion({{ restriccion.id }})">
                                             <i class="glyphicon glyphicon-trash"></i>
                                         </a>
-                                        <a class="btn btn-default pull-right" data-toggle="modal" onclick="editarRestriccion({{ restriccion.id }})">
+                                        <a class="btn btn-default pull-right" data-toggle="modal" href="{% url 'calendario:restriccion_detail' restriccion.id %}">
                                             <i class="glyphicon glyphicon-edit"></i>
                                         </a>
                                     </p>
@@ -527,8 +448,8 @@
                                 {% csrf_token %}
                                 <input id="profesional_id" name="profesional_id" type="hidden" value="{{ profesional.id }}">
                                 <div class="form-group">
-                                    <label class="control-label" for="dia_semana">Día de la semana:</label>
-                                    <select class="form-control" id="dia_semana" name="dia_semana">
+                                    <label class="control-label" for="edit_dia_semana">Día de la semana:</label>
+                                    <select class="form-control" id="edit_dia_semana" name="edit_dia_semana">
                                         <option value="7">Todos los días</option>
                                         <option value="0">Domingo</option>
                                         <option value="1">Lunes</option>
@@ -540,12 +461,12 @@
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label" for="hora_desde">Hora desde:</label>
-                                    <input type="text" class="form-control" id="hora_desde" name="hora_desde" placeholder="HH:mm"/>
+                                    <label class="control-label" for="edit_hora_desde">Hora desde:</label>
+                                    <input type="text" class="form-control" id="edit_hora_desde" name="edit_hora_desde" placeholder="HH:mm"/>
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label" for="hora_hasta">Hora hasta:</label>
-                                    <input type="text" class="form-control" id="hora_hasta" name="hora_hasta" placeholder="HH:mm"/>
+                                    <label class="control-label" for="edit_hora_hasta">Hora hasta:</label>
+                                    <input type="text" class="form-control" id="edit_hora_hasta" name="edit_hora_hasta" placeholder="HH:mm"/>
                                 </div>
                                 <button type="submit" id="btnRestriccionGuardar" data-loading-text="Guardando..." class="btn btn-primary pull-right" autocomplete="off">
                                     <i class="glyphicon glyphicon-floppy-save"></i> Agregar
