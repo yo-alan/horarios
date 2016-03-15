@@ -73,7 +73,7 @@ def index(request):
     
     especialidades = Especialidad.objects.filter(estado="ON")
     profesionales = Profesional.objects.filter(estado="ON")
-    espacios = Espacio.objects.filter(estado="ON")
+    espacios = Espacio.objects.filter(estado=Espacio.ON)
     calendarios = Calendario.objects.all()
     
     context = {"user": request.user, "especialidades": especialidades,
@@ -436,7 +436,7 @@ def detail(request, calendario_id):
 @login_required(login_url='/index/')
 def espacio_all(request, pagina=1):
     
-    total_espacios = Espacio.objects.filter(estado='ON').order_by('nombre')
+    total_espacios = Espacio.objects.filter(estado=Espacio.ON).order_by('nombre')
     paginator = Paginator(total_espacios, 10)
     
     try:
@@ -452,8 +452,6 @@ def espacio_all(request, pagina=1):
 
 @login_required(login_url='/index/')
 def espacio_detail(request, espacio_id):
-    
-    global _status
     
     espacio = get_object_or_404(Espacio, pk=espacio_id)
     espacio = Espacio.create(espacio_id)
@@ -476,17 +474,9 @@ def espacio_detail(request, espacio_id):
     
     listo = False
     
+    #TO DO: calendario_valido, listo, variables viejas ver que funcion cumplen
     if espacio.coordinadores and calendario_valido:
         listo = True
-    
-    estado = ['', '']
-    
-    if _status[0]:
-        estado[0] = "GENERANDO"
-        estado[1] = _status[1]
-    elif listo == False:
-        estado[0] = "NO ES VALIDO"
-        estado[1] = "Faltan datos para que el sistema pueda ejecutarse."
     
     calendario = None
     
@@ -496,8 +486,8 @@ def espacio_detail(request, espacio_id):
         
         calendario = Calendario.create(calendario.id)
     
-    context = {'estado': estado, 'espacio': espacio,
-                'calendario': calendario, 'dias': dias}
+    context = {'espacio': espacio, 'calendario': calendario,
+				'dias': dias}
     
     return render(request, 'calendario/espacio/detail.html', context)
 
@@ -1365,7 +1355,9 @@ def imprimir(request, calendario_id):
     return render_to_pdf('calendario/imprimir.html', context)
 
 def status(request):
-    
+    """
+    Recibir por parametro el id del espacio para obtener su estado.
+    """
     global _status
     
     data = {"status": _status[0], "progress": _status[1]}

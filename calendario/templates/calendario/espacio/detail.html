@@ -433,11 +433,11 @@
                                         <input type="range" id="generaciones" name="generaciones" min="1" max="3" value="2">
                                     </div>
                                 </div>
-                                {% if estado.0 == "GENERANDO" %}
+                                {% if espacio.estado == 3 %}
                                     <button id="btnGenerar" class="btn btn-success pull-right disabled" disabled>
                                         <i class="fa fa-spinner"></i> Generando...
                                     </button>
-                                {% elif estado.0 == "NO ES VALIDO" %}
+                                {% elif espacio.estado == 2 %}
                                     <button id="btnGenerar" type="submit" class="btn btn-success pull-right" data-loading-text="Generando..." disabled>
                                         <i class="fa fa-spinner"></i> Generar
                                     </button>
