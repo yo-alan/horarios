@@ -27,10 +27,13 @@ class Espacio(models.Model):
     .grado - puntaje promedio de la población actual. Valor: 0.
     """
     
+    ON = 1
+    OFF = 2
+    GENERANDO = 3
+    
     nombre = models.CharField(max_length=100, null=False, blank=False)
-    estado = models.CharField(max_length=3,
-                                choices=[('ON', 'ON'), ('OFF', 'OFF')],
-                                default='ON')
+    estado = models.IntegerField(default=1, null=False)
+    progreso = models.IntegerField(default=0, null=False)
     usuario_creador = models.CharField(max_length=30, default='admin')
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     usuario_modificador = models.CharField(max_length=30,

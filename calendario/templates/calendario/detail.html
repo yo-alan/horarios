@@ -152,7 +152,9 @@
         </div>
     </div>
     <div class="btn btn-group">
-        <a onclick="confirmarCalendario({{ calendario.id }})" class="btn btn-default" title="Confirmar este calendario"><i class="glyphicon glyphicon-ok"></i> Confirmar</a>
+        {% if calendario.estado == "OFF" %}
+            <a onclick="confirmarCalendario({{ calendario.id }})" class="btn btn-default" title="Confirmar este calendario"><i class="glyphicon glyphicon-ok"></i> Confirmar</a>
+        {% endif %}
         <a href="{% url 'calendario:edit' calendario.id %}" class="btn btn-default" title="Editar calendario"><i class="glyphicon glyphicon-edit"></i> Editar</a>
         <a href="{% url 'calendario:imprimir' calendario.id %}" class="btn btn-default" title="Generar PDF" target="_blank"><i class="fa fa-file-pdf-o"></i> PDF</a>
         <a onclick="eliminarCalendario({{ calendario.id }})" class="btn btn-danger" title="Eliminar este calendario"><i class="glyphicon glyphicon-trash"></i> Eliminar</a>

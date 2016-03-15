@@ -284,12 +284,8 @@ def confirmar(request):
 @login_required(login_url='/index/')
 def generar(request):
     
-    global _status
-    
-    if _status[0] or request.method != 'POST':
+    if request.method != 'POST':
         return HttpResponseRedirect(reverse('index'))
-    
-    _status[0] = True
     
     espacio_id = request.POST['espacio_id']
     
@@ -298,6 +294,9 @@ def generar(request):
     try:
         
         espacio = Espacio.create(espacio_id)
+        
+        if espacio.estado == espacio.GENERANDO:
+            return HttpResponseRedirect(reverse('index'))
         
         if espacio.poblacion:
             espacio.poblacion[0].delete()
