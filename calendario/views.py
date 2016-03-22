@@ -30,9 +30,7 @@ from perfil.models import Actividad
 DIAS = {0: 'Domingo', 1: 'Lunes', 2: 'Martes', 3: 'Miércoles',
         4: 'Jueves', 5: 'Viernes', 6: 'Sábado', 7: "Todos los días"}
 
-_status = [False, 0]
-
-DENSIDAD = 10
+DENSIDAD = 5
 
 def bad_request(request):
     
@@ -295,11 +293,15 @@ def generar(request):
         
         espacio = Espacio.create(espacio_id)
         
-        if espacio.estado == espacio.GENERANDO:
+        if espacio.estado == Espacio.GENERANDO:
             return HttpResponseRedirect(reverse('index'))
         
         if espacio.poblacion:
             espacio.poblacion[0].delete()
+        
+        espacio.estado = Espacio.GENERANDO
+        
+        espacio.save()
         
         print "Generando población inicial... ",
         sys.stdout.flush()
@@ -330,8 +332,9 @@ def generar(request):
         while generacion != generaciones:
             
             generacion += 1
-            
-            _status[1] = generacion * 100 / generaciones
+            #mmm hay que revisar esto.
+            espacio.progreso = generacion * 100 / generaciones
+            espacio.save()
             
             print "Generación %d/%d" % (generacion, generaciones)
             
@@ -395,10 +398,11 @@ def generar(request):
         print "La evolución tardó %7.3f seg."\
                 % (time.time() - global_time)
         
+        espacio.estado = Espacio.ON
+        espacio.save()
+        
     except Exception as ex:
         print ex
-    
-    _status = [False, 0]
 
 @login_required(login_url='/index/')
 def detail(request, calendario_id):
@@ -1358,9 +1362,6 @@ def status(request):
     """
     Recibir por parametro el id del espacio para obtener su estado.
     """
-    global _status
-    
-    data = {"status": _status[0], "progress": _status[1]}
     
     return JsonResponse(data)
 
