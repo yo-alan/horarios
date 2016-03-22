@@ -16,6 +16,7 @@ import cStringIO as StringIO
 from xhtml2pdf import pisa
 from cgi import escape
 
+from django.db.models import Q
 from .models import Calendario
 from .models import Profesional
 from .models import Horario
@@ -71,7 +72,7 @@ def index(request):
     
     especialidades = Especialidad.objects.filter(estado="ON")
     profesionales = Profesional.objects.filter(estado="ON")
-    espacios = Espacio.objects.filter(estado=Espacio.ON)
+    espacios = Espacio.objects.filter(~Q(estado=Espacio.OFF))
     calendarios = Calendario.objects.all()
     
     context = {"user": request.user, "especialidades": especialidades,
@@ -289,120 +290,120 @@ def generar(request):
     
     generaciones = cant_generaciones(request.POST['generaciones'])
     
-    try:
+    #~ try:
+    
+    espacio = Espacio.create(espacio_id)
+    
+    if espacio.estado == Espacio.GENERANDO:
+        return HttpResponseRedirect(reverse('index'))
+    
+    if espacio.poblacion:
+        espacio.poblacion[0].delete()
+    
+    espacio.estado = Espacio.GENERANDO
+    
+    espacio.save()
+    
+    print "Generando población inicial... ",
+    sys.stdout.flush()
+    
+    global_time = time.time()
+    
+    operation_time = time.time()
+    
+    # Generamos la población inicial.
+    espacio.generarpoblacioninicial()
+    
+    print " %d individuos en %7.3f seg."\
+            % (len(espacio.poblacion), time.time() - operation_time)
+    
+    print "Evaluando la población... ",
+    sys.stdout.flush()
+    
+    operation_time = time.time()
+    
+    # Evaluamos la población.
+    espacio.fitness(espacio.poblacion)
+    
+    print " %7.3f seg." % (time.time() - operation_time)
+    
+    generacion = 0
+    
+    # Comienza el ciclo de evolución.
+    while generacion != generaciones:
         
-        espacio = Espacio.create(espacio_id)
+        generacion += 1
         
-        if espacio.estado == Espacio.GENERANDO:
-            return HttpResponseRedirect(reverse('index'))
+        if espacio.progreso != generacion * 100 / generaciones:
+            espacio.progreso = generacion * 100 / generaciones
+            espacio.save()
         
-        if espacio.poblacion:
-            espacio.poblacion[0].delete()
+        print "Generación %d/%d" % (generacion, generaciones)
         
-        espacio.estado = Espacio.GENERANDO
-        
-        espacio.save()
-        
-        print "Generando población inicial... ",
+        print "Seleccionando individuos para el cruce... ",
         sys.stdout.flush()
-        
-        global_time = time.time()
         
         operation_time = time.time()
         
-        # Generamos la población inicial.
-        espacio.generarpoblacioninicial()
-        
-        print " %d individuos en %7.3f seg."\
-                % (len(espacio.poblacion), time.time() - operation_time)
-        
-        print "Evaluando la población... ",
-        sys.stdout.flush()
-        
-        operation_time = time.time()
-        
-        # Evaluamos la población.
-        espacio.fitness(espacio.poblacion)
+        # Hacemos la seleccion de padres.
+        seleccionados = espacio.seleccion()
         
         print " %7.3f seg." % (time.time() - operation_time)
         
-        generacion = 0
-        
-        # Comienza el ciclo de evolución.
-        while generacion != generaciones:
-            
-            generacion += 1
-            #mmm hay que revisar esto.
-            espacio.progreso = generacion * 100 / generaciones
-            espacio.save()
-            
-            print "Generación %d/%d" % (generacion, generaciones)
-            
-            print "Seleccionando individuos para el cruce... ",
-            sys.stdout.flush()
-            
-            operation_time = time.time()
-            
-            # Hacemos la seleccion de padres.
-            seleccionados = espacio.seleccion()
-            
-            print " %7.3f seg." % (time.time() - operation_time)
-            
-            print "Cruzando los individuos... ",
-            sys.stdout.flush()
-            
-            operation_time = time.time()
-            
-            # Obtenemos los hijos resultantes del cruce.
-            hijos = espacio.cruzar(seleccionados)
-            
-            print " %7.3f seg." % (time.time() - operation_time)
-            
-            print "Evaluando la nueva población... ",
-            sys.stdout.flush()
-            
-            operation_time = time.time()
-            
-            # Evaluamos la nueva población.
-            espacio.fitness(hijos)
-            
-            print " %7.3f seg." % (time.time() - operation_time)
-            
-            print "Hijos generados", len(hijos)
-            
-            print "Actualizando la población... ",
-            sys.stdout.flush()
-            
-            operation_time = time.time()
-            
-            # Actualizamos lo individuos de la población.
-            espacio.actualizarpoblacion(hijos)
-            
-            print " %7.3f seg." % (time.time() - operation_time)
-            
-            print "Grado de la población: ", espacio.grado
-            
-            print "----------------------------------------------------"
-            
-        
-        print "Guardando los individuos... ",
+        print "Cruzando los individuos... ",
         sys.stdout.flush()
         
         operation_time = time.time()
         
-        espacio.poblacion[0].full_save()
+        # Obtenemos los hijos resultantes del cruce.
+        hijos = espacio.cruzar(seleccionados)
         
-        print " %d individuos en %7.3f seg."\
-                % (len(espacio.poblacion), time.time() - operation_time)
-        print
-        print "La evolución tardó %7.3f seg."\
-                % (time.time() - global_time)
+        print " %7.3f seg." % (time.time() - operation_time)
         
-        espacio.estado = Espacio.ON
-        espacio.save()
+        print "Evaluando la nueva población... ",
+        sys.stdout.flush()
         
-    except Exception as ex:
-        print ex
+        operation_time = time.time()
+        
+        # Evaluamos la nueva población.
+        espacio.fitness(hijos)
+        
+        print " %7.3f seg." % (time.time() - operation_time)
+        
+        print "Hijos generados", len(hijos)
+        
+        print "Actualizando la población... ",
+        sys.stdout.flush()
+        
+        operation_time = time.time()
+        
+        # Actualizamos lo individuos de la población.
+        espacio.actualizarpoblacion(hijos)
+        
+        print " %7.3f seg." % (time.time() - operation_time)
+        
+        print "Grado de la población: ", espacio.grado
+        
+        print "----------------------------------------------------"
+    
+    print "Guardando los individuos... ",
+    sys.stdout.flush()
+    
+    operation_time = time.time()
+    
+    espacio.poblacion[0].full_save()
+    
+    print " %d individuos en %7.3f seg."\
+            % (len(espacio.poblacion), time.time() - operation_time)
+    print
+    print "La evolución tardó %7.3f seg."\
+            % (time.time() - global_time)
+    
+    espacio.estado = Espacio.ON
+    espacio.save()
+    
+    #~ except Exception as ex:
+        #~ print ex
 
 @login_required(login_url='/index/')
 def detail(request, calendario_id):
@@ -440,7 +441,7 @@ def detail(request, calendario_id):
 @login_required(login_url='/index/')
 def espacio_all(request, pagina=1):
     
-    total_espacios = Espacio.objects.filter(estado=Espacio.ON).order_by('nombre')
+    total_espacios = Espacio.objects.filter(~Q(estado=Espacio.OFF)).order_by('nombre')
     paginator = Paginator(total_espacios, 10)
     
     try:
@@ -491,7 +492,7 @@ def espacio_detail(request, espacio_id):
         calendario = Calendario.create(calendario.id)
     
     context = {'espacio': espacio, 'calendario': calendario,
-				'dias': dias}
+                'dias': dias}
     
     return render(request, 'calendario/espacio/detail.html', context)
 
@@ -1358,10 +1359,14 @@ def imprimir(request, calendario_id):
     
     return render_to_pdf('calendario/imprimir.html', context)
 
-def status(request):
+def status(request, espacio_id):
     """
     Recibir por parametro el id del espacio para obtener su estado.
     """
+    
+    espacio = Espacio.create(espacio_id)
+    
+    data = {"progreso": espacio.progreso}
     
     return JsonResponse(data)
 

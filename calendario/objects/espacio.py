@@ -76,7 +76,7 @@ class Espacio(models.Model):
             espacio._dias_habiles.append(dia_habil)
         
         #~ for calendario in Calendario.objects.filter(espacio=espacio):
-			#~ espacio.poblacion.append(Calendario.create(calendario.id))
+            #~ espacio.poblacion.append(Calendario.create(calendario.id))
         
         return espacio
     
