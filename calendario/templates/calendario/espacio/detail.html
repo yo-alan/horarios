@@ -161,7 +161,7 @@
         function checkStatus() {
            
             $.ajax({
-                url: "{% url 'calendario:status' %}",
+                url: "{% url 'calendario:status' espacio.id %}",
                 type: 'GET',
                 success: function(response) {
                     
