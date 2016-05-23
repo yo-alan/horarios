@@ -16,6 +16,9 @@ class Restriccion(models.Model):
     usuario_modificador = models.CharField(max_length=30, default='admin')
     fecha_modificacion = models.DateTimeField(auto_now=True)
     
+    class Meta:
+        unique_together = ("hora_desde", "hora_hasta", "dia_semana", "calendario")
+    
     def sethora_desde(self, hora_desde):
         
         if hora_desde == "":

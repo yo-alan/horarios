@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from django.db import models
-from django.contrib.auth.models import Group
 
 def esCUITValida(cuit):
     
@@ -32,7 +31,7 @@ def esCUITValida(cuit):
     else:
         return False
 
-class Institucion(Group):
+class Institucion(models.Model):
     
     cuil = models.CharField(max_length=13, null=False, blank=False)
     direccion = models.CharField(max_length=100, null=False, blank=False)

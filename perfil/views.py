@@ -8,7 +8,13 @@ def index(request):
     if not request.user.is_authenticated():
         return render(request, 'calendario/index.html')
     
+    if request.user.has_perm('auth.profesional'):
+        print "Not super"
+    
     actividades = Actividad.objects.filter(usuario=request.user.username)
+    
+    for actividad in actividades:
+        print actividad.fecha
     
     context = {"user": request.user, "actividades": actividades}
     

@@ -585,7 +585,7 @@ def espacio_delete(request):
     try:
         espacio = Espacio.create(request.POST['espacio_id'])
         
-        espacio.estado = 'OFF'
+        espacio.estado = Espacio.OFF
         espacio.usuario_modificador = request.user.username
         
         espacio.save()
@@ -1232,7 +1232,7 @@ def restriccion_add(request):
         actividad = Actividad()
         
         actividad.usuario = request.user.username
-        actividad.mensaje = "Le agregó una restricción a " + str(profesional)
+        actividad.mensaje = "Agregó una restricción para " + str(profesional)
         
         actividad.save()
         
@@ -1277,7 +1277,7 @@ def restriccion_edit(request, restriccion_id):
         actividad = Actividad()
         
         actividad.usuario = request.user.username
-        actividad.mensaje = "Le editó una restricción a " + str(restriccion.profesional)
+        actividad.mensaje = "Editó una restricción de " + str(restriccion.profesional)
         
         actividad.save()
         
@@ -1319,7 +1319,7 @@ def restriccion_delete(request):
         actividad = Actividad()
         
         actividad.usuario = request.user.username
-        actividad.mensaje = "Le eliminó una restricción a " + str(restriccion.profesional)
+        actividad.mensaje = "Eliminó una restricción de " + str(restriccion.profesional)
         
         actividad.save()
         
