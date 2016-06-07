@@ -240,7 +240,7 @@ def delete(request):
         actividad = Actividad()
         
         actividad.usuario = request.user.username
-        actividad.mensaje = "Eliminó el calendario #" + str(calendario.id)
+        actividad.mensaje = "Eliminó el calendario #" + str(calendario_id)
         
         actividad.save()
         
@@ -1366,7 +1366,7 @@ def status(request, espacio_id):
     
     espacio = Espacio.create(espacio_id)
     
-    data = {"progreso": espacio.progreso}
+    data = {"progreso": espacio.progreso, "estado": espacio.estado}
     
     return JsonResponse(data)
 

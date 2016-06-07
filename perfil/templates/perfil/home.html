@@ -10,16 +10,15 @@
     <script>
         $(function () {
             
-            //~ moment.locale('es', {
-                //~ monthsShort: "Ene._Feb._Mar._Abr._May._Jun._Jul._Ago._Sep._Oct._Nov._Dic.".split("_")
-            //~ });
-            moment.updateLocale('es', {
-                months : [
-                    "January", "Febrero", "M", "April", "May", "June", "July",
-                    "August", "September", "October", "November", "Decembre"
+            moment.locale('es', {
+                monthsShort: "Ene._Feb._Mar._Abr._May._Jun._Jul._Ago._Sep._Oct._Nov._Dic.".split("_"),
+                months: [
+                    "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio",
+                    "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
                 ]
             });
-            $.fn.dataTable.moment("DD MMM. YYYY HH:mm");
+            
+            $.fn.dataTable.moment("YYYY-MM-DD HH:mm:ss");
             
             $("#tbActividad").DataTable({
                 "order": [[ 0, "desc" ]]

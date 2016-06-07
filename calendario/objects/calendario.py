@@ -191,8 +191,10 @@ class Calendario(models.Model):
                 restriccion.dia_semana = horario.dia_semana
                 restriccion.profesional = horario.coordinador.profesional
                 restriccion.calendario = self
-                
-                restriccion.save()
+                try:
+                    restriccion.save()
+                except Exception as ex:
+                    print "Quise crear una restriccion que pisaba otra."
             
         
 

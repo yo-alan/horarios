@@ -21,7 +21,7 @@
                 $(".alert-danger").attr('class', "alert alert-dismissable alert-danger hidden");
             });
             
-            {% if estado.0 == "GENERANDO" %}
+            {% if espacio.estado == Espacio.GENERANDO %}
                 var tid = setInterval(checkStatus, 20000);
             {% endif %}
             
@@ -165,12 +165,12 @@
                 type: 'GET',
                 success: function(response) {
                     
-                    if(response.status == false)
+                    if(response.estado == false)
                         location.reload();
                     
-                    $("#progress-bar").width(response.progress + "%");
+                    $("#progress-bar").width(response.progreso + "%");
                     
-                    $("#progress-bar b").html(response.progress + "% Completo");
+                    $("#progress-bar b").html(response.progreso + "% Completo");
                 }
             }); 
         }
@@ -403,18 +403,12 @@
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-9 col-lg-7 col-centered">
                 {% endif %}
+                {% if not calendario %}
                     <div class="panel panel-success">
                         <div class="panel-heading">
                             <strong><i class="fa fa-fw fa-calendar"></i> Generar calendarios</strong>
                         </div>
                         <div class="panel-body">
-                        {% if calendario %}
-                            <div class="alert alert-info" role="alert">
-                                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-                                <span class="sr-only">Atención:</span>
-                                Se borrará el calendario ya creado.
-                            </div>
-                        {% endif %}
                             <form class="form-horizontal" id="formGenerar" name="formGenerar" method="POST" action="{% url 'calendario:generar' %}">
                                 {% csrf_token %}
                                 <input type="hidden" id="espacio_id" name="espacio_id" value="{{ espacio.id }}">
@@ -447,6 +441,7 @@
                                     </button>
                                 {% endif %}
                             </form>
+                        {% endif %}
                         </div>
                     </div>
                 </div>

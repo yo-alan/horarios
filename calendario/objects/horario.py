@@ -10,6 +10,7 @@ class Horario(models.Model):
     hora_hasta = models.TimeField('hasta', null=False)
     dia_semana = models.IntegerField(default=0, null=False)
     penalizado = models.IntegerField(default=0)
+    movible = models.BooleanField(default=True)
     calendario = models.ForeignKey(Calendario)
     coordinador = models.ForeignKey(Coordinador)
     
@@ -18,7 +19,6 @@ class Horario(models.Model):
     
     def __eq__(self, o):
         return self.hora_desde == o.hora_desde and\
-                self.hora_hasta == o.hora_hasta and\
                 self.dia_semana == o.dia_semana
     
     def __ne__(self, o):

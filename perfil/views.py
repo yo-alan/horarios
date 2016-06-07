@@ -9,7 +9,7 @@ def index(request):
         return render(request, 'calendario/index.html')
     
     if request.user.has_perm('auth.profesional'):
-        print "Not super"
+        print "Not so super"
     
     actividades = Actividad.objects.filter(usuario=request.user.username)
     
