@@ -20,7 +20,7 @@ from django.db.models import Q
 from .models import Calendario
 from .models import Profesional
 from .models import Horario
-from .models import ProfesionalRestriccion
+from .models import Restriccion
 from .models import Especialidad
 from .models import Espacio
 from .models import Hora
@@ -1218,7 +1218,7 @@ def restriccion_add(request):
         
         profesional = Profesional.create(profesional_id)
         
-        restriccion = ProfesionalRestriccion()
+        restriccion = Restriccion()
         
         restriccion.setprofesional(profesional)
         restriccion.setdia_semana(request.POST['dia_semana'])
@@ -1270,7 +1270,7 @@ def restriccion_edit(request, restriccion_id):
     
     try:
         
-        restriccion = ProfesionalRestriccion.objects.get(pk=restriccion_id)
+        restriccion = Restriccion.objects.get(pk=restriccion_id)
         
         restriccion.save()
         
@@ -1291,7 +1291,7 @@ def restriccion_edit(request, restriccion_id):
 @login_required(login_url='/index/')
 def restriccion_detail(request, restriccion_id):
     
-    restriccion = ProfesionalRestriccion.objects.get(pk=restriccion_id)
+    restriccion = Restriccion.objects.get(pk=restriccion_id)
     
     context = {'restriccion': restriccion}
     
@@ -1309,7 +1309,7 @@ def restriccion_delete(request):
         
         restriccion_id = request.POST['restriccion_id']
         
-        restriccion = ProfesionalRestriccion.objects.get(pk=restriccion_id)
+        restriccion = Restriccion.objects.get(pk=restriccion_id)
         
         restriccion.estado = 'OFF'
         restriccion.usuario_modificador = request.user.username

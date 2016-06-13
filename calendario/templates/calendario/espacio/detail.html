@@ -356,8 +356,8 @@
                         <b>{{ estado.1 }}% Completo</b>
                     </div>
                 </div>
-                <div class="col-xs-12 col-sm-12 col-md-7 col-lg-7">
                 {% if calendario %}
+                <div>
                     <div class="btn btn-group">
                         <a href="{% url 'calendario:detail' calendario.id %}" class="btn btn-default" title="Ver este calendario"><i class="glyphicon glyphicon-eye-open"></i> Ver</a>
                         <a href="{% url 'calendario:edit' calendario.id %}" class="btn btn-default" title="Editar este calendario"><i class="glyphicon glyphicon-edit"></i> Editar</a>
@@ -387,10 +387,14 @@
                                 </td>
                             {% for horario in franja_horaria %}
                                 {% if horario.penalizado > 0 %}
-                                <td penalizado="{{ horario.penalizado }}">
+                                <td penalizado="{{ horario.penalizado }}" class="text-center">
                                 {% else %}
-                                <td penalizado="{{ horario.penalizado }}" style="background-color: {{ horario.coordinador.especialidad.color }}">
+                                <td penalizado="{{ horario.penalizado }}" class="text-center" style="background-color: {{ horario.coordinador.especialidad.color }}">
                                 {% endif %}
+                                    <h4>
+                                        <strong>{{ horario.coordinador.especialidad }}</strong>
+                                    </h4>
+                                    {{ horario.coordinador.profesional }}
                                 </td>
                             {% endfor %}
                             </tr>
@@ -398,12 +402,8 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5">
                 {% else %}
-                </div>
                 <div class="col-xs-12 col-sm-12 col-md-9 col-lg-7 col-centered">
-                {% endif %}
-                {% if not calendario %}
                     <div class="panel panel-success">
                         <div class="panel-heading">
                             <strong><i class="fa fa-fw fa-calendar"></i> Generar calendarios</strong>
@@ -441,10 +441,10 @@
                                     </button>
                                 {% endif %}
                             </form>
-                        {% endif %}
                         </div>
                     </div>
                 </div>
+                {% endif %}
             </div>
         </div>
     </div>

@@ -8,8 +8,7 @@ from objects.coordinador import Coordinador
 from objects.profesional import Profesional
 from objects.especialidad import Especialidad
 from objects.calendario import Calendario
+from objects.restriccion import Restriccion
 from objects.horario import Horario
-from objects.espacioRestriccion import EspacioRestriccion
-from objects.profesionalRestriccion import ProfesionalRestriccion
 from objects.penalidad import Penalidad
 from objects.institucion import Institucion

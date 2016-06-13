@@ -166,13 +166,20 @@ class Calendario(models.Model):
     
     def confirmar(self, ):
         
-        from profesionalRestriccion import ProfesionalRestriccion
+        from restriccion import Restriccion
         
         for franja_horaria in self.horarios:
             
             for horario in franja_horaria:
                 
                 horario.penalizado = 0
+                
+                horario.save()
+        
+        restricciones = Restriccion.objects.filter(calendario=self)
+        
+        for restriccion in restricciones:
+            restriccion.delete()
         
         self.espacio.fitness([self])
         
@@ -184,17 +191,21 @@ class Calendario(models.Model):
             
             for horario in franja_horaria:
                 
-                restriccion = ProfesionalRestriccion()
+                restriccion = Restriccion()
                 
                 restriccion.hora_desde = horario.hora_desde
                 restriccion.hora_hasta = horario.hora_hasta
                 restriccion.dia_semana = horario.dia_semana
                 restriccion.profesional = horario.coordinador.profesional
                 restriccion.calendario = self
+                
                 try:
                     restriccion.save()
                 except Exception as ex:
                     print "Quise crear una restriccion que pisaba otra."
+                
+                # Se guarda el horario por si fue penalizado.
+                horario.save()
             
         
 

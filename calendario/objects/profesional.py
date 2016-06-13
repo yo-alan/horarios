@@ -25,7 +25,7 @@ class Profesional(Persona):
     @property
     def restricciones(self, ):
         
-        from profesionalRestriccion import ProfesionalRestriccion
+        from restriccion import Restriccion
         
-        return ProfesionalRestriccion.objects.filter(profesional=self, estado="ON")\
-                                                .order_by('dia_semana', 'hora_desde')
+        return Restriccion.objects.filter(profesional=self, estado="ON")\
+                                        .order_by('dia_semana', 'hora_desde')
