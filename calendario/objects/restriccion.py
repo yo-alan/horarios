@@ -19,7 +19,7 @@ class Restriccion(models.Model):
     fecha_modificacion = models.DateTimeField(auto_now=True)
     
     class Meta:
-        unique_together = ("hora_desde", "hora_hasta", "dia_semana", "calendario")
+        unique_together = ("hora_desde", "hora_hasta", "dia_semana", "profesional")
     
     def sethora_desde(self, hora_desde):
         

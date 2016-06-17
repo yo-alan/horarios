@@ -421,12 +421,12 @@ def detail(request, calendario_id):
     try:
         anterior = get_object_or_404(Calendario, pk=calendario_id-1)
     except Exception as ex:
-        print ex
+        pass
     
     try:
         siguiente = get_object_or_404(Calendario, pk=calendario_id+1)
     except Exception as ex:
-        print ex
+        pass
     
     dias = []
     

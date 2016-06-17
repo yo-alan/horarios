@@ -202,13 +202,11 @@ class Calendario(models.Model):
                 try:
                     restriccion.save()
                 except Exception as ex:
-                    print "Quise crear una restriccion que pisaba otra."
+                    pass
                 
                 # Se guarda el horario por si fue penalizado.
                 horario.save()
-            
-        
-
+    
     @property
     def horarios(self, ):
         
