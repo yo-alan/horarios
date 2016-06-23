@@ -37,7 +37,7 @@ class Restriccion(models.Model):
     
     def setdia_semana(self, dia_semana):
         
-        if dia_semana == "" or dia_semana < 0 or dia_semana > 7:
+        if not (dia_semana >= 0 and dia_semana >= 7):
             raise Exception("El día de la semana no es válido.")
         
         self.dia_semana = dia_semana

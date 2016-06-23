@@ -31,7 +31,7 @@ class Espacio(models.Model):
     OFF = 2
     GENERANDO = 3
     
-    nombre = models.CharField(max_length=100, null=False, blank=False)
+    nombre = models.CharField(max_length=100, null=False, blank=False, unique=True)
     estado = models.IntegerField(default=1, null=False)
     progreso = models.IntegerField(default=0, null=False)
     usuario_creador = models.CharField(max_length=30, default='admin')
@@ -109,6 +109,13 @@ class Espacio(models.Model):
         # Iteramos generando todas las combinaciones de horarios
         # posibles. Y agregamos cada uno a un calendario.
         
+        
+        cant_horas = 0
+        
+        for coordinador in self.coordinadores:
+            
+            cant_horas += coordinador.especialidad.carga_horaria_semanal
+        
         individuos = []
         
         # Cantidad de iteraciones por los dias.
@@ -139,7 +146,10 @@ class Espacio(models.Model):
                     horario.dia_semana = dia.dia
                     # El Horario es agregado al Calendario.
                     calendario.agregar_horario(horario)
-                    
+                
+                if self.dias_habiles * self.horas == cant_horas:
+                    #TO DO
+                    pass
         
         # Rellenamos el Calendario generando Horarios.
         

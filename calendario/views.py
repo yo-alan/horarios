@@ -1220,10 +1220,10 @@ def restriccion_add(request):
         
         restriccion = Restriccion()
         
-        restriccion.setprofesional(profesional)
-        restriccion.setdia_semana(request.POST['dia_semana'])
-        restriccion.sethora_desde(request.POST['hora_desde'])
-        restriccion.sethora_hasta(request.POST['hora_hasta'])
+        restriccion.profesional = profesional
+        restriccion.setdia_semana(request.POST['edit_dia_semana'])
+        restriccion.sethora_desde(request.POST['edit_hora_desde'])
+        restriccion.sethora_hasta(request.POST['edit_hora_hasta'])
         restriccion.usuario_creador = request.user.username
         restriccion.usuario_modificador = request.user.username
         
@@ -1249,10 +1249,10 @@ def restriccion_add(request):
         if "tiene un formato inv" in str(ex):
             data = {'error': "El campo tiene un formato inválido."}
         
-        if 'hora_hasta' in str(ex) or request.POST['hora_hasta'] in str(ex):
+        if 'hora_hasta' in str(ex) or request.POST['edit_hora_hasta'] in str(ex):
             data['campo'] = 'hora_hasta'
         
-        if 'hora_desde' in str(ex) or request.POST['hora_desde'] in str(ex):
+        if 'hora_desde' in str(ex) or request.POST['edit_hora_desde'] in str(ex):
             data['campo'] = 'hora_desde'
         
         if 'dia_semana' in str(ex):

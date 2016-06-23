@@ -12,7 +12,7 @@ class Horario(models.Model):
     penalizado = models.IntegerField(default=0)
     movible = models.BooleanField(default=True)
     calendario = models.ForeignKey(Calendario)
-    coordinador = models.ForeignKey(Coordinador)
+    coordinador = models.ForeignKey(Coordinador, null=True)
     
     def __str__(self, ):
         return str(self.coordinador.especialidad)
