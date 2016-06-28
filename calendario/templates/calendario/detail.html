@@ -5,6 +5,7 @@
 {% block head %}
     <script>
         
+        {% if false %}
         document.onkeydown = checkKey;
         
         function checkKey(e) {
@@ -22,7 +23,7 @@
                 {% endif %}
             }
         }
-        
+        {% endif %}
         function confirmarCalendario(calendario_id){
             
             if(!confirm("¿Está seguro que desea confirmar el calendario?"))
@@ -195,15 +196,16 @@
         {% endfor %}
         </tbody>
     </table>
+    {% if false %}
     <nav>
         <ul class="pager">
             {% if anterior %}
                 <li class="previous"><a href="{% url 'calendario:detail' anterior.id %}"><i class="glyphicon glyphicon-arrow-left"></i> Anterior</a></li>
             {% endif %}
-            
             {% if siguiente %}
                 <li class="next"><a href="{% url 'calendario:detail' siguiente.id %}">Siguiente <i class="glyphicon glyphicon-arrow-right"></i></a>
             {% endif %}
         </ul>
     </nav>
+    {% endif %}
 {% endblock %}

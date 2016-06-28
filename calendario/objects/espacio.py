@@ -75,9 +75,6 @@ class Espacio(models.Model):
         for dia_habil in DiaHabil.objects.filter(espacio=espacio):
             espacio._dias_habiles.append(dia_habil)
         
-        #~ for calendario in Calendario.objects.filter(espacio=espacio):
-            #~ espacio.poblacion.append(Calendario.create(calendario.id))
-        
         return espacio
     
     def __str__(self, ):
@@ -103,25 +100,24 @@ class Espacio(models.Model):
         @Return:
         None.
         """
+        
         from calendario import Calendario
         from horario import Horario
         
-        # Iteramos generando todas las combinaciones de horarios
-        # posibles. Y agregamos cada uno a un calendario.
-        
-        
         cant_horas = 0
-        
-        for coordinador in self.coordinadores:
-            
-            cant_horas += coordinador.especialidad.carga_horaria_semanal
-        
         individuos = []
+        
+        # Iteramos generando todas las combinaciones de horarios
+        # posibles. Y por cada uno creamos un calendario.
+        
+        # Contamos la cantidad total de horas.
+        for coordinador in self.coordinadores:
+            cant_horas += coordinador.especialidad.carga_horaria_semanal
         
         # Cantidad de iteraciones por los dias.
         for dia in self.dias_habiles:
             
-            # Cantidad de iteraciones por los horarios.
+            # Cantidad de iteraciones por las horas.
             for hora in self.horas:
                 
                 # Iteracion por cada coordinador.
@@ -147,11 +143,35 @@ class Espacio(models.Model):
                     # El Horario es agregado al Calendario.
                     calendario.agregar_horario(horario)
                 
-                if self.dias_habiles * self.horas == cant_horas:
-                    #TO DO
-                    pass
+                # La cantidad total de horas no fue cubierta, quiere
+                # decir que en el calendario deben haber horas libres.
+                if len(self.dias_habiles) * len(self.horas) != cant_horas:
+                    
+                    # Cantidad de iteraciones por los dias.
+                    for dia in self.dias_habiles:
+                        
+                        # Cantidad de iteraciones por las horas.
+                        for hora in self.horas:
+                            
+                            # Se crea un Calendario.
+                            calendario = Calendario.create()
+                            # Se le asigna este espacio.
+                            calendario.espacio = self
+                            # A su vez el Calendario es agregado a la poblacion.
+                            individuos.append(calendario)
+                            
+                            # Se crea un Horario.
+                            horario = Horario()
+                            # Se le asigna una hora desde.
+                            horario.hora_desde = hora.hora_desde
+                            # Se le asigna una hora hasta.
+                            horario.hora_hasta = hora.hora_hasta
+                            # Se le asigna un dia de la semana.
+                            horario.dia_semana = dia.dia
+                            # El Horario es agregado al Calendario.
+                            calendario.agregar_horario(horario)
         
-        # Rellenamos el Calendario generando Horarios.
+        # Rellenamos los calendarios generando Horarios aleatoriamente.
         
         coordinadores_asig_global = []
         
@@ -165,6 +185,7 @@ class Espacio(models.Model):
         
         for individuo in individuos:
             
+            # Se crea la lista de coordinadores a asignar.
             coordinadores_asig = copy.copy(coordinadores_asig_global)
             
             for coordinador in coordinadores_asig_global:
@@ -173,10 +194,16 @@ class Espacio(models.Model):
                     coordinadores_asig.remove(coordinador)
                     break
             
+            horas_libres = abs(len(self.dias_habiles) * len(self.horas) - cant_horas)
+            
+            for i in range(horas_libres):
+                
+                coordinadores_asig.append(None)
+                
             # Iteramos por la cantidad de dias.
             for dia in self.dias_habiles:
                 
-                # Tambien por la cantidad de horarios.
+                # Tambien por la cantidad de horas.
                 for hora in self.horas:
                     
                     if len(coordinadores_asig) == 0:
@@ -416,11 +443,17 @@ class Espacio(models.Model):
                     # Obtenemos el horario a evaluar.
                     horario = calendario.horarios[i][j]
                     
+                    if horario.coordinador == None:
+                        continue
+                    
                     if especialidad == horario.coordinador.especialidad:
                         horas_diarias += 1
                 
+                # Si la especialidad se exedio en la asignacion diaria.
                 if especialidad.max_horas_diaria < horas_diarias:
                     
+                    # Se penaliza de acuerdo a la cantidad de horas
+                    # que se exedio.
                     horas_penalizar = (horas_diarias - especialidad.max_horas_diaria)
                     
                     puntos += horas_penalizar * self.PUNTOS_HORAS_DIARIAS            
@@ -483,6 +516,9 @@ class Espacio(models.Model):
         boolean.
         """
         
+        if horario.coordinador == None:
+            return
+        
         # Por cada restriccion del profesional.
         for restriccion in horario.coordinador.profesional.restricciones.all():
             
@@ -531,6 +567,9 @@ class Espacio(models.Model):
             
             # Por cada horario en la franja horaria.
             for horario in franja_horaria:
+                
+                if horario.coordinador == None:
+                    continue
                 
                 # Si la especialidad es igual, contamos.
                 if horario.coordinador.especialidad == especialidad:
