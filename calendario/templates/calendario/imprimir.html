@@ -67,7 +67,11 @@
                         </h2>
                     </td>
                 {% for horario in franja_horaria %}
-                    <td style="background-color: {{ horario.coordinador.especialidad.color }}">
+                    {% if horario.coordinador is not None %}
+                        <td style="background-color: {{ horario.coordinador.especialidad.color }}">
+                    {% else %}
+                        <td>
+                    {% endif %}
                         <h2>
                             <strong>{{ horario.coordinador.especialidad }}</strong>
                         </h2>

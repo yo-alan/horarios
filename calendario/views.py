@@ -3,6 +3,9 @@ import sys
 import time
 from datetime import datetime, timedelta
 
+import cStringIO as StringIO
+from xhtml2pdf import pisa
+from cgi import escape
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.core.urlresolvers import reverse
@@ -12,11 +15,8 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.template.loader import get_template
 from django.template import Context
-import cStringIO as StringIO
-from xhtml2pdf import pisa
-from cgi import escape
-
 from django.db.models import Q
+
 from .models import Calendario
 from .models import Profesional
 from .models import Horario
@@ -31,7 +31,7 @@ from perfil.models import Actividad
 DIAS = {0: 'Domingo', 1: 'Lunes', 2: 'Martes', 3: 'Miércoles',
         4: 'Jueves', 5: 'Viernes', 6: 'Sábado', 7: "Todos los días"}
 
-DENSIDAD = 5
+DENSIDAD = 10
 
 def bad_request(request):
     
@@ -110,7 +110,7 @@ def log_out(request):
 @login_required(login_url='/index/')
 def all(request, pagina=1):
     
-    total_calendarios = Calendario.objects.all()
+    total_calendarios = Calendario.objects.all().order_by('estado')
     paginator = Paginator(total_calendarios, 10)
     
     try:
@@ -203,9 +203,11 @@ def edit(request, calendario_id):
         coordinador_id = request.POST[str(i) + '[coordinador]']
         
         horario = Horario.objects.get(pk=horario_id)
-        coordinador = Coordinador.objects.get(pk=coordinador_id)
         
-        horario.coordinador = coordinador
+        if coordinador_id != "":
+            horario.coordinador = Coordinador.objects.get(pk=coordinador_id)
+        else:
+            horario.coordinador = None
         
         horario.save()
     
@@ -1311,10 +1313,10 @@ def restriccion_delete(request):
         
         restriccion = Restriccion.objects.get(pk=restriccion_id)
         
-        restriccion.estado = 'OFF'
-        restriccion.usuario_modificador = request.user.username
+        #~ restriccion.estado = 'OFF'
+        #~ restriccion.usuario_modificador = request.user.username
         
-        restriccion.save()
+        restriccion.delete()
         
         actividad = Actividad()
         

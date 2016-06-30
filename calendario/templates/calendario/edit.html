@@ -180,7 +180,6 @@
     </div>
     <div class="btn btn-group">
         <a onclick="guardar()" class="btn btn-default" title="Confirmar calendario"><i class="glyphicon glyphicon-floppy-save"></i> Confirmar</a>
-        <a href="{% url 'calendario:imprimir' calendario.id %}" class="btn btn-default" title="Generar PDF" target="_blank"><i class="fa fa-file-pdf-o"></i> PDF</a>
         <a onclick="eliminarCalendario({{ calendario.id }})" class="btn btn-danger" title="Eliminar este calendario"><i class="glyphicon glyphicon-trash"></i> Eliminar</a>
     </div>
     <table class="table calendario">

@@ -71,9 +71,11 @@
                         <li>
                             <a href="{% url 'calendario:espacio_all' %}"><i class="glyphicon fa-fw glyphicon-paperclip"></i> Espacios</a>
                         </li>
+                        {% if perms.auth.directivo %}
                         <li>
                             <a href="{% url 'calendario:profesional_all' %}"><i class="fa fa-fw fa-user"></i> Profesionales</a>
                         </li>
+                        {% endif %}
                         <li>
                             <a href="{% url 'calendario:especialidad_all' %}"><i class="fa fa-fw fa-th-list"></i> Especialidades</a>
                         </li>

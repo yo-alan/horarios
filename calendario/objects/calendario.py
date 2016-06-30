@@ -191,6 +191,9 @@ class Calendario(models.Model):
             
             for horario in franja_horaria:
                 
+                if horario.coordinador is None:
+                    continue
+                
                 restriccion = Restriccion()
                 
                 restriccion.hora_desde = horario.hora_desde
