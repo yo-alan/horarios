@@ -165,10 +165,18 @@
                                     "<td class='text-center bg-primary'>" +
                                         "<div class='row'>" +
                                             "<div class='col-xs-6'>" +
-                                                "<input type='time' pattern='HH:mm'>" +
+                                                "<select id='hora_desde" + hora + "' name='hora_desde" + hora + "' class='form-control'>" +
+                                                    {% for h in horas_select %}
+                                                        "<option value='{{ h }}'>{{ h }}</option>" +
+                                                    {% endfor %}
+                                                "</select>" +
                                             "</div>" +
                                             "<div class='col-xs-6'>" +
-                                                "<input type='time'>" +
+                                                "<select id='min_desde" + hora + "' name='min_desde" + hora + "' class='form-control'>" +
+                                                    {% for m in min_select %}
+                                                        "<option value='{{ m }}'>{{ m }}</option>" +
+                                                    {% endfor %}
+                                                "</select>" +
                                             "</div>" +
                                         "</div>" +
                                     "</td>" +
