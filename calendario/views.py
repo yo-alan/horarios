@@ -31,7 +31,7 @@ from perfil.models import Actividad
 DIAS = {0: 'Domingo', 1: 'Lunes', 2: 'Martes', 3: 'Miércoles',
         4: 'Jueves', 5: 'Viernes', 6: 'Sábado', 7: "Todos los días"}
 
-DENSIDAD = 10
+DENSIDAD = 1
 
 def bad_request(request):
     
@@ -127,6 +127,9 @@ def all(request, pagina=1):
 @login_required(login_url='/index/')
 def add(request, espacio_id):
     
+    if request.user.has_perm('auth.profesional'):
+        return render(request, 'calendario/denied.html')
+    
     if request.method == 'POST':
         
         calendario = Calendario.create()
@@ -183,6 +186,9 @@ def add(request, espacio_id):
 @login_required(login_url='/index/')
 def edit(request, calendario_id):
     
+    if request.user.has_perm('auth.profesional'):
+        return render(request, 'calendario/denied.html')
+    
     calendario = Calendario.create(calendario_id)
     
     if request.method == "GET":
@@ -227,6 +233,9 @@ def edit(request, calendario_id):
 @login_required(login_url='/index/')
 def delete(request):
     
+    if request.user.has_perm('auth.profesional'):
+        return render(request, 'calendario/denied.html')
+    
     if request.method != 'POST':
         return HttpResponseRedirect(reverse('calendario:espacio_all'))
     
@@ -256,6 +265,9 @@ def delete(request):
 @login_required(login_url='/index/')
 def confirmar(request):
     
+    if request.user.has_perm('auth.profesional'):
+        return render(request, 'calendario/denied.html')
+    
     if request.method != 'POST':
         return HttpResponseRedirect(reverse('calendario:espacio_all'))
     
@@ -284,6 +296,9 @@ def confirmar(request):
 
 @login_required(login_url='/index/')
 def generar(request):
+    
+    if request.user.has_perm('auth.profesional'):
+        return render(request, 'calendario/denied.html')
     
     if request.method != 'POST':
         return HttpResponseRedirect(reverse('index'))
@@ -501,6 +516,9 @@ def espacio_detail(request, espacio_id):
 @login_required(login_url='/index/')
 def espacio_add(request):
     
+    if request.user.has_perm('auth.profesional'):
+        return render(request, 'calendario/denied.html')
+    
     if request.method == 'GET':
         return render(request, 'calendario/espacio/add.html')
     
@@ -537,6 +555,9 @@ def espacio_add(request):
 
 @login_required(login_url='/index/')
 def espacio_edit(request, espacio_id=0):
+    
+    if request.user.has_perm('auth.profesional'):
+        return render(request, 'calendario/denied.html')
     
     if request.method == 'GET':
         
@@ -579,6 +600,9 @@ def espacio_edit(request, espacio_id=0):
 @login_required(login_url='/index/')
 def espacio_delete(request):
     
+    if request.user.has_perm('auth.profesional'):
+        return render(request, 'calendario/denied.html')
+    
     if request.method != 'POST':
         return HttpResponseRedirect(reverse('calendario:espacio_all'))
     
@@ -608,6 +632,9 @@ def espacio_delete(request):
 
 @login_required(login_url='/index/')
 def espacio_add_horarios(request, espacio_id=0):
+    
+    if request.user.has_perm('auth.profesional'):
+        return render(request, 'calendario/denied.html')
     
     if request.method == 'GET':
         
@@ -726,6 +753,9 @@ def espacio_add_horarios(request, espacio_id=0):
 @login_required(login_url='/index/')
 def espacio_add_especialidades(request, espacio_id=0):
     
+    if request.user.has_perm('auth.profesional'):
+        return render(request, 'calendario/denied.html')
+    
     espacio = Espacio.create(espacio_id)
     
     if request.method == 'GET':
@@ -775,6 +805,9 @@ def espacio_add_especialidades(request, espacio_id=0):
 
 @login_required(login_url='/index/')
 def espacio_add_profesionales(request, espacio_id=0):
+    
+    if request.user.has_perm('auth.profesional'):
+        return render(request, 'calendario/denied.html')
     
     espacio = Espacio.create(espacio_id)
     
@@ -850,6 +883,9 @@ def espacio_add_profesionales(request, espacio_id=0):
 @login_required(login_url='/index/')
 def profesional_all(request, pagina=1):
     
+    if request.user.has_perm('auth.profesional'):
+        return render(request, 'calendario/denied.html')
+    
     total_profesionales = Profesional.objects.filter(estado='ON')\
                                             .order_by('apellido', 'nombre')
     paginator = Paginator(total_profesionales, 10)
@@ -867,6 +903,9 @@ def profesional_all(request, pagina=1):
 
 @login_required(login_url='/index/')
 def profesional_add(request):
+    
+    if request.user.has_perm('auth.profesional'):
+        return render(request, 'calendario/denied.html')
     
     if request.method == 'GET':
         return render(request, 'calendario/profesional/add.html')
@@ -917,6 +956,9 @@ def profesional_add(request):
 @login_required(login_url='/index/')
 def profesional_detail(request, profesional_id):
     
+    if request.user.has_perm('auth.profesional'):
+        return render(request, 'calendario/denied.html')
+    
     profesional = get_object_or_404(Profesional, pk=profesional_id)
     profesional = Profesional.create(profesional_id)
     
@@ -943,8 +985,11 @@ def profesional_detail(request, profesional_id):
 @login_required(login_url='/index/')
 def profesional_edit(request):
     
+    if request.user.has_perm('auth.profesional'):
+        return render(request, 'calendario/denied.html')
+    
     if request.method != 'POST':
-        return HttpResponseRedirect(reverse('calendario:espacio_all'))
+        return HttpResponseRedirect(reverse('calendario:profesional_all'))
     
     try:
         
@@ -989,6 +1034,9 @@ def profesional_edit(request):
 @login_required(login_url='/index/')
 def profesional_delete(request):
     
+    if request.user.has_perm('auth.profesional'):
+        return render(request, 'calendario/denied.html')
+    
     if request.method != 'POST':
         return HttpResponseRedirect(reverse('calendario:espacio_all'))
     
@@ -1018,6 +1066,9 @@ def profesional_delete(request):
 
 @login_required(login_url='/index/')
 def profesional_add_especialidades(request, ):
+    
+    if request.user.has_perm('auth.profesional'):
+        return render(request, 'calendario/denied.html')
     
     if request.method != 'POST':
         return HttpResponseRedirect(reverse('calendario:espacio_all'))
@@ -1054,8 +1105,16 @@ def profesional_add_especialidades(request, ):
 @login_required(login_url='/index/')
 def especialidad_all(request, pagina=1):
     
-    total_especialidades = Especialidad.objects.filter(estado='ON')\
-                                                .order_by('nombre')
+    total_especialidades = None
+    
+    if request.user.has_perm('auth.profesional'):
+        
+        total_especialidades = Especialidad.objects.filter(estado='ON', profesional=1)\
+                                                    .order_by('nombre')
+    else:
+        total_especialidades = Especialidad.objects.filter(estado='ON')\
+                                                    .order_by('nombre')
+    
     paginator = Paginator(total_especialidades, 10)
     
     try:
@@ -1071,6 +1130,9 @@ def especialidad_all(request, pagina=1):
 
 @login_required(login_url='/index/')
 def especialidad_add(request):
+    
+    if request.user.has_perm('auth.profesional'):
+        return render(request, 'calendario/denied.html')
     
     if request.method == 'GET':
         return render(request, 'calendario/especialidad/add.html')
@@ -1125,6 +1187,9 @@ def especialidad_add(request):
 @login_required(login_url='/index/')
 def especialidad_detail(request, especialidad_id):
     
+    if request.user.has_perm('auth.profesional'):
+        return render(request, 'calendario/denied.html')
+    
     especialidad = get_object_or_404(Especialidad, pk=especialidad_id)
     especialidad = Especialidad.create(especialidad_id)
     
@@ -1134,6 +1199,9 @@ def especialidad_detail(request, especialidad_id):
 
 @login_required(login_url='/index/')
 def especialidad_edit(request):
+    
+    if request.user.has_perm('auth.profesional'):
+        return render(request, 'calendario/denied.html')
     
     if request.method != 'POST':
         return render(request, 'calendario/especialidad/all.html')
@@ -1177,6 +1245,9 @@ def especialidad_edit(request):
 
 @login_required(login_url='/index/')
 def especialidad_delete(request):
+    
+    if request.user.has_perm('auth.profesional'):
+        return render(request, 'calendario/denied.html')
     
     if request.method != 'POST':
         return HttpResponseRedirect(reverse('calendario:espacio_all'))

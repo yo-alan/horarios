@@ -24,6 +24,7 @@
             }
         }
         {% endif %}
+        {% if perms.auth.directivo or perms.auth.administrador %}
         function confirmarCalendario(calendario_id){
             
             if(!confirm("¿Está seguro que desea confirmar el calendario?"))
@@ -95,6 +96,7 @@
                 }
             });
         }
+        {% endif %}
     </script>
 {% endblock %}
 {% block article %}
@@ -153,12 +155,16 @@
         </div>
     </div>
     <div class="btn btn-group">
-        {% if calendario.estado == "OFF" %}
-            <a onclick="confirmarCalendario({{ calendario.id }})" class="btn btn-default" title="Confirmar este calendario"><i class="glyphicon glyphicon-ok"></i> Confirmar</a>
-        {% endif %}
+        {% if perms.auth.directivo or perms.auth.administrador %}
+            {% if calendario.estado == "OFF" %}
+                <a onclick="confirmarCalendario({{ calendario.id }})" class="btn btn-default" title="Confirmar este calendario"><i class="glyphicon glyphicon-ok"></i> Confirmar</a>
+            {% endif %}
         <a href="{% url 'calendario:edit' calendario.id %}" class="btn btn-default" title="Editar calendario"><i class="glyphicon glyphicon-edit"></i> Editar</a>
+        {% endif %}
         <a href="{% url 'calendario:imprimir' calendario.id %}" class="btn btn-default" title="Generar PDF" target="_blank"><i class="fa fa-file-pdf-o"></i> PDF</a>
+        {% if perms.auth.directivo or perms.auth.administrador %}
         <a onclick="eliminarCalendario({{ calendario.id }})" class="btn btn-danger" title="Eliminar este calendario"><i class="glyphicon glyphicon-trash"></i> Eliminar</a>
+        {% endif %}
     </div>
     <table class="table calendario">
         <thead>

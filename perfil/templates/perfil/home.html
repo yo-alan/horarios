@@ -61,6 +61,7 @@
                                     {{ user.first_name }}
                                 </dd>
                                 <hr>
+                                
                                 <dt>
                                     Apellido
                                 </dt>
@@ -68,6 +69,15 @@
                                     {{ user.last_name }}
                                 </dd>
                                 <hr>
+                                {% if perms.auth.profesional or perms.auth.directivo %}
+                                <dt>
+                                    Institución
+                                </dt>
+                                <dd>
+                                    {{ user.institucion }}
+                                </dd>
+                                <hr>
+                                {% endif %}
                                 <dt>
                                     Usuario
                                 </dt>

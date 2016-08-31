@@ -1,0 +1,24 @@
+{% extends "admin/base.html" %}
+
+{% block title %}¡Bienvenido {{ user.first_name }}!{% endblock %}
+
+{% block head %}
+    <script>
+        
+    </script>
+{% endblock %}
+{% block article %}
+    <div class="alert alert-danger">
+        <b>
+            <i class="glyphicon glyphicon-exclamation-sign"></i> Acceso denegado
+        </b>
+        <p>
+            Usted no es un usuario habilitado para realizar esta acción.
+            Contacte a su administrador
+            <a href="{% url 'index' %}" class="btn btn-default pull-right">
+                <i class="glyphicon glyphicon-chevron-left"></i> Inicio
+            </a>
+        </p>
+        
+    </div>
+{% endblock %}

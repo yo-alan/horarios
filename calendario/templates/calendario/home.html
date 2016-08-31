@@ -12,7 +12,7 @@
         <li class="active"><i class="fa fa-fw fa-calendar"></i> Inicio</li>
     </ol>
     <h2 class="text-center">
-        ¡Bienvenido {{ user.first_name }}!
+        ¡Bienvenido/a {{ user.first_name }}!
     </h2>
     <br>
     <div class="container-fluid">
@@ -38,6 +38,7 @@
                 </a>
             </div>
         </div>
+        {% if perms.auth.directivo or perms.auth.administrador %}
         <div class="col-xs-6 col-sm-6 col-md-6 col-lg-3">
             <div class="panel panel-primary">
                 <div class="panel-heading">
@@ -60,6 +61,7 @@
                 </a>
             </div>
         </div>
+        {% endif %}
         <div class="col-xs-6 col-sm-6 col-md-6 col-lg-3">
             <div class="panel panel-green">
                 <div class="panel-heading">

@@ -43,7 +43,16 @@
                 <ul class="nav navbar-right top-nav">
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <i class="fa fa-user"></i> <strong>{{ request.user.last_name }}, {{ request.user.first_name }}</strong> <b class="caret"></b>
+                            <i class="fa fa-user"></i> <strong>{{ request.user.last_name }}, {{ request.user.first_name }}</strong>
+                            -
+                            {% if perms.auth.directivo %}
+                                Directivo
+                            {% elif perms.auth.profesional %}
+                                Profesional
+                            {% elif perms.auth.admin %}
+                                Administrador
+                            {% endif %}
+                            <b class="caret"></b>
                         </a>
                         <ul class="dropdown-menu">
                             <li>
@@ -71,7 +80,7 @@
                         <li>
                             <a href="{% url 'calendario:espacio_all' %}"><i class="glyphicon fa-fw glyphicon-paperclip"></i> Espacios</a>
                         </li>
-                        {% if perms.auth.directivo %}
+                        {% if perms.auth.directivo or perms.auth.administrador %}
                         <li>
                             <a href="{% url 'calendario:profesional_all' %}"><i class="fa fa-fw fa-user"></i> Profesionales</a>
                         </li>
