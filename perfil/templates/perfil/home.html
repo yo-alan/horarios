@@ -11,17 +11,17 @@
         $(function () {
             
             moment.locale('es', {
-                monthsShort: "Ene._Feb._Mar._Abr._May._Jun._Jul._Ago._Sep._Oct._Nov._Dic.".split("_"),
+                monthsShort: "Ene._Feb._Mar._Abr._May._Jun._Jul._Agos._Sep._Oct._Nov._Dic.".split("_"),
                 months: [
                     "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio",
                     "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
                 ]
             });
-            
+            //~ 0000-00-00 00:00:00.000000-00
             $.fn.dataTable.moment("YYYY-MM-DD HH:mm:ss");
             
             $("#tbActividad").DataTable({
-                "order": [[ 0, "desc" ]]
+                //~ "order": [[ 0, "desc" ]]
             });
         });
     </script>
@@ -45,7 +45,7 @@
 				<div class="tab-content">
 					<div class="tab-pane active" id="datos">
                         <div class="col-xs-12">
-                            <a href="#" class="btn btn-info pull-right">
+                            <a href="{% url 'perfil:editar' %}" class="btn btn-info pull-right">
                                 <i class="glyphicon glyphicon-edit"></i> Editar
                             </a>
                         </div>

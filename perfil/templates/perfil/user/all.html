@@ -1,24 +1,26 @@
 {% extends "admin/base.html" %}
 
-{% block title %}Listado de especialidades{% endblock %}
+{% load static %}
+
+{% block title %}Listado de useres{% endblock %}
 
 {% block head %}
-    <script>    
-        function eliminar(especialidad_id){
+    <script>
+        function eliminar(user_id){
             
             $("#myModal").modal("show");
             
             $("#btnDel").click(function () {
                 
                 $.ajax({
-                    url: "{% url 'calendario:especialidad_quitar' %}",
+                    url: "{% url 'perfil:user_delete' %}",
                     type: 'POST',
                     data: {
                         csrfmiddlewaretoken: '{{ csrf_token }}',
-                        especialidad_id: especialidad_id
+                        user_id: user_id
                     },
                     success: function(response) {
-                        window.location.href = "{% url 'calendario:especialidad_all' %}";
+                        window.location.href = "{% url 'perfil:user_all' %}";
                     }
                 });
             });
@@ -28,10 +30,10 @@
 {% block article %}
     <ol class="breadcrumb">
         <li><a href="{% url 'index' %}"><i class="fa fa-fw fa-calendar"></i> Inicio</a></li>
-        <li class="active">Especialidades</li>
+        <li class="active">Usuarios</li>
     </ol>
-    <a href="{% url 'calendario:especialidad_add' %}" class="btn btn-success">
-        <i class="glyphicon glyphicon-plus"></i> Agregar especialidad
+    <a href="{% url 'perfil:user_add' %}" class="btn btn-success">
+        <i class="glyphicon glyphicon-plus"></i> Agregar usuario
     </a>
     <br>
     <br>
@@ -41,10 +43,10 @@
             <div class="modal-content">
                 <div class="modal-header modal-danger">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="myModalLabel"><i class="fa fa-exclamation-triangle"></i> Eliminar especialidad</h4>
+                    <h4 class="modal-title" id="myModalLabel"><i class="fa fa-exclamation-triangle"></i> Eliminar usuario</h4>
                 </div>
                 <div class="modal-body">
-                    ¿Está seguro que desea eliminar esta especialidad?
+                    ¿Está seguro que desea eliminar este usuario?
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
@@ -56,43 +58,31 @@
     <table class="table table-hover table-bordered table-striped">
         <thead>
             <tr class="default">
-                <th class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                <th>
                     Nombre
                 </th>
-                <th class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                    Carga semanal
+                <th>
+                    Cuil
                 </th>
-                <th class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                    Carga diaria
-                </th>
-                <th class="col-xs-1 col-sm-1 col-md-1 col-lg-1">
-                    Color
-                </th>
-                <th class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                <th class="col-xs-5 col-sm-5 col-md-4 col-lg-3">
                     Acciones
                 </th>
             </tr>
         </thead>
-        {% if especialidades %}
+        {% if users %}
             <tbody>
-                {% for especialidad in especialidades %}
+                {% for user in users %}
                     <tr>
                         <td>
-                            {{ especialidad.nombre }}
+                            {{ user.apellido }}, {{ user.nombre }}
                         </td>
                         <td>
-                            {{ especialidad.carga_horaria_semanal }}
-                        </td>
-                        <td>
-                            {{ especialidad.max_horas_diaria }}
-                        </td>
-                        <td style="background-color: {{ especialidad.color }}">
-                            
+                            {{ user.cuil }}
                         </td>
                         <td>
                             <div class="btn btn-group btn-block">
-                                <a class="btn btn-default" title="Editar" href="{% url 'calendario:especialidad_detail' especialidad.id %}#especialidad"><i class="glyphicon glyphicon-edit"></i></a>
-                                <a type="button" class="btn btn-danger" data-toggle="modal" onclick="eliminar({{ especialidad.id }})">
+                                <a class="btn btn-default" title="Editar" href="{% url 'perfil:user_detail' user.id %}"><i class="glyphicon glyphicon-edit"></i></a>
+                                <a type="button" class="btn btn-danger" data-toggle="modal" onclick="eliminar({{ user.id }})">
                                     <i class="glyphicon glyphicon-trash"></i>
                                 </a>
                             </div>
@@ -103,19 +93,19 @@
         {% else %}
             <tfoot align="center">
                 <tr>
-                    <td colspan="5">No hay especialidades cargadas.</td>
+                    <td colspan="5">No hay usuarios cargados.</td>
                 </tr>
             </tfoot>
         {% endif %}
     </table>
     <nav>
         <ul class="pager">
-            {% if especialidades.has_previous %}
-                <li class="previous"><a href="{% url 'calendario:especialidad_all' especialidades.previous_page_number %}"><span class="glyphicon glyphicon-arrow-left"></span> Anterior</a></li>
+            {% if users.has_previous %}
+                <li class="previous"><a href="{% url 'perfil:user_all' users.previous_page_number %}"><span class="glyphicon glyphicon-arrow-left"></span> Anterior</a></li>
             {% endif %}
             
-            {% if especialidades.has_next %}
-                <li class="next"><a href="{% url 'calendario:especialidad_all' especialidades.next_page_number %}">Siguiente <span class="glyphicon glyphicon-arrow-right"></span></a>
+            {% if users.has_next %}
+                <li class="next"><a href="{% url 'perfil:user_all' users.next_page_number %}">Siguiente <span class="glyphicon glyphicon-arrow-right"></span></a>
             {% endif %}
         </ul>
     </nav>

@@ -55,9 +55,9 @@
                             return;
                         }
                         
-                        var modal = $("#modal-infomacion");
+                        var modal = $("#modal-informacion");
                         
-                        $("#modal-infomacion p").html(response.mensaje);
+                        $("#modal-informacion p").html(response.mensaje);
                         
                         modal.modal("show");
                     }
@@ -115,9 +115,9 @@
                         return;
                     }
                     
-                    var modal = $("#modal-infomacion");
+                    var modal = $("#modal-informacion");
                     
-                    $("#modal-infomacion p").html(response.mensaje);
+                    $("#modal-informacion p").html(response.mensaje);
                     
                     modal.modal("show");
                 }
@@ -149,9 +149,9 @@
                         return;
                     }
                     
-                    var modal = $("#modal-infomacion");
+                    var modal = $("#modal-informacion");
                     
-                    $("#modal-infomacion p").html(response.mensaje);
+                    $("#modal-informacion p").html(response.mensaje);
                     
                     modal.modal("show");
                 }
@@ -189,7 +189,7 @@
     <h3 class="text-center">
         Detalles del espacio {{ espacio }}.
     </h3>
-    <div class="modal fade" id="modal-infomacion" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal fade" id="modal-informacion" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header bg-primary">
@@ -274,7 +274,7 @@
                         </tbody>
                     </table>
                 </div>
-                {% if perms.auth.directivo or perms.auth.administrador %}
+                {% if perms.auth.directivo or perms.auth.admin %}
                 <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                     <form class="form-inline" id="editForm" method="POST" action="{% url 'calendario:espacio_edit' espacio.id %}">
                         <div class="alert alert-dismissable alert-danger hidden">
@@ -284,7 +284,7 @@
                             <h4>
                                 Error al guardar el espacio.
                             </h4>
-                            <strong>Ojo!</strong> Un campo no es válido:
+                            <strong>Error!</strong> Un campo no es válido:
                             <p>
                             </p>
                         </div>
@@ -302,7 +302,7 @@
                 {% endif %}
             </div>
             <div class="tab-pane" id="especialidades">
-                {% if perms.auth.directivo or perms.auth.administrador %}
+                {% if perms.auth.directivo or perms.auth.admin %}
                 <div class="col-xs-12">
                     <p>
                         <a href="{% url 'calendario:espacio_add_especialidades' espacio.id %}" class="btn btn-primary"><i class="glyphicon glyphicon-edit"></i> Editar las especialidades asignadas a este espacio</a>
@@ -327,7 +327,7 @@
                 {% endfor %}
             </div>
             <div class="tab-pane" id="profesionales">
-                {% if perms.auth.directivo or perms.auth.administrador %}
+                {% if perms.auth.directivo or perms.auth.admin %}
                 <div class="col-xs-12">
                     <p>
                         <a href="{% url 'calendario:espacio_add_profesionales' espacio.id %}" class="btn btn-primary"><i class="glyphicon glyphicon-edit"></i> Editar los profesionales asignados a este espacio</a>
@@ -368,7 +368,7 @@
                         
                         <a href="{% url 'calendario:detail' calendario.id %}" class="btn btn-default" title="Ver este calendario"><i class="glyphicon glyphicon-eye-open"></i> Ver</a>
                         <a href="{% url 'calendario:imprimir' calendario.id %}" class="btn btn-default" title="PDF de este calendario" target="_blank"><i class="fa fa-file-pdf-o"></i> PDF</a>
-                        {% if perms.auth.directivo or perms.auth.administrador %}
+                        {% if perms.auth.directivo or perms.auth.admin %}
                         <a href="{% url 'calendario:edit' calendario.id %}" class="btn btn-default" title="Editar este calendario"><i class="glyphicon glyphicon-edit"></i> Editar</a>
                         <a onclick="confirmarCalendario({{ calendario.id }})" class="btn btn-default" title="Confirmar este calendario"><i class="glyphicon glyphicon-ok"></i> Confirmar</a>
                         <a onclick="eliminarCalendario({{ calendario.id }})" class="btn btn-danger" title="Eliminar este calendario"><i class="glyphicon glyphicon-trash"></i> Eliminar</a>
@@ -412,7 +412,7 @@
                     </table>
                 </div>
                 {% else %}
-                    {% if perms.auth.directivo or perms.auth.administrador %}
+                    {% if perms.auth.directivo or perms.auth.admin %}
                     <div class="col-xs-12 col-sm-12 col-md-9 col-lg-7 col-centered">
                         <div class="panel panel-success">
                             <div class="panel-heading">

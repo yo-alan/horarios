@@ -11,4 +11,3 @@ from objects.calendario import Calendario
 from objects.restriccion import Restriccion
 from objects.horario import Horario
 from objects.penalidad import Penalidad
-from objects.institucion import Institucion

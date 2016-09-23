@@ -1,9 +1,8 @@
 from django.db import models
+from objects.actividad import Actividad
+from objects.usuario_profesional import Usuario_profesional
+from objects.usuario_directivo import Usuario_directivo
+from objects.institucion import Institucion
 
 # Create your models here.
 
-class Actividad(models.Model):
-    
-    fecha = models.DateTimeField(auto_now_add=True)
-    mensaje = models.CharField(max_length=100)
-    usuario = models.CharField(max_length=30, default='admin')

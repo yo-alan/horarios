@@ -40,9 +40,9 @@
                             return;
                         }
                         
-                        var modal = $("#modal-infomacion");
+                        var modal = $("#modal-informacion");
                         
-                        $("#modal-infomacion p").html(response.mensaje);
+                        $("#modal-informacion p").html(response.mensaje);
                         
                         modal.modal("show");
                     }
@@ -62,7 +62,7 @@
             Editar espacio {{ espacio.nombre }}<small>.</small>
         </h1>
     </div>
-    <div class="modal fade" id="modal-infomacion" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal fade" id="modal-informacion" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header bg-primary">
@@ -94,7 +94,7 @@
                 <h4>
                     Error al guardar el espacio.
                 </h4>
-                <strong>Ojo!</strong> Un campo no es válido:
+                <strong>Error!</strong> Un campo no es válido:
                 <p>
                 </p>
             </div>

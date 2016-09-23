@@ -61,9 +61,11 @@
                             <li>
                                 <a href="#"><i class="fa fa-fw fa-thumb-tack"></i> Recordatorios</a>
                             </li>
+                            {% if perms.auth.admin %}
                             <li>
-                                <a href="#"><i class="fa fa-fw fa-gear"></i> Configuración</a>
+                                <a href="{% url 'perfil:administracion' %}"><i class="fa fa-fw fa-gear"></i> Administración</a>
                             </li>
+                            {% endif %}
                             <li class="divider"></li>
                             <li>
                                 <a href="{% url 'log_out' %}"><i class="fa fa-fw fa-power-off"></i> Cerrar sesión</a>
@@ -80,7 +82,7 @@
                         <li>
                             <a href="{% url 'calendario:espacio_all' %}"><i class="glyphicon fa-fw glyphicon-paperclip"></i> Espacios</a>
                         </li>
-                        {% if perms.auth.directivo or perms.auth.administrador %}
+                        {% if perms.auth.directivo or perms.auth.admin %}
                         <li>
                             <a href="{% url 'calendario:profesional_all' %}"><i class="fa fa-fw fa-user"></i> Profesionales</a>
                         </li>

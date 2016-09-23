@@ -74,11 +74,11 @@
                         return
                     }
                     
-                    var modal = $("#modal-infomacion");
+                    var modal = $("#modal-informacion");
                     
-                    $("#modal-infomacion p").html(response.mensaje);
+                    $("#modal-informacion p").html(response.mensaje);
                     
-                    $("#modal-infomacion a").prop("href", "{% url 'calendario:detail' calendario.id %}");
+                    $("#modal-informacion a").prop("href", "{% url 'calendario:detail' calendario.id %}");
                     
                     modal.modal("show");
                 }
@@ -110,11 +110,11 @@
                         return;
                     }
                     
-                    var modal = $("#modal-infomacion");
+                    var modal = $("#modal-informacion");
                     
-                    $("#modal-infomacion p").html(response.mensaje);
+                    $("#modal-informacion p").html(response.mensaje);
                     
-                    $("#modal-infomacion a").prop("href", "{% url 'calendario:all' %}");
+                    $("#modal-informacion a").prop("href", "{% url 'calendario:all' %}");
                     
                     modal.modal("show");
                 }
@@ -132,7 +132,7 @@
     <h3 class="text-center">
         Editando el calendario de {{ calendario.espacio.nombre }}.
     </h3>
-    <div class="modal fade" id="modal-infomacion" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal fade" id="modal-informacion" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header bg-primary">

@@ -6,14 +6,14 @@
 
 {% block head %}
     <script>
-        function eliminar(profesional_id){
+        function quitar(profesional_id){
             
             $("#myModal").modal("show");
             
             $("#btnDel").click(function () {
                 
                 $.ajax({
-                    url: "{% url 'calendario:profesional_delete' %}",
+                    url: "{% url 'calendario:profesional_quitar' %}",
                     type: 'POST',
                     data: {
                         csrfmiddlewaretoken: '{{ csrf_token }}',
@@ -92,7 +92,7 @@
                                 <a class="btn btn-default" title="Editar" href="{% url 'calendario:profesional_detail' profesional.id %}#profesional"><i class="glyphicon glyphicon-edit"></i></a>
                                 <a class="btn btn-default" title="Restricciones" href="{% url 'calendario:profesional_detail' profesional.id %}#restricciones"><i class="glyphicon glyphicon-list-alt"></i></a>
                                 <a class="btn btn-default" title="Especialidades" href="{% url 'calendario:profesional_detail' profesional.id %}#especialidades"><i class="glyphicon glyphicon-th-list"></i></a>
-                                <a type="button" class="btn btn-danger" data-toggle="modal" onclick="eliminar({{ profesional.id }})">
+                                <a type="button" class="btn btn-danger" data-toggle="modal" onclick="quitar({{ profesional.id }})">
                                     <i class="glyphicon glyphicon-trash"></i>
                                 </a>
                             </div>

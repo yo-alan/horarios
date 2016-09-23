@@ -7,7 +7,7 @@ import cStringIO as StringIO
 from xhtml2pdf import pisa
 from cgi import escape
 from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
+from django.http import HttpResponseRedirect, JsonResponse
 from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth import authenticate, login, logout
@@ -32,6 +32,8 @@ DIAS = {0: 'Domingo', 1: 'Lunes', 2: 'Martes', 3: 'Miércoles',
         4: 'Jueves', 5: 'Viernes', 6: 'Sábado', 7: "Todos los días"}
 
 DENSIDAD = 1
+
+PAGE_LENGTH = 10
 
 def bad_request(request):
     
@@ -80,7 +82,7 @@ def index(request):
                 "calendarios": calendarios}
     
     return render(request, 'calendario/home.html', context)
-    
+
 def acerca(request):
     
     return render(request, 'calendario/acerca.html')
@@ -111,7 +113,7 @@ def log_out(request):
 def all(request, pagina=1):
     
     total_calendarios = Calendario.objects.all().order_by('estado')
-    paginator = Paginator(total_calendarios, 10)
+    paginator = Paginator(total_calendarios, PAGE_LENGTH)
     
     try:
         calendarios = paginator.page(pagina)
@@ -307,120 +309,122 @@ def generar(request):
     
     generaciones = cant_generaciones(request.POST['generaciones'])
     
-    #~ try:
-    
     espacio = Espacio.create(espacio_id)
     
-    if espacio.estado == Espacio.GENERANDO:
-        return HttpResponseRedirect(reverse('index'))
-    
-    if espacio.poblacion:
-        espacio.poblacion[0].delete()
-    
-    espacio.estado = Espacio.GENERANDO
-    
-    espacio.save()
-    
-    print "Generando población inicial... ",
-    sys.stdout.flush()
-    
-    global_time = time.time()
-    
-    operation_time = time.time()
-    
-    # Generamos la población inicial.
-    espacio.generarpoblacioninicial()
-    
-    print " %d individuos en %7.3f seg."\
-            % (len(espacio.poblacion), time.time() - operation_time)
-    
-    print "Evaluando la población... ",
-    sys.stdout.flush()
-    
-    operation_time = time.time()
-    
-    # Evaluamos la población.
-    espacio.fitness(espacio.poblacion)
-    
-    print " %7.3f seg." % (time.time() - operation_time)
-    
-    generacion = 0
-    
-    # Comienza el ciclo de evolución.
-    while generacion != generaciones:
+    try:
         
-        generacion += 1
+        if espacio.estado == Espacio.GENERANDO:
+            return HttpResponseRedirect(reverse('index'))
         
-        if espacio.progreso != generacion * 100 / generaciones:
-            espacio.progreso = generacion * 100 / generaciones
-            espacio.save()
+        if espacio.poblacion:
+            espacio.poblacion[0].delete()
         
-        print "Generación %d/%d" % (generacion, generaciones)
+        espacio.estado = Espacio.GENERANDO
         
-        print "Seleccionando individuos para el cruce... ",
+        espacio.save()
+        
+        print "Generando población inicial... ",
+        sys.stdout.flush()
+        
+        global_time = time.time()
+        
+        operation_time = time.time()
+        
+        # Generamos la población inicial.
+        espacio.generarpoblacioninicial()
+        
+        print " %d individuos en %7.3f seg."\
+                % (len(espacio.poblacion), time.time() - operation_time)
+        
+        print "Evaluando la población... ",
         sys.stdout.flush()
         
         operation_time = time.time()
         
-        # Hacemos la seleccion de padres.
-        seleccionados = espacio.seleccion()
+        # Evaluamos la población.
+        espacio.fitness(espacio.poblacion)
         
         print " %7.3f seg." % (time.time() - operation_time)
         
-        print "Cruzando los individuos... ",
+        generacion = 0
+        
+        # Comienza el ciclo de evolución.
+        while generacion != generaciones:
+            
+            generacion += 1
+            
+            if espacio.progreso != generacion * 100 / generaciones:
+                espacio.progreso = generacion * 100 / generaciones
+                espacio.save()
+            
+            print "Generación %d/%d" % (generacion, generaciones)
+            
+            print "Seleccionando individuos para el cruce... ",
+            sys.stdout.flush()
+            
+            operation_time = time.time()
+            
+            # Hacemos la seleccion de padres.
+            seleccionados = espacio.seleccion()
+            
+            print " %7.3f seg." % (time.time() - operation_time)
+            
+            print "Cruzando los individuos... ",
+            sys.stdout.flush()
+            
+            operation_time = time.time()
+            
+            # Obtenemos los hijos resultantes del cruce.
+            hijos = espacio.cruzar(seleccionados)
+            
+            print " %7.3f seg." % (time.time() - operation_time)
+            
+            print "Evaluando la nueva población... ",
+            sys.stdout.flush()
+            
+            operation_time = time.time()
+            
+            # Evaluamos la nueva población.
+            espacio.fitness(hijos)
+            
+            print " %7.3f seg." % (time.time() - operation_time)
+            
+            print "Hijos generados", len(hijos)
+            
+            print "Actualizando la población... ",
+            sys.stdout.flush()
+            
+            operation_time = time.time()
+            
+            # Actualizamos lo individuos de la población.
+            espacio.actualizarpoblacion(hijos)
+            
+            print " %7.3f seg." % (time.time() - operation_time)
+            
+            print "Grado de la población: ", espacio.grado
+            
+            print "----------------------------------------------------"
+        
+        print "Guardando los individuos... ",
         sys.stdout.flush()
         
         operation_time = time.time()
         
-        # Obtenemos los hijos resultantes del cruce.
-        hijos = espacio.cruzar(seleccionados)
+        espacio.poblacion[0].full_save()
         
-        print " %7.3f seg." % (time.time() - operation_time)
+        print " %d individuos en %7.3f seg."\
+                % (len(espacio.poblacion), time.time() - operation_time)
+        print
+        print "La evolución tardó %7.3f seg."\
+                % (time.time() - global_time)
         
-        print "Evaluando la nueva población... ",
-        sys.stdout.flush()
-        
-        operation_time = time.time()
-        
-        # Evaluamos la nueva población.
-        espacio.fitness(hijos)
-        
-        print " %7.3f seg." % (time.time() - operation_time)
-        
-        print "Hijos generados", len(hijos)
-        
-        print "Actualizando la población... ",
-        sys.stdout.flush()
-        
-        operation_time = time.time()
-        
-        # Actualizamos lo individuos de la población.
-        espacio.actualizarpoblacion(hijos)
-        
-        print " %7.3f seg." % (time.time() - operation_time)
-        
-        print "Grado de la población: ", espacio.grado
-        
-        print "----------------------------------------------------"
-    
-    print "Guardando los individuos... ",
-    sys.stdout.flush()
-    
-    operation_time = time.time()
-    
-    espacio.poblacion[0].full_save()
-    
-    print " %d individuos en %7.3f seg."\
-            % (len(espacio.poblacion), time.time() - operation_time)
-    print
-    print "La evolución tardó %7.3f seg."\
-            % (time.time() - global_time)
+    except Exception as ex:
+        print ex
     
     espacio.estado = Espacio.ON
     espacio.save()
     
-    #~ except Exception as ex:
-        #~ print ex
+    
 
 @login_required(login_url='/index/')
 def detail(request, calendario_id):
@@ -459,7 +463,7 @@ def detail(request, calendario_id):
 def espacio_all(request, pagina=1):
     
     total_espacios = Espacio.objects.filter(~Q(estado=Espacio.OFF)).order_by('nombre')
-    paginator = Paginator(total_espacios, 10)
+    paginator = Paginator(total_espacios, PAGE_LENGTH)
     
     try:
         espacios = paginator.page(pagina)
@@ -888,7 +892,7 @@ def profesional_all(request, pagina=1):
     
     total_profesionales = Profesional.objects.filter(estado='ON')\
                                             .order_by('apellido', 'nombre')
-    paginator = Paginator(total_profesionales, 10)
+    paginator = Paginator(total_profesionales, PAGE_LENGTH)
     
     try:
         profesionales = paginator.page(pagina)
@@ -1115,7 +1119,7 @@ def especialidad_all(request, pagina=1):
         total_especialidades = Especialidad.objects.filter(estado='ON')\
                                                     .order_by('nombre')
     
-    paginator = Paginator(total_especialidades, 10)
+    paginator = Paginator(total_especialidades, PAGE_LENGTH)
     
     try:
         especialidades = paginator.page(pagina)

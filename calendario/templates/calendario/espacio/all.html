@@ -3,7 +3,7 @@
 {% block title %}Listado de espacios{% endblock %}
 
 {% block head %}
-    {% if perms.auth.directivo or perms.auth.administrador %}
+    {% if perms.auth.directivo or perms.auth.admin %}
     <script>
         function eliminar(espacio_id){
             
@@ -37,7 +37,7 @@
     </a>
     <br>
     <br>
-    {% if perms.auth.directivo or perms.auth.administrador %}
+    {% if perms.auth.directivo or perms.auth.admin %}
     <!-- Modal -->
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog" role="document">
@@ -78,7 +78,7 @@
                         <td>
                             <div class="btn btn-group btn-block">
                                 <a href="{% url 'calendario:espacio_detail' espacio.id %}" class="btn btn-default" title="Detalles"><i class="glyphicon glyphicon-eye-open"></i></a>
-                                {% if perms.auth.directivo or perms.auth.administrador %}
+                                {% if perms.auth.directivo or perms.auth.admin %}
                                 <a href="{% url 'calendario:espacio_add_horarios' espacio.id %}" class="btn btn-default" title="Días y horas"><i class="glyphicon glyphicon-time"></i></a>
                                 <a href="{% url 'calendario:espacio_add_especialidades' espacio.id %}" class="btn btn-default" title="Especialidades"><i class="glyphicon glyphicon-th-list"></i></a>
                                 <a href="{% url 'calendario:espacio_add_profesionales' espacio.id %}" class="btn btn-default" title="Profesionales"><i class="glyphicon glyphicon-user"></i></a>

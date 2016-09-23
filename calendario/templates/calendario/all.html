@@ -5,7 +5,7 @@
 {% block title %}Listado de calendarios{% endblock %}
 
 {% block head %}
-    {% if perms.auth.directivo or perms.auth.administrador %}
+    {% if perms.auth.directivo or perms.auth.admin %}
     <script>
         function eliminar(calendario_id){
             
@@ -34,7 +34,7 @@
         <li><a href="{% url 'index' %}"><i class="fa fa-fw fa-calendar"></i> Inicio</a></li>
         <li class="active">Calendarios</li>
     </ol>
-    {% if perms.auth.directivo or perms.auth.administrador %}
+    {% if perms.auth.directivo or perms.auth.admin %}
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -91,7 +91,7 @@
                             <div class="btn btn-group btn-block">
                                 <a href="{% url 'calendario:detail' calendario.id %}" class="btn btn-default" title="Ver"><i class="glyphicon glyphicon-eye-open"></i></a>
                                 <a href="{% url 'calendario:imprimir' calendario.id %}" class="btn btn-default" title="PDF" target="_blank"><i class="fa fa-file-pdf-o"></i></a>
-                                {% if perms.auth.directivo or perms.auth.administrador %}
+                                {% if perms.auth.directivo or perms.auth.admin %}
                                 <a href="{% url 'calendario:edit' calendario.id %}" class="btn btn-default" title="Editar"><i class="glyphicon glyphicon-edit"></i></a>
                                 <a onclick="eliminar({{ calendario.id }})" type="button" class="btn btn-danger" data-toggle="modal"><i class="glyphicon glyphicon-trash"></i></a>
                                 {% endif %}

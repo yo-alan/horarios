@@ -1,0 +1,18 @@
+{% extends "admin/base.html" %}
+
+{% load staticfiles %}
+
+{% block title %}Administrar el sistema{% endblock %}
+
+{% block head %}
+    
+{% endblock %}
+{% block article %}
+    <div class="container-fluid">
+        <div class="col-md-12">
+            <h2>
+                Do You Feel Lucky, Punk? - <a href="{% url 'perfil:user_add' %}">Agregar usuario</a>
+            </h2>
+		</div>
+    </div>
+{% endblock %}
