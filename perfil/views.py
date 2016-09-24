@@ -4,12 +4,13 @@ from django.shortcuts import render
 from django.db import transaction
 from django.http import JsonResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.core.validators import validate_email
 from django.contrib.auth.models import User, Permission
 
-from calendario.models import Profesional
+from calendario.models import Persona
 
 from .models import Actividad
-from .models import Usuario_profesional, Usuario_directivo
+from .models import Usuario
 
 PAGE_LENGTH = 10
 
@@ -81,6 +82,14 @@ def user_add(request):
         fecha_nacimiento = request.POST['fecha_nacimiento']
         genero = request.POST['genero']
         
+        if len(username) < 4:
+            raise Exception("El nombre de usuario debe contener 4 o mas caracteres.")
+        
+        validate_email(email)
+        
+        if len(password) < 6:
+            raise Exception("El contraseña debe contener 6 o más caracteres.")
+        
         user = User()
         
         user.username = username
@@ -101,34 +110,39 @@ def user_add(request):
             
             profesional.save()
             
-            usuario_profesional = Usuario_profesional()
+            usuario = Usuario()
             
-            usuario_profesional.user = user
-            usuario_profesional.profesional = profesional
-            usuario_profesional.genero = genero
+            usuario.user = user
+            usuario.persona = profesional
+            usuario.genero = genero
             
-            usuario_profesional.save()
+            usuario.save()
             
             permission = Permission.objects.get(codename='profesional')
             
-            user.user_permissions.add(permission)
-            
-            user.save()
-            
         else:
             
-            usuario_directivo = Usuario_directivo()
+            persona = Persona()
             
-            usuario_directivo.user = user
-            usuario_directivo.genero = genero
+            persona.nombre = nombre
+            persona.apellido = apellido
+            persona.cuil = cuil
             
-            usuario_directivo.save()
+            persona.save()
+            
+            usuario = Usuario()
+            
+            usuario.user = user
+            usuario.persona = persona
+            usuario.genero = genero
+            
+            usuario.save()
             
             permission = Permission.objects.get(codename='directivo')
-            
-            user.user_permissions.add(permission)
-            
-            user.save()
+        
+        user.user_permissions.add(permission)
+        
+        user.save()
 
         print username
         print password
@@ -157,7 +171,7 @@ def user_add(request):
         
         data = {'error': str(ex).decode('utf-8')}
         
-        if 'username' in data['error']:
+        if 'username' in data['error'] or "nombre de usuario" in data['error']:
             
             exists = "duplicate key value violates unique constraint"
             
@@ -165,6 +179,16 @@ def user_add(request):
                 data['error'] = "Ya existe el nombre de usuario."
             
             data['campo'] = 'username'
+            
+        elif 'email' in data['error']:
+            
+            data['error'] = 'La dirección de email no es válida.'
+            
+            data['campo'] = 'email'
+            
+        elif 'contraseña'.decode('utf-8') in data['error']:
+            data['campo'] = 'password'
+            
     
     return JsonResponse(data)
 
@@ -193,10 +217,7 @@ def user_delete(request):
         
         user = User.objects.get(id=user_id)
         
-        try:
-            usuario = Usuario_profesional.get(user=user)
-        except:
-            usuario = Usuario_directivo.get(user=user)
+        usuario = Usuario.get(user=user)
         
         usuario.is_active = False
         

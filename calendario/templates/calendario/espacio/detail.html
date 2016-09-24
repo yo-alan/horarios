@@ -81,7 +81,7 @@
                     type: formGenerar.attr('method'),
                     data: formGenerar.serialize(),
                     success: function (response){
-                        
+                        location.reload();
                     },
                     error: function (response){
                         location.reload();
@@ -118,6 +118,10 @@
                     var modal = $("#modal-informacion");
                     
                     $("#modal-informacion p").html(response.mensaje);
+                    
+                    $("#modal-informacion a").click(function (){
+                        location.reload();
+                    });
                     
                     modal.modal("show");
                 }

@@ -5,6 +5,7 @@ from objects.diaHabil import DiaHabil
 from objects.espacio import Espacio
 from objects.hora import Hora
 from objects.coordinador import Coordinador
+from objects.persona import Persona
 from objects.profesional import Profesional
 from objects.especialidad import Especialidad
 from objects.calendario import Calendario

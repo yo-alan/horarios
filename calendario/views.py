@@ -418,13 +418,29 @@ def generar(request):
         print "La evolución tardó %7.3f seg."\
                 % (time.time() - global_time)
         
+        mensaje = "Generaste el calendario #%d para el espacio %s"\
+                % (espacio.poblacion[0].id, espacio.nombre)
+        
+        actividad = Actividad()
+        
+        actividad.usuario = request.user.username
+        actividad.mensaje = mensaje
+        
+        actividad.save()
+        
+        data = {'mensaje': "La generación terminó exitosamente."}
+        
     except Exception as ex:
         print ex
+        
+        data = {'error': str(ex).decode('utf-8')}
     
     espacio.estado = Espacio.ON
+    espacio.progreso = 0
+    
     espacio.save()
     
-    
+    return JsonResponse(data)
 
 @login_required(login_url='/index/')
 def detail(request, calendario_id):
