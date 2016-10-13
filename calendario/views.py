@@ -7,7 +7,7 @@ import cStringIO as StringIO
 from xhtml2pdf import pisa
 from cgi import escape
 from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponseRedirect, JsonResponse
+from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth import authenticate, login, logout
@@ -478,6 +478,9 @@ def detail(request, calendario_id):
 @login_required(login_url='/index/')
 def espacio_all(request, pagina=1):
     
+    if request.user.has_perm('auth.profesional'):
+        return render(request, 'calendario/denied.html')
+    
     total_espacios = Espacio.objects.filter(~Q(estado=Espacio.OFF)).order_by('nombre')
     paginator = Paginator(total_espacios, PAGE_LENGTH)
     
@@ -494,6 +497,9 @@ def espacio_all(request, pagina=1):
 
 @login_required(login_url='/index/')
 def espacio_detail(request, espacio_id):
+    
+    if request.user.has_perm('auth.profesional'):
+        return render(request, 'calendario/denied.html')
     
     espacio = get_object_or_404(Espacio, pk=espacio_id)
     espacio = Espacio.create(espacio_id)
@@ -547,7 +553,7 @@ def espacio_add(request):
     try:
         espacio = Espacio.create()
         
-        espacio.setnombre(request.POST["nombre"])
+        espacio.set_nombre(request.POST["nombre"])
         espacio.usuario_creador = request.user.username
         espacio.usuario_modificador = request.user.username
         
@@ -593,7 +599,7 @@ def espacio_edit(request, espacio_id=0):
         
         espacio = Espacio.create(espacio_id)
         
-        espacio.setnombre(request.POST['nombre'])
+        espacio.set_nombre(request.POST['nombre'])
         espacio.usuario_creador = request.user.username
         espacio.usuario_modificador = request.user.username
         
@@ -940,9 +946,9 @@ def profesional_add(request):
         verificador = str(request.POST['verificador'])
         cuil = tipo + "-" + documento + "-" + verificador
         
-        profesional.setnombre(request.POST['nombre'])
-        profesional.setapellido(request.POST['apellido'])
-        profesional.setcuil(cuil)
+        profesional.set_nombre(request.POST['nombre'])
+        profesional.set_apellido(request.POST['apellido'])
+        profesional.set_cuil(cuil)
         profesional.usuario_creador = request.user.username
         profesional.usuario_modificador = request.user.username
         
@@ -1020,9 +1026,9 @@ def profesional_edit(request):
         verificador = str(request.POST['verificador'])
         cuil = tipo + "-" + documento + "-" + verificador
         
-        profesional.setnombre(request.POST['nombre'])
-        profesional.setapellido(request.POST['apellido'])
-        profesional.setcuil(cuil)
+        profesional.set_nombre(request.POST['nombre'])
+        profesional.set_apellido(request.POST['apellido'])
+        profesional.set_cuil(cuil)
         profesional.usuario_modificador = request.user.username
         
         profesional.save()
@@ -1170,9 +1176,9 @@ def especialidad_add(request):
         
         especialidad = Especialidad()
         
-        especialidad.setnombre(request.POST["nombre"])
-        especialidad.setcarga_horaria_semanal(carga_horaria_semanal)
-        especialidad.setmax_horas_diaria(max_horas_diaria)
+        especialidad.set_nombre(request.POST["nombre"])
+        especialidad.set_carga_horaria_semanal(carga_horaria_semanal)
+        especialidad.set_max_horas_diaria(max_horas_diaria)
         especialidad.color = request.POST["color"]
         especialidad.usuario_creador = request.user.username
         especialidad.usuario_modificador = request.user.username
@@ -1231,9 +1237,9 @@ def especialidad_edit(request):
     try:
         especialidad = Especialidad.objects.get(pk=request.POST['especialidad_id'])
         
-        especialidad.setnombre(request.POST["nombre"])
-        especialidad.setcarga_horaria_semanal(request.POST["carga_horaria_semanal"])
-        especialidad.setmax_horas_diaria(request.POST["max_horas_diaria"])
+        especialidad.set_nombre(request.POST["nombre"])
+        especialidad.set_carga_horaria_semanal(request.POST["carga_horaria_semanal"])
+        especialidad.set_max_horas_diaria(request.POST["max_horas_diaria"])
         especialidad.color = request.POST["color"]
         especialidad.usuario_modificador = request.user.username
         
@@ -1314,9 +1320,9 @@ def restriccion_add(request):
         restriccion = Restriccion()
         
         restriccion.profesional = profesional
-        restriccion.setdia_semana(request.POST['edit_dia_semana'])
-        restriccion.sethora_desde(request.POST['edit_hora_desde'])
-        restriccion.sethora_hasta(request.POST['edit_hora_hasta'])
+        restriccion.set_dia_semana(request.POST['edit_dia_semana'])
+        restriccion.set_hora_desde(request.POST['edit_hora_desde'])
+        restriccion.set_hora_hasta(request.POST['edit_hora_hasta'])
         restriccion.usuario_creador = request.user.username
         restriccion.usuario_modificador = request.user.username
         

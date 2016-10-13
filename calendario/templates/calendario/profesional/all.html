@@ -13,7 +13,7 @@
             $("#btnDel").click(function () {
                 
                 $.ajax({
-                    url: "{% url 'calendario:profesional_quitar' %}",
+                    url: "{% url 'calendario:profesional_delete' %}",
                     type: 'POST',
                     data: {
                         csrfmiddlewaretoken: '{{ csrf_token }}',

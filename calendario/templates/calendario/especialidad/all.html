@@ -11,7 +11,7 @@
             $("#btnDel").click(function () {
                 
                 $.ajax({
-                    url: "{% url 'calendario:especialidad_quitar' %}",
+                    url: "{% url 'calendario:especialidad_delete' %}",
                     type: 'POST',
                     data: {
                         csrfmiddlewaretoken: '{{ csrf_token }}',

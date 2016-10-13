@@ -76,23 +76,38 @@
                 <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
                 <div class="collapse navbar-collapse navbar-ex1-collapse">
                     <ul class="nav navbar-nav side-nav">
-                        <li>
-                            <a href="{% url 'calendario:all' %}"><i class="fa fa-fw fa-calendar"></i> Calendarios</a>
-                        </li>
-                        <li>
-                            <a href="{% url 'calendario:espacio_all' %}"><i class="glyphicon fa-fw glyphicon-paperclip"></i> Espacios</a>
-                        </li>
                         {% if perms.auth.directivo or perms.auth.admin %}
-                        <li>
-                            <a href="{% url 'calendario:profesional_all' %}"><i class="fa fa-fw fa-user"></i> Profesionales</a>
-                        </li>
+                            <li>
+                                <a href="{% url 'calendario:all' %}"><i class="fa fa-fw fa-calendar"></i> Calendarios</a>
+                            </li>
+                            <li>
+                                <a href="{% url 'calendario:espacio_all' %}"><i class="glyphicon fa-fw glyphicon-paperclip"></i> Espacios</a>
+                            </li>
+                            <li>
+                                <a href="{% url 'calendario:profesional_all' %}"><i class="fa fa-fw fa-user"></i> Profesionales</a>
+                            </li>
+                            <li>
+                                <a href="{% url 'calendario:especialidad_all' %}"><i class="fa fa-fw fa-th-list"></i> Especialidades</a>
+                            </li>
+                            <li>
+                                <a href="{% url 'perfil:institucion_all' %}"><i class="fa fa-fw fa-th-list"></i> Instituciones</a>
+                            </li>
+<!--
+                            <li>
+                                <a href="{% url 'calendario:acerca' %}"><i class="fa fa-fw fa-dashboard"></i> Acerca de Horarios</a>
+                            </li>
+-->
+                        {% else %}
+                            <li>
+                                <a href="{% url 'calendario:all' %}"><i class="fa fa-fw fa-calendar"></i> Mis calendarios</a>
+                            </li>
+                            <li>
+                                <a href="{% url 'calendario:especialidad_all' %}"><i class="fa fa-fw fa-th-list"></i> Mis especialidades</a>
+                            </li>
+                            <li>
+                                <a href="{% url 'perfil:institucion_all' %}"><i class="fa fa-fw fa-th-list"></i> Mis instituciones</a>
+                            </li>
                         {% endif %}
-                        <li>
-                            <a href="{% url 'calendario:especialidad_all' %}"><i class="fa fa-fw fa-th-list"></i> Especialidades</a>
-                        </li>
-                        <li>
-                            <a href="{% url 'calendario:acerca' %}"><i class="fa fa-fw fa-dashboard"></i> Acerca de Horarios</a>
-                        </li>
                         <li>
                             {% block alert %}{% endblock %}
                         </li>

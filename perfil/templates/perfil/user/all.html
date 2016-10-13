@@ -2,18 +2,50 @@
 
 {% load static %}
 
-{% block title %}Listado de useres{% endblock %}
+{% block title %}Listado de usuarios{% endblock %}
 
 {% block head %}
     <script>
-        function eliminar(user_id){
+        function desactivar(user_id){
             
             $("#myModal").modal("show");
+            
+            $("#myModal .modal-title b").remove();
+            $("#myModal .modal-title").append("<b> Desactivar usuario</b>");
+            
+            $("#myModal .modal-body").empty();
+            $("#myModal .modal-body").append("¿Está seguro que desea desactivar este usuario?");
             
             $("#btnDel").click(function () {
                 
                 $.ajax({
-                    url: "{% url 'perfil:user_delete' %}",
+                    url: "{% url 'perfil:user_diactivate' %}",
+                    type: 'POST',
+                    data: {
+                        csrfmiddlewaretoken: '{{ csrf_token }}',
+                        user_id: user_id
+                    },
+                    success: function(response) {
+                        window.location.href = "{% url 'perfil:user_all' %}";
+                    }
+                });
+            });
+        }
+        
+        function activar(user_id){
+            
+            $("#myModal").modal("show");
+            
+            $("#myModal .modal-title b").remove();
+            $("#myModal .modal-title").append("<b> Activar usuario</b>");
+            
+            $("#myModal .modal-body").empty();
+            $("#myModal .modal-body").append("¿Está seguro que desea activar este usuario?");
+            
+            $("#btnDel").click(function () {
+                
+                $.ajax({
+                    url: "{% url 'perfil:user_activate' %}",
                     type: 'POST',
                     data: {
                         csrfmiddlewaretoken: '{{ csrf_token }}',
@@ -41,16 +73,15 @@
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <div class="modal-header modal-danger">
+                <div class="modal-header modal-warning">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="myModalLabel"><i class="fa fa-exclamation-triangle"></i> Eliminar usuario</h4>
+                    <h4 class="modal-title" id="myModalLabel"><i class="fa fa-exclamation-triangle"></i></h4>
                 </div>
                 <div class="modal-body">
-                    ¿Está seguro que desea eliminar este usuario?
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                    <button id="btnDel" type="button" class="btn btn-danger">Eliminar</button>
+                    <button id="btnDel" type="button" class="btn btn-warning">Confirmar</button>
                 </div>
             </div>
         </div>
@@ -59,31 +90,58 @@
         <thead>
             <tr class="default">
                 <th>
-                    Nombre
+                    Usuario
                 </th>
                 <th>
-                    Cuil
+                    Apellido, Nombre
+                </th>
+                <th>
+                    Rol
+                </th>
+                <th>
+                    Estado
                 </th>
                 <th class="col-xs-5 col-sm-5 col-md-4 col-lg-3">
                     Acciones
                 </th>
             </tr>
         </thead>
-        {% if users %}
+        {% if usuarios %}
             <tbody>
-                {% for user in users %}
+                {% for usuario in usuarios %}
                     <tr>
                         <td>
-                            {{ user.apellido }}, {{ user.nombre }}
+                            {{ usuario.user.username }}
                         </td>
                         <td>
-                            {{ user.cuil }}
+                            {{ usuario.persona }}
+                        </td>
+                        <td>
+                            {% if usuario.persona.profesional %}
+                                <b class="text-warning"><i>Profesional</i></b>
+                            {% else %}
+                                <b class="text-info"><i>Directivo</i></b>
+                            {% endif %}
+                        </td>
+                        <td class="text-center">
+                            {% if usuario.user.is_active %}
+                                <i class="glyphicon glyphicon-ok text-success"></i>
+                            {% else %}
+                                <i class="glyphicon glyphicon-remove text-danger"></i>
+                            {% endif %}
                         </td>
                         <td>
                             <div class="btn btn-group btn-block">
-                                <a class="btn btn-default" title="Editar" href="{% url 'perfil:user_detail' user.id %}"><i class="glyphicon glyphicon-edit"></i></a>
-                                <a type="button" class="btn btn-danger" data-toggle="modal" onclick="eliminar({{ user.id }})">
-                                    <i class="glyphicon glyphicon-trash"></i>
+                                <a class="btn btn-default" title="Editar" href="{% url 'perfil:user_detail' usuario.id %}">
+                                    <i class="glyphicon glyphicon-edit"></i>
+                                </a>
+                                {% if not usuario.user.is_active %}
+                                    <a type="button" class="btn btn-primary" data-toggle="modal" title="Activar" onclick="activar({{ usuario.id }})">
+                                        <i class="fa fa-user-plus"></i>
+                                {% else %}
+                                    <a type="button" class="btn btn-primary" data-toggle="modal" title="Desactivar" onclick="desactivar({{ usuario.id }})">
+                                        <i class="fa fa-user-times"></i>
+                                {% endif %}
                                 </a>
                             </div>
                         </td>
@@ -100,12 +158,12 @@
     </table>
     <nav>
         <ul class="pager">
-            {% if users.has_previous %}
-                <li class="previous"><a href="{% url 'perfil:user_all' users.previous_page_number %}"><span class="glyphicon glyphicon-arrow-left"></span> Anterior</a></li>
+            {% if usuarios.has_previous %}
+                <li class="previous"><a href="{% url 'perfil:user_all' usuarios.previous_page_number %}"><span class="glyphicon glyphicon-arrow-left"></span> Anterior</a></li>
             {% endif %}
             
-            {% if users.has_next %}
-                <li class="next"><a href="{% url 'perfil:user_all' users.next_page_number %}">Siguiente <span class="glyphicon glyphicon-arrow-right"></span></a>
+            {% if usuarios.has_next %}
+                <li class="next"><a href="{% url 'perfil:user_all' usuarios.next_page_number %}">Siguiente <span class="glyphicon glyphicon-arrow-right"></span></a>
             {% endif %}
         </ul>
     </nav>

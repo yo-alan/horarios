@@ -1,0 +1,106 @@
+{% extends "admin/base.html" %}
+
+{% load static %}
+
+{% block title %}Listado de instituciones{% endblock %}
+
+{% block head %}
+    <script>
+        function eliminar(institucion_id){
+            
+            $("#myModal").modal("show");
+            
+            $("#btnDel").click(function () {
+                
+                $.ajax({
+                    url: "{% url 'perfil:institucion_delete' %}",
+                    type: 'POST',
+                    data: {
+                        csrfmiddlewaretoken: '{{ csrf_token }}',
+                        institucion_id: institucion_id
+                    },
+                    success: function(response) {
+                        window.location.href = "{% url 'perfil:institucion_all' %}";
+                    }
+                });
+            });
+        }
+    </script>
+{% endblock %}
+{% block article %}
+    <ol class="breadcrumb">
+        <li><a href="{% url 'index' %}"><i class="fa fa-fw fa-calendar"></i> Inicio</a></li>
+        <li class="active">Instituciones</li>
+    </ol>
+    <a href="{% url 'perfil:institucion_add' %}" class="btn btn-success">
+        <i class="glyphicon glyphicon-plus"></i> Agregar institución
+    </a>
+    <br>
+    <br>
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header modal-danger">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel"><i class="fa fa-exclamation-triangle"></i> Eliminar institucion</h4>
+                </div>
+                <div class="modal-body">
+                    ¿Está seguro que desea eliminar este institucion?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                    <button id="btnDel" type="button" class="btn btn-danger">Eliminar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <table class="table table-hover table-bordered table-striped">
+        <thead>
+            <tr class="default">
+                <th>
+                    Institución
+                </th>
+                <th class="col-xs-5 col-sm-5 col-md-4 col-lg-3">
+                    Acciones
+                </th>
+            </tr>
+        </thead>
+        {% if instituciones %}
+            <tbody>
+                {% for institucion in instituciones %}
+                    <tr>
+                        <td>
+                            {{ institucion.nombre }}
+                        </td>
+                        <td>
+                            <div class="btn btn-group btn-block">
+                                <a class="btn btn-default" title="Editar" href="{% url 'perfil:institucion_detail' institucion.id %}"><i class="glyphicon glyphicon-edit"></i></a>
+                                <a type="button" class="btn btn-danger" data-toggle="modal" onclick="eliminar({{ institucion.id }})">
+                                    <i class="glyphicon glyphicon-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        {% else %}
+            <tfoot align="center">
+                <tr>
+                    <td colspan="5">No hay instituciones cargadas.</td>
+                </tr>
+            </tfoot>
+        {% endif %}
+    </table>
+    <nav>
+        <ul class="pager">
+            {% if instituciones.has_previous %}
+                <li class="previous"><a href="{% url 'perfil:institucion_all' instituciones.previous_page_number %}"><span class="glyphicon glyphicon-arrow-left"></span> Anterior</a></li>
+            {% endif %}
+            
+            {% if instituciones.has_next %}
+                <li class="next"><a href="{% url 'perfil:institucion_all' instituciones.next_page_number %}">Siguiente <span class="glyphicon glyphicon-arrow-right"></span></a>
+            {% endif %}
+        </ul>
+    </nav>
+{% endblock %}

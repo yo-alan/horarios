@@ -53,7 +53,11 @@ class Persona(models.Model):
     
     nombre = models.CharField(max_length=100, null=False, blank=False)
     apellido = models.CharField(max_length=100, null=False, blank=False)
+    fecha_nacimiento = models.DateField(null=False, blank=False)
     cuil = models.CharField(max_length=13, null=False, blank=False)
+    genero = models.CharField(max_length=1,
+                                choices=[('F', 'F'), ('M', 'M')],
+                                default='F')
     estado = models.CharField(max_length=3,
                                 choices=[('ON', 'ON'), ('OFF', 'OFF')],
                                 default='ON')
@@ -68,7 +72,7 @@ class Persona(models.Model):
     def __eq__(self, o):
         return self.cuil == o.cuil
     
-    def setnombre(self, nombre):
+    def set_nombre(self, nombre):
         
         if nombre == "":
             raise Exception("El nombre no puede estar vacío.")
@@ -80,7 +84,7 @@ class Persona(models.Model):
         
         self.nombre = nombre
     
-    def setapellido(self, apellido):
+    def set_apellido(self, apellido):
         
         if apellido == "":
             raise Exception("El apellido no puede estar vacío.")
@@ -92,7 +96,7 @@ class Persona(models.Model):
         
         self.apellido = apellido
     
-    def setcuil(self, cuil):
+    def set_cuil(self, cuil):
         
         if not esCUITValida(cuil):
             raise Exception("El cuil no es válido.")

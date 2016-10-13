@@ -11,8 +11,12 @@
     <div class="container-fluid">
         <div class="col-md-12">
             <h2>
-                Do You Feel Lucky, Punk? - <a href="{% url 'perfil:user_add' %}">Agregar usuario</a>
+                Do You Feel Lucky, Punk?
             </h2>
+            <ul>
+                <li><a href="{% url 'perfil:user_all' %}">Usuarios</a></li>
+                <li><a href="{% url 'perfil:institucion_all' %}">Instituciones</a></li>
+            </ul>
 		</div>
     </div>
 {% endblock %}

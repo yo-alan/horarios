@@ -1,0 +1,259 @@
+{% extends "admin/base.html" %}
+
+{% load static %}
+
+{% block title %}Detalles de {{ institucion }}.{% endblock %}
+
+{% block head %}
+    <script>
+        $(function (){
+            
+            var url = document.location.toString();
+            
+            if(url.match('#')) {
+                $('.nav-tabs a[href="#'+url.split('#')[1]+'"]').tab('show');
+            }
+            
+            $('.nav-tabs a').on('shown.bs.tab', function (e){
+                window.location.hash = e.target.hash;
+                window.scrollTo(0, 0);
+            });
+            
+            var form = $("#editForm");
+            
+            form.submit(function (ev){
+                
+                ev.preventDefault();
+                
+                $("#" + form.attr('id') + " button[type=submit]").button('loading');
+                
+                $.ajax({
+                    url: form.attr('action'),
+                    type: form.attr('method'),
+                    data: form.serialize(),
+                    success: function (response){
+                        
+                        $("#" + form.attr('id') + " button[type=submit]").button('reset');
+                        
+                        $(".form-group").attr('class', "form-group");
+                        
+                        if(response.error){
+                            
+                            if(response.campo){
+                                
+                                if(response.campo == "cuil")
+                                    response.campo = "documento";
+                                
+                                $("#"+ response.campo).parent().parent().attr('class', "form-group has-error");
+                                $("#"+ response.campo).focus();
+                            }
+                            
+                            form.children(".alert").attr('class', "alert alert-dismissable alert-danger");
+                            form.children(".alert").children("p").html(response.error);
+                            return;
+                        }
+                        
+                        var modal = $("#modal-informacion");
+                        
+                        $("#modal-informacion p").html(response.mensaje);
+                        
+                        modal.modal("show");
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}
+{% block article %}
+    <ol class="breadcrumb">
+        <li><a href="{% url 'index' %}"><i class="fa fa-fw fa-calendar"></i> Inicio</a></li>
+        <li><a href="{% url 'perfil:institucion_all' %}">Instituciones</a></li>
+        <li class="active">Detalles</li>
+    </ol>
+    <div class="modal fade" id="modal-informacion" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-primary">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        ×
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        <i class="glyphicon glyphicon-info-sign"></i> Información
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <p>
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <a href="{% url 'perfil:institucion_all' %}" class="btn btn-primary pull-right">
+                        Aceptar
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modal-error" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header modal-danger">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        ×
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        <i class="glyphicon glyphicon-info-sign"></i> Error
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <p>
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger pull-right" data-dismiss="modal">
+                        Aceptar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="tabbable" id="tabs-348111">
+        <ul class="nav nav-tabs">
+            <li class="active">
+                <a href="#this" data-toggle="tab"><i class="glyphicon glyphicon-user"> Institución</i></a>
+            </li>
+        </ul>
+        <div class="tab-content">
+            <h3 class="text-center">
+                {{ institucion }}
+            </h3>
+            <br>
+            <div class="tab-pane active" id="this">
+                <div class="col-xs-12 col-sm-12 col-md-9 col-lg-7 col-centered">
+                    <form class="form-horizontal" id="editForm" name="editForm" method="POST" action="{% url 'perfil:institucion_edit' %}">
+                        <div class="alert alert-dismissable alert-danger hidden">
+                            <button type="button" class="close" data-hide="alert" aria-hidden="true">
+                                ×
+                            </button>
+                            <h4>
+                                Error al guardar el institución.
+                            </h4>
+                            <strong>Error!</strong> Un campo no es válido:
+                            <p>
+                            </p>
+                        </div>
+                        {% csrf_token %}
+                        <input id="institucion_id" name="institucion_id" type="hidden" value="{{ institucion.id }}">
+                        <div class="form-group">
+                            <label class="col-xs-3 control-label" for="nombre">Nombre:</label>
+                            <div class="col-xs-9">
+                                <input type="text" id="nombre" name="nombre" class="form-control" value="{{ institucion.nombre }}" autofocus placeholder="Nombre de la institución">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-3 control-label" for="direccion">Dirección:</label>
+                            <div class="col-xs-9">
+                                <input type="text" id="direccion" name="direccion" class="form-control" value="{{ institucion.apellido }}" placeholder="Dirección de la institución">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-3 control-label" for="cuil">Cuit:</label>
+                            <div class="col-xs-2">
+                                <select id="tipo" name="tipo" class="form-control">
+                                {% if institucion.tipo == "20" %}
+                                    <option selected value="20">20</option>
+                                {% else %}
+                                    <option value="20">20</option>
+                                {% endif %}
+                                {% if institucion.tipo == "23" %}
+                                    <option selected value="23">23</option>
+                                {% else %}
+                                    <option value="23">23</option>
+                                {% endif %}
+                                {% if institucion.tipo == "24" %}
+                                    <option selected value="24">24</option>
+                                {% else %}
+                                    <option value="24">24</option>
+                                {% endif %}
+                                {% if institucion.tipo == "27" %}
+                                    <option selected value="27">27</option>
+                                {% else %}
+                                    <option value="27">27</option>
+                                {% endif %}
+                                </select>
+                            </div>
+                            <div class="col-xs-5">
+                                <input type="text" id="documento" name="documento" class="form-control" placeholder="" value="{{ institucion.documento }}">
+                            </div>
+                            <div class="col-xs-2">
+                                <select id="verificador" name="verificador" class="form-control">
+                                {% if institucion.verificador == '0' %}
+                                    <option selected value="0">0</option>
+                                {% else %}
+                                    <option value="0">0</option>
+                                {% endif %}
+                                {% if institucion.verificador == '1' %}
+                                    <option selected value="1">1</option>
+                                {% else %}
+                                    <option value="1">1</option>
+                                {% endif %}
+                                {% if institucion.verificador == '1' %}
+                                    <option selected value="2">2</option>
+                                {% else %}
+                                    <option value="2">2</option>
+                                {% endif %}
+                                {% if institucion.verificador == '3' %}
+                                    <option selected value="3">3</option>
+                                {% else %}
+                                    <option value="3">3</option>
+                                {% endif %}
+                                {% if institucion.verificador == '4' %}
+                                    <option selected value="4">4</option>
+                                {% else %}
+                                    <option value="4">4</option>
+                                {% endif %}
+                                {% if institucion.verificador == '5' %}
+                                    <option selected value="5">5</option>
+                                {% else %}
+                                    <option value="5">5</option>
+                                {% endif %}
+                                {% if institucion.verificador == '6' %}
+                                    <option selected value="6">6</option>
+                                {% else %}
+                                    <option value="6">6</option>
+                                {% endif %}
+                                {% if institucion.verificador == '7' %}
+                                    <option selected value="7">7</option>
+                                {% else %}
+                                    <option value="7">7</option>
+                                {% endif %}
+                                {% if institucion.verificador == '8' %}
+                                    <option selected value="8">8</option>
+                                {% else %}
+                                    <option value="8">8</option>
+                                {% endif %}
+                                {% if institucion.verificador == '9' %}
+                                    <option selected value="9">9</option>
+                                {% else %}
+                                    <option value="9">9</option>
+                                {% endif %}
+                                </select>
+                            </div>
+                        </div>
+                        <button type="submit" id="btnGuardar" data-loading-text="Guardando..." class="btn btn-primary pull-right" autocomplete="off">
+                            <i class="glyphicon glyphicon-floppy-save"></i> Guardar
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block alert %}
+    <div class="alert alert-info" role="alert">
+        <p>
+            <span class="glyphicon glyphicon-info-sign"></span>
+            <strong>Nota:</strong> Haz clic sobre una especialidad para
+            asignarla. Lo mismo para quitarla.
+        </p>
+    </div>
+{% endblock %}

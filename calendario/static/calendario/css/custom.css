@@ -175,6 +175,7 @@ input[type=range]:focus::-ms-fill-upper {
     background-color: #d9534f;
 }
 
-.modal-danger > * {
+.modal-title {
     color: white;
 }
+

@@ -8,7 +8,4 @@ class Usuario(models.Model):
     
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     persona = models.OneToOneField(Persona, on_delete=models.CASCADE)
-    genero = models.CharField(max_length=1,
-                                choices=[('F', 'F'), ('M', 'M')],
-                                default='F')
     instituciones = models.ManyToManyField(Institucion)
