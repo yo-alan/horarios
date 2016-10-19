@@ -32,11 +32,6 @@
         <li><a href="{% url 'index' %}"><i class="fa fa-fw fa-calendar"></i> Inicio</a></li>
         <li class="active">Profesionales</li>
     </ol>
-    <a href="{% url 'calendario:profesional_add' %}" class="btn btn-success">
-        <i class="glyphicon glyphicon-plus"></i> Agregar profesional
-    </a>
-    <br>
-    <br>
     <!-- Modal -->
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog" role="document">
@@ -58,13 +53,13 @@
     <table class="table table-hover table-bordered table-striped">
         <thead>
             <tr class="default">
-                <th>
+                <th class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
                     Apellido, Nombre
                 </th>
-                <th>
+                <th class="col-xs-2 col-sm-1 col-md-2 col-lg-2">
                     Cuil
                 </th>
-                <th>
+                <th class="col-xs-3 col-sm-3 col-md-3 col-lg-4">
                     Especialidades
                 </th>
                 <th class="col-xs-5 col-sm-5 col-md-4 col-lg-3">
@@ -83,13 +78,14 @@
                             {{ profesional.cuil }}
                         </td>
                         <td>
-                            {% for especialidad in profesional.especialidades.all %}
-                                <h4><span class="label label-default">{{ especialidad }}</span></h4>
-                            {% endfor %}
+                            <h4>
+                                {% for especialidad in profesional.especialidades.all %}
+                                    <span class="label label-default">{{ especialidad }}</span>
+                                {% endfor %}
+                            </h4>
                         </td>
                         <td>
                             <div class="btn btn-group btn-block">
-                                <a class="btn btn-default" title="Editar" href="{% url 'calendario:profesional_detail' profesional.id %}#profesional"><i class="glyphicon glyphicon-edit"></i></a>
                                 <a class="btn btn-default" title="Restricciones" href="{% url 'calendario:profesional_detail' profesional.id %}#restricciones"><i class="glyphicon glyphicon-list-alt"></i></a>
                                 <a class="btn btn-default" title="Especialidades" href="{% url 'calendario:profesional_detail' profesional.id %}#especialidades"><i class="glyphicon glyphicon-th-list"></i></a>
                                 <a type="button" class="btn btn-danger" data-toggle="modal" onclick="quitar({{ profesional.id }})">

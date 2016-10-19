@@ -50,7 +50,7 @@ class Especialidad(models.Model):
     def __eq__(self, o):
         return self.nombre == o.nombre    
     
-    def setnombre(self, nombre):
+    def set_nombre(self, nombre):
         
         if nombre == "":
             raise Exception("El nombre no puede estar vacío.")
@@ -62,14 +62,14 @@ class Especialidad(models.Model):
         
         self.nombre = nombre
     
-    def setcarga_horaria_semanal(self, carga_horaria_semanal):
+    def set_carga_horaria_semanal(self, carga_horaria_semanal):
         
         if carga_horaria_semanal == "" or int(carga_horaria_semanal) < 1:
             raise Exception("La carga horaria semanal no puede ser menor a 1.")
         
         self.carga_horaria_semanal = carga_horaria_semanal
     
-    def setmax_horas_diaria(self, max_horas_diaria):
+    def set_max_horas_diaria(self, max_horas_diaria):
         
         if max_horas_diaria == "" or int(max_horas_diaria) < 1:
             raise Exception("La horas diarias máxima no puede ser menor a 1.")

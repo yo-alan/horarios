@@ -102,3 +102,11 @@ class Persona(models.Model):
             raise Exception("El cuil no es válido.")
         
         self.cuil = cuil
+    
+    def set_fecha_nacimiento(self, fecha_nacimiento):
+        
+        self.fecha_nacimiento = fecha_nacimiento
+    
+    def set_genero(self, genero):
+        
+        self.genero = genero

@@ -119,11 +119,11 @@ def user_add(request):
             
             profesional = Profesional()
             
-            profesional.set_nombre = nombre
-            profesional.set_apellido = apellido
-            profesional.set_cuil = cuil
-            profesional.fecha_nacimiento = fecha_nacimiento
-            profesional.genero = genero
+            profesional.set_nombre(nombre)
+            profesional.set_apellido(apellido)
+            profesional.set_cuil(cuil)
+            profesional.set_fecha_nacimiento(fecha_nacimiento)
+            profesional.set_genero(genero)
             
             profesional.save()
             
@@ -140,11 +140,11 @@ def user_add(request):
             
             persona = Persona()
             
-            persona.nombre = nombre
-            persona.apellido = apellido
-            persona.cuil = cuil
-            persona.fecha_nacimiento = fecha_nacimiento
-            persona.genero = genero
+            persona.set_nombre(nombre)
+            persona.set_apellido(apellido)
+            persona.set_cuil(cuil)
+            persona.set_fecha_nacimiento(fecha_nacimiento)
+            persona.set_genero(genero)
             
             persona.save()
             
@@ -197,8 +197,13 @@ def user_add(request):
             
             data['campo'] = 'password'
             
-        elif 'nacimiento' in data['error']:
+        elif 'nombre' in data['error']:
+            data['campo'] = 'nombre'
             
+        elif 'apellido' in data['error']:
+            data['campo'] = 'apellido'
+            
+        elif 'nacimiento' in data['error']:
             data['campo'] = 'fecha_nacimiento'
     
     return JsonResponse(data)
@@ -301,11 +306,11 @@ def user_edit(request):
         else:
             persona = usuario.persona
         
-        persona.nombre = nombre
-        persona.apellido = apellido
-        persona.cuil = cuil
-        persona.fecha_nacimiento = fecha_nacimiento
-        persona.genero = genero
+        persona.set_nombre(nombre)
+        persona.set_apellido(apellido)
+        persona.set_cuil(cuil)
+        persona.set_fecha_nacimiento(fecha_nacimiento)
+        persona.set_genero(genero)
         
         persona.save()
         
@@ -349,6 +354,15 @@ def user_edit(request):
             
         elif 'contraseña'.decode('utf-8') in data['error']:
             data['campo'] = 'password'
+            
+        elif 'nombre' in data['error']:
+            data['campo'] = 'nombre'
+            
+        elif 'apellido' in data['error']:
+            data['campo'] = 'apellido'
+            
+        elif 'nacimiento' in data['error']:
+            data['campo'] = 'fecha_nacimiento'
     
     return JsonResponse(data)
 
@@ -465,6 +479,13 @@ def institucion_add(request):
         
         institucion.save()
         
+        actividad = Actividad()
+        
+        actividad.usuario = request.user.username
+        actividad.mensaje = "Agregaste la institucion " + str(institucion)
+        
+        actividad.save()
+        
         data['mensaje'] = "La institucion se guardo existosamente."
         
     except Exception as ex:
@@ -473,7 +494,7 @@ def institucion_add(request):
         
         if 'nombre' in data['error']:
             data['campo'] = 'nombre'
-        elif 'direcci' in data['error']:
+        elif 'dirección'.decode('utf-8') in data['error']:
             data['campo'] = 'direccion'
     
     return JsonResponse(data)
@@ -481,15 +502,49 @@ def institucion_add(request):
 @login_required(login_url='/index/')
 def institucion_detail(request, institucion_id):
     
-    context = {}
+    institucion = get_object_or_404(Institucion, pk=institucion_id)
+    
+    context = {'institucion': institucion}
     
     return render(request, 'perfil/institucion/detail.html', context)
 
 @login_required(login_url='/index/')
-def institucion_edit(request, institucion_id):
+def institucion_edit(request):
     
-    data = {}
+    if request.user.has_perm('auth.administrador'):
+        return render(request, 'calendario/denied.html')
     
+    try:
+        
+        institucion_id = request.POST['institucion_id']
+        
+        institucion = get_object_or_404(Institucion, pk=institucion_id)
+        
+        institucion.nombre = nombre
+        institucion.direccion = direccion
+        
+        institucion.save()
+        
+        actividad = Actividad()
+        
+        actividad.usuario = request.user.username
+        actividad.mensaje = "Modificaste la institucion " + str(institucion)
+        
+        actividad.save()
+        
+        data['mensaje'] = "La institución fue modificada existosamente."
+    
+    except Exception as ex:
+        
+        data = {'error': str(ex).decode('utf-8')}
+        
+        data['error'] = str(ex).decode('utf-8')
+        
+        if 'nombre' in data['error']:
+            data['campo'] = 'nombre'
+        elif 'dirección'.decode('utf-8') in data['error']:
+            data['campo'] = 'direccion'
+
     return JsonResponse(data)
 
 @login_required(login_url='/index/')

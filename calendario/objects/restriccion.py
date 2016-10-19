@@ -21,21 +21,21 @@ class Restriccion(models.Model):
     class Meta:
         unique_together = ("hora_desde", "hora_hasta", "dia_semana", "profesional")
     
-    def sethora_desde(self, hora_desde):
+    def set_hora_desde(self, hora_desde):
         
         if hora_desde == "":
             raise Exception("La hora desde no puede ser vacía.")
         
         self.hora_desde = hora_desde
     
-    def sethora_hasta(self, hora_hasta):
+    def set_hora_hasta(self, hora_hasta):
         
         if hora_hasta == "":
             raise Exception("La hora hasta no puede ser vacía.")
         
         self.hora_hasta = hora_hasta
     
-    def setdia_semana(self, dia_semana):
+    def set_dia_semana(self, dia_semana):
         
         if not (dia_semana >= 0 and dia_semana >= 7):
             raise Exception("El día de la semana no es válido.")

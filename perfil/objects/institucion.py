@@ -37,6 +37,9 @@ class Institucion(models.Model):
     cuil = models.CharField(max_length=13, null=False, blank=False)
     direccion = models.CharField(max_length=100, null=False, blank=False)
     
+    def __str__(self):
+        return self.nombre
+    
     def setcuil(self, cuil):
         
         if not esCUITValida(cuil):

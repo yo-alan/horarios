@@ -260,7 +260,7 @@ def delete(request):
         data = {"mensaje": "El calendario se eliminó exitosamente."}
         
     except Exception as ex:
-        data = {"error": "No se pudo eliminar el calendario" + str(ex)}
+        data = {"error": "No se pudo eliminar el calendario" + str(ex).decode('utf-8')}
     
     return JsonResponse(data)
 
@@ -292,7 +292,7 @@ def confirmar(request):
         data = {"mensaje": "El calendario se confirmó exitosamente."}
         
     except Exception as ex:
-        data = {"error": "No se pudo confirmar el calendario" + str(ex)}
+        data = {"error": "No se pudo confirmar el calendario" + str(ex).decode('utf-8')}
     
     return JsonResponse(data)
 
@@ -431,7 +431,6 @@ def generar(request):
         data = {'mensaje': "La generación terminó exitosamente."}
         
     except Exception as ex:
-        print ex
         
         data = {'error': str(ex).decode('utf-8')}
     
@@ -573,7 +572,7 @@ def espacio_add(request):
         
         data = {'error': str(ex).decode('utf-8')}
         
-        if 'nombre' in str(ex):
+        if 'nombre' in data['error']:
             data['campo'] = 'nombre'
         
     finally:
@@ -618,7 +617,7 @@ def espacio_edit(request, espacio_id=0):
         
         data = {'error': str(ex).decode('utf-8')}
         
-        if 'nombre' in str(ex):
+        if 'nombre' in data['error']:
             data['campo'] = 'nombre'
     
     return JsonResponse(data)
@@ -967,13 +966,13 @@ def profesional_add(request):
         
         data = {'error': str(ex).decode('utf-8')}
         
-        if 'nombre' in str(ex):
+        if 'nombre' in data['error']:
             data['campo'] = 'nombre'
         
-        if 'apellido' in str(ex):
+        if 'apellido' in data['error']:
             data['campo'] = 'apellido'
         
-        if 'cuil' in str(ex):
+        if 'cuil' in data['error']:
             data['campo'] = 'cuil'
         
     finally:
@@ -1046,13 +1045,13 @@ def profesional_edit(request):
         
         data = {'error': str(ex).decode('utf-8')}
         
-        if 'nombre' in str(ex):
+        if 'nombre' in data['error']:
             data['campo'] = 'nombre'
         
-        if 'apellido' in str(ex):
+        if 'apellido' in data['error']:
             data['campo'] = 'apellido'
         
-        if 'cuil' in str(ex):
+        if 'cuil' in data['error']:
             data['campo'] = 'cuil'
     
     return JsonResponse(data)
@@ -1198,13 +1197,13 @@ def especialidad_add(request):
         
         data = {'error': str(ex).decode('utf-8')}
         
-        if 'nombre' in str(ex):
+        if 'nombre' in data['error']:
             data['campo'] = 'nombre'
         
-        if 'semanal' in str(ex):
+        if 'semanal' in data['error']:
             data['campo'] = 'carga_horaria_semanal'
         
-        if 'diaria' in str(ex):
+        if 'diaria' in data['error']:
             data['campo'] = 'max_horas_diaria'
         
     finally:
@@ -1258,13 +1257,13 @@ def especialidad_edit(request):
         
         data = {'error': str(ex).decode('utf-8')}
         
-        if 'nombre' in str(ex):
+        if 'nombre' in data['error']:
             data['campo'] = 'nombre'
         
-        if 'semanal' in str(ex):
+        if 'semanal' in data['error']:
             data['campo'] = 'carga_horaria_semanal'
         
-        if 'diaria' in str(ex):
+        if 'diaria' in data['error']:
             data['campo'] = 'max_horas_diaria'
     
     return JsonResponse(data)
@@ -1320,9 +1319,9 @@ def restriccion_add(request):
         restriccion = Restriccion()
         
         restriccion.profesional = profesional
-        restriccion.set_dia_semana(request.POST['edit_dia_semana'])
-        restriccion.set_hora_desde(request.POST['edit_hora_desde'])
-        restriccion.set_hora_hasta(request.POST['edit_hora_hasta'])
+        restriccion.set_dia_semana(request.POST['dia_semana'])
+        restriccion.set_hora_desde(request.POST['hora_desde'])
+        restriccion.set_hora_hasta(request.POST['hora_hasta'])
         restriccion.usuario_creador = request.user.username
         restriccion.usuario_modificador = request.user.username
         
@@ -1343,18 +1342,21 @@ def restriccion_add(request):
         
     except Exception as ex:
         
-        data = {'error': str(ex)}
+        data = {'error': str(ex).decode('utf-8')}
         
-        if "tiene un formato inv" in str(ex):
+        if "duplicate key value" in data['error']:
+            data = {'error': "El horario se solapa con restricciones existentes."}
+        
+        if "tiene un formato inv" in data['error']:
             data = {'error': "El campo tiene un formato inválido."}
         
-        if 'hora_hasta' in str(ex) or request.POST['edit_hora_hasta'] in str(ex):
+        if 'hora_hasta' in data['error'] or request.POST['hora_hasta'] in data['error']:
             data['campo'] = 'hora_hasta'
         
-        if 'hora_desde' in str(ex) or request.POST['edit_hora_desde'] in str(ex):
+        if 'hora_desde' in data['error'] or request.POST['hora_desde'] in data['error']:
             data['campo'] = 'hora_desde'
         
-        if 'dia_semana' in str(ex):
+        if 'dia_semana' in data['error']:
             data['campo'] = 'dia_semana'
     
     return JsonResponse(data)

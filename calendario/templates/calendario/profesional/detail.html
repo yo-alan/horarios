@@ -19,49 +19,6 @@
                 window.scrollTo(0, 0);
             });
             
-            var form = $("#editForm");
-            
-            form.submit(function (ev){
-                
-                ev.preventDefault();
-                
-                $("#" + form.attr('id') + " button[type=submit]").button('loading');
-                
-                $.ajax({
-                    url: form.attr('action'),
-                    type: form.attr('method'),
-                    data: form.serialize(),
-                    success: function (response){
-                        
-                        $("#" + form.attr('id') + " button[type=submit]").button('reset');
-                        
-                        $(".form-group").attr('class', "form-group");
-                        
-                        if(response.error){
-                            
-                            if(response.campo){
-                                
-                                if(response.campo == "cuil")
-                                    response.campo = "documento";
-                                
-                                $("#"+ response.campo).parent().parent().attr('class', "form-group has-error");
-                                $("#"+ response.campo).focus();
-                            }
-                            
-                            form.children(".alert").attr('class', "alert alert-dismissable alert-danger");
-                            form.children(".alert").children("p").html(response.error);
-                            return;
-                        }
-                        
-                        var modal = $("#modal-informacion");
-                        
-                        $("#modal-informacion p").html(response.mensaje);
-                        
-                        modal.modal("show");
-                    }
-                });
-            });
-            
             var formRestriccion = $("#addRestriccionForm");
             
             formRestriccion.submit(function (ev){
@@ -268,9 +225,6 @@
     <div class="tabbable" id="tabs-348111">
         <ul class="nav nav-tabs">
             <li class="active">
-                <a href="#this" data-toggle="tab"><i class="glyphicon glyphicon-user"> Profesional</i></a>
-            </li>
-            <li>
                 <a href="#restricciones" data-toggle="tab"><i class="glyphicon glyphicon-list-alt"> Restricciones</i></a>
             </li>
             <li>
@@ -278,129 +232,7 @@
             </li>
         </ul>
         <div class="tab-content">
-            <h3 class="text-center">
-                {{ profesional }}
-            </h3>
-            <br>
-            <div class="tab-pane active" id="this">
-                <div class="col-xs-12 col-sm-12 col-md-9 col-lg-7 col-centered">
-                    <form class="form-horizontal" id="editForm" name="editForm" method="POST" action="{% url 'calendario:profesional_edit' %}">
-                        <div class="alert alert-dismissable alert-danger hidden">
-                            <button type="button" class="close" data-hide="alert" aria-hidden="true">
-                                ×
-                            </button>
-                            <h4>
-                                Error al guardar el profesional.
-                            </h4>
-                            <strong>Error!</strong> Un campo no es válido:
-                            <p>
-                            </p>
-                        </div>
-                        {% csrf_token %}
-                        <input id="profesional_id" name="profesional_id" type="hidden" value="{{ profesional.id }}">
-                        <div class="form-group">
-                            <label class="col-xs-3 control-label" for="nombre">Nombre:</label>
-                            <div class="col-xs-9">
-                                <input type="text" id="nombre" name="nombre" class="form-control" value="{{ profesional.nombre }}" autofocus placeholder="Nombre del profesional">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-xs-3 control-label" for="apellido">Apellido:</label>
-                            <div class="col-xs-9">
-                                <input type="text" id="apellido" name="apellido" class="form-control" value="{{ profesional.apellido }}" placeholder="Apellido del profesional">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-xs-3 control-label" for="cuil">Cuil:</label>
-                            <div class="col-xs-2">
-                                <select id="tipo" name="tipo" class="form-control">
-                                {% if profesional.tipo == "20" %}
-                                    <option selected value="20">20</option>
-                                {% else %}
-                                    <option value="20">20</option>
-                                {% endif %}
-                                {% if profesional.tipo == "23" %}
-                                    <option selected value="23">23</option>
-                                {% else %}
-                                    <option value="23">23</option>
-                                {% endif %}
-                                {% if profesional.tipo == "24" %}
-                                    <option selected value="24">24</option>
-                                {% else %}
-                                    <option value="24">24</option>
-                                {% endif %}
-                                {% if profesional.tipo == "27" %}
-                                    <option selected value="27">27</option>
-                                {% else %}
-                                    <option value="27">27</option>
-                                {% endif %}
-                                </select>
-                            </div>
-                            <div class="col-xs-5">
-                                <input type="text" id="documento" name="documento" class="form-control" placeholder="Número de documento" value="{{ profesional.documento }}">
-                            </div>
-                            <div class="col-xs-2">
-                                <select id="verificador" name="verificador" class="form-control">
-                                {% if profesional.verificador == '0' %}
-                                    <option selected value="0">0</option>
-                                {% else %}
-                                    <option value="0">0</option>
-                                {% endif %}
-                                {% if profesional.verificador == '1' %}
-                                    <option selected value="1">1</option>
-                                {% else %}
-                                    <option value="1">1</option>
-                                {% endif %}
-                                {% if profesional.verificador == '1' %}
-                                    <option selected value="2">2</option>
-                                {% else %}
-                                    <option value="2">2</option>
-                                {% endif %}
-                                {% if profesional.verificador == '3' %}
-                                    <option selected value="3">3</option>
-                                {% else %}
-                                    <option value="3">3</option>
-                                {% endif %}
-                                {% if profesional.verificador == '4' %}
-                                    <option selected value="4">4</option>
-                                {% else %}
-                                    <option value="4">4</option>
-                                {% endif %}
-                                {% if profesional.verificador == '5' %}
-                                    <option selected value="5">5</option>
-                                {% else %}
-                                    <option value="5">5</option>
-                                {% endif %}
-                                {% if profesional.verificador == '6' %}
-                                    <option selected value="6">6</option>
-                                {% else %}
-                                    <option value="6">6</option>
-                                {% endif %}
-                                {% if profesional.verificador == '7' %}
-                                    <option selected value="7">7</option>
-                                {% else %}
-                                    <option value="7">7</option>
-                                {% endif %}
-                                {% if profesional.verificador == '8' %}
-                                    <option selected value="8">8</option>
-                                {% else %}
-                                    <option value="8">8</option>
-                                {% endif %}
-                                {% if profesional.verificador == '9' %}
-                                    <option selected value="9">9</option>
-                                {% else %}
-                                    <option value="9">9</option>
-                                {% endif %}
-                                </select>
-                            </div>
-                        </div>
-                        <button type="submit" id="btnGuardar" data-loading-text="Guardando..." class="btn btn-primary pull-right" autocomplete="off">
-                            <i class="glyphicon glyphicon-floppy-save"></i> Guardar
-                        </button>
-                    </form>
-                </div>
-            </div>
-            <div class="tab-pane" id="restricciones">
+            <div class="tab-pane active" id="restricciones">
                 <div class="col-xs-6">
                     <div class="panel panel-default">
                         <div class="panel-heading">
@@ -450,8 +282,8 @@
                                 {% csrf_token %}
                                 <input id="profesional_id" name="profesional_id" type="hidden" value="{{ profesional.id }}">
                                 <div class="form-group">
-                                    <label class="control-label" for="edit_dia_semana">Día de la semana:</label>
-                                    <select class="form-control" id="edit_dia_semana" name="edit_dia_semana">
+                                    <label class="control-label" for="dia_semana">Día de la semana:</label>
+                                    <select class="form-control" id="dia_semana" name="dia_semana">
                                         <option value="7">Todos los días</option>
                                         <option value="0">Domingo</option>
                                         <option value="1">Lunes</option>
@@ -463,12 +295,12 @@
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label" for="edit_hora_desde">Hora desde:</label>
-                                    <input type="text" class="form-control" id="edit_hora_desde" name="edit_hora_desde" placeholder="HH:mm"/>
+                                    <label class="control-label" for="hora_desde">Hora desde:</label>
+                                    <input type="text" class="form-control" id="hora_desde" name="hora_desde" placeholder="HH:mm"/>
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label" for="edit_hora_hasta">Hora hasta:</label>
-                                    <input type="text" class="form-control" id="edit_hora_hasta" name="edit_hora_hasta" placeholder="HH:mm"/>
+                                    <label class="control-label" for="hora_hasta">Hora hasta:</label>
+                                    <input type="text" class="form-control" id="hora_hasta" name="hora_hasta" placeholder="HH:mm"/>
                                 </div>
                                 <button type="submit" id="btnRestriccionGuardar" data-loading-text="Guardando..." class="btn btn-primary pull-right" autocomplete="off">
                                     <i class="glyphicon glyphicon-floppy-save"></i> Agregar
