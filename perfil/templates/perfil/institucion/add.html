@@ -87,7 +87,7 @@
             </div>
         </div>
     </div>
-    <div class="col-xs-12 col-sm-12 col-md-10 col-lg-9 col-centered">
+    <div class="col-xs-12 col-sm-12 col-md-9 col-lg-7 col-centered">
         <form class="form-horizontal responsive" id="addForm" name="addForm" method="POST" action="{% url 'perfil:institucion_add' %}">
             <div class="alert alert-dismissable alert-danger hidden">
                 <button type="button" class="close" data-hide="alert" aria-hidden="true">
@@ -100,22 +100,47 @@
                 <p>
                 </p>
             </div>
-            <fieldset>
-                <legend></legend>
-                {% csrf_token %}
-                <div class="form-group">
-                    <label class="col-xs-3 control-label" for="nombre">Nombre:</label>
-                    <div class="col-xs-9">
-                        <input type="text" id="nombre" name="nombre" class="form-control" autofocus placeholder="Nombre de la institución">
-                    </div>
+            {% csrf_token %}
+            <div class="form-group">
+                <label class="col-xs-3 control-label" for="nombre">Nombre:</label>
+                <div class="col-xs-9">
+                    <input type="text" id="nombre" name="nombre" class="form-control" autofocus placeholder="Nombre de la institución">
                 </div>
-                <div class="form-group">
-                    <label class="col-xs-3 control-label" for="direccion">Dirección:</label>
-                    <div class="col-xs-9">
-                        <input type="text" id="direccion" name="direccion" class="form-control" placeholder="Dirección de la institución">
-                    </div>
+            </div>
+            <div class="form-group">
+                <label class="col-xs-3 control-label" for="direccion">Dirección:</label>
+                <div class="col-xs-9">
+                    <input type="text" id="direccion" name="direccion" class="form-control" placeholder="Dirección de la institución">
                 </div>
-            </fieldset>
+            </div>
+            <div class="form-group">
+                <label class="col-xs-3 control-label" for="cuil">Cuit:</label>
+                <div class="col-xs-2">
+                    <select id="tipo" name="tipo" class="form-control">
+                        <option value="20">20</option>
+                        <option value="23">23</option>
+                        <option value="24">24</option>
+                        <option value="27">27</option>
+                    </select>
+                </div>
+                <div class="col-xs-5">
+                    <input type="text" id="documento" name="documento" class="form-control">
+                </div>
+                <div class="col-xs-2">
+                    <select id="verificador" name="verificador" class="form-control">
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                    </select>
+                </div>
+            </div>
             <button type="submit" id="btnGuardar" data-loading-text="Guardando..." class="btn btn-primary pull-right" autocomplete="off">
                 <i class="glyphicon glyphicon-floppy-save"></i> Guardar
             </button>

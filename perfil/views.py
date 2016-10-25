@@ -459,23 +459,19 @@ def institucion_add(request):
     if request.method != 'POST':
         return render(request, 'perfil/institucion/add.html')
     
-    data = {}
-    
     try:
         
         nombre = request.POST['nombre']
         direccion = request.POST['direccion']
-        
-        if nombre == '':
-            raise Exception("El nombre no puede estar vacío.")
-        
-        if direccion == '':
-            raise Exception("La dirección no puede estar vacía.")
+        tipo = request.POST['tipo']
+        documento = request.POST['documento']
+        verificador = request.POST['verificador']
         
         institucion = Institucion()
         
-        institucion.nombre = nombre
-        institucion.direccion = direccion
+        institucion.set_nombre(nombre)
+        institucion.set_direccion(direccion)
+        institucion.set_cuil(tipo + '-' + documento + '-' + verificador)
         
         institucion.save()
         
@@ -486,16 +482,18 @@ def institucion_add(request):
         
         actividad.save()
         
-        data['mensaje'] = "La institucion se guardo existosamente."
+        data = {'mensaje': "La institucion se guardo existosamente."}
         
     except Exception as ex:
         
-        data['error'] = str(ex).decode('utf-8')
+        data = {'error': str(ex).decode('utf-8')}
         
         if 'nombre' in data['error']:
             data['campo'] = 'nombre'
         elif 'dirección'.decode('utf-8') in data['error']:
             data['campo'] = 'direccion'
+        elif 'cuil' in data['error']:
+            data['campo'] = 'cuil'
     
     return JsonResponse(data)
 
@@ -503,6 +501,10 @@ def institucion_add(request):
 def institucion_detail(request, institucion_id):
     
     institucion = get_object_or_404(Institucion, pk=institucion_id)
+    
+    institucion.tipo = institucion.cuil.split('-')[0]
+    institucion.documento = institucion.cuil.split('-')[1]
+    institucion.verificador = institucion.cuil.split('-')[2]
     
     context = {'institucion': institucion}
     
@@ -515,13 +517,20 @@ def institucion_edit(request):
         return render(request, 'calendario/denied.html')
     
     try:
-        
+    
         institucion_id = request.POST['institucion_id']
         
         institucion = get_object_or_404(Institucion, pk=institucion_id)
         
-        institucion.nombre = nombre
-        institucion.direccion = direccion
+        nombre = request.POST['nombre']
+        direccion = request.POST['direccion']
+        tipo = request.POST['tipo']
+        documento = request.POST['documento']
+        verificador = request.POST['verificador']
+        
+        institucion.set_nombre(nombre)
+        institucion.set_direccion(direccion)
+        institucion.set_cuil(tipo + '-' + documento + '-' + verificador)
         
         institucion.save()
         
@@ -532,7 +541,43 @@ def institucion_edit(request):
         
         actividad.save()
         
-        data['mensaje'] = "La institución fue modificada existosamente."
+        data = {'mensaje': "La institución fue modificada existosamente."}
+    
+    except Exception as ex:
+        
+        data = {'error': str(ex).decode('utf-8')}
+        
+        if 'nombre' in data['error']:
+            data['campo'] = 'nombre'
+        elif 'dirección'.decode('utf-8') in data['error']:
+            data['campo'] = 'direccion'
+        elif 'cuil' in data['error']:
+            data['campo'] = 'cuil'
+
+    return JsonResponse(data)
+
+@login_required(login_url='/index/')
+def institucion_delete(request):
+    
+    if request.user.has_perm('auth.administrador'):
+        return render(request, 'calendario/denied.html')
+    
+    try:
+    
+        institucion_id = request.POST['institucion_id']
+        
+        institucion = get_object_or_404(Institucion, pk=institucion_id)
+        
+        institucion.delete()
+        
+        actividad = Actividad()
+        
+        actividad.usuario = request.user.username
+        actividad.mensaje = "Modificaste la institucion " + str(institucion)
+        
+        actividad.save()
+        
+        data = {'mensaje': "La institución fue modificada existosamente."}
     
     except Exception as ex:
         
@@ -545,11 +590,4 @@ def institucion_edit(request):
         elif 'dirección'.decode('utf-8') in data['error']:
             data['campo'] = 'direccion'
 
-    return JsonResponse(data)
-
-@login_required(login_url='/index/')
-def institucion_delete(request):
-    
-    data = {}
-    
     return JsonResponse(data)

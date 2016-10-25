@@ -27,6 +27,7 @@ from .models import Hora
 from .models import Coordinador
 from .models import DiaHabil
 from perfil.models import Actividad
+from perfil.models import Usuario
 
 DIAS = {0: 'Domingo', 1: 'Lunes', 2: 'Martes', 3: 'Miércoles',
         4: 'Jueves', 5: 'Viernes', 6: 'Sábado', 7: "Todos los días"}
@@ -76,8 +77,12 @@ def index(request):
     profesionales = Profesional.objects.filter(estado="ON")
     espacios = Espacio.objects.filter(~Q(estado=Espacio.OFF))
     calendarios = Calendario.objects.all()
+    try:
+        usuario = Usuario.objects.get(user=request.user)
+    except:
+        usuario = None
     
-    context = {"user": request.user, "especialidades": especialidades,
+    context = {"usuario": usuario, "especialidades": especialidades,
                 "profesionales": profesionales, "espacios": espacios,
                 "calendarios": calendarios}
     

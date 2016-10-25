@@ -40,7 +40,21 @@ class Institucion(models.Model):
     def __str__(self):
         return self.nombre
     
-    def setcuil(self, cuil):
+    def set_nombre(self, nombre):
+        
+        if nombre == '':
+            raise Exception("El nombre no puede estar vacío.")
+        
+        self.nombre = nombre
+    
+    def set_direccion(self, direccion):
+        
+        if direccion == '':
+            raise Exception("La dirección no puede estar vacía.")
+        
+        self.direccion = direccion
+    
+    def set_cuil(self, cuil):
         
         if not esCUITValida(cuil):
             raise Exception("El cuil no es válido.")

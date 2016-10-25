@@ -1,6 +1,12 @@
 {% extends "admin/base.html" %}
 
-{% block title %}¡Bienvenido {{ user.first_name }}!{% endblock %}
+{% block title %}
+    {% if usuario.persona.genero == 'F' %}
+        ¡Bienvenida {{ usuario.user.first_name }}!
+    {% else %}
+        ¡Bienvenido {{ usuario.user.first_name }}!
+    {% endif %}
+{% endblock %}
 
 {% block head %}
     <script>
@@ -12,10 +18,10 @@
         <li class="active"><i class="fa fa-fw fa-calendar"></i> Inicio</li>
     </ol>
     <h2 class="text-center">
-        {% if usuario.genero == 'F' %}
-            ¡Bienvenida {{ user.first_name }}!
+        {% if usuario.persona.genero == 'F' %}
+            ¡Bienvenida {{ usuario.user.first_name }}!
         {% else %}
-            ¡Bienvenido {{ user.first_name }}!
+            ¡Bienvenido {{ usuario.user.first_name }}!
         {% endif %}
     </h2>
     <br>
