@@ -6,7 +6,7 @@
 
 {% block head %}
     <script>
-        function eliminar(institucion_id){
+        function eliminar(institucion_id) {
             
             $("#myModal").modal("show");
             
@@ -32,11 +32,13 @@
         <li><a href="{% url 'index' %}"><i class="fa fa-fw fa-calendar"></i> Inicio</a></li>
         <li class="active">Instituciones</li>
     </ol>
+<!--
     <a href="{% url 'perfil:institucion_add' %}" class="btn btn-success">
         <i class="glyphicon glyphicon-plus"></i> Agregar institución
     </a>
     <br>
     <br>
+-->
     <!-- Modal -->
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog" role="document">

@@ -1,6 +1,6 @@
 {% extends "admin/base.html" %}
 
-{% block title %}¡Bienvenido {{ user.first_name }}!{% endblock %}
+{% block title %}Ups! Ocurrió un error{% endblock %}
 
 {% block head %}
     <script>
@@ -13,8 +13,8 @@
             <i class="glyphicon glyphicon-exclamation-sign"></i> Acceso denegado
         </b>
         <p>
-            Usted no es un usuario habilitado para realizar esta acción.
-            Contacte a su administrador
+            Parece que usted no debería estar aquí.
+            Si cree que esto es un error, por favor contacte al administrador.
             <a href="{% url 'index' %}" class="btn btn-default pull-right">
                 <i class="glyphicon glyphicon-chevron-left"></i> Inicio
             </a>

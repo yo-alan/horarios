@@ -77,10 +77,11 @@ def index(request):
     profesionales = Profesional.objects.filter(estado="ON")
     espacios = Espacio.objects.filter(~Q(estado=Espacio.OFF))
     calendarios = Calendario.objects.all()
+    
     try:
         usuario = Usuario.objects.get(user=request.user)
     except:
-        usuario = None
+        usuario = request.user
     
     context = {"usuario": usuario, "especialidades": especialidades,
                 "profesionales": profesionales, "espacios": espacios,

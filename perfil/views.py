@@ -9,8 +9,9 @@ from django.core.validators import validate_email
 from django.contrib.auth.models import User, Permission
 from django.contrib.auth.decorators import login_required
 
-from calendario.models import Persona, Profesional
+from calendario.models import Profesional
 
+from .models import Persona
 from .models import Actividad
 from .models import Usuario
 from .models import Institucion
@@ -20,7 +21,7 @@ PAGE_LENGTH = 10
 @login_required(login_url='/index/')
 def index(request):
     
-    actividades = Actividad.objects.filter(usuario=request.user.username)
+    actividades = Actividad.objects.filter(usuario=request.user.username).order_by('-fecha')
     
     context = {"user": request.user, "actividades": actividades}
     
@@ -73,13 +74,22 @@ def user_add(request):
         return render(request, 'calendario/denied.html')
     
     if request.method != 'POST':
-        return render(request, 'perfil/user/add.html')
+        
+        usuario = Usuario.objects.get(user=request.user)
+        
+        institucion = usuario.instituciones.all()[0]
+        
+        context = {'usuario': usuario, 'institucion': institucion}
+        
+        return render(request, 'perfil/user/add.html', context)
     
     data = {}
     
     try:
         
         transaction.set_autocommit(False)
+        
+        institucion_id = request.POST['institucion_id']
         
         username = request.POST['username']
         password = request.POST['password']
@@ -115,6 +125,10 @@ def user_add(request):
         
         user.save()
         
+        usuario = Usuario()
+        
+        usuario.user = user
+        
         if tipo == 'profesional':
             
             profesional = Profesional()
@@ -127,12 +141,7 @@ def user_add(request):
             
             profesional.save()
             
-            usuario = Usuario()
-            
-            usuario.user = user
             usuario.persona = profesional
-            
-            usuario.save()
             
             permission = Permission.objects.get(codename='profesional')
             
@@ -148,14 +157,17 @@ def user_add(request):
             
             persona.save()
             
-            usuario = Usuario()
-            
-            usuario.user = user
             usuario.persona = persona
             
-            usuario.save()
-            
             permission = Permission.objects.get(codename='directivo')
+        
+        institucion = Institucion.objects.get(id=institucion_id)
+        
+        usuario.save()
+        
+        usuario.instituciones.add(institucion)
+        
+        usuario.save()
         
         user.user_permissions.add(permission)
         
@@ -435,7 +447,7 @@ def user_activate(request):
 @login_required(login_url='/index/')
 def institucion_all(request, pagina=1):
     
-    if request.user.has_perm('auth.administrador'):
+    if not request.user.has_perm('auth.profesional'):
         return render(request, 'calendario/denied.html')
     
     total_instituciones = Institucion.objects.all()

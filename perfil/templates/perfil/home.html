@@ -5,23 +5,10 @@
 {% block title %}Perfil de {{ user.last_name }}, {{ user.first_name }}{% endblock %}
 
 {% block head %}
-    <script src="{% static 'perfil/js/moment.min.js' %}"></script>
-    <script src="{% static 'perfil/js/datetime-moment.js' %}"></script>
     <script>
         $(function () {
-            
-            moment.locale('es', {
-                monthsShort: "Ene._Feb._Mar._Abr._May._Jun._Jul._Agos._Sep._Oct._Nov._Dic.".split("_"),
-                months: [
-                    "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio",
-                    "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
-                ]
-            });
-            //~ 0000-00-00 00:00:00.000000-00
-            $.fn.dataTable.moment("YYYY-MM-DD HH:mm:ss");
-            
             $("#tbActividad").DataTable({
-                //~ "order": [[ 0, "desc" ]]
+                "bSort": false
             });
         });
     </script>

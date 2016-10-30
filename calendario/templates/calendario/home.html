@@ -2,9 +2,9 @@
 
 {% block title %}
     {% if usuario.persona.genero == 'F' %}
-        ¡Bienvenida {{ usuario.user.first_name }}!
+        ¡Bienvenida {{ request.user.first_name }}!
     {% else %}
-        ¡Bienvenido {{ usuario.user.first_name }}!
+        ¡Bienvenido {{ request.user.first_name }}!
     {% endif %}
 {% endblock %}
 
@@ -19,9 +19,9 @@
     </ol>
     <h2 class="text-center">
         {% if usuario.persona.genero == 'F' %}
-            ¡Bienvenida {{ usuario.user.first_name }}!
+            ¡Bienvenida {{ request.user.first_name }}!
         {% else %}
-            ¡Bienvenido {{ usuario.user.first_name }}!
+            ¡Bienvenido {{ request.user.first_name }}!
         {% endif %}
     </h2>
     <br>

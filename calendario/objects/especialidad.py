@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.db import models
+from perfil.models import Institucion
 
 def purificador(nombre):
     
@@ -32,6 +33,8 @@ class Especialidad(models.Model):
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     usuario_modificador = models.CharField(max_length=30, default='admin')
     fecha_modificacion = models.DateTimeField(auto_now=True)
+    
+    institucion = models.ForeignKey(Institucion)
     
     @classmethod
     def create(cls, especialidad_id=0):

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.db import models
 
-from persona import Persona
+from perfil.models import Persona
 from especialidad import Especialidad
 
 class Profesional(Persona):
