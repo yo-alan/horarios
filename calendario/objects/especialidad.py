@@ -2,24 +2,6 @@
 from django.db import models
 from perfil.models import Institucion
 
-def purificador(nombre):
-    
-    nombre_copia = nombre
-    
-    nombre = ""
-    
-    for n in nombre_copia.split(' '):
-        
-        if not n.isalpha():
-            raise
-        
-        nombre = nombre + " " + n
-    
-    if nombre.startswith(' '):
-        nombre = nombre[1:]
-    
-    return nombre
-
 class Especialidad(models.Model):
     
     nombre = models.CharField(max_length=100, null=False)
@@ -57,11 +39,6 @@ class Especialidad(models.Model):
         
         if nombre == "":
             raise Exception("El nombre no puede estar vacío.")
-        
-        try:
-            nombre = purificador(nombre)
-        except:
-            raise Exception("El nombre posee caracteres no permitidos.")
         
         self.nombre = nombre
     

@@ -32,11 +32,13 @@
         <li><a href="{% url 'index' %}"><i class="fa fa-fw fa-calendar"></i> Inicio</a></li>
         <li class="active">Espacios</li>
     </ol>
-    <a href="{% url 'calendario:espacio_add' %}" class="btn btn-success">
-        <i class="glyphicon glyphicon-plus"></i> Agregar espacio
-    </a>
-    <br>
-    <br>
+    {% if perms.auth.admin %}
+        <a href="{% url 'calendario:espacio_add' %}" class="btn btn-success">
+            <i class="glyphicon glyphicon-plus"></i> Agregar espacio
+        </a>
+        <br>
+        <br>
+    {% endif %}
     {% if perms.auth.directivo or perms.auth.admin %}
     <!-- Modal -->
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">

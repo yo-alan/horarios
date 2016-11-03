@@ -33,9 +33,14 @@ def esCUITValida(cuit):
 
 class Institucion(models.Model):
     
+    ACTIVA = 1
+    ANUALDA = 2
+    
     nombre = models.CharField(max_length=100, null=False, blank=False)
     cuil = models.CharField(max_length=13, null=False, blank=False)
     direccion = models.CharField(max_length=100, null=False, blank=False)
+    estado = models.IntegerField(choices=[(ACTIVA, ACTIVA), (ANUALDA, ANUALDA)],
+                                default=ACTIVA)
     usuario_creador = models.CharField(max_length=30, default='admin')
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     usuario_modificador = models.CharField(max_length=30,

@@ -32,6 +32,13 @@
         <li><a href="{% url 'index' %}"><i class="fa fa-fw fa-calendar"></i> Inicio</a></li>
         <li class="active">Profesionales</li>
     </ol>
+    {% if perms.auth.admin %}
+        <a href="{% url 'calendario:profesional_add' %}" class="btn btn-success">
+            <i class="glyphicon glyphicon-plus"></i> Agregar profesional
+        </a>
+        <br>
+        <br>
+    {% endif %}
     <!-- Modal -->
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog" role="document">

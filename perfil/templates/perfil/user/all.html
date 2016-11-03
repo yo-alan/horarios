@@ -117,7 +117,9 @@
                             {{ usuario.persona }}
                         </td>
                         <td>
-                            {% if usuario.persona.profesional %}
+                            {% if usuario.user.user_permissions %}
+                                <b class="text-success"><i>Administrador</i></b>
+                            {% elif usuario.user.user_permissions %}
                                 <b class="text-warning"><i>Profesional</i></b>
                             {% else %}
                                 <b class="text-info"><i>Directivo</i></b>

@@ -726,3 +726,11 @@ class Espacio(models.Model):
         suma = sum(calendario.puntaje for calendario in self.poblacion)
         
         return suma / len(self.poblacion)
+    
+    def set_nombre(self, nombre):
+        
+        if nombre == "":
+            raise Exception("El nombre no puede estar vacío.")
+        
+        self.nombre = nombre
+    

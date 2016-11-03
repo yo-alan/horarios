@@ -105,6 +105,9 @@ class Persona(models.Model):
     
     def set_fecha_nacimiento(self, fecha_nacimiento):
         
+        if fecha_nacimiento == "":
+            raise Exception("La fecha de nacimiento no es válida.")
+        
         self.fecha_nacimiento = fecha_nacimiento
     
     def set_genero(self, genero):

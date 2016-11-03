@@ -49,10 +49,10 @@ def user_all(request, pagina=1):
     
     total_usuarios = Usuario.objects.all()
     
-    for usuario in total_usuarios[:]:
+    #~ for usuario in total_usuarios[:]:
         
-        if isinstance(usuario.persona, Profesional):
-            usuario.persona._profesional = True
+        #~ if isinstance(usuario.persona, Profesional):
+            #~ usuario.persona._profesional = True
 
     paginator = Paginator(total_usuarios, PAGE_LENGTH)
 
@@ -110,10 +110,10 @@ def user_add(request):
         if len(password) < 6:
             raise Exception("El contraseña debe contener 6 o más caracteres.")
         
-        if fecha_nacimiento == '':
-            raise Exception("La fecha de nacimiento no es válida.")
-        
-        fecha_nacimiento = datetime.datetime.strptime(fecha_nacimiento, "%Y-%m-%d").date()
+        try:
+            fecha_nacimiento = datetime.datetime.strptime(fecha_nacimiento, "%Y-%m-%d").date()
+        except:
+            pass
         
         user = User()
         
@@ -128,7 +128,7 @@ def user_add(request):
         usuario = Usuario()
         
         usuario.user = user
-        
+        print tipo
         if tipo == 'profesional':
             
             profesional = Profesional()
@@ -159,7 +159,10 @@ def user_add(request):
             
             usuario.persona = persona
             
-            permission = Permission.objects.get(codename='directivo')
+            if tipo == 'directivo':
+                permission = Permission.objects.get(codename='directivo')
+            else:
+                permission = Permission.objects.get(codename='admin')
         
         institucion = Institucion.objects.get(id=institucion_id)
         
@@ -278,7 +281,10 @@ def user_edit(request):
         usuario = Usuario.objects.get(id=usuario_id)
         
         usuario.user.username = username
-        usuario.user.set_password(password)
+        
+        if password != '******':
+            usuario.user.set_password(password)
+        
         usuario.user.email = email
         usuario.user.first_name = nombre
         usuario.user.last_name = apellido
@@ -594,8 +600,6 @@ def institucion_delete(request):
     except Exception as ex:
         
         data = {'error': str(ex).decode('utf-8')}
-        
-        data['error'] = str(ex).decode('utf-8')
         
         if 'nombre' in data['error']:
             data['campo'] = 'nombre'

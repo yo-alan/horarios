@@ -2,7 +2,7 @@
 
 {% load static %}
 
-{% block title %}Agregar un usuario{% endblock %}
+{% block title %}Agregar usuario{% endblock %}
 
 {% block head %}
     <script>
@@ -127,7 +127,13 @@
                     <div class="col-xs-9">
                         <div class="radio">
                             <label>
-                                <input type="radio" name="tipo" id="profesional" value="profesional" checked>
+                                <input type="radio" name="tipo" id="admin" value="administrador" checked>
+                                Administrador
+                            </label>
+                        </div>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="tipo" id="profesional" value="profesional">
                                 Profesional
                             </label>
                         </div>
