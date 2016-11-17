@@ -8,6 +8,7 @@ from django.db import models
 from especialidad import Especialidad
 from profesional import Profesional
 from penalidad import Penalidad
+from perfil.models import Institucion
 
 PUNTOS_HORAS_SEMANALES = 1
 CANT_PAREJAS = 4
@@ -19,10 +20,16 @@ class Espacio(models.Model):
     en el cual se desarrolla el algoritmo.
     
     @Atributos:
+    .nombre - nombre unico. Valor: "".
+    .estado - estado, ON, OFF, GENERANDO. Valor: ON.
+    .progreso - progreso de la generacion. Valor: 0.
     .dias_habiles - lista con los dias a cubrir. Valor: [].
     .horas - lista con las horas a cubrir. Valor: [].
     .poblacion - lista de individuos. Valor: [].
+    .especialidades - lista de especialidades. Valor: [].
+    .profesionales - lista de profesionales. Valor: [].
     .coordinadores - lista de coordinadores. Valor: [].
+    .institucion - institucion a la que pertenece. Valor: None.
     .tamanio_poblacion - tamaño de la población. Valor: 0.
     .grado - puntaje promedio de la población actual. Valor: 0.
     """
@@ -42,6 +49,8 @@ class Espacio(models.Model):
     
     especialidades = models.ManyToManyField(Especialidad)
     profesionales = models.ManyToManyField(Profesional)
+    
+    institucion = models.ForeignKey(Institucion)
     
     @classmethod
     def create(cls, espacio_id=0, tamanio_poblacion=0):

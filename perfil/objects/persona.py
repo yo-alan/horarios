@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import datetime
+
 from django.db import models
 
 def purificador(nombre):
@@ -105,7 +107,9 @@ class Persona(models.Model):
     
     def set_fecha_nacimiento(self, fecha_nacimiento):
         
-        if fecha_nacimiento == "":
+        try:
+            fecha_nacimiento = datetime.datetime.strptime(fecha_nacimiento, "%Y-%m-%d").date()
+        except:
             raise Exception("La fecha de nacimiento no es válida.")
         
         self.fecha_nacimiento = fecha_nacimiento

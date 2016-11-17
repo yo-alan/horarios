@@ -29,10 +29,6 @@
                         if(response.error){
                             
                             if(response.campo){
-                                
-                                if(response.campo == "cuil")
-                                    response.campo = "documento";
-                                
                                 $("#"+ response.campo).parent().parent().attr('class', "form-group has-error");
                                 $("#"+ response.campo).focus();
                             }
@@ -164,6 +160,12 @@
                     <label class="col-xs-3 control-label" for="fecha_nacimiento">Fecha de nacimiento:</label>
                     <div class="col-xs-9">
                         <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" class="form-control" placeholder="dd/mm/aaaa">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-3 control-label" for="cuil">C.U.I.T./C.U.I.L.:</label>
+                    <div class="col-xs-9">
+                        <input type="text" id="cuil" name="cuil" class="form-control" placeholder="00000000000">
                     </div>
                 </div>
                 <div class="form-group">

@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
-import datetime
-
 from django.shortcuts import render, get_object_or_404
 from django.db import transaction
 from django.http import JsonResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.validators import validate_email
-from django.contrib.auth.models import User, Permission
+from django.contrib.auth.models import User, Permission, Group
 from django.contrib.auth.decorators import login_required
 
 from calendario.models import Profesional
@@ -30,29 +28,40 @@ def index(request):
 @login_required(login_url='/index/')
 def editar(request):
     
-    context = {}
+    if request.method != 'POST':
+        return render(request, 'perfil/editar.html')
+        
+    try:
+        
+        actividad = Actividad()
+        
+        actividad.usuario = request.user.username
+        actividad.mensaje = "Editaste los datos de tu perfil."
+        
+        actividad.save()
+        
+        data = {'mensaje': "Los datos se actualizaron exitosamente."}
+        
+    except:
+        
+        data = {'error': "No se pudo editar el perfil."}
     
-    return render(request, 'perfil/editar.html', context)
+    
+    return JsonResponse(data)
 
 @login_required(login_url='/index/')
 def administracion(request):
-    
-    context = {}
-    
-    return render(request, 'perfil/administracion.html', context)
+    return render(request, 'perfil/administracion.html')
 
 @login_required(login_url='/index/')
 def user_all(request, pagina=1):
     
-    if request.user.has_perm('auth.administrador'):
+    if not request.user.has_perm('auth.puede_ver_usuario'):
         return render(request, 'calendario/denied.html')
     
-    total_usuarios = Usuario.objects.all()
+    instituciones = request.user.usuario.instituciones.all()
     
-    #~ for usuario in total_usuarios[:]:
-        
-        #~ if isinstance(usuario.persona, Profesional):
-            #~ usuario.persona._profesional = True
+    total_usuarios = Usuario.objects.filter(instituciones=instituciones).order_by('persona__apellido', 'persona__nombre')
 
     paginator = Paginator(total_usuarios, PAGE_LENGTH)
 
@@ -70,26 +79,17 @@ def user_all(request, pagina=1):
 @login_required(login_url='/index/')
 def user_add(request):
     
-    if request.user.has_perm('auth.administrador'):
+    if not request.user.has_perm('auth.puede_agregar_usuario'):
         return render(request, 'calendario/denied.html')
     
     if request.method != 'POST':
-        
-        usuario = Usuario.objects.get(user=request.user)
-        
-        institucion = usuario.instituciones.all()[0]
-        
-        context = {'usuario': usuario, 'institucion': institucion}
-        
-        return render(request, 'perfil/user/add.html', context)
-    
-    data = {}
+        return render(request, 'perfil/user/add.html')
     
     try:
         
         transaction.set_autocommit(False)
         
-        institucion_id = request.POST['institucion_id']
+        institucion = request.user.usuario.instituciones.all()[0]
         
         username = request.POST['username']
         password = request.POST['password']
@@ -98,22 +98,17 @@ def user_add(request):
         
         nombre = request.POST['nombre']
         apellido = request.POST['apellido']
-        cuil = '23-38046045-9'
         fecha_nacimiento = request.POST['fecha_nacimiento']
+        cuil = request.POST['cuil']
         genero = request.POST['genero']
         
         if len(username) < 4:
-            raise Exception("El nombre de usuario debe contener 4 o mas caracteres.")
+            raise Exception("El nombre de usuario debe contener 4 o más caracteres.")
         
         validate_email(email)
         
         if len(password) < 6:
             raise Exception("El contraseña debe contener 6 o más caracteres.")
-        
-        try:
-            fecha_nacimiento = datetime.datetime.strptime(fecha_nacimiento, "%Y-%m-%d").date()
-        except:
-            pass
         
         user = User()
         
@@ -128,22 +123,22 @@ def user_add(request):
         usuario = Usuario()
         
         usuario.user = user
-        print tipo
+        
         if tipo == 'profesional':
             
             profesional = Profesional()
             
             profesional.set_nombre(nombre)
             profesional.set_apellido(apellido)
-            profesional.set_cuil(cuil)
             profesional.set_fecha_nacimiento(fecha_nacimiento)
+            profesional.set_cuil(cuil)
             profesional.set_genero(genero)
             
             profesional.save()
             
             usuario.persona = profesional
             
-            permission = Permission.objects.get(codename='profesional')
+            group = Group.objects.get(name='Profesionales')
             
         else:
             
@@ -151,8 +146,8 @@ def user_add(request):
             
             persona.set_nombre(nombre)
             persona.set_apellido(apellido)
-            persona.set_cuil(cuil)
             persona.set_fecha_nacimiento(fecha_nacimiento)
+            persona.set_cuil(cuil)
             persona.set_genero(genero)
             
             persona.save()
@@ -160,11 +155,9 @@ def user_add(request):
             usuario.persona = persona
             
             if tipo == 'directivo':
-                permission = Permission.objects.get(codename='directivo')
+                group = Group.objects.get(name='Directivos')
             else:
-                permission = Permission.objects.get(codename='admin')
-        
-        institucion = Institucion.objects.get(id=institucion_id)
+                group = Group.objects.get(name='Administradores')
         
         usuario.save()
         
@@ -172,10 +165,8 @@ def user_add(request):
         
         usuario.save()
         
-        user.user_permissions.add(permission)
+        group.user_set.add(user)
         
-        user.save()
-
         actividad = Actividad()
         
         actividad.usuario = request.user.username
@@ -220,21 +211,19 @@ def user_add(request):
             
         elif 'nacimiento' in data['error']:
             data['campo'] = 'fecha_nacimiento'
+            
+        elif 'cuil' in data['error']:
+            data['campo'] = 'cuil'
     
     return JsonResponse(data)
 
 @login_required(login_url='/index/')
 def user_detail(request, user_id):
     
-    if request.user.has_perm('auth.administrador'):
+    if not request.user.has_perm('auth.puede_editar_usuario'):
         return render(request, 'calendario/denied.html')
     
     usuario = get_object_or_404(Usuario, pk=user_id)
-    
-    usuario = Usuario.objects.get(id=user_id)
-    
-    if isinstance(usuario.persona, Profesional):
-        usuario.persona._profesional = True
     
     context = {'usuario': usuario}
     
@@ -243,10 +232,8 @@ def user_detail(request, user_id):
 @login_required(login_url='/index/')
 def user_edit(request):
     
-    if request.user.has_perm('auth.administrador'):
+    if not request.user.has_perm('auth.puede_editar_usuario'):
         return render(request, 'calendario/denied.html')
-    
-    data = {}
     
     try:
         
@@ -261,8 +248,8 @@ def user_edit(request):
         
         nombre = request.POST['nombre']
         apellido = request.POST['apellido']
-        cuil = '23-38046045-9'
         fecha_nacimiento = request.POST['fecha_nacimiento']
+        cuil = request.POST['cuil']
         genero = request.POST['genero']
         
         if len(username) < 4:
@@ -272,11 +259,6 @@ def user_edit(request):
         
         if len(password) < 6:
             raise Exception("El contraseña debe contener 6 o más caracteres.")
-        
-        if fecha_nacimiento == '':
-            raise Exception("La fecha de nacimiento no es válida.")
-        
-        fecha_nacimiento = datetime.datetime.strptime(fecha_nacimiento, "%Y-%m-%d").date()
         
         usuario = Usuario.objects.get(id=usuario_id)
         
@@ -293,41 +275,39 @@ def user_edit(request):
             usuario.persona = Profesional.create(usuario.persona.id)
         except Exception as ex:
             pass
+
+        try:
+            # Unica vista en donde tipo esta capitalizado y en plural.
+            group_name = usuario.user.groups.all()[0].name
+            
+            group = Group.objects.get(name=group_name)
+        except:
+            raise Exception("El tipo de usuario no es válido.")
+
+        group.user_set.remove(usuario.user)
         
-        if isinstance(usuario.persona, Profesional) and tipo == 'directivo':
+        nuevo_group = group = Group.objects.get(name=tipo)
+        
+        nuevo_group.user_set.add(usuario.user)
+        
+        if group.name != 'Profesionales' and tipo == 'Profesionales':
             
             usuario.persona.delete()
-            
-            permission = Permission.objects.get(codename='profesional')
-            
-            usuario.user.user_permissions.remove(permission)
-            
-            permission = Permission.objects.get(codename='directivo')
-            
-            usuario.user.user_permissions.add(permission)
-            
-            persona = Persona()
-            
-        elif not isinstance(usuario.persona, Profesional) and tipo == 'profesional':
-            
-            usuario.persona.delete()
-            
-            permission = Permission.objects.get(codename='directivo')
-            
-            usuario.user.user_permissions.remove(permission)
-            
-            permission = Permission.objects.get(codename='profesional')
-            
-            usuario.user.user_permissions.add(permission)
             
             persona = Profesional()
+            
+        elif group.name == 'Profesionales' and tipo != 'Profesionales':
+            
+            usuario.persona.delete()
+            
+            persona = Persona()
         else:
             persona = usuario.persona
         
         persona.set_nombre(nombre)
         persona.set_apellido(apellido)
-        persona.set_cuil(cuil)
         persona.set_fecha_nacimiento(fecha_nacimiento)
+        persona.set_cuil(cuil)
         persona.set_genero(genero)
         
         persona.save()
@@ -381,16 +361,17 @@ def user_edit(request):
             
         elif 'nacimiento' in data['error']:
             data['campo'] = 'fecha_nacimiento'
+            
+        elif 'cuil' in data['error']:
+            data['campo'] = 'cuil'
     
     return JsonResponse(data)
 
 @login_required(login_url='/index/')
 def user_diactivate(request):
     
-    if request.user.has_perm('auth.administrador'):
+    if not request.user.has_perm('auth.puede_editar_usuario'):
         return render(request, 'calendario/denied.html')
-    
-    data = {}
     
     try:
 
@@ -420,10 +401,8 @@ def user_diactivate(request):
 @login_required(login_url='/index/')
 def user_activate(request):
     
-    if request.user.has_perm('auth.administrador'):
+    if not request.user.has_perm('auth.puede_editar_usuario'):
         return render(request, 'calendario/denied.html')
-    
-    data = {}
     
     try:
 
@@ -453,7 +432,7 @@ def user_activate(request):
 @login_required(login_url='/index/')
 def institucion_all(request, pagina=1):
     
-    if not request.user.has_perm('auth.profesional'):
+    if not request.user.has_perm('auth.puede_ver_institucion'):
         return render(request, 'calendario/denied.html')
     
     total_instituciones = Institucion.objects.all()
@@ -473,6 +452,9 @@ def institucion_all(request, pagina=1):
 
 @login_required(login_url='/index/')
 def institucion_add(request):
+    
+    if not request.user.has_perm('auth.puede_agregar_institucion'):
+        return render(request, 'calendario/denied.html')
     
     if request.method != 'POST':
         return render(request, 'perfil/institucion/add.html')
@@ -518,6 +500,9 @@ def institucion_add(request):
 @login_required(login_url='/index/')
 def institucion_detail(request, institucion_id):
     
+    if not request.user.has_perm('auth.puede_editar_institucion'):
+        return render(request, 'calendario/denied.html')
+    
     institucion = get_object_or_404(Institucion, pk=institucion_id)
     
     institucion.tipo = institucion.cuil.split('-')[0]
@@ -531,7 +516,7 @@ def institucion_detail(request, institucion_id):
 @login_required(login_url='/index/')
 def institucion_edit(request):
     
-    if request.user.has_perm('auth.administrador'):
+    if not request.user.has_perm('auth.puede_editar_institucion'):
         return render(request, 'calendario/denied.html')
     
     try:
@@ -577,7 +562,7 @@ def institucion_edit(request):
 @login_required(login_url='/index/')
 def institucion_delete(request):
     
-    if request.user.has_perm('auth.administrador'):
+    if not request.user.has_perm('auth.puede_eliminar_institucion'):
         return render(request, 'calendario/denied.html')
     
     try:

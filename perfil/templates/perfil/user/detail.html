@@ -40,10 +40,6 @@
                         if(response.error){
                             
                             if(response.campo){
-                                
-                                if(response.campo == "cuil")
-                                    response.campo = "documento";
-                                
                                 $("#"+ response.campo).parent().parent().attr('class', "form-group has-error");
                                 $("#"+ response.campo).focus();
                             }
@@ -168,30 +164,30 @@
                                 <div class="col-xs-9">
                                     <div class="radio">
                                         <label>
-                                            {% if perms.auth.admin %}
-                                                <input type="radio" name="tipo" id="admin" value="administrador" checked>
+                                            {% if usuario.user.groups.all.0|slugify == 'Administradores'|slugify %}
+                                                <input type="radio" name="tipo" id="admin" value="Administradores" checked>
                                             {% else %}
-                                                <input type="radio" name="tipo" id="admin" value="administrador">
+                                                <input type="radio" name="tipo" id="admin" value="Administradores">
                                             {% endif %}
                                             Administrador
                                         </label>
                                     </div>
                                     <div class="radio">
                                         <label>
-                                            {% if perms.auth.profesional %}
-                                                <input type="radio" name="tipo" id="profesional" value="profesional" checked>
+                                            {% if usuario.user.groups.all.0|slugify == 'Profesionales'|slugify %}
+                                                <input type="radio" name="tipo" id="profesional" value="Profesionales" checked>
                                             {% else %}
-                                                <input type="radio" name="tipo" id="profesional" value="profesional">
+                                                <input type="radio" name="tipo" id="profesional" value="Profesionales">
                                             {% endif %}
                                             Profesional
                                         </label>
                                     </div>
                                     <div class="radio">
                                         <label>
-                                            {% if perms.auth.directivo %}
-                                                <input type="radio" name="tipo" id="directivo" value="directivo" checked>
+                                            {% if usuario.user.groups.all.0|slugify == 'Directivos'|slugify %}
+                                                <input type="radio" name="tipo" id="directivo" value="Directivos" checked>
                                             {% else %}
-                                                <input type="radio" name="tipo" id="directivo" value="directivo">
+                                                <input type="radio" name="tipo" id="directivo" value="Directivos">
                                             {% endif %}
                                             Directivo
                                         </label>
@@ -217,6 +213,12 @@
                                 <label class="col-xs-3 control-label" for="fecha_nacimiento">Fecha de nacimiento:</label>
                                 <div class="col-xs-9">
                                     <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" class="form-control" placeholder="dd/mm/aaaa" value="{{ usuario.persona.fecha_nacimiento|date:'Y-m-d' }}">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-xs-3 control-label" for="cuil">C.U.I.T./C.U.I.L.:</label>
+                                <div class="col-xs-9">
+                                    <input type="text" id="cuil" name="cuil" class="form-control" value="{{ usuario.persona.cuil }}" placeholder="00000000000">
                                 </div>
                             </div>
                             <div class="form-group">

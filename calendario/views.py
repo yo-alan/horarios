@@ -118,7 +118,14 @@ def log_out(request):
 @login_required(login_url='/index/')
 def all(request, pagina=1):
     
+    institucion = request.user.usuario.instituciones.all()[0]
+    
     total_calendarios = Calendario.objects.all().order_by('estado')
+
+    for calendario in total_calendarios[:]:
+        if calendario.espacio.institucion != institucion:
+            total_calendarios.remove(calendario)
+    
     paginator = Paginator(total_calendarios, PAGE_LENGTH)
     
     try:
@@ -247,8 +254,6 @@ def delete(request):
     if request.method != 'POST':
         return HttpResponseRedirect(reverse('calendario:espacio_all'))
     
-    data = {}
-    
     try:
         calendario_id = request.POST['calendario_id']
         
@@ -266,6 +271,7 @@ def delete(request):
         data = {"mensaje": "El calendario se eliminó exitosamente."}
         
     except Exception as ex:
+        
         data = {"error": "No se pudo eliminar el calendario" + str(ex).decode('utf-8')}
     
     return JsonResponse(data)
@@ -278,8 +284,6 @@ def confirmar(request):
     
     if request.method != 'POST':
         return HttpResponseRedirect(reverse('calendario:espacio_all'))
-    
-    data = {}
     
     try:
         calendario_id = request.POST['calendario_id']
@@ -298,6 +302,7 @@ def confirmar(request):
         data = {"mensaje": "El calendario se confirmó exitosamente."}
         
     except Exception as ex:
+        
         data = {"error": "No se pudo confirmar el calendario" + str(ex).decode('utf-8')}
     
     return JsonResponse(data)
@@ -483,7 +488,9 @@ def detail(request, calendario_id):
 @login_required(login_url='/index/')
 def espacio_all(request, pagina=1):
     
-    total_espacios = Espacio.objects.filter(~Q(estado=Espacio.OFF)).order_by('nombre')
+    institucion = request.user.usuario.instituciones.all()[0]
+    
+    total_espacios = Espacio.objects.filter(~Q(estado=Espacio.OFF), institucion=institucion).order_by('nombre')
     paginator = Paginator(total_espacios, PAGE_LENGTH)
     
     try:
@@ -550,12 +557,12 @@ def espacio_add(request):
     if request.method == 'GET':
         return render(request, 'calendario/espacio/add.html')
     
-    data = {}
-    
     try:
+        
         espacio = Espacio.create()
         
         espacio.set_nombre(request.POST["nombre"])
+        espacio.institucion = request.user.usuario.instituciones.all()[0]
         espacio.usuario_creador = request.user.username
         espacio.usuario_modificador = request.user.username
         
@@ -595,8 +602,6 @@ def espacio_edit(request, espacio_id=0):
         
         return render(request, 'calendario/espacio/edit.html', context)
     
-    data = {}
-    
     try:
         
         espacio = Espacio.create(espacio_id)
@@ -634,8 +639,6 @@ def espacio_delete(request):
     if request.method != 'POST':
         return HttpResponseRedirect(reverse('calendario:espacio_all'))
     
-    data = {}
-    
     try:
         espacio = Espacio.create(request.POST['espacio_id'])
         
@@ -654,6 +657,7 @@ def espacio_delete(request):
         data = {'mensaje': "El espacio fue eliminado exitosamente."}
         
     except Exception as ex:
+        
         data = {'error': str(ex).decode('utf-8')}
     
     return JsonResponse(data)
@@ -699,8 +703,6 @@ def espacio_add_horarios(request, espacio_id=0):
                     'horas_select': horas_select, 'min_select': min_select}
         
         return render(request, 'calendario/espacio/add_horarios.html', context)
-    
-    data = {}
     
     try:
         
@@ -774,6 +776,7 @@ def espacio_add_horarios(request, espacio_id=0):
         data = {'mensaje': "Los horarios fueron seteados exitosamente."}
         
     except Exception as ex:
+        
         data = {'error': str(ex).decode('utf-8')}
     
     return JsonResponse(data)
@@ -794,8 +797,6 @@ def espacio_add_especialidades(request, espacio_id=0):
         context = {'espacio': espacio, 'especialidades': especialidades}
         
         return render(request, 'calendario/espacio/add_especialidades.html', context)
-    
-    data = {}
     
     try:
         
@@ -858,8 +859,6 @@ def espacio_add_profesionales(request, espacio_id=0):
         
         return render(request, 'calendario/espacio/add_profesionales.html', context)
     
-    data = {}
-    
     try:
         profesionales = dict(request.POST.iterlists())['profesionales[]']
         
@@ -903,7 +902,10 @@ def espacio_add_profesionales(request, espacio_id=0):
         for profesional in espacio.profesionales.all():
             espacio.profesionales.remove(profesional)
         
+        data = {'mensaje': "Los profesionales fueron actualizados exitosamente."}
+        
     except Exception as ex:
+        
         data = {'error': str(ex).decode('utf-8')}
     
     return JsonResponse(data)
@@ -914,8 +916,15 @@ def profesional_all(request, pagina=1):
     if not request.user.has_perm('auth.puede_ver_profesional'):
         return render(request, 'calendario/denied.html')
     
+    institucion = request.user.usuario.instituciones.all()[0]
+    
     total_profesionales = Profesional.objects.filter(estado='ON')\
                                             .order_by('apellido', 'nombre')
+    
+    for profesional in total_profesionales[:]:
+        if institucion not in profesional.instituciones.all():
+            total_profesionales.remove(profesional)
+    
     paginator = Paginator(total_profesionales, PAGE_LENGTH)
     
     try:
@@ -937,8 +946,6 @@ def profesional_add(request):
     
     if request.method == 'GET':
         return render(request, 'calendario/profesional/add.html')
-    
-    data = {}
     
     try:
         profesional = Profesional.create()
@@ -990,10 +997,6 @@ def profesional_detail(request, profesional_id):
     profesional = get_object_or_404(Profesional, pk=profesional_id)
     profesional = Profesional.create(profesional_id)
     
-    profesional.tipo = profesional.cuil.split('-')[0]
-    profesional.documento = profesional.cuil.split('-')[1]
-    profesional.verificador = profesional.cuil.split('-')[2]
-    
     especialidades = Especialidad.objects.filter(estado='ON')\
                                             .order_by('nombre')
     
@@ -1023,14 +1026,9 @@ def profesional_edit(request):
         
         profesional = Profesional.create(request.POST['profesional_id'])
         
-        tipo = str(request.POST['tipo'])
-        documento = str(request.POST['documento'])
-        verificador = str(request.POST['verificador'])
-        cuil = tipo + "-" + documento + "-" + verificador
-        
         profesional.set_nombre(request.POST['nombre'])
         profesional.set_apellido(request.POST['apellido'])
-        profesional.set_cuil(cuil)
+        profesional.set_cuil(request.POST['cuil'])
         profesional.usuario_modificador = request.user.username
         
         profesional.save()
@@ -1068,8 +1066,6 @@ def profesional_delete(request):
     if request.method != 'POST':
         return HttpResponseRedirect(reverse('calendario:espacio_all'))
     
-    data = {}
-    
     try:
         profesional = Profesional.create(request.POST['profesional_id'])
         
@@ -1088,6 +1084,7 @@ def profesional_delete(request):
         data = {'mensaje': "El profesional fue eliminado exitosamente."}
         
     except Exception as ex:
+        
         data = {'error': str(ex).decode('utf-8')}
     
     return JsonResponse(data)
@@ -1101,13 +1098,12 @@ def profesional_add_especialidades(request, ):
     if request.method != 'POST':
         return HttpResponseRedirect(reverse('calendario:espacio_all'))
     
-    data = {}
+    profesional_id = dict(request.POST.iterlists())['profesional_id'][0]
+    profesional = Profesional.create(profesional_id)
     
     try:
-        profesional_id = dict(request.POST.iterlists())['profesional_id'][0]
-        especialidades = dict(request.POST.iterlists())['especialidades[]']
         
-        profesional = Profesional.create(profesional_id)
+        especialidades = dict(request.POST.iterlists())['especialidades[]']
         
         for especialidad in profesional.especialidades.all():
             profesional.especialidades.remove(especialidad)
@@ -1125,7 +1121,10 @@ def profesional_add_especialidades(request, ):
         for especialidad in profesional.especialidades.all():
             profesional.especialidades.remove(especialidad)
         
+        data = {'mensaje': "Las especialidades fueron actualizadas exitosamente."}
+        
     except Exception as ex:
+        
         data = {'error': str(ex).decode('utf-8')}
     
     return JsonResponse(data)
@@ -1137,7 +1136,10 @@ def especialidad_all(request, pagina=1):
         total_especialidades = Especialidad.objects.filter(estado='ON', profesional=request.user.usuario.persona.id)\
                                                     .order_by('nombre')
     else:
-        total_especialidades = Especialidad.objects.filter(estado='ON')\
+        
+        institucion = request.user.usuario.instituciones.all()[0]
+        
+        total_especialidades = Especialidad.objects.filter(estado='ON', institucion=institucion)\
                                                     .order_by('nombre')
     
     paginator = Paginator(total_especialidades, PAGE_LENGTH)
@@ -1164,8 +1166,6 @@ def especialidad_add(request):
 
     try:
         
-        usuario = Usuario.objects.get(user=request.user)
-        
         nombre = request.POST["nombre"]
         carga_horaria_semanal = request.POST["carga_horaria_semanal"]
         max_horas_diaria = request.POST["max_horas_diaria"]
@@ -1183,7 +1183,7 @@ def especialidad_add(request):
         especialidad.usuario_creador = request.user.username
         especialidad.usuario_modificador = request.user.username
         
-        especialidad.institucion = usuario.institucion
+        especialidad.institucion = request.user.usuario.instituciones.all()[0]
         
         especialidad.save()
         
@@ -1234,8 +1234,6 @@ def especialidad_edit(request):
     if request.method != 'POST':
         return render(request, 'calendario/especialidad/all.html')
     
-    data = {}
-    
     try:
         especialidad = Especialidad.objects.get(pk=request.POST['especialidad_id'])
         
@@ -1279,9 +1277,7 @@ def especialidad_delete(request):
     
     if request.method != 'POST':
         return HttpResponseRedirect(reverse('calendario:especialidad_all'))
-        
-    data = {}
-    
+
     try:
         especialidad_id = request.POST['especialidad_id']
         
@@ -1302,6 +1298,7 @@ def especialidad_delete(request):
         data = {'mensaje': "La especialidad fue eliminada exitosamente."}
         
     except Exception as ex:
+        
         data = {'error': str(ex).decode('utf-8')}
     
     return JsonResponse(data)
@@ -1311,8 +1308,6 @@ def restriccion_add(request):
     
     if request.method != 'POST':
         return HttpResponseRedirect(reverse('index'))
-    
-    data = {}
     
     try:
         profesional_id = request.POST['profesional_id']
@@ -1370,8 +1365,6 @@ def restriccion_edit(request, restriccion_id):
     if request.method != 'POST':
         return HttpResponseRedirect(reverse('index'))
     
-    data = {}
-    
     try:
         
         restriccion = Restriccion.objects.get(pk=restriccion_id)
@@ -1388,6 +1381,7 @@ def restriccion_edit(request, restriccion_id):
         data = {'mensaje': "La restricción fue editada exitosamente."}
         
     except Exception as ex:
+        
         data = {'error': str(ex).decode('utf-8')}
     
     return JsonResponse(data)
@@ -1407,16 +1401,11 @@ def restriccion_delete(request):
     if request.method != 'POST':
         return HttpResponseRedirect(reverse('index'))
     
-    data = {}
-    
     try:
         
         restriccion_id = request.POST['restriccion_id']
         
         restriccion = Restriccion.objects.get(pk=restriccion_id)
-        
-        #~ restriccion.estado = 'OFF'
-        #~ restriccion.usuario_modificador = request.user.username
         
         restriccion.delete()
         
@@ -1430,6 +1419,7 @@ def restriccion_delete(request):
         data = {'mensaje': "La restricción fue eliminada exitosamente."}
         
     except Exception as ex:
+        
         data = {'error': str(ex).decode('utf-8')}
     
     return JsonResponse(data)

@@ -42,6 +42,9 @@ class Especialidad(models.Model):
         
         self.nombre = nombre
     
+    def set_color(self, color):
+        self.color = color
+    
     def set_carga_horaria_semanal(self, carga_horaria_semanal):
         
         if carga_horaria_semanal == "" or int(carga_horaria_semanal) < 1:

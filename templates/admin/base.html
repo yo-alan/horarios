@@ -45,13 +45,7 @@
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                             <i class="fa fa-user"></i> <strong>{{ request.user.last_name }}, {{ request.user.first_name }}</strong>
                             -
-                            {% if perms.auth.directivo %}
-                                Directivo
-                            {% elif perms.auth.profesional %}
-                                Profesional
-                            {% elif perms.auth.admin %}
-                                Administrador
-                            {% endif %}
+                            {{ user.groups.all.0 }}
                             <b class="caret"></b>
                         </a>
                         <ul class="dropdown-menu">
@@ -76,40 +70,35 @@
                 <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
                 <div class="collapse navbar-collapse navbar-ex1-collapse">
                     <ul class="nav navbar-nav side-nav">
-                        {% if not perms.auth.profesional %}
-                            <li>
-                                <a href="{% url 'calendario:all' %}"><i class="fa fa-fw fa-calendar"></i> Calendarios</a>
-                            </li>
-                            <li>
-                                <a href="{% url 'calendario:espacio_all' %}"><i class="glyphicon fa-fw glyphicon-paperclip"></i> Espacios</a>
-                            </li>
-                            <li>
-                                <a href="{% url 'calendario:profesional_all' %}"><i class="fa fa-fw fa-users"></i> Profesionales</a>
-                            </li>
-                            <li>
-                                <a href="{% url 'calendario:especialidad_all' %}"><i class="fa fa-fw fa-th-list"></i> Especialidades</a>
-                            </li>
+                        <li>
+                            <a href="{% url 'calendario:all' %}"><i class="fa fa-fw fa-calendar"></i> Calendarios</a>
+                        </li>
+                        <li>
+                            <a href="{% url 'calendario:espacio_all' %}"><i class="glyphicon fa-fw glyphicon-paperclip"></i> Espacios</a>
+                        </li>
+                        {% if perms.auth.puede_ver_profesional %}
+                        <li>
+                            <a href="{% url 'calendario:profesional_all' %}"><i class="fa fa-fw fa-users"></i> Profesionales</a>
+                        </li>
+                        {% endif %}
+                        <li>
+                            <a href="{% url 'calendario:especialidad_all' %}"><i class="fa fa-fw fa-th-list"></i> Especialidades</a>
+                        </li>
+                        {% if perms.auth.puede_ver_institucion %}
+                        <li>
+                            <a href="{% url 'perfil:institucion_all' %}"><i class="fa fa-fw fa-building"></i> Instituciones</a>
+                        </li>
+                        {% endif %}
+                        {% if perms.auth.puede_ver_usuario %}
+                        <li>
+                            <a href="{% url 'perfil:user_all' %}"><i class="fa fa-fw fa-user"></i> Usuarios</a>
+                        </li>
+                        {% endif %}
 <!--
                             <li>
                                 <a href="{% url 'calendario:acerca' %}"><i class="fa fa-fw fa-dashboard"></i> Acerca de Horarios</a>
                             </li>
 -->
-                        {% else %}
-                            <li>
-                                <a href="{% url 'calendario:all' %}"><i class="fa fa-fw fa-calendar"></i> Mis calendarios</a>
-                            </li>
-                            <li>
-                                <a href="{% url 'calendario:especialidad_all' %}"><i class="fa fa-fw fa-th-list"></i> Mis especialidades</a>
-                            </li>
-                            <li>
-                                <a href="{% url 'perfil:institucion_all' %}"><i class="fa fa-fw fa-th-list"></i> Mis instituciones</a>
-                            </li>
-                        {% endif %}
-                        {% if perms.auth.admin %}
-                            <li>
-                                <a href="{% url 'perfil:user_all' %}"><i class="fa fa-fw fa-user"></i> Usuarios</a>
-                            </li>
-                        {% endif %}
                         <li>
                             {% block alert %}{% endblock %}
                         </li>

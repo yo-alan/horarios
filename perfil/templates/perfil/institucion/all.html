@@ -5,6 +5,7 @@
 {% block title %}Listado de instituciones{% endblock %}
 
 {% block head %}
+    {% if perms.auth.puede_eliminar_institucion %}
     <script>
         function eliminar(institucion_id) {
             
@@ -26,6 +27,7 @@
             });
         }
     </script>
+    {% endif %}
 {% endblock %}
 {% block article %}
     <ol class="breadcrumb">
@@ -56,6 +58,9 @@
                 <th>
                     Institución
                 </th>
+                <th>
+                    Dirección
+                </th>
                 <th class="col-xs-5 col-sm-5 col-md-4 col-lg-3">
                     Acciones
                 </th>
@@ -69,11 +74,18 @@
                             {{ institucion.nombre }}
                         </td>
                         <td>
+                            {{ institucion.direccion }}
+                        </td>
+                        <td>
                             <div class="btn btn-group btn-block">
+                                {% if perms.auth.puede_editar_institucion %}
                                 <a class="btn btn-default" title="Editar" href="{% url 'perfil:institucion_detail' institucion.id %}"><i class="glyphicon glyphicon-edit"></i></a>
+                                {% endif%}
+                                {% if perms.auth.puede_eliminar_institucion %}
                                 <a type="button" class="btn btn-danger" data-toggle="modal" onclick="eliminar({{ institucion.id }})">
                                     <i class="glyphicon glyphicon-trash"></i>
                                 </a>
+                                {% endif%}
                             </div>
                         </td>
                     </tr>
