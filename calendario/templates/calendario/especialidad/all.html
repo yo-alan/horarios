@@ -3,6 +3,7 @@
 {% block title %}Listado de especialidades{% endblock %}
 
 {% block head %}
+    {% if perms.auth.puede_eliminar_especialidad %}
     <script>    
         function eliminar(especialidad_id){
             
@@ -24,19 +25,21 @@
             });
         }
     </script>
+    {% endif %}
 {% endblock %}
 {% block article %}
     <ol class="breadcrumb">
         <li><a href="{% url 'index' %}"><i class="fa fa-fw fa-calendar"></i> Inicio</a></li>
         <li class="active">Especialidades</li>
     </ol>
-    {% if perms.auth.admin %}
+    {% if perms.auth.puede_agregar_especialidad %}
         <a href="{% url 'calendario:especialidad_add' %}" class="btn btn-success">
             <i class="glyphicon glyphicon-plus"></i> Agregar especialidad
         </a>
         <br>
         <br>
     {% endif %}
+    {% if perms.auth.puede_eliminar_especialidad %}
     <!-- Modal -->
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog" role="document">
@@ -55,6 +58,7 @@
             </div>
         </div>
     </div>
+    {% endif %}
     <table class="table table-hover table-bordered table-striped">
         <thead>
             <tr class="default">
@@ -93,10 +97,14 @@
                         </td>
                         <td>
                             <div class="btn btn-group btn-block">
+                                {% if perms.auth.puede_editar_especialidad %}
                                 <a class="btn btn-default" title="Editar" href="{% url 'calendario:especialidad_detail' especialidad.id %}#especialidad"><i class="glyphicon glyphicon-edit"></i></a>
+                                {% endif %}
+                                {% if perms.auth.puede_eliminar_especialidad %}
                                 <a type="button" class="btn btn-danger" data-toggle="modal" onclick="eliminar({{ especialidad.id }})">
                                     <i class="glyphicon glyphicon-trash"></i>
                                 </a>
+                                {% endif %}
                             </div>
                         </td>
                     </tr>

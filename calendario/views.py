@@ -921,9 +921,9 @@ def profesional_all(request, pagina=1):
     total_profesionales = Profesional.objects.filter(estado='ON')\
                                             .order_by('apellido', 'nombre')
     
-    for profesional in total_profesionales[:]:
-        if institucion not in profesional.instituciones.all():
-            total_profesionales.remove(profesional)
+    #~ for profesional in total_profesionales[:]:
+        #~ if institucion not in profesional.instituciones.all():
+            #~ total_profesionales.remove(profesional)
     
     paginator = Paginator(total_profesionales, PAGE_LENGTH)
     
@@ -1132,7 +1132,7 @@ def profesional_add_especialidades(request, ):
 @login_required(login_url='/index/')
 def especialidad_all(request, pagina=1):
     
-    if list(request.user.groups.all())[0] == 'Profesionales':
+    if str(list(request.user.groups.all())[0]) == 'Profesionales':
         total_especialidades = Especialidad.objects.filter(estado='ON', profesional=request.user.usuario.persona.id)\
                                                     .order_by('nombre')
     else:
@@ -1274,7 +1274,7 @@ def especialidad_delete(request):
     
     if not request.user.has_perm('auth.puede_eliminar_especialidad'):
         return render(request, 'calendario/denied.html')
-    
+
     if request.method != 'POST':
         return HttpResponseRedirect(reverse('calendario:especialidad_all'))
 
