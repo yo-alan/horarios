@@ -72,20 +72,49 @@ def index(request):
     
     if not request.user.is_authenticated():
         return render(request, 'calendario/index.html')
+
+    if str(list(request.user.groups.all())[0]) == 'Profesionales':
+        
+        persona = request.user.usuario.persona
+        
+        especialidades = Especialidad.objects.filter(estado='ON', profesional=persona)\
+                                                .order_by('nombre')
+        espacios = Espacio.objects.filter(~Q(estado=Espacio.OFF))
+        calendarios = Calendario.objects.all()
+        
+        context = { "espacios": espacios, "especialidades": especialidades,
+                    "calendarios": calendarios}
+        
+    else:
+        
+        institucion = request.user.usuario.instituciones.all()[0]
+        
+        especialidades = Especialidad.objects.filter(estado='ON', institucion=institucion)\
+                                                .order_by('nombre')
+        espacios = Espacio.objects.filter(~Q(estado=Espacio.OFF), institucion=institucion)
+        
+        calendarios = Calendario.objects.all()
+        
+        for calendario in calendarios[:]:
+            if institucion != calendario.espacio.institucion:
+                calendarios.remove(calendario)
+        
+        profesionales = Profesional.objects.filter(estado="ON")
+        
+        for profesional in profesionales[:]:
+            
+            usuario = Usuario.objects.get(persona=profesional)
+            
+            if institucion not in usuario.instituciones.all():
+                profesionales.remove(profesional)
+        
+        context = { "espacios": espacios, "especialidades": especialidades,
+                    "profesionales": profesionales, "calendarios": calendarios}
     
-    especialidades = Especialidad.objects.filter(estado="ON")
-    profesionales = Profesional.objects.filter(estado="ON")
-    espacios = Espacio.objects.filter(~Q(estado=Espacio.OFF))
-    calendarios = Calendario.objects.all()
-    
-    try:
-        usuario = Usuario.objects.get(user=request.user)
-    except:
-        usuario = request.user
-    
-    context = {"usuario": usuario, "especialidades": especialidades,
-                "profesionales": profesionales, "espacios": espacios,
-                "calendarios": calendarios}
+    #~ try:
+        #~ usuario = Usuario.objects.get(user=request.user)
+    #~ except:
+        #~ usuario = request.user
     
     return render(request, 'calendario/home.html', context)
 
@@ -490,7 +519,8 @@ def espacio_all(request, pagina=1):
     
     institucion = request.user.usuario.instituciones.all()[0]
     
-    total_espacios = Espacio.objects.filter(~Q(estado=Espacio.OFF), institucion=institucion).order_by('nombre')
+    total_espacios = Espacio.objects.filter(~Q(estado=Espacio.OFF), institucion=institucion)\
+                                        .order_by('nombre')
     paginator = Paginator(total_espacios, PAGE_LENGTH)
     
     try:
@@ -919,11 +949,14 @@ def profesional_all(request, pagina=1):
     institucion = request.user.usuario.instituciones.all()[0]
     
     total_profesionales = Profesional.objects.filter(estado='ON')\
-                                            .order_by('apellido', 'nombre')
+                                                .order_by('apellido', 'nombre')
     
-    #~ for profesional in total_profesionales[:]:
-        #~ if institucion not in profesional.instituciones.all():
-            #~ total_profesionales.remove(profesional)
+    for profesional in total_profesionales[:]:
+        
+        usuario = Usuario.objects.get(persona=profesional)
+        
+        if institucion not in usuario.instituciones.all():
+            total_profesionales.remove(profesional)
     
     paginator = Paginator(total_profesionales, PAGE_LENGTH)
     

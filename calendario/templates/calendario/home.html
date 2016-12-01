@@ -1,7 +1,7 @@
 {% extends "admin/base.html" %}
 
 {% block title %}
-    {% if usuario.persona.genero == 'F' %}
+    {% if request.user.usuario.persona.genero == 'F' %}
         ¡Bienvenida {{ request.user.first_name }}!
     {% else %}
         ¡Bienvenido {{ request.user.first_name }}!
@@ -18,7 +18,7 @@
         <li class="active"><i class="fa fa-fw fa-calendar"></i> Inicio</li>
     </ol>
     <h2 class="text-center">
-        {% if usuario.persona.genero == 'F' %}
+        {% if request.user.usuario.persona.genero == 'F' %}
             ¡Bienvenida {{ request.user.first_name }}!
         {% else %}
             ¡Bienvenido {{ request.user.first_name }}!
