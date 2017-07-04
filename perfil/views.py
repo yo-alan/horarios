@@ -62,7 +62,13 @@ def user_all(request, pagina=1):
     instituciones = request.user.usuario.instituciones.all()
     
     total_usuarios = Usuario.objects.filter(instituciones=instituciones).order_by('persona__apellido', 'persona__nombre')
-
+    
+    total_usuarios = list(total_usuarios)
+    
+    for usuario in total_usuarios[:]:
+        if usuario == request.user.usuario:
+            total_usuarios.remove(usuario)
+    
     paginator = Paginator(total_usuarios, PAGE_LENGTH)
 
     try:

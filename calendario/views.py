@@ -32,7 +32,7 @@ from perfil.models import Usuario
 DIAS = {0: 'Domingo', 1: 'Lunes', 2: 'Martes', 3: 'Miércoles',
         4: 'Jueves', 5: 'Viernes', 6: 'Sábado', 7: "Todos los días"}
 
-DENSIDAD = 1
+DENSIDAD = 10
 
 PAGE_LENGTH = 10
 
